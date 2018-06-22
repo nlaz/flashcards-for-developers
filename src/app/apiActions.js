@@ -44,13 +44,20 @@ export const fetchDecks = async category => {
 };
 
 export const fetchDeck = async id => {
-  return;
+  return new Promise((success, failure) => {
+    base("Decks").find(id, function(err, record) {
+      if (err) failure(err);
+
+      const result = { id: record.id, name: record.get("Name") };
+      success(result);
+    });
+  });
 };
 
-export const fetchCards = async deckId => {
+export const fetchCards = async deck => {
   const results = [];
   await base("Cards")
-    .select()
+    .select({ filterByFormula: `NOT({Deck} != '${deck.name}' )` })
     .eachPage((records, fetchNextPage) => {
       records.forEach(record => {
         results.push({ id: record.id, front: record.get("Front"), back: record.get("Back") });
