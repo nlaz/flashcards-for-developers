@@ -5,13 +5,14 @@ import config from "../config/index";
 const base = new Airtable({ apiKey: config.airtableApiKey }).base(config.airtableApiId);
 
 export const fetchCategories = async () => {
-  const results = {};
+  const results = [];
   await base("Categories")
     .select()
     .eachPage((records, fetchNextPage) => {
       records.forEach(record => {
-        const category = record.get("Name");
-        results[record.id] = category;
+        const name = record.get("Name");
+        const decks = record.get("Decks");
+        results.push({ id: record.id, name, decks });
       });
       fetchNextPage();
     });
