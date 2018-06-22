@@ -2,7 +2,7 @@
   "name": "sparkles",
   "version": "0.1.0",
   "private": true,
-  "homepage": "http://nlaz.xyz/sparkles",
+  "homepage": "https://nlaz.github.io/sparkles/",
   "dependencies": {
     "airtable": "^0.5.6",
     "gh-pages": "^1.2.0",
