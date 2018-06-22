@@ -18,7 +18,6 @@ class Categories extends Component {
 
   render() {
     const { categories } = this.state;
-    console.log("categories", categories);
 
     return (
       <div className="container p-4">
