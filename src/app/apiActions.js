@@ -32,8 +32,9 @@ export const fetchCategory = id => {
 
 export const fetchDecks = async category => {
   const results = [];
+  const filter = category ? `NOT({Category} != '${category.name}' )` : "";
   await base("Decks")
-    .select({ filterByFormula: `NOT({Category} != '${category.name}' )` })
+    .select({ filterByFormula: filter })
     .eachPage((records, fetchNextPage) => {
       records.forEach(record => {
         const name = record.get("Name");

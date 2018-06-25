@@ -10,7 +10,11 @@ class Decks extends Component {
 
   componentWillMount() {
     const { params } = this.props.match;
-    this.fetchCategory(params.categoryId);
+    if (params.categoryId) {
+      this.fetchCategory(params.categoryId);
+    } else {
+      this.fetchDecks();
+    }
   }
 
   fetchCategory = categoryId => {
