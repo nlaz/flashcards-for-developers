@@ -16,3 +16,7 @@ h1 {
     max-width: 960px;
   }
 }
+
+.markdown-body pre {
+  overflow-x: hidden !important;
+}

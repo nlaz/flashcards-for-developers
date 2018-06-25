@@ -49,8 +49,17 @@ export const fetchDeck = async id => {
   return new Promise((success, failure) => {
     base("Decks").find(id, function(err, record) {
       if (err) failure(err);
+      if (record === undefined) {
+        return failure(new Error("Record does not exist"));
+      }
 
-      const result = { id: record.id, name: record.get("Name") };
+      const name = record.get("Name");
+      const description = record.get("Description");
+      const category = (record.get("Category") || [])[0];
+      const type = record.get("Type");
+      const source = record.get("Source");
+
+      const result = { id: record.id, name, description, category, type, source };
       success(result);
     });
   });
