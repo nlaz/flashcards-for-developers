@@ -16,6 +16,8 @@ class Categories extends Component {
     });
   }
 
+  getCategoryUrl = id => `/categories/${id}`;
+
   render() {
     const { categories } = this.state;
 
@@ -28,15 +30,15 @@ class Categories extends Component {
         <div className="row mt-5 pt-5">
           {categories.map(category => (
             <div
-              className="col-2 d-flex px-2"
+              className="col-3 d-flex px-2"
               key={category.id}
               style={{
-                width: "180px",
-                height: "180px",
+                width: "400px",
+                height: "225px",
               }}
             >
               <Link
-                to={category.id}
+                to={this.getCategoryUrl(category.id)}
                 className="bg-dark text-white mb-4 p-3 w-100 d-flex align-items-end"
                 style={{
                   fontSize: "14px",

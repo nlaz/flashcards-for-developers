@@ -59,8 +59,9 @@ export const fetchDeck = async id => {
       const category = (record.get("Category") || [])[0];
       const type = record.get("Type");
       const source = record.get("Source");
+      const difficulty = record.get("Difficulty");
 
-      const result = { id: record.id, name, description, category, type, source };
+      const result = { id: record.id, name, description, category, type, source, difficulty };
       success(result);
     });
   });

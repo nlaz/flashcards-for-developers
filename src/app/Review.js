@@ -97,6 +97,8 @@ class Review extends Component {
     return opts.map(el => cards[el]);
   };
 
+  getCategoryUrl = id => `/categories/${id}`;
+
   isReversible = deck => deck.type === "Reversible select";
   isImageSelect = deck => deck.type === "Image select";
 
@@ -131,12 +133,21 @@ class Review extends Component {
     return (
       <div className="container p-4">
         <div className="mb-5">
-          <Link to={`/${deck.category}`} className="text-dark d-flex align-items-center mb-2">
+          <Link
+            to={this.getCategoryUrl(deck.category)}
+            className="text-dark d-flex align-items-center mb-2"
+          >
             <Octicon name="chevron-left" className="d-flex mr-1" />
             Back to Category
           </Link>
           <h1 className="m-0">{deck.name}</h1>
           {deck.description && <p>{deck.description}</p>}
+          {deck.difficulty &&
+            deck.difficulty.map((level, key) => (
+              <span className="badge badge-pill badge-dark mr-1" key={key}>
+                {level}
+              </span>
+            ))}
         </div>
         <div className="row mt-5 pt-5 px-3">
           <ProgressBar index={index} length={cards.length} />
@@ -159,12 +170,12 @@ class Review extends Component {
                   />
                 )}
               </div>
-              <div className="col-6">
+              <div className="col-6 d-flex flex-column align-items-center justify-content-center">
                 {options.map((option, key) => (
                   <div
                     key={key}
                     onClick={() => this.onClick(option, selected)}
-                    className={cx("border rounded d-flex align-items-center p-3", {
+                    className={cx("border rounded d-flex align-items-center p-3 w-100", {
                       "mb-2": options.length !== key + 1,
                     })}
                     style={{ cursor: "pointer" }}
