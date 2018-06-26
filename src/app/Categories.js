@@ -40,6 +40,7 @@ class Categories extends Component {
               <Link
                 to={this.getCategoryUrl(category.id)}
                 className="bg-dark text-white mb-4 p-3 w-100 d-flex align-items-end"
+                disabled={!category.decks}
                 style={{
                   fontSize: "14px",
                   opacity: category.decks ? 1 : 0.65,

@@ -48,6 +48,7 @@ class Decks extends Component {
               <Link
                 to={`/decks/${deck.id}`}
                 className="border border-dark rounded text-dark mb-4 p-4 w-100"
+                disabled={!deck.cards}
                 style={{
                   fontSize: "14px",
                   opacity: deck.cards ? 1 : 0.25,

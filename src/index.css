@@ -20,3 +20,7 @@ h1 {
 .markdown-body pre {
   overflow-x: hidden !important;
 }
+
+a[disabled] {
+  pointer-events: none;
+}

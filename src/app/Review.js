@@ -226,12 +226,13 @@ class Review extends Component {
                       dataKey="value"
                       innerRadius={40}
                       outerRadius={80}
+                      animationDuration={500}
                       fill="#82ca9d"
                     >
                       <Cell fill="#343a40" />
                       <Cell fill="#6c757d" />
                     </Pie>
-                    <Legend verticalAlign="middle" align="right" layout="vertical" />
+                    <Legend verticalAlign="top" align="right" layout="vertical" />
                     <Tooltip />
                   </PieChart>
                 </ResponsiveContainer>
