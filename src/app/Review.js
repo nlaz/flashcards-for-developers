@@ -11,7 +11,7 @@ import * as api from "./apiActions";
 import "./Review.css";
 
 const chance = new Chance();
-const MAX_DECK_SIZE = 30;
+const MAX_DECK_SIZE = 20;
 
 const styles = {
   progressBar: {
@@ -47,7 +47,7 @@ class Review extends Component {
     isFinished: false,
     numCorrect: 0,
     numIncorrect: 0,
-    missedCards: [],
+    selected: {},
   };
 
   componentWillMount() {
@@ -59,39 +59,50 @@ class Review extends Component {
   }
   componentWillUnmount() {
     window.removeEventListener("keydown", e => this.onKeyPress(e));
+    clearTimeout(this.timeout);
   }
 
   onSelect = (answer, card) => {
-    if (this.isCorrectAnswer(answer, card)) {
-      this.onCorrectAnswer();
+    this.setState({ selected: answer });
+    if (this.isCorrect(answer, card)) {
+      this.timeout = setTimeout(() => this.onCorrectAnswer(), 300);
     } else {
       this.onIncorrectAnswer(card);
     }
   };
 
   onKeyPress = e => {
-    if (["1", "2", "3", "4"].includes(e.key)) {
-      const answer = parseInt(e.key, 10) - 1;
+    if (!this.isFinished()) {
       const { options } = this.state;
-      const currentCard = this.getCurrentCard();
-      this.onSelect(options[answer], currentCard);
+      if (options.map((i, k) => String(k + 1)).includes(e.key)) {
+        const answer = parseInt(e.key, 10) - 1;
+        const { options } = this.state;
+        const currentCard = this.getCurrentCard();
+        this.onSelect(options[answer], currentCard);
+      }
     }
   };
 
-  isCorrectAnswer = (answer, card) => answer.id === card.id;
-
   onCorrectAnswer = () => {
-    const { cards, numCorrect } = this.state;
+    const { cards } = this.state;
     const index = Math.min(this.state.index + 1, cards.length);
     const isReversed = this.isReversible(this.state.deck) && chance.bool();
     const isFinished = this.isFinished(index, cards);
     const options = this.getOptions(index, cards);
-    this.setState({ index, options, isReversed, isFinished, numCorrect: numCorrect + 1 });
+    const numCorrect = this.state.numCorrect + 1;
+    this.setState({
+      index,
+      options,
+      isReversed,
+      isFinished,
+      numCorrect,
+      selected: {},
+    });
   };
 
   onIncorrectAnswer = card => {
-    const missedCards = [...this.state.missedCards, card];
-    this.setState({ isWrong: true, numIncorrect: this.state.numIncorrect + 1, missedCards }, () =>
+    const numIncorrect = this.state.numIncorrect + 1;
+    this.setState({ isWrong: true, numIncorrect }, () =>
       setTimeout(() => this.setState({ isWrong: false }), 500),
     );
   };
@@ -117,14 +128,6 @@ class Review extends Component {
     );
   };
 
-  onToggle = () => this.setState(({ toggle }) => ({ toggle: !toggle }));
-  onKeyDown = e => {
-    console.log("event", e.key);
-  };
-  onKeyUp = e => {
-    console.log("event", e.key);
-  };
-
   getOptions = (index, cards) => {
     const random = chance.unique(chance.natural, Math.min(3, cards.length), {
       min: 0,
@@ -146,7 +149,9 @@ class Review extends Component {
 
   isReversible = deck => deck.type === "Reversible select";
   isImageSelect = deck => deck.type === "Image select";
-  isFinished = (index, cards) => index >= cards.length;
+  isFinished = index => (index || this.state.index) >= this.state.cards.length;
+  isCorrect = (option, card) => option.id === card.id;
+  isSelected = option => this.state.selected.id === option.id;
 
   render() {
     const { deck, cards, options, index, isLoading, isError, isFinished } = this.state;
@@ -196,7 +201,13 @@ class Review extends Component {
               </span>
             ))}
         </div>
-        <div className="row mt-5 pt-5 px-3">
+        <div className="row mt-5 pt-4 px-3">
+          <span
+            className="small text-secondary text-right w-100 mb-1 mr-1"
+            style={{ opacity: 0.5 }}
+          >
+            {index} / {cards.length}
+          </span>
           <ProgressBar index={index} length={cards.length} />
           <div
             style={{ minHeight: "400px" }}
@@ -226,6 +237,10 @@ class Review extends Component {
                       onClick={() => this.onSelect(option, currentCard)}
                       className={cx("border rounded d-flex align-items-center p-3 w-100", {
                         "mb-2": options.length !== key + 1,
+                        "border-success text-success":
+                          this.isSelected(option) && this.isCorrect(option, currentCard),
+                        "border-danger text-danger":
+                          this.isSelected(option) && !this.isCorrect(option, currentCard),
                       })}
                     >
                       <div className="border rounded mr-3 px-2" style={{ fontSize: ".9em" }}>
