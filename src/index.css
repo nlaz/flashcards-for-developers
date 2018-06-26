@@ -24,3 +24,7 @@ h1 {
 a[disabled] {
   pointer-events: none;
 }
+
+code {
+  white-space: nowrap;
+}

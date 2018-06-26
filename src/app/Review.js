@@ -11,7 +11,7 @@ import * as api from "./apiActions";
 import "./Review.css";
 
 const chance = new Chance();
-const MAX_DECK_SIZE = 3;
+const MAX_DECK_SIZE = 30;
 
 const styles = {
   progressBar: {
@@ -47,18 +47,34 @@ class Review extends Component {
     isFinished: false,
     numCorrect: 0,
     numIncorrect: 0,
+    missedCards: [],
   };
 
   componentWillMount() {
     const { params } = this.props.match;
     this.fetchDeck(params.deckId);
   }
+  componentDidMount() {
+    window.addEventListener("keyup", e => this.onKeyPress(e));
+  }
+  componentWillUnmount() {
+    window.removeEventListener("keydown", e => this.onKeyPress(e));
+  }
 
-  onClick = (answer, card) => {
+  onSelect = (answer, card) => {
     if (this.isCorrectAnswer(answer, card)) {
       this.onCorrectAnswer();
     } else {
-      this.onIncorrectAnswer();
+      this.onIncorrectAnswer(card);
+    }
+  };
+
+  onKeyPress = e => {
+    if (["1", "2", "3", "4"].includes(e.key)) {
+      const answer = parseInt(e.key, 10) - 1;
+      const { options } = this.state;
+      const currentCard = this.getCurrentCard();
+      this.onSelect(options[answer], currentCard);
     }
   };
 
@@ -73,8 +89,9 @@ class Review extends Component {
     this.setState({ index, options, isReversed, isFinished, numCorrect: numCorrect + 1 });
   };
 
-  onIncorrectAnswer = () => {
-    this.setState({ isWrong: true, numIncorrect: this.state.numIncorrect + 1 }, () =>
+  onIncorrectAnswer = card => {
+    const missedCards = [...this.state.missedCards, card];
+    this.setState({ isWrong: true, numIncorrect: this.state.numIncorrect + 1, missedCards }, () =>
       setTimeout(() => this.setState({ isWrong: false }), 500),
     );
   };
@@ -101,6 +118,12 @@ class Review extends Component {
   };
 
   onToggle = () => this.setState(({ toggle }) => ({ toggle: !toggle }));
+  onKeyDown = e => {
+    console.log("event", e.key);
+  };
+  onKeyUp = e => {
+    console.log("event", e.key);
+  };
 
   getOptions = (index, cards) => {
     const random = chance.unique(chance.natural, Math.min(3, cards.length), {
@@ -112,6 +135,7 @@ class Review extends Component {
     return opts.map(el => cards[el]);
   };
 
+  getCurrentCard = () => this.state.cards[this.state.index];
   getCategoryUrl = id => `/categories/${id}`;
   getOptionHTML = option => marked(this.state.isReversed ? option.front : option.back);
   getCardHTML = card => marked(this.state.isReversed ? card.back : card.front);
@@ -150,7 +174,7 @@ class Review extends Component {
       );
     }
 
-    const selected = cards[index];
+    const currentCard = this.getCurrentCard();
     const results = this.getResults();
 
     return (
@@ -175,21 +199,21 @@ class Review extends Component {
         <div className="row mt-5 pt-5 px-3">
           <ProgressBar index={index} length={cards.length} />
           <div
+            style={{ minHeight: "400px" }}
             className={cx("col-12 border border-dark rounded mb-4 py-5 d-flex align-items-center", {
               shake: this.state.isWrong,
             })}
-            style={{ minHeight: "400px" }}
           >
             {!isFinished ? (
               <div className="row px-4 w-100">
                 <div className="col-6 d-flex align-items-center">
                   {this.isImageSelect(deck) ? (
-                    <img className="img-fluid px-3 mx-auto" alt="" src={selected.front} />
+                    <img className="img-fluid px-3 mx-auto" alt="" src={currentCard.front} />
                   ) : (
                     <div
                       className="markdown-body text-left border rounded bg-white px-3 py-5 h-100 d-flex align-items-center justify-content-center w-100"
                       dangerouslySetInnerHTML={{
-                        __html: this.getCardHTML(selected),
+                        __html: this.getCardHTML(currentCard),
                       }}
                     />
                   )}
@@ -199,7 +223,7 @@ class Review extends Component {
                     <div
                       key={key}
                       style={{ cursor: "pointer" }}
-                      onClick={() => this.onClick(option, selected)}
+                      onClick={() => this.onSelect(option, currentCard)}
                       className={cx("border rounded d-flex align-items-center p-3 w-100", {
                         "mb-2": options.length !== key + 1,
                       })}
@@ -219,23 +243,52 @@ class Review extends Component {
               </div>
             ) : (
               <div className="w-100">
-                <ResponsiveContainer height={200} width="50%">
-                  <PieChart>
-                    <Pie
-                      data={results}
-                      dataKey="value"
-                      innerRadius={40}
-                      outerRadius={80}
-                      animationDuration={500}
-                      fill="#82ca9d"
-                    >
-                      <Cell fill="#343a40" />
-                      <Cell fill="#6c757d" />
-                    </Pie>
-                    <Legend verticalAlign="top" align="right" layout="vertical" />
-                    <Tooltip />
-                  </PieChart>
-                </ResponsiveContainer>
+                <h3 className="mb-5 text-center">You're done!</h3>
+                <div className="row d-flex mb-5">
+                  <div className="px-5" style={{ width: "50%" }}>
+                    <ResponsiveContainer height={200} width="100%" className="px-4">
+                      <PieChart>
+                        <Pie
+                          data={results}
+                          dataKey="value"
+                          innerRadius={40}
+                          outerRadius={80}
+                          animationDuration={500}
+                          fill="#82ca9d"
+                        >
+                          <Cell fill="#343a40" />
+                          <Cell fill="#6c757d" />
+                        </Pie>
+                        <Legend verticalAlign="top" align="right" layout="vertical" />
+                        <Tooltip />
+                      </PieChart>
+                    </ResponsiveContainer>
+                  </div>
+                  <div className="px-4" style={{ flexGrow: 1 }}>
+                    <table className="table w-100">
+                      <thead>
+                        <tr>
+                          <th>Results</th>
+                          <th>#</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr>
+                          <td>Missed Cards</td>
+                          <td>{this.state.numIncorrect}</td>
+                        </tr>
+                        <tr>
+                          <td>Correct Cards</td>
+                          <td>{this.state.numCorrect}</td>
+                        </tr>
+                        <tr>
+                          <td>Total Seen</td>
+                          <td>{this.state.cards.length}</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
               </div>
             )}
           </div>
