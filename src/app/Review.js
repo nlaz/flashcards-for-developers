@@ -129,28 +129,34 @@ class Review extends Component {
   };
 
   getOptions = (index, cards) => {
-    const random = chance.unique(chance.natural, Math.min(3, cards.length), {
-      min: 0,
-      max: cards.length - 1,
-    });
-    const uniqOptions = [...new Set([...random, index])];
-    const opts = chance.shuffle(uniqOptions);
-    return opts.map(el => cards[el]);
+    if (this.isMultiple()) {
+      return [...new Set(cards.map(el => el.back))].map((el, i) => ({ id: i, back: el }));
+    } else {
+      const random = chance.unique(chance.natural, Math.min(3, cards.length), {
+        min: 0,
+        max: cards.length - 1,
+      });
+      const uniqOptions = [...new Set([...random, index])];
+      const opts = chance.shuffle(uniqOptions);
+      return opts.map(el => cards[el]);
+    }
   };
 
   getCurrentCard = () => this.state.cards[this.state.index];
   getCategoryUrl = id => `/categories/${id}`;
-  getOptionHTML = option => marked(this.state.isReversed ? option.front : option.back);
+  getOptionHTML = option => marked(this.state.isReversed ? option.front : option.back || option);
   getCardHTML = card => marked(this.state.isReversed ? card.back : card.front);
   getResults = () => [
     { name: "Correct", value: this.state.numCorrect },
     { name: "Incorrect", value: this.state.numIncorrect },
   ];
 
-  isReversible = deck => deck.type === "Reversible select";
-  isImageSelect = deck => deck.type === "Image select";
+  isReversible = deck => (deck || this.state.deck).type === "Reversible select";
+  isMultiple = deck => (deck || this.state.deck).type === "Multiple select";
+  isImageSelect = deck => (deck || this.state.deck).type === "Image select";
   isFinished = index => (index || this.state.index) >= this.state.cards.length;
-  isCorrect = (option, card) => option.id === card.id;
+  isCorrect = (option, card) =>
+    this.isMultiple() ? option.back === card.back : option.id === card.id;
   isSelected = option => this.state.selected.id === option.id;
 
   render() {
