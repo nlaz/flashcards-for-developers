@@ -256,7 +256,19 @@ class Review extends Component {
             Back to Category
           </Link>
           <h1 className="m-0">{deck.name}</h1>
-          {deck.description && <p>{deck.description}</p>}
+          {deck.description && (
+            <div
+              className="deck-description mb-2"
+              dangerouslySetInnerHTML={{
+                __html: marked(deck.description),
+              }}
+            />
+          )}
+          {deck.source && (
+            <div className="mb-2">
+              <a href={deck.source}>{deck.source}</a>
+            </div>
+          )}
           {deck.difficulty &&
             deck.difficulty.map((level, key) => (
               <span className="badge badge-pill badge-dark mr-1" key={key}>
@@ -296,7 +308,7 @@ class Review extends Component {
                     <img className="img-fluid px-3 mx-auto" alt="" src={currentCard.front} />
                   ) : (
                     <div
-                      className="flashcard-body markdown-body text-left border rounded bg-white px-3 py-5 h-100 d-flex align-items-stretch justify-content-center w-100"
+                      className="flashcard-body markdown-body text-left border rounded bg-white px-3 py-5 h-100 d-flex align-items-center justify-content-center flex-column w-100"
                       dangerouslySetInnerHTML={{
                         __html: this.getCardHTML(currentCard),
                       }}
