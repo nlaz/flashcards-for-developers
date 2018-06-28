@@ -45,6 +45,7 @@ class Review extends Component {
     isError: false,
     isReversed: false,
     isFinished: false,
+    isRevealed: false,
     numCorrect: 0,
     numIncorrect: 0,
     selected: {},
@@ -64,7 +65,16 @@ class Review extends Component {
 
   onSelect = (answer, card) => {
     this.setState({ selected: answer });
-    if (this.isCorrect(answer, card)) {
+    if (this.isSelfGraded()) {
+      if (this.state.isRevealed) {
+        this.timeout = setTimeout(() => {
+          this.onCorrectAnswer();
+          this.onToggleReveal();
+        }, 300);
+      } else {
+        this.onToggleReveal();
+      }
+    } else if (this.isCorrect(answer, card)) {
       this.timeout = setTimeout(() => this.onCorrectAnswer(), 300);
     } else {
       this.onIncorrectAnswer(card);
@@ -107,6 +117,14 @@ class Review extends Component {
     );
   };
 
+  onToggleReveal = () => {
+    this.setState({ isRevealed: !this.state.isRevealed }, () =>
+      this.setState({
+        options: this.getOptions(this.state.index, this.state.cards),
+      }),
+    );
+  };
+
   fetchDeck = deckId => {
     api.fetchDeck(deckId).then(
       response => {
@@ -129,7 +147,13 @@ class Review extends Component {
   };
 
   getOptions = (index, cards) => {
-    if (this.isMultiple()) {
+    if (this.isSelfGraded()) {
+      if (this.state.isRevealed) {
+        return ["I know it", "I don't know it"];
+      } else {
+        return ["Show answer"];
+      }
+    } else if (this.isMultiple()) {
       return [...new Set(cards.map(el => el.back))].map((el, i) => ({ id: i, back: el }));
     } else {
       const random = chance.unique(chance.natural, Math.min(3, cards.length), {
@@ -142,10 +166,19 @@ class Review extends Component {
     }
   };
 
+  getDeckType = () => (this.isSelfGraded() ? "Self graded" : "Multiple choice");
   getCurrentCard = () => this.state.cards[this.state.index];
   getCategoryUrl = id => `/categories/${id}`;
-  getOptionHTML = option => marked(this.state.isReversed ? option.front : option.back || option);
-  getCardHTML = card => marked(this.state.isReversed ? card.back : card.front);
+  getOptionHTML = option => {
+    return marked(this.state.isReversed ? option.front : option.back || option);
+  };
+  getCardHTML = card => {
+    if (this.isSelfGraded()) {
+      return marked(this.state.isRevealed ? card.back : card.front);
+    } else {
+      return marked(this.state.isReversed ? card.back : card.front);
+    }
+  };
   getResults = () => [
     { name: "Correct", value: this.state.numCorrect },
     { name: "Incorrect", value: this.state.numIncorrect },
@@ -153,11 +186,13 @@ class Review extends Component {
 
   isReversible = deck => (deck || this.state.deck).type === "Reversible select";
   isMultiple = deck => (deck || this.state.deck).type === "Multiple select";
+  isSelfGraded = deck => (deck || this.state.deck).type === "Self graded";
   isImageSelect = deck => (deck || this.state.deck).type === "Image select";
   isFinished = index => (index || this.state.index) >= this.state.cards.length;
   isCorrect = (option, card) =>
-    this.isMultiple() ? option.back === card.back : option.id === card.id;
-  isSelected = option => this.state.selected.id === option.id;
+    this.isMultiple() ? option.back === card.back : option.id === card.id || this.isSelfGraded();
+  isSelected = option =>
+    option.id ? this.state.selected.id === option.id : this.state.selected === option;
 
   render() {
     const { deck, cards, options, index, isLoading, isError, isFinished } = this.state;
@@ -217,31 +252,42 @@ class Review extends Component {
           <ProgressBar index={index} length={cards.length} />
           <div
             style={{ minHeight: "400px" }}
-            className={cx("col-12 border border-dark rounded mb-4 py-5 d-flex align-items-center", {
-              shake: this.state.isWrong,
-            })}
+            className={cx(
+              "col-12 border border-dark rounded mb-4 py-5 d-flex align-items-stretch",
+              {
+                shake: this.state.isWrong,
+              },
+            )}
           >
             {!isFinished ? (
-              <div className="row px-4 w-100">
+              <div className="row w-100 mx-0">
+                {deck.type && (
+                  <div
+                    className="badge badge-pill badge-light text-secondary position-absolute mr-4"
+                    style={{ top: "12px", right: "0" }}
+                  >
+                    {this.getDeckType()}
+                  </div>
+                )}
                 <div className="col-6 d-flex align-items-center">
                   {this.isImageSelect(deck) ? (
                     <img className="img-fluid px-3 mx-auto" alt="" src={currentCard.front} />
                   ) : (
                     <div
-                      className="markdown-body text-left border rounded bg-white px-3 py-5 h-100 d-flex align-items-center justify-content-center w-100"
+                      className="markdown-body text-left border rounded bg-white px-3 py-5 h-100 d-flex align-items-stretch justify-content-center w-100"
                       dangerouslySetInnerHTML={{
                         __html: this.getCardHTML(currentCard),
                       }}
                     />
                   )}
                 </div>
-                <div className="col-6 d-flex flex-column align-items-center justify-content-center">
+                <div className="col-6 d-flex flex-column align-items-stretch">
                   {options.map((option, key) => (
                     <div
-                      key={key}
+                      key={option.id || option}
                       style={{ cursor: "pointer" }}
                       onClick={() => this.onSelect(option, currentCard)}
-                      className={cx("border rounded d-flex align-items-center p-3 w-100", {
+                      className={cx("border rounded d-flex align-items-stretch p-3 w-100", {
                         "mb-2": options.length !== key + 1,
                         "border-success text-success":
                           this.isSelected(option) && this.isCorrect(option, currentCard),
