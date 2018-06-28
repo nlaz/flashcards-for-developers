@@ -284,7 +284,7 @@ class Review extends Component {
                     {this.getDeckType()}
                   </div>
                 )}
-                <div className="col-6 d-flex align-items-center">
+                <div className="col-12 col-md-6 d-flex align-items-center">
                   {this.isImageSelect(deck) ? (
                     <img className="img-fluid px-3 mx-auto" alt="" src={currentCard.front} />
                   ) : (
@@ -296,7 +296,7 @@ class Review extends Component {
                     />
                   )}
                 </div>
-                <div className="col-6 d-flex flex-column align-items-stretch">
+                <div className="col-12 col-lg-6 d-flex flex-column align-items-stretch">
                   {options.map((option, key) => (
                     <div
                       key={option.id || option}

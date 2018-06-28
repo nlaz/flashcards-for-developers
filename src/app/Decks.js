@@ -34,7 +34,11 @@ class Decks extends Component {
         </div>
         <div className="row mt-5 pt-5">
           {decks.map((deck, key) => (
-            <div className="col-3 d-flex pb-2" style={{ height: "240px" }} key={key}>
+            <div
+              className="col-6 col-md-4 col-lg-3 d-flex pb-2"
+              style={{ height: "240px" }}
+              key={key}
+            >
               <Link
                 to={`/decks/${deck.id}`}
                 className="border border-dark rounded text-dark mb-4 p-4 w-100"
