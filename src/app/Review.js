@@ -8,6 +8,7 @@ import { ResponsiveContainer, Cell, PieChart, Pie, Tooltip, Legend } from "recha
 
 import Octicon from "../components/Octicon";
 import * as api from "./apiActions";
+import * as analytics from "../components/GoogleAnalytics";
 import "./Review.css";
 
 const chance = new Chance();
@@ -59,9 +60,11 @@ class Review extends Component {
     const { params } = this.props.match;
     this.fetchDeck(params.deckId);
   }
+
   componentDidMount() {
     window.addEventListener("keyup", e => this.onKeyPress(e));
   }
+
   componentWillUnmount() {
     window.removeEventListener("keydown", e => this.onKeyPress(e));
     clearTimeout(this.timeout);
@@ -71,6 +74,7 @@ class Review extends Component {
     this.setState({ selected: answer });
     if (this.isSelfGraded()) {
       if (this.state.isRevealed) {
+        analytics.logReviewEvent(card.id);
         if (answer === SELF_GRADE_INCORRECT) {
           this.setState({
             numCorrect: this.state.numCorrect - 1,
@@ -85,6 +89,7 @@ class Review extends Component {
         this.onToggleReveal();
       }
     } else if (this.isCorrect(answer, card)) {
+      analytics.logReviewEvent(card.id);
       this.timeout = setTimeout(() => this.onCorrectAnswer(), 300);
     } else {
       this.onIncorrectAnswer(card);
@@ -110,6 +115,9 @@ class Review extends Component {
     const isFinished = this.isFinished(index, cards);
     const options = this.getOptions(index, cards);
     const numCorrect = this.state.numCorrect + 1;
+    if (isFinished) {
+      analytics.logFinishedEvent(this.state.deck.id);
+    }
     this.setState({
       index,
       options,
@@ -137,6 +145,7 @@ class Review extends Component {
 
   onReset = () => {
     const { deck } = this.state;
+    analytics.logReviewAgainEvent(deck.id);
     this.setState({ ...initialState, deck }, () => this.fetchCards(deck));
   };
 
@@ -184,9 +193,7 @@ class Review extends Component {
   getDeckType = () => (this.isSelfGraded() ? "Self graded" : "Multiple choice");
   getCurrentCard = () => this.state.cards[this.state.index];
   getCategoryUrl = id => `/categories/${id}`;
-  getOptionHTML = option => {
-    return marked(this.state.isReversed ? option.front : option.back || option);
-  };
+  getOptionHTML = option => marked(this.state.isReversed ? option.front : option.back || option);
   getCardHTML = card => {
     if (this.isSelfGraded()) {
       return marked(this.state.isRevealed ? card.back : card.front);
@@ -284,7 +291,7 @@ class Review extends Component {
                     {this.getDeckType()}
                   </div>
                 )}
-                <div className="col-12 col-md-6 d-flex align-items-center">
+                <div className="col-12 col-lg-6 d-flex align-items-center">
                   {this.isImageSelect(deck) ? (
                     <img className="img-fluid px-3 mx-auto" alt="" src={currentCard.front} />
                   ) : (
