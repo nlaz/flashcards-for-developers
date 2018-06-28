@@ -28,3 +28,7 @@ a[disabled] {
 code {
   white-space: nowrap;
 }
+
+.flashcard-body pre {
+  width: 100%;
+}

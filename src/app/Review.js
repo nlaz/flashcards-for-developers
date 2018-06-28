@@ -11,7 +11,9 @@ import * as api from "./apiActions";
 import "./Review.css";
 
 const chance = new Chance();
-const MAX_DECK_SIZE = 20;
+const MAX_DECK_SIZE = 12;
+const SELF_GRADE_CORRECT = "I was right";
+const SELF_GRADE_INCORRECT = "I was wrong";
 
 const styles = {
   progressBar: {
@@ -34,22 +36,24 @@ const ProgressBar = injectSheet(styles)(({ classes, index, length }) => (
   </div>
 ));
 
+const initialState = {
+  deck: {},
+  cards: [],
+  options: [],
+  index: 0,
+  isWrong: false,
+  isLoading: true,
+  isError: false,
+  isReversed: false,
+  isFinished: false,
+  isRevealed: false,
+  numCorrect: 0,
+  numIncorrect: 0,
+  selected: {},
+};
+
 class Review extends Component {
-  state = {
-    deck: {},
-    cards: [],
-    options: [],
-    index: 0,
-    isWrong: false,
-    isLoading: true,
-    isError: false,
-    isReversed: false,
-    isFinished: false,
-    isRevealed: false,
-    numCorrect: 0,
-    numIncorrect: 0,
-    selected: {},
-  };
+  state = { ...initialState };
 
   componentWillMount() {
     const { params } = this.props.match;
@@ -67,6 +71,12 @@ class Review extends Component {
     this.setState({ selected: answer });
     if (this.isSelfGraded()) {
       if (this.state.isRevealed) {
+        if (answer === SELF_GRADE_INCORRECT) {
+          this.setState({
+            numCorrect: this.state.numCorrect - 1,
+            numIncorrect: this.state.numIncorrect + 1,
+          });
+        }
         this.timeout = setTimeout(() => {
           this.onCorrectAnswer();
           this.onToggleReveal();
@@ -125,6 +135,11 @@ class Review extends Component {
     );
   };
 
+  onReset = () => {
+    const { deck } = this.state;
+    this.setState({ ...initialState, deck }, () => this.fetchCards(deck));
+  };
+
   fetchDeck = deckId => {
     api.fetchDeck(deckId).then(
       response => {
@@ -149,7 +164,7 @@ class Review extends Component {
   getOptions = (index, cards) => {
     if (this.isSelfGraded()) {
       if (this.state.isRevealed) {
-        return ["I know it", "I don't know it"];
+        return [SELF_GRADE_CORRECT, SELF_GRADE_INCORRECT];
       } else {
         return ["Show answer"];
       }
@@ -200,7 +215,7 @@ class Review extends Component {
     if (isLoading) {
       return (
         <div className="container p-4">
-          <h1 className="text-secondary">Loading cards...</h1>
+          <h1 className="text-secondary">Loading deck...</h1>
         </div>
       );
     }
@@ -274,7 +289,7 @@ class Review extends Component {
                     <img className="img-fluid px-3 mx-auto" alt="" src={currentCard.front} />
                   ) : (
                     <div
-                      className="markdown-body text-left border rounded bg-white px-3 py-5 h-100 d-flex align-items-stretch justify-content-center w-100"
+                      className="flashcard-body markdown-body text-left border rounded bg-white px-3 py-5 h-100 d-flex align-items-stretch justify-content-center w-100"
                       dangerouslySetInnerHTML={{
                         __html: this.getCardHTML(currentCard),
                       }}
@@ -287,7 +302,7 @@ class Review extends Component {
                       key={option.id || option}
                       style={{ cursor: "pointer" }}
                       onClick={() => this.onSelect(option, currentCard)}
-                      className={cx("border rounded d-flex align-items-stretch p-3 w-100", {
+                      className={cx("border rounded d-flex align-items-start p-3 w-100", {
                         "mb-2": options.length !== key + 1,
                         "border-success text-success":
                           this.isSelected(option) && this.isCorrect(option, currentCard),
@@ -299,7 +314,7 @@ class Review extends Component {
                         {key + 1}
                       </div>
                       <div
-                        className="markdown-body text-left bg-white"
+                        className="markdown-body text-left bg-white w-100"
                         dangerouslySetInnerHTML={{
                           __html: this.getOptionHTML(option),
                         }}
@@ -354,6 +369,9 @@ class Review extends Component {
                         </tr>
                       </tbody>
                     </table>
+                    <button className="btn btn-dark ml-auto" onClick={this.onReset}>
+                      Again
+                    </button>
                   </div>
                 </div>
               </div>

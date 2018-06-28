@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { HashRouter, Route, Switch } from "react-router-dom";
 
-import Categories from "./Categories";
+// import Categories from "./Categories";
 import Decks from "./Decks";
 import Review from "./Review";
 import NotFound from "../components/NotFound";
@@ -17,7 +17,7 @@ class App extends Component {
           <div className="app">
             <Route path="/" component={GoogleAnalytics} />
             <Switch>
-              <Route exact path="/" component={Categories} />
+              <Route exact path="/" component={Decks} />
               <Route exact path="/categories/:categoryId" component={Decks} />
               <Route exact path="/decks" component={Decks} />
               <Route exact path="/decks/:deckId" component={Review} />

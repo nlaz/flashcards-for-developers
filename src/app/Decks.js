@@ -1,20 +1,14 @@
 import React, { Component } from "react";
 import { Link } from "react-router-dom";
 
-import Octicon from "../components/Octicon";
-
 import * as api from "./apiActions";
+const FRONTEND_CATEGORY_ID = "recUROLxLzjGsSh8P";
 
 class Decks extends Component {
   state = { category: {}, decks: [] };
 
   componentWillMount() {
-    const { params } = this.props.match;
-    if (params.categoryId) {
-      this.fetchCategory(params.categoryId);
-    } else {
-      this.fetchDecks();
-    }
+    this.fetchCategory(FRONTEND_CATEGORY_ID);
   }
 
   fetchCategory = categoryId => {
@@ -30,17 +24,13 @@ class Decks extends Component {
   };
 
   render() {
-    const { category, decks } = this.state;
+    const { decks } = this.state;
 
     return (
       <div className="container p-4">
         <div className="mb-5">
-          <Link to="/" className="text-dark d-flex align-items-center mb-2">
-            <Octicon name="chevron-left" className="d-flex mr-1" />
-            Categories
-          </Link>
-          <h1 className="m-0">{category.name}</h1>
-          {category.description && <p>{category.description}</p>}
+          <h1 className="m-0">Flashcards for Frontend Development</h1>
+          <p>A curated list of flashcards to boost your professional skills</p>
         </div>
         <div className="row mt-5 pt-5">
           {decks.map((deck, key) => (
