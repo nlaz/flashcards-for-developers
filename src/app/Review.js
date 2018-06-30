@@ -246,7 +246,7 @@ class Review extends Component {
     const results = this.getResults();
 
     return (
-      <div className="container p-4">
+      <div className="container py-4 px-3">
         <div className="mb-5">
           <Link
             to={this.getCategoryUrl(deck.category)}
@@ -303,7 +303,7 @@ class Review extends Component {
                     {this.getDeckType()}
                   </div>
                 )}
-                <div className="col-12 col-lg-6 d-flex align-items-center">
+                <div className="col-12 col-lg-6 d-flex align-items-center px-1 pb-1">
                   {this.isImageSelect(deck) ? (
                     <img className="img-fluid px-3 mx-auto" alt="" src={currentCard.front} />
                   ) : (
@@ -315,7 +315,7 @@ class Review extends Component {
                     />
                   )}
                 </div>
-                <div className="col-12 col-lg-6 d-flex flex-column align-items-stretch">
+                <div className="col-12 col-lg-6 d-flex flex-column align-items-stretch px-1">
                   {options.map((option, key) => (
                     <div
                       key={option.id || option}
