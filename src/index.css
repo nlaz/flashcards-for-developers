@@ -21,6 +21,10 @@ h1 {
   overflow-x: hidden !important;
 }
 
+.App {
+  min-height: 100vh;
+}
+
 a[disabled] {
   pointer-events: none;
 }
@@ -35,4 +39,15 @@ code {
 
 .deck-description p {
   margin-bottom: 0;
+}
+
+.deck-star {
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+.deck-star:hover {
+  fill: blue;
+  color: blue;
 }

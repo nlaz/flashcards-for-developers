@@ -30,6 +30,18 @@ export const fetchCategory = id => {
   });
 };
 
+const getDeckFromRecord = record => ({
+  id: record.id,
+  name: record.get("Name"),
+  cards: record.get("Cards"),
+  description: record.get("Description"),
+  category: (record.get("Category") || [])[0],
+  type: record.get("Type"),
+  source: record.get("Source"),
+  difficulty: record.get("Difficulty"),
+  stars: record.get("Stars"),
+});
+
 export const fetchDecks = async category => {
   const results = [];
   const filter = category ? `NOT({Category} != '${category.name}' )` : "";
@@ -37,9 +49,7 @@ export const fetchDecks = async category => {
     .select({ filterByFormula: filter })
     .eachPage((records, fetchNextPage) => {
       records.forEach(record => {
-        const name = record.get("Name");
-        const cards = record.get("Cards");
-        results.push({ id: record.id, name, cards });
+        results.push(getDeckFromRecord(record));
       });
       fetchNextPage();
     });
@@ -53,24 +63,17 @@ export const fetchDeck = async id => {
       if (record === undefined) {
         return failure(new Error("Record does not exist"));
       }
+      success(getDeckFromRecord(record));
+    });
+  });
+};
 
-      const name = record.get("Name");
-      const description = record.get("Description");
-      const category = (record.get("Category") || [])[0];
-      const type = record.get("Type");
-      const source = record.get("Source");
-      const difficulty = record.get("Difficulty");
+export const updateDeck = async (deckId, body) => {
+  return new Promise((success, failure) => {
+    base("Decks").update(deckId, body, function(err, record) {
+      if (err) failure(err);
 
-      const result = {
-        id: record.id,
-        name,
-        description,
-        category,
-        type,
-        source,
-        difficulty,
-      };
-      success(result);
+      success(getDeckFromRecord(record));
     });
   });
 };

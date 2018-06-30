@@ -5,26 +5,34 @@ import config from "../config";
 ReactGA.initialize(config.googleAnalyticsKey);
 
 export function logReviewEvent(cardId) {
+  ReactGA.set({ cardId });
   ReactGA.event({
     category: "User",
     action: "Reviewed a card",
-    value: cardId,
   });
 }
 
 export function logFinishedEvent(deckId) {
+  ReactGA.set({ deckId });
   ReactGA.event({
     category: "User",
     action: "Finished reviewing a deck",
-    value: deckId,
   });
 }
 
 export function logReviewAgainEvent(deckId) {
+  ReactGA.set({ deckId });
   ReactGA.event({
     category: "User",
     action: "Clicked review again",
-    value: deckId,
+  });
+}
+
+export function logStarDeckEvent(deckId) {
+  ReactGA.set({ deckId });
+  ReactGA.event({
+    category: "User",
+    action: "Starred a deck",
   });
 }
 

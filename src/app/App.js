@@ -12,7 +12,7 @@ import "./App.css";
 class App extends Component {
   render() {
     return (
-      <div className="mt-5">
+      <div className="App pt-5 d-flex flex-column justify-content-between text-left">
         <HashRouter>
           <div className="app">
             <Route path="/" component={GoogleAnalytics} />
