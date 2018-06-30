@@ -2,7 +2,6 @@ import React, { Component } from "react";
 import { Link } from "react-router-dom";
 
 import * as api from "./apiActions";
-import Octicon from "../components/Octicon";
 import * as analytics from "../components/GoogleAnalytics";
 
 const FRONTEND_CATEGORY_ID = "recUROLxLzjGsSh8P";
@@ -65,15 +64,6 @@ class Decks extends Component {
                 }}
               >
                 {deck.name}
-                <div className="position-absolute m-0 pr-3 pb-2" style={{ bottom: 0, right: 0 }}>
-                  <button
-                    onClick={e => this.onStar(e, deck)}
-                    className="deck-star d-flex align-items-center"
-                  >
-                    <span className="mr-1 d-flex">{deck.stars}</span>
-                    <Octicon name="star" className="d-flex" />
-                  </button>
-                </div>
               </Link>
             </div>
           ))}
