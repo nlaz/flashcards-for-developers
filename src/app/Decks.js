@@ -4,13 +4,14 @@ import { Link } from "react-router-dom";
 import * as api from "./apiActions";
 import * as analytics from "../components/GoogleAnalytics";
 import ProgressBar from "../components/ProgressBar";
+import Octicon from "../components/Octicon";
 
 const FRONTEND_CATEGORY_ID = "recUROLxLzjGsSh8P";
 const getProgress = deckId => {
   return localStorage.getItem(deckId) || 0;
 };
 
-const Deck = ({ deck }) => {
+const Deck = ({ deck, onStar }) => {
   const progress = getProgress(deck.id);
   return (
     <div className="col-6 col-md-4 col-lg-3 d-flex pb-2" style={{ height: "240px" }}>
@@ -26,6 +27,12 @@ const Deck = ({ deck }) => {
         <div>
           <ProgressBar className="mb-2" percent={progress} />
           {deck.name}
+        </div>
+        <div className="position-absolute m-0 pr-3 pb-2" style={{ bottom: 0, right: 0 }}>
+          <button onClick={e => onStar(e, deck)} className="deck-star d-flex align-items-center">
+            <span className="mr-1 d-flex">{deck.stars}</span>
+            <Octicon name="star" className="d-flex" />
+          </button>
         </div>
       </Link>
     </div>
@@ -74,7 +81,7 @@ class Decks extends Component {
           <p>A curated list of flashcards to boost your professional skills</p>
         </div>
         <div className="row mt-5 pt-5">
-          {decks.map((deck, key) => <Deck deck={deck} key={key} />)}
+          {decks.map((deck, key) => <Deck deck={deck} key={key} onStar={this.onStar} />)}
         </div>
       </div>
     );
