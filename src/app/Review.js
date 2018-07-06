@@ -347,6 +347,13 @@ class Review extends Component {
                     </div>
                   ))}
                 </div>
+                <button
+                  className="btn btn-reset position-absolute d-flex align-items-center"
+                  style={{ right: 0, bottom: 0, fill: "#cdcdcd", color: "#cdcdcd" }}
+                >
+                  <small>Report</small>
+                  <Octicon name="report" className="d-flex ml-1" />
+                </button>
               </div>
             ) : (
               <div className="w-100">
