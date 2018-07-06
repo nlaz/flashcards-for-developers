@@ -85,6 +85,11 @@ class Review extends Component {
         const currentCard = this.getCurrentCard();
         this.onSelect(options[answer], currentCard);
       }
+    } else {
+      // Listen for space key
+      if (e.keyCode === 32) {
+        this.onKeepGoing();
+      }
     }
   };
 
@@ -94,9 +99,9 @@ class Review extends Component {
     const isReversed = this.isReversible(this.state.deck) && chance.bool();
     const options = this.getOptions(index, cards);
     const numCorrect = this.state.numCorrect + 1;
-    if (this.isFinished()) {
+    if (this.isFinished(index)) {
       analytics.logFinishedEvent(this.state.deck.id);
-      localStorage.setItem(this.state.deck.id, this.getProgress() / 100);
+      localStorage.setItem(this.state.deck.id, this.getProgress(index) / 100);
     }
     this.setState({
       index,
@@ -125,7 +130,11 @@ class Review extends Component {
   onReset = () => {
     const { deck } = this.state;
     analytics.logReviewAgainEvent(deck.id);
-    this.setState({ ...initialState, deck }, () => this.fetchCards(deck));
+
+    this.setState({ ...initialState, deck }, () => {
+      this.fetchCards(deck);
+      localStorage.setItem(this.state.deck.id, this.getProgress() / 100);
+    });
   };
 
   onKeepGoing = () => {
@@ -184,25 +193,20 @@ class Review extends Component {
       return marked(this.state.isReversed ? card.back : card.front);
     }
   };
+
+  getProgress = index => Math.round(100 * (index || this.state.index) / this.state.cards.length);
+  getPageStart = () => Math.max(Math.floor(this.state.page * PAGE_SIZE), 0);
+  getPageEnd = () =>
+    Math.min(Math.floor((this.state.page + 1) * PAGE_SIZE), this.state.cards.length);
+
   getResults = () => [
     { name: "Correct", value: this.state.numCorrect },
     { name: "Incorrect", value: this.state.numIncorrect },
   ];
-
   getProgressData = () => [
     { name: "Seen", value: this.state.index },
     { name: "New", value: this.state.cards.length - this.state.index },
   ];
-
-  getProgress = () => Math.round(100 * this.state.index / this.state.cards.length);
-
-  getPageStart = () => {
-    return Math.max(Math.floor(this.state.page * PAGE_SIZE), 0);
-  };
-
-  getPageEnd = () => {
-    return Math.min(Math.floor((this.state.page + 1) * PAGE_SIZE), this.state.cards.length);
-  };
 
   isReversible = deck => (deck || this.state.deck).type === "Reversible select";
   isMultiple = deck => (deck || this.state.deck).type === "Multiple select";
@@ -408,9 +412,15 @@ class Review extends Component {
                   </div>
                 </div>
                 <div className="d-flex justify-content-center">
-                  <button className="btn btn-dark" onClick={this.onKeepGoing}>
-                    Press any key to continue
-                  </button>
+                  {this.state.index <= this.state.cards.length - 1 ? (
+                    <button className="btn btn-dark" onClick={this.onKeepGoing}>
+                      Press space to continue
+                    </button>
+                  ) : (
+                    <button className="btn btn-dark" onClick={this.onReset}>
+                      Try again
+                    </button>
+                  )}
                 </div>
               </div>
             )}

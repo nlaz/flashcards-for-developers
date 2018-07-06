@@ -23,8 +23,10 @@ const Deck = ({ deck }) => {
           opacity: deck.cards ? 1 : 0.25,
         }}
       >
-        <div>{deck.name}</div>
-        {progress > 0 && <ProgressBar percent={progress} />}
+        <div>
+          <ProgressBar className="mb-2" percent={progress} />
+          {deck.name}
+        </div>
       </Link>
     </div>
   );
