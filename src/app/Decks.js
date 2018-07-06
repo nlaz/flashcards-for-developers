@@ -3,8 +3,32 @@ import { Link } from "react-router-dom";
 
 import * as api from "./apiActions";
 import * as analytics from "../components/GoogleAnalytics";
+import ProgressBar from "../components/ProgressBar";
 
 const FRONTEND_CATEGORY_ID = "recUROLxLzjGsSh8P";
+const getProgress = deckId => {
+  return localStorage.getItem(deckId) || 0;
+};
+
+const Deck = ({ deck }) => {
+  const progress = getProgress(deck.id);
+  return (
+    <div className="col-6 col-md-4 col-lg-3 d-flex pb-2" style={{ height: "240px" }}>
+      <Link
+        to={`/decks/${deck.id}`}
+        className="border border-dark rounded d-flex flex-column justify-content-between text-dark mb-4 p-4 w-100 position-relative"
+        disabled={!deck.cards}
+        style={{
+          fontSize: "14px",
+          opacity: deck.cards ? 1 : 0.25,
+        }}
+      >
+        <div>{deck.name}</div>
+        {progress > 0 && <ProgressBar percent={progress} />}
+      </Link>
+    </div>
+  );
+};
 
 class Decks extends Component {
   state = { category: {}, decks: [] };
@@ -48,25 +72,7 @@ class Decks extends Component {
           <p>A curated list of flashcards to boost your professional skills</p>
         </div>
         <div className="row mt-5 pt-5">
-          {decks.map((deck, key) => (
-            <div
-              className="col-6 col-md-4 col-lg-3 d-flex pb-2"
-              style={{ height: "240px" }}
-              key={key}
-            >
-              <Link
-                to={`/decks/${deck.id}`}
-                className="border border-dark rounded text-dark mb-4 p-4 w-100 position-relative"
-                disabled={!deck.cards}
-                style={{
-                  fontSize: "14px",
-                  opacity: deck.cards ? 1 : 0.25,
-                }}
-              >
-                {deck.name}
-              </Link>
-            </div>
-          ))}
+          {decks.map((deck, key) => <Deck deck={deck} key={key} />)}
         </div>
       </div>
     );

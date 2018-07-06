@@ -3,10 +3,10 @@ import { Link } from "react-router-dom";
 import cx from "classnames";
 import marked from "marked";
 import Chance from "chance";
-import injectSheet from "react-jss";
 import { ResponsiveContainer, Cell, PieChart, Pie, Tooltip, Legend } from "recharts";
 
 import Octicon from "../components/Octicon";
+import ProgressBar from "../components/ProgressBar";
 import * as api from "./apiActions";
 import * as analytics from "../components/GoogleAnalytics";
 import "./Review.css";
@@ -15,27 +15,6 @@ const chance = new Chance();
 const MAX_DECK_SIZE = 12;
 const SELF_GRADE_CORRECT = "I was right";
 const SELF_GRADE_INCORRECT = "I was wrong";
-
-const styles = {
-  progressBar: {
-    height: 10,
-    borderRadius: "999px",
-    background: "#eeeeee",
-  },
-  progress: {
-    height: 10,
-    borderRadius: "999px",
-  },
-};
-
-const ProgressBar = injectSheet(styles)(({ classes, index, length }) => (
-  <div className={cx(classes.progressBar, "w-100 mb-3")}>
-    <div
-      className={cx(classes.progress, "bg-dark")}
-      style={{ width: 100 * index / length + "%" }}
-    />
-  </div>
-));
 
 const initialState = {
   deck: {},
@@ -117,6 +96,7 @@ class Review extends Component {
     const numCorrect = this.state.numCorrect + 1;
     if (isFinished) {
       analytics.logFinishedEvent(this.state.deck.id);
+      localStorage.setItem(this.state.deck.id, Math.random());
     }
     this.setState({
       index,
@@ -190,6 +170,10 @@ class Review extends Component {
     }
   };
 
+  setProgressLocalStorage = () => {
+    const { deck } = this.state;
+    localStorage.setItem(deck._id);
+  };
   getDeckType = () => (this.isSelfGraded() ? "Self graded" : "Multiple choice");
   getCurrentCard = () => this.state.cards[this.state.index];
   getCategoryUrl = id => `/categories/${id}`;
@@ -283,7 +267,7 @@ class Review extends Component {
           >
             {index} / {cards.length}
           </span>
-          <ProgressBar index={index} length={cards.length} />
+          <ProgressBar className="mb-3" value={index} total={cards.length} />
           <div
             style={{ minHeight: "400px" }}
             className={cx(
