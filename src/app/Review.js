@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import cx from "classnames";
 import marked from "marked";
 import Chance from "chance";
-import { ResponsiveContainer, Cell, PieChart, Pie, Tooltip, Legend } from "recharts";
+import { ResponsiveContainer, Cell, PieChart, Pie, Tooltip, Legend, Label } from "recharts";
 
 import Octicon from "../components/Octicon";
 import ProgressBar from "../components/ProgressBar";
@@ -12,7 +12,7 @@ import * as analytics from "../components/GoogleAnalytics";
 import "./Review.css";
 
 const chance = new Chance();
-const MAX_DECK_SIZE = 12;
+const PAGE_SIZE = 12;
 const SELF_GRADE_CORRECT = "I was right";
 const SELF_GRADE_INCORRECT = "I was wrong";
 
@@ -30,6 +30,7 @@ const initialState = {
   numCorrect: 0,
   numIncorrect: 0,
   selected: {},
+  page: 0,
 };
 
 class Review extends Component {
@@ -91,18 +92,16 @@ class Review extends Component {
     const { cards } = this.state;
     const index = Math.min(this.state.index + 1, cards.length);
     const isReversed = this.isReversible(this.state.deck) && chance.bool();
-    const isFinished = this.isFinished(index, cards);
     const options = this.getOptions(index, cards);
     const numCorrect = this.state.numCorrect + 1;
-    if (isFinished) {
+    if (this.isFinished()) {
       analytics.logFinishedEvent(this.state.deck.id);
-      localStorage.setItem(this.state.deck.id, Math.random());
+      localStorage.setItem(this.state.deck.id, this.getProgress() / 100);
     }
     this.setState({
       index,
       options,
       isReversed,
-      isFinished,
       numCorrect,
       selected: {},
     });
@@ -129,6 +128,10 @@ class Review extends Component {
     this.setState({ ...initialState, deck }, () => this.fetchCards(deck));
   };
 
+  onKeepGoing = () => {
+    this.setState({ page: this.state.page + 1 });
+  };
+
   fetchDeck = deckId => {
     api.fetchDeck(deckId).then(
       response => {
@@ -142,9 +145,9 @@ class Review extends Component {
     const { index } = this.state;
     api.fetchCards(deck).then(
       response => {
-        const maxSize = Math.min(response.length - 1, MAX_DECK_SIZE);
-        const cards = chance.shuffle(response).splice(0, maxSize);
-        this.setState({ cards, options: this.getOptions(index, cards), isLoading: false });
+        const cards = chance.shuffle(response);
+        const options = this.getOptions(index, cards);
+        this.setState({ cards, options, isLoading: false });
       },
       error => this.setState({ isError: true, isLoading: false }),
     );
@@ -170,10 +173,6 @@ class Review extends Component {
     }
   };
 
-  setProgressLocalStorage = () => {
-    const { deck } = this.state;
-    localStorage.setItem(deck._id);
-  };
   getDeckType = () => (this.isSelfGraded() ? "Self graded" : "Multiple choice");
   getCurrentCard = () => this.state.cards[this.state.index];
   getCategoryUrl = id => `/categories/${id}`;
@@ -190,18 +189,34 @@ class Review extends Component {
     { name: "Incorrect", value: this.state.numIncorrect },
   ];
 
+  getProgressData = () => [
+    { name: "Seen", value: this.state.index },
+    { name: "New", value: this.state.cards.length - this.state.index },
+  ];
+
+  getProgress = () => Math.round(100 * this.state.index / this.state.cards.length);
+
+  getPageStart = () => {
+    return Math.max(Math.floor(this.state.page * PAGE_SIZE), 0);
+  };
+
+  getPageEnd = () => {
+    return Math.min(Math.floor((this.state.page + 1) * PAGE_SIZE), this.state.cards.length);
+  };
+
   isReversible = deck => (deck || this.state.deck).type === "Reversible select";
   isMultiple = deck => (deck || this.state.deck).type === "Multiple select";
   isSelfGraded = deck => (deck || this.state.deck).type === "Self graded";
   isImageSelect = deck => (deck || this.state.deck).type === "Image select";
-  isFinished = index => (index || this.state.index) >= this.state.cards.length;
+  isFinished = index =>
+    (index || this.state.index) >= Math.min(this.getPageEnd(), this.state.cards.length);
   isCorrect = (option, card) =>
     this.isMultiple() ? option.back === card.back : option.id === card.id || this.isSelfGraded();
   isSelected = option =>
     option.id ? this.state.selected.id === option.id : this.state.selected === option;
 
   render() {
-    const { deck, cards, options, index, isLoading, isError, isFinished } = this.state;
+    const { deck, options, index, isLoading, isError } = this.state;
 
     if (isLoading) {
       return (
@@ -227,7 +242,10 @@ class Review extends Component {
     }
 
     const currentCard = this.getCurrentCard();
-    const results = this.getResults();
+    const progressData = this.getProgressData();
+    const progress = this.getProgress();
+    const pageEnd = this.getPageEnd();
+    const isFinished = this.isFinished();
 
     return (
       <div className="container py-4 px-3">
@@ -265,9 +283,9 @@ class Review extends Component {
             className="small text-secondary text-right w-100 mb-1 mr-1"
             style={{ opacity: 0.5 }}
           >
-            {index} / {cards.length}
+            {index} / {pageEnd}
           </span>
-          <ProgressBar className="mb-3" value={index} total={cards.length} />
+          <ProgressBar className="mb-3" value={index} total={pageEnd} />
           <div
             style={{ minHeight: "400px" }}
             className={cx(
@@ -328,26 +346,41 @@ class Review extends Component {
               </div>
             ) : (
               <div className="w-100">
-                <h3 className="mb-5 text-center">You're done!</h3>
-                <div className="row d-flex mb-5">
-                  <div className="px-5" style={{ width: "50%" }}>
-                    <ResponsiveContainer height={200} width="100%" className="px-4">
+                <h3 className="mb-5 text-center">Nice work!</h3>
+                <div className="row d-flex mb-2">
+                  <div className="px-5 position-relative" style={{ width: "50%" }}>
+                    <ResponsiveContainer height={200} width="100%">
                       <PieChart>
                         <Pie
-                          data={results}
+                          data={progressData}
                           dataKey="value"
-                          innerRadius={40}
+                          innerRadius={60}
                           outerRadius={80}
-                          animationDuration={500}
+                          animationDuration={0}
+                          startAngle={180}
+                          endAngle={0}
                           fill="#82ca9d"
                         >
                           <Cell fill="#343a40" />
-                          <Cell fill="#6c757d" />
+                          <Cell fill="#efefef" />
+                          <Label
+                            className="font-weight-bold"
+                            fill="#343a40"
+                            position="center"
+                            style={{ fontSize: "24px" }}
+                            value={`${progress}%`}
+                          />
                         </Pie>
-                        <Legend verticalAlign="top" align="right" layout="vertical" />
+                        <Legend className="w-100" verticalAlign="top" height={50} />
                         <Tooltip />
                       </PieChart>
                     </ResponsiveContainer>
+                    <span
+                      className="text-center font-weight-medium position-absolute"
+                      style={{ right: 0, left: 0, top: "135px" }}
+                    >
+                      Progress
+                    </span>
                   </div>
                   <div className="px-4" style={{ flexGrow: 1 }}>
                     <table className="table w-100">
@@ -359,23 +392,25 @@ class Review extends Component {
                       </thead>
                       <tbody>
                         <tr>
-                          <td>Missed Cards</td>
+                          <td>Incorrect Answers</td>
                           <td>{this.state.numIncorrect}</td>
                         </tr>
                         <tr>
-                          <td>Correct Cards</td>
+                          <td>Correct Answers</td>
                           <td>{this.state.numCorrect}</td>
                         </tr>
                         <tr>
                           <td>Total Seen</td>
-                          <td>{this.state.cards.length}</td>
+                          <td>{this.state.index}</td>
                         </tr>
                       </tbody>
                     </table>
-                    <button className="btn btn-dark ml-auto" onClick={this.onReset}>
-                      Again
-                    </button>
                   </div>
+                </div>
+                <div className="d-flex justify-content-center">
+                  <button className="btn btn-dark" onClick={this.onKeepGoing}>
+                    Press any key to continue
+                  </button>
                 </div>
               </div>
             )}
