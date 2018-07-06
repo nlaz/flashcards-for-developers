@@ -25,6 +25,10 @@ h1 {
   min-height: 100vh;
 }
 
+.btn {
+  cursor: pointer;
+}
+
 a[disabled] {
   pointer-events: none;
 }

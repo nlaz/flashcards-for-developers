@@ -28,12 +28,6 @@ const Deck = ({ deck, onStar }) => {
           <ProgressBar className="mb-2" percent={progress} />
           {deck.name}
         </div>
-        <div className="position-absolute m-0 pr-3 pb-2" style={{ bottom: 0, right: 0 }}>
-          <button onClick={e => onStar(e, deck)} className="deck-star d-flex align-items-center">
-            <span className="mr-1 d-flex">{deck.stars}</span>
-            <Octicon name="star" className="d-flex" />
-          </button>
-        </div>
       </Link>
     </div>
   );
@@ -49,6 +43,10 @@ class Decks extends Component {
   onStar = (event, deck) => {
     event.preventDefault();
     this.starDeck(deck);
+  };
+
+  onSuggestDeck = () => {
+    console.log("onSuggestDeck");
   };
 
   fetchCategory = categoryId => {
@@ -77,11 +75,21 @@ class Decks extends Component {
     return (
       <div className="container p-4">
         <div className="mb-5">
-          <h1 className="m-0">Flashcards for Frontend Development</h1>
+          <h1 className="m-0">Flashcards for Frontend Developers</h1>
           <p>A curated list of flashcards to boost your professional skills</p>
         </div>
         <div className="row mt-5 pt-5">
           {decks.map((deck, key) => <Deck deck={deck} key={key} onStar={this.onStar} />)}
+        </div>
+        <div className="row d-flex justify-content-center">
+          <button
+            type="button"
+            className="btn d-flex align-items-center"
+            onClick={this.onSuggestDeck}
+          >
+            <Octicon className="d-flex mr-2" name="plus" />
+            <span>Suggest a deck</span>
+          </button>
         </div>
       </div>
     );
