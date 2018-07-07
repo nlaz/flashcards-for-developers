@@ -102,7 +102,11 @@ class Review extends Component {
     const options = this.getOptions(index, cards);
     const numCorrect = this.state.numCorrect + 1;
     if (this.isFinished(index)) {
-      analytics.logFinishedEvent(this.state.deck.id);
+      if (this.state.index <= this.state.cards.length - 1) {
+        analytics.logCompletedEvent(this.state.deck.id);
+      } else {
+        analytics.logFinishedEvent(this.state.deck.id);
+      }
       localStorage.setItem(this.state.deck.id, this.getProgress(index) / 100);
     }
     this.setState({
@@ -140,6 +144,7 @@ class Review extends Component {
   };
 
   onKeepGoing = () => {
+    analytics.logReviewAgainEvent(this.state.deck.id);
     this.setState({ page: this.state.page + 1 });
   };
 
