@@ -5,6 +5,7 @@ import marked from "marked";
 import Chance from "chance";
 import { ResponsiveContainer, Cell, PieChart, Pie, Tooltip, Legend, Label } from "recharts";
 
+import config from "../config";
 import Octicon from "../components/Octicon";
 import ProgressBar from "../components/ProgressBar";
 import * as api from "./apiActions";
@@ -51,9 +52,9 @@ class Review extends Component {
   }
 
   onSelect = (answer, card) => {
-    this.setState({ selected: answer });
     if (this.isSelfGraded()) {
       if (this.state.isRevealed) {
+        this.setState({ selected: answer });
         analytics.logReviewEvent(card.id);
         if (answer === SELF_GRADE_INCORRECT) {
           this.setState({
@@ -65,30 +66,31 @@ class Review extends Component {
           this.onCorrectAnswer();
           this.onToggleReveal();
         }, 300);
-      } else {
-        this.onToggleReveal();
       }
     } else if (this.isCorrect(answer, card)) {
+      this.setState({ selected: answer });
       analytics.logReviewEvent(card.id);
       this.timeout = setTimeout(() => this.onCorrectAnswer(), 300);
     } else {
+      this.setState({ selected: answer });
       this.onIncorrectAnswer(card);
     }
   };
 
   onKeyPress = e => {
-    if (!this.isFinished()) {
+    if (this.isFinished() && e.keyCode === 32) {
+      this.onKeepGoing();
+    } else if (!this.isFinished()) {
       const { options } = this.state;
       if (options.map((i, k) => String(k + 1)).includes(e.key)) {
         const answer = parseInt(e.key, 10) - 1;
         const { options } = this.state;
         const currentCard = this.getCurrentCard();
         this.onSelect(options[answer], currentCard);
-      }
-    } else {
-      // Listen for space key
-      if (e.keyCode === 32) {
-        this.onKeepGoing();
+      } else if (this.isSelfGraded() && !this.state.isRevealed) {
+        if (e.keyCode === 32) {
+          this.onToggleReveal();
+        }
       }
     }
   };
@@ -164,11 +166,7 @@ class Review extends Component {
 
   getOptions = (index, cards) => {
     if (this.isSelfGraded()) {
-      if (this.state.isRevealed) {
-        return [SELF_GRADE_CORRECT, SELF_GRADE_INCORRECT];
-      } else {
-        return ["Show answer"];
-      }
+      return [SELF_GRADE_CORRECT, SELF_GRADE_INCORRECT];
     } else if (this.isMultiple()) {
       return [...new Set(cards.map(el => el.back))].map((el, i) => ({ id: i, back: el }));
     } else {
@@ -185,14 +183,9 @@ class Review extends Component {
   getDeckType = () => (this.isSelfGraded() ? "Self graded" : "Multiple choice");
   getCurrentCard = () => this.state.cards[this.state.index];
   getCategoryUrl = id => `/categories/${id}`;
+  getReportUrl = cardId => `${config.airtableReportUrl}?prefill_Card%20id=${cardId}`;
   getOptionHTML = option => marked(this.state.isReversed ? option.front : option.back || option);
-  getCardHTML = card => {
-    if (this.isSelfGraded()) {
-      return marked(this.state.isRevealed ? card.back : card.front);
-    } else {
-      return marked(this.state.isReversed ? card.back : card.front);
-    }
-  };
+  getCardHTML = card => marked(this.state.isReversed ? card.back : card.front);
 
   getProgress = index => Math.round(100 * (index || this.state.index) / this.state.cards.length);
   getPageStart = () => Math.max(Math.floor(this.state.page * PAGE_SIZE), 0);
@@ -275,12 +268,6 @@ class Review extends Component {
               <a href={deck.source}>{deck.source}</a>
             </div>
           )}
-          {deck.difficulty &&
-            deck.difficulty.map((level, key) => (
-              <span className="badge badge-pill badge-dark mr-1" key={key}>
-                {level}
-              </span>
-            ))}
         </div>
         <div className="row mt-5 pt-4 px-3">
           <span
@@ -313,27 +300,41 @@ class Review extends Component {
                   {this.isImageSelect(deck) ? (
                     <img className="img-fluid px-3 mx-auto" alt="" src={currentCard.front} />
                   ) : (
-                    <div
-                      className="flashcard-body markdown-body text-left border rounded bg-white px-3 py-5 h-100 d-flex align-items-center justify-content-center flex-column w-100"
-                      dangerouslySetInnerHTML={{
-                        __html: this.getCardHTML(currentCard),
-                      }}
-                    />
+                    <div className="flashcard-body border rounded px-3 py-5 w-100 h-100">
+                      <div
+                        className="markdown-body text-left d-flex align-items-center justify-content-center flex-column"
+                        dangerouslySetInnerHTML={{
+                          __html: this.getCardHTML(currentCard),
+                        }}
+                      />
+                      {this.state.isRevealed && (
+                        <div
+                          className="markdown-body text-left d-flex align-items-center justify-content-center flex-column mt-3 pt-3"
+                          style={{ borderTop: "1px solid #f5f5f5" }}
+                          dangerouslySetInnerHTML={{
+                            __html: marked(currentCard.back),
+                          }}
+                        />
+                      )}
+                    </div>
                   )}
                 </div>
-                <div className="col-12 col-lg-6 d-flex flex-column align-items-stretch px-1">
+                <div className="col-12 col-lg-6 d-flex flex-column align-items-stretch px-1 pb-1">
                   {options.map((option, key) => (
                     <div
                       key={option.id || option}
-                      style={{ cursor: "pointer" }}
                       onClick={() => this.onSelect(option, currentCard)}
-                      className={cx("border rounded d-flex align-items-start p-3 w-100", {
-                        "mb-2": options.length !== key + 1,
-                        "border-success text-success":
-                          this.isSelected(option) && this.isCorrect(option, currentCard),
-                        "border-danger text-danger":
-                          this.isSelected(option) && !this.isCorrect(option, currentCard),
-                      })}
+                      className={cx(
+                        "flashcard-option border rounded d-flex align-items-start p-3 w-100",
+                        {
+                          "flashcard-option--disabled":
+                            this.isSelfGraded() && !this.state.isRevealed,
+                          "border-success text-success":
+                            this.isSelected(option) && this.isCorrect(option, currentCard),
+                          "border-danger text-danger":
+                            this.isSelected(option) && !this.isCorrect(option, currentCard),
+                        },
+                      )}
                     >
                       <div className="border rounded mr-3 px-2" style={{ fontSize: ".9em" }}>
                         {key + 1}
@@ -346,20 +347,31 @@ class Review extends Component {
                       />
                     </div>
                   ))}
+                  {this.isSelfGraded() &&
+                    !this.state.isRevealed && (
+                      <button className="btn border rounded mt-2" onClick={this.onToggleReveal}>
+                        Press space to show answer
+                      </button>
+                    )}
                 </div>
-                <button
+                <a
+                  href={this.getReportUrl(currentCard.id)}
+                  target="_blank"
+                  rel="noopener noreferrer"
                   className="btn btn-reset position-absolute d-flex align-items-center"
                   style={{ right: 0, bottom: 0, fill: "#cdcdcd", color: "#cdcdcd" }}
                 >
                   <small>Report</small>
                   <Octicon name="report" className="d-flex ml-1" />
-                </button>
+                </a>
               </div>
             ) : (
               <div className="w-100">
-                <h3 className="mb-5 text-center">Nice work!</h3>
+                <h3 className="mb-5 text-center">
+                  {this.state.index <= this.state.cards.length - 1 ? "Nice work!" : "You're done!"}
+                </h3>
                 <div className="row d-flex mb-2">
-                  <div className="px-5 position-relative" style={{ width: "50%" }}>
+                  <div className="px-5 position-relative col-12 col-lg-6">
                     <ResponsiveContainer height={200} width="100%">
                       <PieChart>
                         <Pie

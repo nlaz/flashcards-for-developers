@@ -37,10 +37,6 @@ code {
   white-space: nowrap;
 }
 
-.flashcard-body pre {
-  width: 100%;
-}
-
 .deck-description p {
   margin-bottom: 0;
 }
@@ -58,4 +54,21 @@ code {
 
 .font-weight-medium {
   font-weight: 500;
+}
+
+.flashcard-body pre {
+  width: 100%;
+}
+
+.flashcard-option {
+  cursor: pointer;
+  margin-bottom: 0.5rem;
+}
+
+.flashcard-option:last-of-type {
+  margin-bottom: 0;
+}
+
+.flashcard-option--disabled {
+  opacity: 0.5;
 }
