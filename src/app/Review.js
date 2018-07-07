@@ -183,7 +183,6 @@ class Review extends Component {
   getDeckType = () => (this.isSelfGraded() ? "Self graded" : "Multiple choice");
   getCurrentCard = () => this.state.cards[this.state.index];
   getCategoryUrl = id => `/categories/${id}`;
-  getReportUrl = cardId => `${config.airtableReportUrl}?prefill_Card%20id=${cardId}`;
   getOptionHTML = option => marked(this.state.isReversed ? option.front : option.back || option);
   getCardHTML = card => marked(this.state.isReversed ? card.back : card.front);
 
@@ -355,7 +354,7 @@ class Review extends Component {
                     )}
                 </div>
                 <a
-                  href={this.getReportUrl(currentCard.id)}
+                  href={config.airtableReportUrl}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="btn btn-reset position-absolute d-flex align-items-center"

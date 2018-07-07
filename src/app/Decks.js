@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import { Link } from "react-router-dom";
 
+import config from "../config";
 import * as api from "./apiActions";
 import * as analytics from "../components/GoogleAnalytics";
 import ProgressBar from "../components/ProgressBar";
@@ -73,7 +74,7 @@ class Decks extends Component {
     const { decks } = this.state;
 
     return (
-      <div className="container p-4">
+      <div className="container p-4 mb-5">
         <div className="mb-5">
           <h1 className="m-0">Flashcards for Frontend Developers</h1>
           <p>A curated list of flashcards to boost your professional skills</p>
@@ -81,15 +82,16 @@ class Decks extends Component {
         <div className="row mt-5 pt-5">
           {decks.map((deck, key) => <Deck deck={deck} key={key} onStar={this.onStar} />)}
         </div>
-        <div className="row d-flex justify-content-center">
-          <button
-            type="button"
-            className="btn d-flex align-items-center"
-            onClick={this.onSuggestDeck}
+        <div className="row d-flex justify-content-center mt-3">
+          <a
+            className="text-dark d-flex align-items-center"
+            href={config.airtableSuggestionsUrl}
+            target="_blank"
+            rel="noopener noreferrer"
           >
             <Octicon className="d-flex mr-2" name="plus" />
             <span>Suggest a deck</span>
-          </button>
+          </a>
         </div>
       </div>
     );
