@@ -35,7 +35,12 @@ const Deck = ({ deck, onStar }) => {
 };
 
 class Decks extends Component {
-  state = { category: {}, decks: [] };
+  state = {
+    category: {},
+    decks: [],
+    isLoading: true,
+    isError: false,
+  };
 
   componentWillMount() {
     this.fetchCategory(FRONTEND_CATEGORY_ID);
@@ -46,10 +51,6 @@ class Decks extends Component {
     this.starDeck(deck);
   };
 
-  onSuggestDeck = () => {
-    console.log("onSuggestDeck");
-  };
-
   fetchCategory = categoryId => {
     api.fetchCategory(categoryId).then(response => {
       this.setState({ category: response }, () => this.fetchDecks(response));
@@ -57,9 +58,12 @@ class Decks extends Component {
   };
 
   fetchDecks = category => {
-    api.fetchDecks(category).then(response => {
-      this.setState({ decks: response });
-    });
+    api.fetchDecks(category).then(
+      response => {
+        this.setState({ decks: response, isLoading: false });
+      },
+      error => this.setState({ isError: true, isLoading: false }),
+    );
   };
 
   starDeck = deck => {
@@ -71,7 +75,34 @@ class Decks extends Component {
   };
 
   render() {
-    const { decks } = this.state;
+    const { decks, isLoading, isError } = this.state;
+
+    if (isLoading) {
+      return (
+        <div className="container p-4">
+          <div className="mb-5">
+            <h1 className="m-0">Flashcards for Frontend Developers</h1>
+            <p>A curated list of flashcards to boost your professional skills</p>
+          </div>
+          <h1 className="text-secondary">Loading decks...</h1>
+        </div>
+      );
+    }
+
+    if (isError) {
+      return (
+        <div className="container p-4">
+          <div className="mb-5">
+            <h1 className="m-0">Flashcards for Frontend Developers</h1>
+            <p>A curated list of flashcards to boost your professional skills</p>
+          </div>
+          <div className="text-center mt-3">
+            <h1 className="text-dark">Unable to load request</h1>
+            <p>Please try again or contact us.</p>
+          </div>
+        </div>
+      );
+    }
 
     return (
       <div className="container p-4 mb-5">
