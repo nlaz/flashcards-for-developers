@@ -40,6 +40,7 @@ const getDeckFromRecord = record => ({
   source: record.get("Source"),
   difficulty: record.get("Difficulty"),
   stars: record.get("Stars"),
+  createdTime: record.get("Created time"),
 });
 
 export const fetchDecks = async category => {

@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import cx from "classnames";
 import { Link } from "react-router-dom";
 
 import config from "../config";
@@ -10,6 +11,11 @@ import Octicon from "../components/Octicon";
 const FRONTEND_CATEGORY_ID = "recUROLxLzjGsSh8P";
 const getProgress = deckId => {
   return localStorage.getItem(deckId) || 0;
+};
+
+const FILTERS = {
+  NEWEST: "newest",
+  POPULAR: "popular",
 };
 
 const Deck = ({ deck, onStar }) => {
@@ -29,6 +35,13 @@ const Deck = ({ deck, onStar }) => {
           <ProgressBar className="mb-2" percent={progress} />
           {deck.name}
         </div>
+
+        <div className="position-absolute m-0 pr-3 pb-2" style={{ bottom: 0, right: 0 }}>
+          <button onClick={e => onStar(e, deck)} className="deck-star d-flex align-items-center">
+            <span className="mr-1 d-flex">{deck.stars}</span>
+            <Octicon name="star" className="d-flex" />
+          </button>
+        </div>
       </Link>
     </div>
   );
@@ -40,6 +53,7 @@ class Decks extends Component {
     decks: [],
     isLoading: true,
     isError: false,
+    filter: FILTERS.POPULAR,
   };
 
   componentWillMount() {
@@ -51,6 +65,16 @@ class Decks extends Component {
     this.starDeck(deck);
   };
 
+  onSetFilter = filter =>
+    this.setState({ filter, decks: this.sortDecks(this.state.decks, filter) });
+
+  sortDecks = (decks, filter) =>
+    [...decks].sort((a, b) => {
+      return filter === FILTERS.NEWEST
+        ? new Date(b.createdTime) - new Date(a.createdTime)
+        : b.stars - a.stars;
+    });
+
   fetchCategory = categoryId => {
     api.fetchCategory(categoryId).then(response => {
       this.setState({ category: response }, () => this.fetchDecks(response));
@@ -60,14 +84,14 @@ class Decks extends Component {
   fetchDecks = category => {
     api.fetchDecks(category).then(
       response => {
-        this.setState({ decks: response, isLoading: false });
+        this.setState({ decks: this.sortDecks(response, this.state.filter), isLoading: false });
       },
       error => this.setState({ isError: true, isLoading: false }),
     );
   };
 
   starDeck = deck => {
-    api.updateDeck(deck.id, { Stars: deck.stars + 1 }).then(response => {
+    api.updateDeck(deck.id, { Stars: (deck.stars || 0) + 1 }).then(response => {
       analytics.logStarDeckEvent(deck.id);
       const decks = this.state.decks.map(el => (deck.id === el.id ? response : el));
       this.setState({ decks });
@@ -75,7 +99,7 @@ class Decks extends Component {
   };
 
   render() {
-    const { decks, isLoading, isError } = this.state;
+    const { decks, isLoading, isError, filter } = this.state;
 
     if (isLoading) {
       return (
@@ -110,8 +134,22 @@ class Decks extends Component {
           <h1 className="m-0">Flashcards for Frontend Developers</h1>
           <p>A curated list of flashcards to boost your professional skills</p>
         </div>
-        <div className="row mt-5 pt-5">
-          {decks.map((deck, key) => <Deck deck={deck} key={key} onStar={this.onStar} />)}
+        <div className="text-right ml-auto mt-5 pt-3">
+          <button
+            onClick={() => this.onSetFilter(FILTERS.POPULAR)}
+            className={cx("badge badge-pill mr-2", { "badge-dark": filter === FILTERS.POPULAR })}
+          >
+            Popular
+          </button>
+          <button
+            onClick={() => this.onSetFilter(FILTERS.NEWEST)}
+            className={cx("badge badge-pill", { "badge-dark": filter === FILTERS.NEWEST })}
+          >
+            Newest
+          </button>
+        </div>
+        <div className="row mt-3">
+          {decks.map(deck => <Deck deck={deck} key={deck.id} onStar={this.onStar} />)}
         </div>
         <div className="row d-flex justify-content-center mt-3">
           <a
