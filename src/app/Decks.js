@@ -48,17 +48,19 @@ const Deck = ({ deck, onStar }) => {
 };
 
 const UserProgress = ({ decks }) => {
-  const progress = decks.reduce((avg, el) => avg + getProgress(el.id) * 100, 0) / decks.length;
+  const progress = Math.round(
+    decks.reduce((avg, el) => avg + getProgress(el.id) * 100, 0) / decks.length,
+  );
   return (
     <div className="alert alert-secondary">
-      <h4 className="alert-heading">Look at your progress!</h4>
+      <h4 className="alert-heading text-dark">Watch your progress</h4>
       <p>
         You've put some work into learning frontend development skills and here's how you are doing.
       </p>
       <hr />
       <div className="progress bg-light" style={{ height: "20px", borderRadius: "999px" }}>
         <div
-          className="progress-bar bg-secondary"
+          className="progress-bar bg-dark"
           role="progressbar"
           style={{ width: `${progress}%` }}
           aria-valuenow={progress}

@@ -444,9 +444,14 @@ class Review extends Component {
                         Press space to continue
                       </button>
                     ) : (
-                      <button className="btn btn-dark" onClick={this.onReset}>
-                        Try again
-                      </button>
+                      <div>
+                        <button className="btn btn-dark" onClick={this.onReset}>
+                          Try again
+                        </button>
+                        <Link to="/" className="btn btn-dark ml-2">
+                          Go Back
+                        </Link>,
+                      </div>
                     )}
                   </div>
                 </div>
