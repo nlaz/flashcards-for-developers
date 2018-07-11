@@ -258,7 +258,7 @@ class Review extends Component {
             </Link>
           </div>
         </div>
-        <div className="container py-4 px-3">
+        <div className="container py-4 px-3" style={{ maxWidth: "960px" }}>
           <div className="mb-5">
             <h1 className="m-0">{deck.name}</h1>
             {deck.description && (

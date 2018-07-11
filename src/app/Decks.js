@@ -21,7 +21,7 @@ const FILTERS = {
 const Deck = ({ deck, onStar }) => {
   const progress = getProgress(deck.id);
   return (
-    <div className="col-6 col-md-4 col-lg-3 d-flex pb-2" style={{ height: "240px" }}>
+    <div className="col-6 col-md-4 col-lg-3 d-flex pb-2" style={{ height: "280px" }}>
       <Link
         to={`/decks/${deck.id}`}
         className="border border-dark rounded d-flex flex-column justify-content-between text-dark mb-4 p-4 w-100 position-relative"
@@ -43,6 +43,31 @@ const Deck = ({ deck, onStar }) => {
           </button>
         </div>
       </Link>
+    </div>
+  );
+};
+
+const UserProgress = ({ decks }) => {
+  const progress = decks.reduce((avg, el) => avg + getProgress(el.id) * 100, 0) / decks.length;
+  return (
+    <div className="alert alert-secondary">
+      <h4 className="alert-heading">Look at your progress!</h4>
+      <p>
+        You've put some work into learning frontend development skills and here's how you are doing.
+      </p>
+      <hr />
+      <div className="progress bg-light" style={{ height: "20px", borderRadius: "999px" }}>
+        <div
+          className="progress-bar bg-secondary"
+          role="progressbar"
+          style={{ width: `${progress}%` }}
+          aria-valuenow={progress}
+          aria-valuemin="0"
+          aria-valuemax="100"
+        >
+          {progress}%
+        </div>
+      </div>
     </div>
   );
 };
@@ -134,7 +159,8 @@ class Decks extends Component {
           <h1 className="m-0">Flashcards for Frontend Developers</h1>
           <p>A curated list of flashcards to boost your professional skills</p>
         </div>
-        <div className="text-right ml-auto mt-5">
+        <UserProgress decks={decks} />
+        <div className="text-right ml-auto mt-2">
           <button
             onClick={() => this.onSetFilter(FILTERS.POPULAR)}
             className={cx("badge badge-pill mr-2", { "badge-dark": filter === FILTERS.POPULAR })}

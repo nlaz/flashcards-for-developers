@@ -11,12 +11,6 @@ h1 {
   font-weight: 500;
 }
 
-@media (min-width: 1200px) {
-  .container {
-    max-width: 960px;
-  }
-}
-
 .markdown-body pre {
   overflow-x: hidden !important;
 }
