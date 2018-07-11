@@ -103,7 +103,7 @@ class Decks extends Component {
 
     if (isLoading) {
       return (
-        <div className="container p-4">
+        <div className="container p-4 my-5">
           <div className="mb-5">
             <h1 className="m-0">Flashcards for Frontend Developers</h1>
             <p>A curated list of flashcards to boost your professional skills</p>
@@ -115,7 +115,7 @@ class Decks extends Component {
 
     if (isError) {
       return (
-        <div className="container p-4">
+        <div className="container p-4 my-5">
           <div className="mb-5">
             <h1 className="m-0">Flashcards for Frontend Developers</h1>
             <p>A curated list of flashcards to boost your professional skills</p>
@@ -129,12 +129,12 @@ class Decks extends Component {
     }
 
     return (
-      <div className="container p-4 mb-5">
+      <div className="container p-4 my-5">
         <div className="mb-5">
           <h1 className="m-0">Flashcards for Frontend Developers</h1>
           <p>A curated list of flashcards to boost your professional skills</p>
         </div>
-        <div className="text-right ml-auto mt-5 pt-3">
+        <div className="text-right ml-auto mt-5">
           <button
             onClick={() => this.onSetFilter(FILTERS.POPULAR)}
             className={cx("badge badge-pill mr-2", { "badge-dark": filter === FILTERS.POPULAR })}

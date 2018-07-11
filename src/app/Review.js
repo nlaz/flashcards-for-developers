@@ -249,204 +249,209 @@ class Review extends Component {
     const isFinished = this.isFinished();
 
     return (
-      <div className="container py-4 px-3">
-        <div className="mb-5">
-          <Link
-            to={this.getCategoryUrl(deck.category)}
-            className="text-dark d-flex align-items-center mb-2"
-          >
-            <Octicon name="chevron-left" className="d-flex mr-1" />
-            Back to Category
-          </Link>
-          <h1 className="m-0">{deck.name}</h1>
-          {deck.description && (
-            <div
-              className="deck-description mb-2"
-              dangerouslySetInnerHTML={{
-                __html: marked(deck.description),
-              }}
-            />
-          )}
-          {deck.source && (
-            <div className="mb-2">
-              <a href={deck.source}>{deck.source}</a>
-            </div>
-          )}
+      <div>
+        <div className="container px-0">
+          <div className="navbar">
+            <Link to="/" className="py-2 d-flex align-items-center font-weight-medium text-dark">
+              <Octicon name="chevron-left" className="d-flex mr-1" />
+              Flashcards for Developers
+            </Link>
+          </div>
         </div>
-        <div className="row mt-5 pt-4 px-3">
-          <span
-            className="small text-secondary text-right w-100 mb-1 mr-1"
-            style={{ opacity: 0.5 }}
-          >
-            {index} / {pageEnd}
-          </span>
-          <ProgressBar className="mb-3" value={index} total={pageEnd} />
-          <div
-            style={{ minHeight: "400px" }}
-            className={cx(
-              "col-12 border border-dark rounded mb-4 py-5 d-flex align-items-stretch",
-              {
-                shake: this.state.isWrong,
-              },
+        <div className="container py-4 px-3">
+          <div className="mb-5">
+            <h1 className="m-0">{deck.name}</h1>
+            {deck.description && (
+              <div
+                className="deck-description mb-2"
+                dangerouslySetInnerHTML={{
+                  __html: marked(deck.description),
+                }}
+              />
             )}
-          >
-            {!isFinished ? (
-              <div className="row w-100 mx-0">
-                {deck.type && (
-                  <div
-                    className="badge badge-pill badge-light text-secondary position-absolute mr-4"
-                    style={{ top: "12px", right: "0" }}
-                  >
-                    {this.getDeckType()}
-                  </div>
-                )}
-                <div className="col-12 col-lg-6 d-flex align-items-center px-1 pb-1">
-                  {this.isImageSelect(deck) ? (
-                    <img className="img-fluid px-3 mx-auto" alt="" src={currentCard.front} />
-                  ) : (
-                    <div className="flashcard-body border rounded px-3 py-5 w-100 h-100">
-                      <div
-                        className="markdown-body text-left d-flex align-items-center justify-content-center flex-column"
-                        dangerouslySetInnerHTML={{
-                          __html: this.getCardHTML(currentCard),
-                        }}
-                      />
-                      {this.state.isRevealed && (
+            {deck.source && (
+              <div className="mb-2">
+                <a href={deck.source}>{deck.source}</a>
+              </div>
+            )}
+          </div>
+          <div className="row mt-4 px-3">
+            <span
+              className="small text-secondary text-right w-100 mb-1 mr-1"
+              style={{ opacity: 0.5 }}
+            >
+              {index} / {pageEnd}
+            </span>
+            <ProgressBar className="mb-3" value={index} total={pageEnd} />
+            <div
+              style={{ minHeight: "400px" }}
+              className={cx(
+                "col-12 border border-dark rounded mb-4 py-5 d-flex align-items-stretch",
+                {
+                  shake: this.state.isWrong,
+                },
+              )}
+            >
+              {!isFinished ? (
+                <div className="row w-100 mx-0">
+                  {deck.type && (
+                    <div
+                      className="badge badge-pill badge-light text-secondary position-absolute mr-4"
+                      style={{ top: "12px", right: "0" }}
+                    >
+                      {this.getDeckType()}
+                    </div>
+                  )}
+                  <div className="col-12 col-lg-6 d-flex align-items-center px-1 pb-1">
+                    {this.isImageSelect(deck) ? (
+                      <img className="img-fluid px-3 mx-auto" alt="" src={currentCard.front} />
+                    ) : (
+                      <div className="flashcard-body border rounded px-3 py-5 w-100 h-100">
                         <div
-                          className="markdown-body text-left d-flex align-items-center justify-content-center flex-column mt-3 pt-3"
-                          style={{ borderTop: "1px solid #f5f5f5" }}
+                          className="markdown-body text-left d-flex align-items-center justify-content-center flex-column"
                           dangerouslySetInnerHTML={{
-                            __html: marked(currentCard.back),
+                            __html: this.getCardHTML(currentCard),
                           }}
                         />
-                      )}
-                    </div>
-                  )}
-                </div>
-                <div className="col-12 col-lg-6 d-flex flex-column align-items-stretch px-1 pb-1">
-                  {options.map((option, key) => (
-                    <div
-                      key={option.id || option}
-                      onClick={() => this.onSelect(option, currentCard)}
-                      className={cx(
-                        "flashcard-option border rounded d-flex align-items-start p-3 w-100",
-                        {
-                          "flashcard-option--disabled":
-                            this.isSelfGraded() && !this.state.isRevealed,
-                          "border-success text-success":
-                            this.isSelected(option) && this.isCorrect(option, currentCard),
-                          "border-danger text-danger":
-                            this.isSelected(option) && !this.isCorrect(option, currentCard),
-                        },
-                      )}
-                    >
-                      <div className="border rounded mr-3 px-2" style={{ fontSize: ".9em" }}>
-                        {key + 1}
+                        {this.state.isRevealed && (
+                          <div
+                            className="markdown-body text-left d-flex align-items-center justify-content-center flex-column mt-3 pt-3"
+                            style={{ borderTop: "1px solid #f5f5f5" }}
+                            dangerouslySetInnerHTML={{
+                              __html: marked(currentCard.back),
+                            }}
+                          />
+                        )}
                       </div>
+                    )}
+                  </div>
+                  <div className="col-12 col-lg-6 d-flex flex-column align-items-stretch px-1 pb-1">
+                    {options.map((option, key) => (
                       <div
-                        className="markdown-body text-left bg-white w-100"
-                        dangerouslySetInnerHTML={{
-                          __html: this.getOptionHTML(option),
-                        }}
-                      />
+                        key={option.id || option}
+                        onClick={() => this.onSelect(option, currentCard)}
+                        className={cx(
+                          "flashcard-option border rounded d-flex align-items-start p-3 w-100",
+                          {
+                            "flashcard-option--disabled":
+                              this.isSelfGraded() && !this.state.isRevealed,
+                            "border-success text-success":
+                              this.isSelected(option) && this.isCorrect(option, currentCard),
+                            "border-danger text-danger":
+                              this.isSelected(option) && !this.isCorrect(option, currentCard),
+                          },
+                        )}
+                      >
+                        <div className="border rounded mr-3 px-2" style={{ fontSize: ".9em" }}>
+                          {key + 1}
+                        </div>
+                        <div
+                          className="markdown-body text-left bg-white w-100"
+                          dangerouslySetInnerHTML={{
+                            __html: this.getOptionHTML(option),
+                          }}
+                        />
+                      </div>
+                    ))}
+                    {this.isSelfGraded() &&
+                      !this.state.isRevealed && (
+                        <button className="btn border rounded mt-2" onClick={this.onToggleReveal}>
+                          Press space to show answer
+                        </button>
+                      )}
+                  </div>
+                  <a
+                    href={config.airtableReportUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="btn btn-reset position-absolute d-flex align-items-center"
+                    style={{ right: 0, bottom: 0, fill: "#cdcdcd", color: "#cdcdcd" }}
+                  >
+                    <small>Report</small>
+                    <Octicon name="report" className="d-flex ml-1" />
+                  </a>
+                </div>
+              ) : (
+                <div className="w-100">
+                  <h3 className="mb-5 text-center">
+                    {this.state.index <= this.state.cards.length - 1
+                      ? "Nice work!"
+                      : "You're done!"}
+                  </h3>
+                  <div className="row d-flex mb-2">
+                    <div className="px-5 position-relative col-12 col-lg-6">
+                      <ResponsiveContainer height={200} width="100%">
+                        <PieChart>
+                          <Pie
+                            data={progressData}
+                            dataKey="value"
+                            innerRadius={60}
+                            outerRadius={80}
+                            animationDuration={0}
+                            startAngle={180}
+                            endAngle={0}
+                            fill="#82ca9d"
+                          >
+                            <Cell fill="#343a40" />
+                            <Cell fill="#efefef" />
+                            <Label
+                              className="font-weight-bold"
+                              fill="#343a40"
+                              position="center"
+                              style={{ fontSize: "24px" }}
+                              value={`${progress}%`}
+                            />
+                          </Pie>
+                          <Legend className="w-100" verticalAlign="top" height={50} />
+                          <Tooltip />
+                        </PieChart>
+                      </ResponsiveContainer>
+                      <span
+                        className="text-center font-weight-medium position-absolute"
+                        style={{ right: 0, left: 0, top: "135px" }}
+                      >
+                        Progress
+                      </span>
                     </div>
-                  ))}
-                  {this.isSelfGraded() &&
-                    !this.state.isRevealed && (
-                      <button className="btn border rounded mt-2" onClick={this.onToggleReveal}>
-                        Press space to show answer
+                    <div className="px-4" style={{ flexGrow: 1 }}>
+                      <table className="table w-100">
+                        <thead>
+                          <tr>
+                            <th>Results</th>
+                            <th>#</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <tr>
+                            <td>Incorrect Answers</td>
+                            <td>{this.state.numIncorrect}</td>
+                          </tr>
+                          <tr>
+                            <td>Correct Answers</td>
+                            <td>{this.state.numCorrect}</td>
+                          </tr>
+                          <tr>
+                            <td>Total Seen</td>
+                            <td>{this.state.index}</td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                  <div className="d-flex justify-content-center">
+                    {this.state.index <= this.state.cards.length - 1 ? (
+                      <button className="btn btn-dark" onClick={this.onKeepGoing}>
+                        Press space to continue
+                      </button>
+                    ) : (
+                      <button className="btn btn-dark" onClick={this.onReset}>
+                        Try again
                       </button>
                     )}
-                </div>
-                <a
-                  href={config.airtableReportUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="btn btn-reset position-absolute d-flex align-items-center"
-                  style={{ right: 0, bottom: 0, fill: "#cdcdcd", color: "#cdcdcd" }}
-                >
-                  <small>Report</small>
-                  <Octicon name="report" className="d-flex ml-1" />
-                </a>
-              </div>
-            ) : (
-              <div className="w-100">
-                <h3 className="mb-5 text-center">
-                  {this.state.index <= this.state.cards.length - 1 ? "Nice work!" : "You're done!"}
-                </h3>
-                <div className="row d-flex mb-2">
-                  <div className="px-5 position-relative col-12 col-lg-6">
-                    <ResponsiveContainer height={200} width="100%">
-                      <PieChart>
-                        <Pie
-                          data={progressData}
-                          dataKey="value"
-                          innerRadius={60}
-                          outerRadius={80}
-                          animationDuration={0}
-                          startAngle={180}
-                          endAngle={0}
-                          fill="#82ca9d"
-                        >
-                          <Cell fill="#343a40" />
-                          <Cell fill="#efefef" />
-                          <Label
-                            className="font-weight-bold"
-                            fill="#343a40"
-                            position="center"
-                            style={{ fontSize: "24px" }}
-                            value={`${progress}%`}
-                          />
-                        </Pie>
-                        <Legend className="w-100" verticalAlign="top" height={50} />
-                        <Tooltip />
-                      </PieChart>
-                    </ResponsiveContainer>
-                    <span
-                      className="text-center font-weight-medium position-absolute"
-                      style={{ right: 0, left: 0, top: "135px" }}
-                    >
-                      Progress
-                    </span>
-                  </div>
-                  <div className="px-4" style={{ flexGrow: 1 }}>
-                    <table className="table w-100">
-                      <thead>
-                        <tr>
-                          <th>Results</th>
-                          <th>#</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        <tr>
-                          <td>Incorrect Answers</td>
-                          <td>{this.state.numIncorrect}</td>
-                        </tr>
-                        <tr>
-                          <td>Correct Answers</td>
-                          <td>{this.state.numCorrect}</td>
-                        </tr>
-                        <tr>
-                          <td>Total Seen</td>
-                          <td>{this.state.index}</td>
-                        </tr>
-                      </tbody>
-                    </table>
                   </div>
                 </div>
-                <div className="d-flex justify-content-center">
-                  {this.state.index <= this.state.cards.length - 1 ? (
-                    <button className="btn btn-dark" onClick={this.onKeepGoing}>
-                      Press space to continue
-                    </button>
-                  ) : (
-                    <button className="btn btn-dark" onClick={this.onReset}>
-                      Try again
-                    </button>
-                  )}
-                </div>
-              </div>
-            )}
+              )}
+            </div>
           </div>
         </div>
       </div>

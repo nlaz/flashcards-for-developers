@@ -33,10 +33,6 @@ a[disabled] {
   pointer-events: none;
 }
 
-code {
-  white-space: nowrap;
-}
-
 .deck-description p {
   margin-bottom: 0;
 }
