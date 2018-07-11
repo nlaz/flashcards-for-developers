@@ -6,6 +6,7 @@ import Decks from "./Decks";
 import Review from "./Review";
 import NotFound from "../components/NotFound";
 import GoogleAnalytics from "../components/GoogleAnalytics";
+import Footer from "../components/Footer";
 
 import "./App.css";
 
@@ -25,6 +26,7 @@ class App extends Component {
             </Switch>
           </div>
         </HashRouter>
+        <Footer />
       </div>
     );
   }
