@@ -83,7 +83,7 @@ const SkillProgress = ({ decks }) => {
           stroke="none"
         >
           <Cell fill="#343a40" />
-          <Cell fill="#d1d1d2" />
+          <Cell fill="#e1e1e2" />
           <Label
             className="font-weight-bold"
             fill="#343a40"

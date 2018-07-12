@@ -16,7 +16,9 @@ const PAGE_SIZE = 8;
 const SELF_GRADE_CORRECT = "I was right";
 const SELF_GRADE_INCORRECT = "I was wrong";
 
-const StudyProgress = ({ index, items, pageStart, pageEnd, isFinished }) => {
+const getRandomPageSize = () => chance.integer({ min: PAGE_SIZE - 2, max: PAGE_SIZE + 1 });
+
+const StudyProgress = ({ index, items, pageSize, pageStart, pageEnd, isFinished }) => {
   return (
     <div className="ml-auto mb-2">
       <div className="d-flex align-items-center">
@@ -24,7 +26,7 @@ const StudyProgress = ({ index, items, pageStart, pageEnd, isFinished }) => {
           <div
             key={key}
             className={cx("border border-dark rounded-circle border-width-2 ml-1", {
-              "bg-dark": isFinished || key < index % PAGE_SIZE,
+              "bg-dark": isFinished || key < index % pageSize,
             })}
             style={{
               width: "10px",
@@ -37,25 +39,24 @@ const StudyProgress = ({ index, items, pageStart, pageEnd, isFinished }) => {
   );
 };
 
-const initialState = {
-  deck: {},
-  cards: [],
-  options: [],
-  index: 0,
-  isWrong: false,
-  isLoading: true,
-  isError: false,
-  isReversed: false,
-  isFinished: false,
-  isRevealed: false,
-  numCorrect: 0,
-  numIncorrect: 0,
-  selected: {},
-  page: 0,
-};
-
 class Review extends Component {
-  state = { ...initialState };
+  state = {
+    deck: {},
+    cards: [],
+    options: [],
+    index: 0,
+    isWrong: false,
+    isLoading: true,
+    isError: false,
+    isReversed: false,
+    isFinished: false,
+    isRevealed: false,
+    numCorrect: 0,
+    numIncorrect: 0,
+    selected: {},
+    pageSize: getRandomPageSize(),
+    page: 0,
+  };
 
   componentWillMount() {
     const { params } = this.props.match;
@@ -155,16 +156,6 @@ class Review extends Component {
     );
   };
 
-  onReset = () => {
-    const { deck } = this.state;
-    analytics.logReviewAgainEvent(deck.id);
-
-    this.setState({ ...initialState, deck }, () => {
-      this.fetchCards(deck);
-      localStorage.setItem(this.state.deck.id, this.getProgress() / 100);
-    });
-  };
-
   onKeepGoing = () => {
     analytics.logReviewAgainEvent(this.state.deck.id);
     this.setState({ page: this.state.page + 1 });
@@ -214,9 +205,9 @@ class Review extends Component {
   getCardHTML = card => marked(this.state.isReversed ? card.back : card.front);
 
   getProgress = index => Math.round(100 * (index || this.state.index) / this.state.cards.length);
-  getPageStart = () => Math.max(Math.floor(this.state.page * PAGE_SIZE), 0);
+  getPageStart = () => Math.max(Math.floor(this.state.page * this.state.pageSize), 0);
   getPageEnd = () =>
-    Math.min(Math.floor((this.state.page + 1) * PAGE_SIZE), this.state.cards.length);
+    Math.min(Math.floor((this.state.page + 1) * this.state.pageSize), this.state.cards.length);
 
   getResults = () => [
     { name: "Correct", value: this.state.numCorrect },
@@ -303,6 +294,7 @@ class Review extends Component {
               className="mt-2"
               index={index}
               items={this.state.cards}
+              pageSize={this.state.pageSize}
               pageEnd={pageEnd}
               pageStart={pageStart}
               isFinished={isFinished}
