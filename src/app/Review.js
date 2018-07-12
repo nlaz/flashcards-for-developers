@@ -7,15 +7,35 @@ import { ResponsiveContainer, Cell, PieChart, Pie, Tooltip, Legend, Label } from
 
 import config from "../config";
 import Octicon from "../components/Octicon";
-import ProgressBar from "../components/ProgressBar";
 import * as api from "./apiActions";
 import * as analytics from "../components/GoogleAnalytics";
 import "./Review.css";
 
 const chance = new Chance();
-const PAGE_SIZE = 12;
+const PAGE_SIZE = 8;
 const SELF_GRADE_CORRECT = "I was right";
 const SELF_GRADE_INCORRECT = "I was wrong";
+
+const StudyProgress = ({ index, items, pageStart, pageEnd, isFinished }) => {
+  return (
+    <div className="ml-auto mb-2">
+      <div className="d-flex align-items-center">
+        {items.slice(pageStart, pageEnd).map((el, key) => (
+          <div
+            key={key}
+            className={cx("border border-dark rounded-circle border-width-2 ml-1", {
+              "bg-dark": isFinished || key < index % PAGE_SIZE,
+            })}
+            style={{
+              width: "10px",
+              height: "10px",
+            }}
+          />
+        ))}
+      </div>
+    </div>
+  );
+};
 
 const initialState = {
   deck: {},
@@ -79,6 +99,7 @@ class Review extends Component {
 
   onKeyPress = e => {
     if (this.isFinished() && e.keyCode === 32) {
+      e.preventDefault();
       this.onKeepGoing();
     } else if (!this.isFinished()) {
       const { options } = this.state;
@@ -89,6 +110,7 @@ class Review extends Component {
         this.onSelect(options[answer], currentCard);
       } else if (this.isSelfGraded() && !this.state.isRevealed) {
         if (e.keyCode === 32) {
+          e.preventDefault();
           this.onToggleReveal();
         }
       }
@@ -201,8 +223,8 @@ class Review extends Component {
     { name: "Incorrect", value: this.state.numIncorrect },
   ];
   getProgressData = () => [
-    { name: "Seen", value: this.state.index },
-    { name: "New", value: this.state.cards.length - this.state.index },
+    { name: "Practiced", value: this.state.index },
+    { name: "Not started", value: this.state.cards.length - this.state.index },
   ];
 
   isReversible = deck => (deck || this.state.deck).type === "Reversible select";
@@ -246,6 +268,7 @@ class Review extends Component {
     const progressData = this.getProgressData();
     const progress = this.getProgress();
     const pageEnd = this.getPageEnd();
+    const pageStart = this.getPageStart();
     const isFinished = this.isFinished();
 
     return (
@@ -276,13 +299,14 @@ class Review extends Component {
             )}
           </div>
           <div className="row mt-4 px-3">
-            <span
-              className="small text-secondary text-right w-100 mb-1 mr-1"
-              style={{ opacity: 0.5 }}
-            >
-              {index} / {pageEnd}
-            </span>
-            <ProgressBar className="mb-3" value={index} total={pageEnd} />
+            <StudyProgress
+              className="mt-2"
+              index={index}
+              items={this.state.cards}
+              pageEnd={pageEnd}
+              pageStart={pageStart}
+              isFinished={isFinished}
+            />
             <div
               style={{ minHeight: "400px" }}
               className={cx(
@@ -367,8 +391,7 @@ class Review extends Component {
                     className="btn btn-reset position-absolute d-flex align-items-center"
                     style={{ right: 0, bottom: 0, fill: "#cdcdcd", color: "#cdcdcd" }}
                   >
-                    <small>Report</small>
-                    <Octicon name="report" className="d-flex ml-1" />
+                    <small>Report a problem</small>
                   </a>
                 </div>
               ) : (
@@ -440,18 +463,18 @@ class Review extends Component {
                   </div>
                   <div className="d-flex justify-content-center">
                     {this.state.index <= this.state.cards.length - 1 ? (
-                      <button className="btn btn-dark" onClick={this.onKeepGoing}>
-                        Press space to continue
-                      </button>
-                    ) : (
                       <div>
-                        <button className="btn btn-dark" onClick={this.onReset}>
-                          Try again
+                        <Link to="/" className="btn btn-outline-dark mr-2">
+                          Go back
+                        </Link>
+                        <button className="btn btn-dark" onClick={this.onKeepGoing}>
+                          Press space to continue
                         </button>
-                        <Link to="/" className="btn btn-dark ml-2">
-                          Go Back
-                        </Link>,
                       </div>
+                    ) : (
+                      <Link to="/" className="btn btn-dark">
+                        Go back home
+                      </Link>
                     )}
                   </div>
                 </div>

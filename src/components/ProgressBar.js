@@ -14,7 +14,7 @@ const styles = {
   },
 };
 
-const ProgressBar = injectSheet(styles)(({ className, classes, value, total, percent }) => {
+const ProgressBar = injectSheet(styles)(({ className, classes, value = 0.03, total, percent }) => {
   const width = percent !== undefined ? percent : value / total;
   return (
     <div className={cx(classes.progressBar, className, "w-100")}>

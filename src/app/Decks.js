@@ -1,5 +1,4 @@
 import React, { Component } from "react";
-import cx from "classnames";
 import { Link } from "react-router-dom";
 
 import config from "../config";
@@ -7,6 +6,7 @@ import * as api from "./apiActions";
 import * as analytics from "../components/GoogleAnalytics";
 import ProgressBar from "../components/ProgressBar";
 import Octicon from "../components/Octicon";
+import { Cell, PieChart, Pie, Label } from "recharts";
 
 const FRONTEND_CATEGORY_ID = "recUROLxLzjGsSh8P";
 const getProgress = deckId => {
@@ -35,41 +35,64 @@ const Deck = ({ deck, onStar }) => {
           <ProgressBar className="mb-2" percent={progress} />
           {deck.name}
         </div>
-
-        <div className="position-absolute m-0 pr-3 pb-2" style={{ bottom: 0, right: 0 }}>
-          <button onClick={e => onStar(e, deck)} className="deck-star d-flex align-items-center">
-            <span className="mr-1 d-flex">{deck.stars}</span>
-            <Octicon name="star" className="d-flex" />
-          </button>
-        </div>
       </Link>
     </div>
   );
 };
 
-const UserProgress = ({ decks }) => {
+const SkillProgress = ({ decks }) => {
   const progress = Math.round(
     decks.reduce((avg, el) => avg + getProgress(el.id) * 100, 0) / decks.length,
   );
+  const numPractices = decks.filter(el => getProgress(el.id) > 0).length;
+
+  const progressData = [
+    { name: "Progress", value: progress },
+    { name: "Offset", value: 100 - progress },
+  ];
+
+  if (!progress) {
+    return false;
+  }
+
   return (
-    <div className="alert alert-secondary">
-      <h4 className="alert-heading text-dark">Watch your progress</h4>
-      <p>
-        You've put some work into learning frontend development skills and here's how you are doing.
-      </p>
-      <hr />
-      <div className="progress bg-light" style={{ height: "20px", borderRadius: "999px" }}>
-        <div
-          className="progress-bar bg-dark"
-          role="progressbar"
-          style={{ width: `${progress}%` }}
-          aria-valuenow={progress}
-          aria-valuemin="0"
-          aria-valuemax="100"
+    <div
+      className="d-flex flex-row-reverse flex-lg-row justify-content-end justify-content-lg-center align-items-center mb-2 bg-light rounded p-2"
+      style={{ minWidth: "260px" }}
+    >
+      <div className="mx-2">
+        <p
+          className="m-0 text-uppercase font-weight-medium"
+          style={{ fontSize: "14px", lineHeight: "12px" }}
         >
-          {progress}%
-        </div>
+          Skill Progress
+        </p>
+        <p className="text-secondary m-0" style={{ fontSize: "14px" }}>
+          You practiced {numPractices} skills
+        </p>
       </div>
+      <PieChart height={70} width={70}>
+        <Pie
+          data={progressData}
+          dataKey="value"
+          innerRadius={24}
+          outerRadius={35}
+          startAngle={90 - progress / 100 * 360}
+          endAngle={360 + 90}
+          animationDuration={0}
+          stroke="none"
+        >
+          <Cell fill="#343a40" />
+          <Cell fill="#d1d1d2" />
+          <Label
+            className="font-weight-bold"
+            fill="#343a40"
+            position="center"
+            style={{ fontSize: "20px" }}
+            value={`${progress}%`}
+          />
+        </Pie>
+      </PieChart>
     </div>
   );
 };
@@ -126,7 +149,7 @@ class Decks extends Component {
   };
 
   render() {
-    const { decks, isLoading, isError, filter } = this.state;
+    const { decks, isLoading, isError } = this.state;
 
     if (isLoading) {
       return (
@@ -157,26 +180,14 @@ class Decks extends Component {
 
     return (
       <div className="container p-4 my-5">
-        <div className="mb-5">
-          <h1 className="m-0">Flashcards for Frontend Developers</h1>
-          <p>A curated list of flashcards to boost your professional skills</p>
+        <div className="mb-2 d-flex flex-column flex-lg-row justify-content-between align-items-lg-center">
+          <div className="mb-3">
+            <h1 className="m-0">Flashcards for Frontend Developers</h1>
+            <p className="m-0">A curated list of flashcards to boost your professional skills</p>
+          </div>
+          <SkillProgress decks={decks} />
         </div>
-        <UserProgress decks={decks} />
-        <div className="text-right ml-auto mt-2">
-          <button
-            onClick={() => this.onSetFilter(FILTERS.POPULAR)}
-            className={cx("badge badge-pill mr-2", { "badge-dark": filter === FILTERS.POPULAR })}
-          >
-            Popular
-          </button>
-          <button
-            onClick={() => this.onSetFilter(FILTERS.NEWEST)}
-            className={cx("badge badge-pill", { "badge-dark": filter === FILTERS.NEWEST })}
-          >
-            Newest
-          </button>
-        </div>
-        <div className="row mt-3">
+        <div className="row mt-4">
           {decks.map(deck => <Deck deck={deck} key={deck.id} onStar={this.onStar} />)}
         </div>
         <div className="row d-flex justify-content-center mt-3">
