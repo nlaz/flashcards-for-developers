@@ -31,6 +31,22 @@ a[disabled] {
   margin-bottom: 0;
 }
 
+.deck-item {
+  height: unset;
+}
+@media (min-width: 576px) {
+  .deck-item {
+    height: 220px;
+    margin-bottom: 1rem;
+  }
+}
+
+@media (min-width: 992px) {
+  .deck-item {
+    height: 260px;
+  }
+}
+
 .deck-star {
   background: none;
   border: none;
@@ -44,6 +60,18 @@ a[disabled] {
 
 .font-weight-medium {
   font-weight: 500;
+}
+
+@media (max-width: 992px) {
+  .flashcard-container {
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+  }
+
+  .flashcard-container > .col-12 {
+    border-left: none !important;
+    border-right: none !important;
+  }
 }
 
 .flashcard-body pre {

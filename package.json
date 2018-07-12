@@ -10,6 +10,7 @@
     "gh-pages": "^1.2.0",
     "marked": "^0.4.0",
     "octicons": "^7.3.0",
+    "pluralize": "^7.0.0",
     "primer-markdown": "^3.7.7",
     "react": "^16.4.1",
     "react-dom": "^16.4.1",

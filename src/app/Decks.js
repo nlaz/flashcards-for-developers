@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import { Link } from "react-router-dom";
+import pluralize from "pluralize";
 
 import config from "../config";
 import * as api from "./apiActions";
@@ -21,10 +22,10 @@ const FILTERS = {
 const Deck = ({ deck, onStar }) => {
   const progress = getProgress(deck.id);
   return (
-    <div className="col-6 col-md-4 col-lg-3 d-flex pb-2" style={{ height: "280px" }}>
+    <div className="deck-item col-12 col-sm-6 col-md-4 col-lg-3 d-flex">
       <Link
         to={`/decks/${deck.id}`}
-        className="border border-dark rounded d-flex flex-column justify-content-between text-dark mb-4 p-4 w-100 position-relative"
+        className="border border-dark rounded d-flex flex-column justify-content-between text-dark mb-3 p-4 w-100 position-relative"
         disabled={!deck.cards}
         style={{
           fontSize: "14px",
@@ -57,7 +58,7 @@ const SkillProgress = ({ decks }) => {
 
   return (
     <div
-      className="d-flex flex-row-reverse flex-lg-row justify-content-end justify-content-lg-center align-items-center mb-2 bg-light rounded p-2"
+      className="d-flex flex-row-reverse flex-lg-row justify-content-end justify-content-lg-center align-items-center mb-2 bg-light rounded p-2 border border-secondary"
       style={{ minWidth: "260px" }}
     >
       <div className="mx-2">
@@ -68,7 +69,7 @@ const SkillProgress = ({ decks }) => {
           Skill Progress
         </p>
         <p className="text-secondary m-0" style={{ fontSize: "14px" }}>
-          You practiced {numPractices} skills
+          You practiced {pluralize("skill", numPractices, true)}
         </p>
       </div>
       <PieChart height={70} width={70}>
@@ -79,7 +80,7 @@ const SkillProgress = ({ decks }) => {
           outerRadius={35}
           startAngle={90 - progress / 100 * 360}
           endAngle={360 + 90}
-          animationDuration={0}
+          isAnimationActive={false}
           stroke="none"
         >
           <Cell fill="#343a40" />
@@ -88,7 +89,7 @@ const SkillProgress = ({ decks }) => {
             className="font-weight-bold"
             fill="#343a40"
             position="center"
-            style={{ fontSize: "20px" }}
+            style={{ fontSize: "16px" }}
             value={`${progress}%`}
           />
         </Pie>

@@ -20,7 +20,7 @@ const getRandomPageSize = () => chance.integer({ min: PAGE_SIZE - 2, max: PAGE_S
 
 const StudyProgress = ({ index, items, pageSize, pageStart, pageEnd, isFinished }) => {
   return (
-    <div className="ml-auto mb-2">
+    <div className="ml-auto mb-2 mx-2">
       <div className="d-flex align-items-center">
         {items.slice(pageStart, pageEnd).map((el, key) => (
           <div
@@ -264,7 +264,7 @@ class Review extends Component {
 
     return (
       <div>
-        <div className="container px-0">
+        <div className="container px-0" style={{ maxWidth: "960px" }}>
           <div className="navbar">
             <Link to="/" className="py-2 d-flex align-items-center font-weight-medium text-dark">
               <Octicon name="chevron-left" className="d-flex mr-1" />
@@ -272,7 +272,7 @@ class Review extends Component {
             </Link>
           </div>
         </div>
-        <div className="container py-4 px-3" style={{ maxWidth: "960px" }}>
+        <div className="container py-4" style={{ maxWidth: "960px" }}>
           <div className="mb-5">
             <h1 className="m-0">{deck.name}</h1>
             {deck.description && (
@@ -289,7 +289,7 @@ class Review extends Component {
               </div>
             )}
           </div>
-          <div className="row mt-4 px-3">
+          <div className="flashcard-container row mt-4 px-3">
             <StudyProgress
               className="mt-2"
               index={index}
@@ -318,7 +318,7 @@ class Review extends Component {
                       {this.getDeckType()}
                     </div>
                   )}
-                  <div className="col-12 col-lg-6 d-flex align-items-center px-1 pb-1">
+                  <div className="col-12 col-lg-6 d-flex align-items-center px-1 pb-2">
                     {this.isImageSelect(deck) ? (
                       <img className="img-fluid px-3 mx-auto" alt="" src={currentCard.front} />
                     ) : (
