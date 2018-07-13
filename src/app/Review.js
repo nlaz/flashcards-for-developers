@@ -54,6 +54,7 @@ class Review extends Component {
     numCorrect: 0,
     numIncorrect: 0,
     selected: {},
+    isVoteSent: false,
     pageSize: getRandomPageSize(),
     page: 0,
   };
@@ -161,6 +162,22 @@ class Review extends Component {
     this.setState({ page: this.state.page + 1 });
   };
 
+  onUpVote = () => {
+    const { deck } = this.state;
+    this.setState({ isVoteSent: true });
+    api.updateDeck(deck.id, { Upvotes: (deck.upvotes || 0) + 1 }).then(response => {
+      this.setState({ deck: response });
+    });
+  };
+
+  onDownVote = () => {
+    const { deck } = this.state;
+    this.setState({ isVoteSent: true });
+    api.updateDeck(deck.id, { Downvotes: (deck.downvotes || 0) + 1 }).then(response => {
+      this.setState({ deck: response });
+    });
+  };
+
   fetchDeck = deckId => {
     api.fetchDeck(deckId).then(
       response => {
@@ -234,20 +251,31 @@ class Review extends Component {
 
     if (isLoading) {
       return (
-        <div className="container p-4">
-          <h1 className="text-secondary">Loading deck...</h1>
+        <div className="container px-0" style={{ maxWidth: "960px" }}>
+          <div className="navbar">
+            <Link to="/" className="py-2 d-flex align-items-center font-weight-medium text-dark">
+              {" "}
+              <Octicon name="chevron-left" className="d-flex mr-1" />
+              Flashcards for Developers
+            </Link>
+          </div>
+          <div className="p-4">
+            <h1 className="text-secondary">Loading deck...</h1>
+          </div>
         </div>
       );
     }
 
     if (isError) {
       return (
-        <div className="container p-4">
-          <Link to="/" className="text-dark d-flex align-items-center mb-2">
-            <Octicon name="chevron-left" className="d-flex mr-1" />
-            Back to Home
-          </Link>
-          <div className="text-center">
+        <div className="container px-0" style={{ maxWidth: "960px" }}>
+          <div className="navbar">
+            <Link to="/" className="py-2 d-flex align-items-center font-weight-medium text-dark">
+              <Octicon name="chevron-left" className="d-flex mr-1" />
+              Flashcards for Developers
+            </Link>
+          </div>
+          <div className="text-center p-4">
             <h1 className="text-dark">Unable to load request</h1>
             <p>Please try again or go back home.</p>
           </div>
@@ -261,6 +289,7 @@ class Review extends Component {
     const pageEnd = this.getPageEnd();
     const pageStart = this.getPageStart();
     const isFinished = this.isFinished();
+    const isCompleted = this.state.index > this.state.cards.length - 1;
 
     return (
       <div>
@@ -454,7 +483,7 @@ class Review extends Component {
                     </div>
                   </div>
                   <div className="d-flex justify-content-center">
-                    {this.state.index <= this.state.cards.length - 1 ? (
+                    {!isCompleted ? (
                       <div>
                         <Link to="/" className="btn btn-outline-dark mr-2">
                           Go back
@@ -471,6 +500,40 @@ class Review extends Component {
                   </div>
                 </div>
               )}
+            </div>
+            <div className={cx("deck-vote w-100", { "deck-vote--active": isCompleted })}>
+              <div className="bg-light border border-secondary rounded text-center p-2">
+                {!this.state.isVoteSent ? (
+                  <div>
+                    <p className="font-weight-medium mb-2">Did you find this deck helpful?</p>
+                    <div>
+                      <button
+                        className="btn btn-outline-dark bg-white px-5 py-2 mr-2"
+                        onClick={this.onDownVote}
+                        aria-label="No"
+                      >
+                        <Octicon className="d-flex" name="thumbsdown" />
+                      </button>
+                      <button
+                        className="btn btn-outline-dark bg-white px-5 py-2"
+                        onClick={this.onUpVote}
+                        aria-label="Yes"
+                      >
+                        <Octicon className="d-flex" name="thumbsup" />
+                      </button>
+                    </div>
+                  </div>
+                ) : (
+                  <div>
+                    <p className="font-weight-medium my-2">
+                      Your feedback will improve our content! Thank you!{" "}
+                      <span role="img" aria-label="Tada!">
+                        🎉
+                      </span>
+                    </p>
+                  </div>
+                )}
+              </div>
             </div>
           </div>
         </div>

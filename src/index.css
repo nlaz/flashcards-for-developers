@@ -90,3 +90,16 @@ a[disabled] {
 .flashcard-option--disabled {
   opacity: 0.5;
 }
+
+.deck-vote {
+  transition: all 0.3s ease-in-out;
+  opacity: 0;
+  padding-top: 20px;
+  display: block;
+}
+
+.deck-vote--active {
+  opacity: 1;
+  padding-top: 0;
+  display: hidden;
+}
