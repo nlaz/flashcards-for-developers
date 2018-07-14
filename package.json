@@ -9,6 +9,7 @@
     "classnames": "^2.2.6",
     "gh-pages": "^1.2.0",
     "marked": "^0.4.0",
+    "moment": "^2.22.2",
     "octicons": "^7.3.0",
     "pluralize": "^7.0.0",
     "primer-markdown": "^3.7.7",
