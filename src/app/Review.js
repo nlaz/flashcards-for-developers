@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import cx from "classnames";
 import marked from "marked";
 import Chance from "chance";
+import moment from "moment";
 import { ResponsiveContainer, Cell, PieChart, Pie, Tooltip, Legend, Label } from "recharts";
 
 import config from "../config";
@@ -131,7 +132,12 @@ class Review extends Component {
       } else {
         analytics.logFinishedEvent(this.state.deck.id);
       }
-      localStorage.setItem(this.state.deck.id, this.getProgress(index) / 100);
+      const progressObj = {
+        progress: this.getProgress(index) / 100,
+        reviewedAt: moment(),
+        leitnerBox: 1, //TODO increment/decrement leitner box
+      };
+      localStorage.setItem(this.state.deck.id, JSON.stringify(progressObj));
     }
     this.setState({
       index,

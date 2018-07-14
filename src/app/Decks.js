@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import { Link } from "react-router-dom";
 import pluralize from "pluralize";
+import moment from "moment";
 
 import config from "../config";
 import * as api from "./apiActions";
@@ -8,10 +9,40 @@ import * as analytics from "../components/GoogleAnalytics";
 import ProgressBar from "../components/ProgressBar";
 import Octicon from "../components/Octicon";
 import { Cell, PieChart, Pie, Label } from "recharts";
+import * as leitner from "../spaced/leitner";
 
 const FRONTEND_CATEGORY_ID = "recUROLxLzjGsSh8P";
+
+const getStudyObj = (deckId, progress) => {
+  return {
+    progress: progress,
+    reviewedAt: moment(),
+    leitnerBox: 1,
+  };
+};
+
 const getProgress = deckId => {
-  return localStorage.getItem(deckId) || 0;
+  let studyObj = JSON.parse(localStorage.getItem(deckId)) || {};
+
+  if (typeof studyObj === "number") {
+    studyObj = getStudyObj(deckId, studyObj);
+    localStorage.setItem(deckId, JSON.stringify(studyObj));
+  }
+
+  return studyObj.progress || 0;
+};
+
+const getProficiency = deckId => {
+  let studyObj = JSON.parse(localStorage.getItem(deckId)) || {};
+
+  if (typeof studyObj === "number") {
+    studyObj = getStudyObj(deckId, studyObj);
+    localStorage.setItem(deckId, JSON.stringify(studyObj));
+  }
+
+  const { reviewedAt, leitnerBox } = studyObj;
+
+  return leitner.getProficiency(leitnerBox, reviewedAt) || 0;
 };
 
 const FILTERS = {
@@ -21,6 +52,7 @@ const FILTERS = {
 
 const Deck = ({ deck, onStar }) => {
   const progress = getProgress(deck.id);
+  const proficiency = getProficiency(deck.id);
   return (
     <div className="deck-item col-12 col-sm-6 col-md-4 col-lg-3 d-flex">
       <Link
@@ -33,7 +65,7 @@ const Deck = ({ deck, onStar }) => {
         }}
       >
         <div>
-          <ProgressBar className="mb-2" percent={progress} />
+          <ProgressBar className="mb-2" progress={progress} proficiency={proficiency} />
           {deck.name}
         </div>
       </Link>
@@ -47,9 +79,17 @@ const SkillProgress = ({ decks }) => {
   );
   const numPractices = decks.filter(el => getProgress(el.id) > 0).length;
 
+  const proficiency =
+    decks.reduce((avg, el) => {
+      return getProgress(el.id) > 0 ? avg + getProficiency(el.id) : avg;
+    }, 0.0) / numPractices;
+
+  const subProgress = progress * proficiency;
+
   const progressData = [
-    { name: "Progress", value: progress },
     { name: "Offset", value: 100 - progress },
+    { name: "Progress", value: progress - subProgress },
+    { name: "Proficiency", value: subProgress },
   ];
 
   if (!progress) {
@@ -78,19 +118,20 @@ const SkillProgress = ({ decks }) => {
           dataKey="value"
           innerRadius={24}
           outerRadius={35}
-          startAngle={90 - progress / 100 * 360}
+          startAngle={90}
           endAngle={360 + 90}
           isAnimationActive={false}
           stroke="none"
         >
-          <Cell fill="#343a40" />
           <Cell fill="#e1e1e2" />
+          <Cell fill="#cfcfcf" />
+          <Cell fill="#343a40" />
           <Label
             className="font-weight-bold"
             fill="#343a40"
             position="center"
             style={{ fontSize: "16px" }}
-            value={`${progress}%`}
+            value={`${subProgress.toFixed()}%`}
           />
         </Pie>
       </PieChart>
