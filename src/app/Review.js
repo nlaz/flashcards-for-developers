@@ -260,7 +260,6 @@ class Review extends Component {
         <div className="container px-0" style={{ maxWidth: "960px" }}>
           <div className="navbar">
             <Link to="/" className="py-2 d-flex align-items-center font-weight-medium text-dark">
-              {" "}
               <Octicon name="chevron-left" className="d-flex mr-1" />
               Flashcards for Developers
             </Link>
