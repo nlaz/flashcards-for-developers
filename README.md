@@ -28,4 +28,4 @@ Interested in contributing? Contact [@nlaz](https://github.com/nlaz) for help to
 
 ## License
 
-This project is [MIT licensed][./license.md].
+This project is [MIT licensed](./LICENSE.md).
