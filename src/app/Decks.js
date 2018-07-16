@@ -149,6 +149,7 @@ class Decks extends Component {
   };
 
   componentWillMount() {
+    document.title = "Flashcards for Developers";
     this.fetchCategory(FRONTEND_CATEGORY_ID);
   }
 
@@ -232,16 +233,35 @@ class Decks extends Component {
         <div className="row mt-4">
           {decks.map(deck => <Deck deck={deck} key={deck.id} onStar={this.onStar} />)}
         </div>
-        <div className="row d-flex justify-content-center mt-3">
+        <div className="row d-flex justify-content-center mt-2 mb-5">
           <a
-            className="text-dark d-flex align-items-center"
+            className="text-dark d-flex align-items-center btn btn-outline-dark"
             href={config.airtableSuggestionsUrl}
             target="_blank"
             rel="noopener noreferrer"
+            style={{ borderRadius: "999px" }}
           >
             <Octicon className="d-flex mr-2" name="plus" />
             <span>Suggest a deck</span>
           </a>
+        </div>
+        <div className="row">
+          <div className="col-md-10 offset-md-1 col-lg-8 offset-lg-2 mt-5">
+            <div className="border border-secondary rounded p-4 text-center bg-light">
+              <div className="mx-auto" style={{ maxWidth: "500px" }}>
+                <span>
+                  Join our community on Slack for news on exciting features, new content, and to
+                  meet awesome people like you. 🎉
+                </span>
+                <div className="mt-3">
+                  <a href="#" className="btn btn-dark py-2">
+                    <i className="fab fa-slack fa-lg mr-1" />
+                    Join our Slack Channel
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     );

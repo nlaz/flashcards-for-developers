@@ -187,6 +187,9 @@ class Review extends Component {
   fetchDeck = deckId => {
     api.fetchDeck(deckId).then(
       response => {
+        document.title = response.name
+          ? `${response.name} Flashcards`
+          : "Flashcards for Developers";
         this.setState({ deck: response }, () => this.fetchCards(response));
       },
       error => this.setState({ isError: true, isLoading: false }),
@@ -510,7 +513,7 @@ class Review extends Component {
               <div className="bg-light border border-secondary rounded text-center p-2">
                 {!this.state.isVoteSent ? (
                   <div>
-                    <p className="font-weight-medium mb-2">Did you find this deck helpful?</p>
+                    <p className="font-weight-medium mb-2">Was this deck helpful?</p>
                     <div>
                       <button
                         className="btn btn-outline-dark bg-white px-5 py-2 mr-2"

@@ -2,7 +2,10 @@ import React from "react";
 import config from "../config";
 
 const Footer = () => (
-  <div className="container mt-5 p-4 d-flex flex-column flex-sm-row justify-content-between align-items-center">
+  <div
+    className="container mt-3 p-4 d-flex flex-column flex-sm-row justify-content-between align-items-center"
+    style={{ alignSelf: "flexEnd" }}
+  >
     <small className="text-secondary">© Flashcards For Developers 2018</small>
     <ul className="list-inline mb-0">
       <li className="list-inline-item">
