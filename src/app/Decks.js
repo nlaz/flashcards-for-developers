@@ -254,7 +254,7 @@ class Decks extends Component {
                   meet awesome people like you. 🎉
                 </span>
                 <div className="mt-3">
-                  <a href="#" className="btn btn-dark py-2">
+                  <a href={config.slackinUrl} className="btn btn-dark py-2">
                     <i className="fab fa-slack fa-lg mr-1" />
                     Join our Slack Channel
                   </a>

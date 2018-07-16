@@ -4,6 +4,6 @@ export default {
   airtableReportUrl: process.env.REACT_APP_AIRTABLE_REPORT_URL || "",
   airtableFeedbackUrl: process.env.REACT_APP_AIRTABLE_FEEDBACK_URL || "",
   airtableSuggestionsUrl: process.env.REACT_APP_AIRTABLE_SUGGESTIONS_URL || "",
-  mailchimpUrl: process.env.REACT_APP_MAILCHIMP_URL || "",
+  slackinUrl: process.env.REACT_APP_SLACKIN_URL || "",
   googleAnalyticsKey: process.env.REACT_APP_GOOGLE_ANALYTICS_KEY || "",
 };

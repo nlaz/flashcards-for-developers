@@ -23,18 +23,6 @@ const Footer = () => (
       <li className="list-inline-item">
         <small>
           <a
-            href={config.mailchimpUrl}
-            target="_blank"
-            className="text-secondary"
-            rel="noopener noreferrer"
-          >
-            Newsletter
-          </a>
-        </small>
-      </li>
-      <li className="list-inline-item">
-        <small>
-          <a
             href={config.airtableFeedbackUrl}
             target="_blank"
             className="text-secondary"
