@@ -164,7 +164,7 @@ class Review extends Component {
   };
 
   onKeepGoing = () => {
-    analytics.logReviewAgainEvent(this.state.deck.id);
+    analytics.logKeepGoingEvent(this.state.deck.id);
     this.setState({ page: this.state.page + 1 });
   };
 

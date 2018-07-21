@@ -43,6 +43,7 @@ const getDeckFromRecord = record => ({
   createdTime: record.get("Created time"),
   upvotes: record.get("Upvotes"),
   downvotes: record.get("Downvotes"),
+  new: record.get("New") || false,
 });
 
 export const fetchDecks = async category => {

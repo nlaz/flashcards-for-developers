@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import { Link } from "react-router-dom";
 import pluralize from "pluralize";
 import moment from "moment";
+import cx from "classnames";
 
 import config from "../config";
 import * as api from "./apiActions";
@@ -57,7 +58,10 @@ const Deck = ({ deck, onStar }) => {
     <div className="deck-item col-12 col-sm-6 col-md-4 col-lg-3 d-flex">
       <Link
         to={`/decks/${deck.id}`}
-        className="border border-dark rounded d-flex flex-column justify-content-between text-dark mb-3 p-4 w-100 position-relative"
+        className={cx(
+          "border rounded d-flex flex-column justify-content-between text-dark mb-3 p-4 w-100 position-relative",
+          deck.new ? "border-dark" : "border-dark",
+        )}
         disabled={!deck.cards}
         style={{
           fontSize: "14px",
@@ -67,6 +71,14 @@ const Deck = ({ deck, onStar }) => {
         <div>
           <ProgressBar className="mb-2" progress={progress} proficiency={proficiency} />
           {deck.name}
+          {deck.new && (
+            <div
+              className="badge badge-primary ml-2 position-absolute"
+              style={{ bottom: "16px", right: "18px" }}
+            >
+              New
+            </div>
+          )}
         </div>
       </Link>
     </div>
@@ -161,12 +173,7 @@ class Decks extends Component {
   onSetFilter = filter =>
     this.setState({ filter, decks: this.sortDecks(this.state.decks, filter) });
 
-  sortDecks = (decks, filter) =>
-    [...decks].sort((a, b) => {
-      return filter === FILTERS.NEWEST
-        ? new Date(b.createdTime) - new Date(a.createdTime)
-        : b.stars - a.stars;
-    });
+  sortDecks = (decks, filter) => [...decks].sort((a, b) => b.new - a.new);
 
   fetchCategory = categoryId => {
     api.fetchCategory(categoryId).then(response => {
@@ -251,10 +258,17 @@ class Decks extends Component {
               <div className="mx-auto" style={{ maxWidth: "500px" }}>
                 <span>
                   Join our community on Slack for news on exciting features, new content, and to
-                  meet awesome people like you. 🎉
+                  meet awesome people like you.{" "}
+                  <span role="img" aria-label="Tada emoji">
+                    🎉
+                  </span>
                 </span>
                 <div className="mt-3">
-                  <a href={config.slackinUrl} className="btn btn-dark py-2">
+                  <a
+                    href={config.slackinUrl}
+                    onClick={() => analytics.logJoinSlackEvent()}
+                    className="btn btn-dark py-2"
+                  >
                     <i className="fab fa-slack fa-lg mr-1" />
                     Join our Slack Channel
                   </a>

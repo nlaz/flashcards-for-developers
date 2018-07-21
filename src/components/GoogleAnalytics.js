@@ -5,7 +5,6 @@ import config from "../config";
 ReactGA.initialize(config.googleAnalyticsKey);
 
 export function logReviewEvent(cardId) {
-  ReactGA.set({ cardId });
   ReactGA.event({
     category: "User",
     action: "Reviewed a card",
@@ -14,7 +13,6 @@ export function logReviewEvent(cardId) {
 }
 
 export function logCompletedEvent(deckId) {
-  ReactGA.set({ deckId });
   ReactGA.event({
     category: "User",
     action: "Completed a deck stage",
@@ -23,7 +21,6 @@ export function logCompletedEvent(deckId) {
 }
 
 export function logFinishedEvent(deckId) {
-  ReactGA.set({ deckId });
   ReactGA.event({
     category: "User",
     action: "Finished reviewing a deck",
@@ -31,17 +28,7 @@ export function logFinishedEvent(deckId) {
   });
 }
 
-export function logReviewAgainEvent(deckId) {
-  ReactGA.set({ deckId });
-  ReactGA.event({
-    category: "User",
-    action: "Clicked review again",
-    label: deckId,
-  });
-}
-
 export function logKeepGoingEvent(deckId) {
-  ReactGA.set({ deckId });
   ReactGA.event({
     category: "User",
     action: "Clicked keep going",
@@ -50,11 +37,17 @@ export function logKeepGoingEvent(deckId) {
 }
 
 export function logStarDeckEvent(deckId) {
-  ReactGA.set({ deckId });
   ReactGA.event({
     category: "User",
     action: "Starred a deck",
     label: deckId,
+  });
+}
+
+export function logJoinSlackEvent() {
+  ReactGA.event({
+    category: "User",
+    action: "Clicked on 'Join Slack' button",
   });
 }
 
