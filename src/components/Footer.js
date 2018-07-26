@@ -28,7 +28,7 @@ const Footer = () => (
             className="text-secondary"
             rel="noopener noreferrer"
           >
-            Feedback
+            Contact
           </a>
         </small>
       </li>

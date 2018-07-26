@@ -254,23 +254,26 @@ class Decks extends Component {
         </div>
         <div className="row">
           <div className="col-md-10 offset-md-1 col-lg-8 offset-lg-2 mt-5">
-            <div className="border border-secondary rounded p-4 text-center bg-light">
+            <div className="border border-secondary rounded rounded p-4 text-center bg-light">
               <div className="mx-auto" style={{ maxWidth: "500px" }}>
                 <span>
-                  Join our community on Slack for news on exciting features, new content, and to
-                  meet awesome people like you.{" "}
+                  We want to hear from you. Let us know what features or content you would like to
+                  see.{" "}
                   <span role="img" aria-label="Tada emoji">
                     🎉
                   </span>
                 </span>
                 <div className="mt-3">
                   <a
-                    href={config.slackinUrl}
-                    onClick={() => analytics.logJoinSlackEvent()}
+                    href={config.airtableFeedbackUrl}
+                    onClick={() => analytics.logFeedbackEvent()}
                     className="btn btn-dark py-2"
+                    style={{ borderRadius: "999px" }}
+                    target="_blank"
+                    rel="noopener noreferrer"
                   >
-                    <i className="fab fa-slack fa-lg mr-1" />
-                    Join our Slack Channel
+                    <i className="fa fa-paper-plane mr-2" />
+                    Start a conversation
                   </a>
                 </div>
               </div>

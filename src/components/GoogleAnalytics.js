@@ -44,10 +44,10 @@ export function logStarDeckEvent(deckId) {
   });
 }
 
-export function logJoinSlackEvent() {
+export function logFeedbackEvent() {
   ReactGA.event({
     category: "User",
-    action: "Clicked on 'Join Slack' button",
+    action: "Clicked on 'Start converation' button",
   });
 }
 
