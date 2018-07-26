@@ -51,7 +51,12 @@ const FILTERS = {
   POPULAR: "popular",
 };
 
-const Deck = ({ deck, onStar }) => {
+const TABS = {
+  ALL: "all",
+  USER: "user",
+};
+
+const Deck = ({ deck, onStar, onToggleSave, isSaved }) => {
   const progress = getProgress(deck.id);
   const proficiency = getProficiency(deck.id);
   return (
@@ -71,9 +76,19 @@ const Deck = ({ deck, onStar }) => {
         <div>
           <ProgressBar className="mb-2" progress={progress} proficiency={proficiency} />
           {deck.name}
+          <button
+            className={cx("save badge position-absolute align-items-center p-1 text-uppercase", {
+              "save-active bg-dark text-white": isSaved,
+            })}
+            style={{ bottom: "16px", left: "18px" }}
+            onClick={e => onToggleSave(e, deck)}
+          >
+            <Octicon name={isSaved ? "check" : "plus"} className="d-flex align-items-center" />
+            {isSaved ? "Saved" : "Save"}
+          </button>
           {deck.new && (
             <div
-              className="badge badge-primary ml-2 position-absolute"
+              className="badge badge-primary ml-2 position-absolute p-1 text-uppercase"
               style={{ bottom: "16px", right: "18px" }}
             >
               New
@@ -158,16 +173,25 @@ class Decks extends Component {
     isLoading: true,
     isError: false,
     filter: FILTERS.POPULAR,
+    activeTab: TABS.ALL,
+    savedDecks: [],
   };
 
   componentWillMount() {
     document.title = "Flashcards for Developers";
     this.fetchCategory(FRONTEND_CATEGORY_ID);
+    const savedDecks = JSON.parse(localStorage.getItem("savedDecks")) || [];
+    this.setState({ savedDecks });
   }
 
   onStar = (event, deck) => {
     event.preventDefault();
     this.starDeck(deck);
+  };
+
+  onToggleSave = (event, deck) => {
+    event.preventDefault();
+    this.saveDeck(deck);
   };
 
   onSetFilter = filter =>
@@ -198,8 +222,21 @@ class Decks extends Component {
     });
   };
 
+  saveDeck = deck => {
+    const isSaved = this.isSaved(deck.id);
+    const savedDecks = this.isSaved(deck.id)
+      ? this.state.savedDecks.filter(el => el !== deck.id)
+      : [...this.state.savedDecks, deck.id];
+
+    this.setState({ savedDecks }, () => {
+      localStorage.setItem("savedDecks", JSON.stringify(savedDecks));
+    });
+  };
+
+  isSaved = id => this.state.savedDecks.includes(id);
+
   render() {
-    const { decks, isLoading, isError } = this.state;
+    const { decks, isLoading, isError, savedDecks, activeTab } = this.state;
 
     if (isLoading) {
       return (
@@ -228,18 +265,62 @@ class Decks extends Component {
       );
     }
 
+    const filteredDecks =
+      activeTab === TABS.USER ? decks.filter(el => savedDecks.includes(el.id)) : decks;
+
     return (
       <div className="container p-4 my-5">
-        <div className="mb-2 d-flex flex-column flex-lg-row justify-content-between align-items-lg-center">
+        <div className="d-flex flex-column flex-lg-row justify-content-between align-items-lg-center">
           <div className="mb-3">
             <h1 className="m-0">Flashcards for Frontend Developers</h1>
             <p className="m-0">A curated list of flashcards to boost your professional skills</p>
           </div>
-          <SkillProgress decks={decks} />
+          <SkillProgress decks={filteredDecks} />
         </div>
-        <div className="row mt-4">
-          {decks.map(deck => <Deck deck={deck} key={deck.id} onStar={this.onStar} />)}
+        <div className="d-flex mx-2">
+          <button
+            className="btn px-2 py-1 m-1 rounded-0"
+            onClick={() => this.setState({ activeTab: TABS.ALL })}
+          >
+            <small
+              className="text-uppercase font-weight-medium"
+              style={{ opacity: activeTab === TABS.ALL ? 1 : 0.5 }}
+            >
+              All Decks
+            </small>
+          </button>
+          <button
+            className="btn px-2 py-1 m-1 rounded-0"
+            onClick={() => this.setState({ activeTab: TABS.USER })}
+          >
+            <small
+              className="text-uppercase font-weight-medium"
+              style={{ opacity: activeTab === TABS.USER ? 1 : 0.5 }}
+            >
+              My Decks {savedDecks.length > 0 && <span>{savedDecks.length}</span>}
+            </small>
+          </button>
         </div>
+        <hr className="mb-2 mt-0" />
+        {filteredDecks.length > 0 ? (
+          <div className="row pt-1">
+            {filteredDecks.map(deck => (
+              <Deck
+                deck={deck}
+                key={deck.id}
+                onStar={this.onStar}
+                onToggleSave={this.onToggleSave}
+                isSaved={this.isSaved(deck.id)}
+              />
+            ))}
+          </div>
+        ) : (
+          <div className="pt-1 d-flex justify-content-center">
+            <div className="mt-4" style={{ maxWidth: "900px", flexGrow: 1 }}>
+              There's nothing here :(
+            </div>
+          </div>
+        )}
         <div className="row d-flex justify-content-center mt-2 mb-5">
           <a
             className="text-dark d-flex align-items-center btn btn-outline-dark"
