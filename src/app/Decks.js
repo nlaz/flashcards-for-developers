@@ -223,6 +223,8 @@ class Decks extends Component {
       ? this.state.savedDecks.filter(el => el !== deck.id)
       : [...this.state.savedDecks, deck.id];
 
+    analytics.logSaveDeckAction(this.isSaved(deck.id));
+
     this.setState({ savedDecks }, () => {
       localStorage.setItem("savedDecks", JSON.stringify(savedDecks));
     });

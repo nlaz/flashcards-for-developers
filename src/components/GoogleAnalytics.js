@@ -51,6 +51,13 @@ export function logFeedbackEvent() {
   });
 }
 
+export function logSaveDeckAction(isSaved) {
+  ReactGA.event({
+    category: "User",
+    action: !isSaved ? "Saved a deck" : "Unsaved a deck",
+  });
+}
+
 class GoogleAnalytics extends Component {
   render() {
     ReactGA.set({ page: window.location.pathname + window.location.hash });
