@@ -111,17 +111,13 @@ const SkillProgress = ({ decks }) => {
       return getProgress(el.id) > 0 ? avg + getProficiency(el.id) : avg;
     }, 0.0) / numPractices;
 
-  const subProgress = progress * proficiency;
+  const subProgress = progress * proficiency || 0;
 
   const progressData = [
-    { name: "Offset", value: 100 - progress },
+    { name: "Offset", value: 100 - progress || 1 },
     { name: "Progress", value: progress - subProgress },
     { name: "Proficiency", value: subProgress },
   ];
-
-  if (!progress) {
-    return false;
-  }
 
   return (
     <div
@@ -223,7 +219,6 @@ class Decks extends Component {
   };
 
   saveDeck = deck => {
-    const isSaved = this.isSaved(deck.id);
     const savedDecks = this.isSaved(deck.id)
       ? this.state.savedDecks.filter(el => el !== deck.id)
       : [...this.state.savedDecks, deck.id];
@@ -295,7 +290,7 @@ class Decks extends Component {
           >
             <small
               className="text-uppercase font-weight-medium"
-              style={{ opacity: activeTab === TABS.USER ? 1 : 0.5 }}
+              style={{ opacity: activeTab === TABS.USER ? 1 : savedDecks.length > 0 ? 0.5 : 0.2 }}
             >
               My Decks {savedDecks.length > 0 && <span>{savedDecks.length}</span>}
             </small>
@@ -315,24 +310,26 @@ class Decks extends Component {
             ))}
           </div>
         ) : (
-          <div className="pt-1 d-flex justify-content-center">
-            <div className="mt-4" style={{ maxWidth: "900px", flexGrow: 1 }}>
-              There's nothing here :(
-            </div>
+          <div className="w-100 text-center my-5 pb-5">
+            <span className="pb-5" style={{ opacity: 0.3 }}>
+              No currently saved decks
+            </span>
           </div>
         )}
-        <div className="row d-flex justify-content-center mt-2 mb-5">
-          <a
-            className="text-dark d-flex align-items-center btn btn-outline-dark"
-            href={config.airtableSuggestionsUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            style={{ borderRadius: "999px" }}
-          >
-            <Octicon className="d-flex mr-2" name="plus" />
-            <span>Suggest a deck</span>
-          </a>
-        </div>
+        {activeTab === TABS.ALL && (
+          <div className="row d-flex justify-content-center mt-2 mb-5">
+            <a
+              className="text-dark d-flex align-items-center btn btn-outline-dark"
+              href={config.airtableSuggestionsUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              style={{ borderRadius: "999px" }}
+            >
+              <Octicon className="d-flex mr-2" name="plus" />
+              <span>Suggest a deck</span>
+            </a>
+          </div>
+        )}
         <div className="row">
           <div className="col-md-10 offset-md-1 col-lg-8 offset-lg-2 mt-5">
             <div className="border border-secondary rounded rounded p-4 text-center bg-light">
