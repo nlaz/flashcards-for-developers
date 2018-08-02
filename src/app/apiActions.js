@@ -48,7 +48,7 @@ const getDeckFromRecord = record => ({
 
 export const fetchDecks = async category => {
   const results = [];
-  const filter = category ? `NOT({Category} != '${category.name}' )` : "";
+  const filter = category ? `({Category} = '${category.name}')` : "";
   await base("Decks")
     .select({ filterByFormula: filter })
     .eachPage((records, fetchNextPage) => {

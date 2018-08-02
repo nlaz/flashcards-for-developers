@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import pluralize from "pluralize";
 import moment from "moment";
 import cx from "classnames";
+import queryString from "query-string";
 
 import config from "../config";
 import * as api from "./apiActions";
@@ -175,7 +176,12 @@ class Decks extends Component {
 
   componentWillMount() {
     document.title = "Flashcards for Developers";
-    this.fetchCategory(FRONTEND_CATEGORY_ID);
+    const searchParams = queryString.parse(this.props.location.search);
+    if (searchParams.beta) {
+      this.fetchDecks();
+    } else {
+      this.fetchCategory(FRONTEND_CATEGORY_ID);
+    }
     const savedDecks = JSON.parse(localStorage.getItem("savedDecks")) || [];
     this.setState({ savedDecks });
   }
