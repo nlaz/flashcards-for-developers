@@ -262,7 +262,10 @@ class Review extends Component {
       return (
         <div className="container px-0" style={{ maxWidth: "960px" }}>
           <div className="navbar">
-            <Link to="/" className="py-2 d-flex align-items-center font-weight-medium text-dark">
+            <Link
+              to={{ pathname: "/", search: this.props.location.search }}
+              className="py-2 d-flex align-items-center font-weight-medium text-dark"
+            >
               <Octicon name="chevron-left" className="d-flex mr-1" />
               Flashcards for Developers
             </Link>
@@ -278,7 +281,10 @@ class Review extends Component {
       return (
         <div className="container px-0" style={{ maxWidth: "960px" }}>
           <div className="navbar">
-            <Link to="/" className="py-2 d-flex align-items-center font-weight-medium text-dark">
+            <Link
+              to={{ pathname: "/", search: this.props.location.search }}
+              className="py-2 d-flex align-items-center font-weight-medium text-dark"
+            >
               <Octicon name="chevron-left" className="d-flex mr-1" />
               Flashcards for Developers
             </Link>
@@ -303,7 +309,10 @@ class Review extends Component {
       <div>
         <div className="container px-0" style={{ maxWidth: "960px" }}>
           <div className="navbar">
-            <Link to="/" className="py-2 d-flex align-items-center font-weight-medium text-dark">
+            <Link
+              to={{ pathname: "/", search: this.props.location.search }}
+              className="py-2 d-flex align-items-center font-weight-medium text-dark"
+            >
               <Octicon name="chevron-left" className="d-flex mr-1" />
               Flashcards for Developers
             </Link>
@@ -493,7 +502,10 @@ class Review extends Component {
                   <div className="d-flex justify-content-center">
                     {!isCompleted ? (
                       <div>
-                        <Link to="/" className="btn btn-outline-dark mr-2">
+                        <Link
+                          to={{ pathname: "/", search: this.props.location.search }}
+                          className="btn btn-outline-dark mr-2"
+                        >
                           Go back
                         </Link>
                         <button className="btn btn-dark" onClick={this.onKeepGoing}>
@@ -501,7 +513,10 @@ class Review extends Component {
                         </button>
                       </div>
                     ) : (
-                      <Link to="/" className="btn btn-dark">
+                      <Link
+                        to={{ pathname: "/", search: this.props.location.search }}
+                        className="btn btn-dark"
+                      >
                         Go back home
                       </Link>
                     )}

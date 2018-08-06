@@ -57,13 +57,16 @@ const TABS = {
   USER: "user",
 };
 
-const Deck = ({ deck, onStar, onToggleSave, isSaved }) => {
+const Deck = ({ deck, onStar, onToggleSave, isSaved, search }) => {
   const progress = getProgress(deck.id);
   const proficiency = getProficiency(deck.id);
   return (
     <div className="deck-item col-12 col-sm-6 col-md-4 col-lg-3 d-flex">
       <Link
-        to={`/decks/${deck.id}`}
+        to={{
+          search,
+          pathname: `/decks/${deck.id}`,
+        }}
         className={cx(
           "border rounded d-flex flex-column justify-content-between text-dark mb-3 p-4 w-100 position-relative",
           deck.new ? "border-dark" : "border-dark",
@@ -314,6 +317,7 @@ class Decks extends Component {
                 onStar={this.onStar}
                 onToggleSave={this.onToggleSave}
                 isSaved={this.isSaved(deck.id)}
+                search={this.props.location.search}
               />
             ))}
           </div>

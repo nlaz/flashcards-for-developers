@@ -1,8 +1,9 @@
 import { Component } from "react";
 import ReactGA from "react-ga";
 import config from "../config";
+import queryString from "query-string";
 
-ReactGA.initialize(config.googleAnalyticsKey);
+ReactGA.initialize(config.googleAnalyticsKey, { debug: true });
 
 export function logReviewEvent(cardId) {
   ReactGA.event({
@@ -59,6 +60,13 @@ export function logSaveDeckAction(isSaved) {
 }
 
 class GoogleAnalytics extends Component {
+  componentWillMount() {
+    const searchParams = queryString.parse(this.props.location.search);
+    if (searchParams.beta) {
+      window[`ga-disable-${config.googleAnalyticsKey}`] = true;
+    }
+  }
+
   render() {
     ReactGA.set({ page: window.location.pathname + window.location.hash });
     ReactGA.pageview(window.location.pathname + window.location.hash);
