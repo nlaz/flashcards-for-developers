@@ -7,6 +7,12 @@ const Footer = () => (
     style={{ alignSelf: "flexEnd" }}
   >
     <small className="text-secondary">© Flashcards For Developers 2018</small>
+    <small className="text-secondary d-flex align-items-center">
+      <span className="font-weight-bold mr-1" style={{ fontSize: "1.2em" }}>
+        29,528
+      </span>
+      cards studied
+    </small>
     <ul className="list-inline mb-0">
       <li className="list-inline-item">
         <small>

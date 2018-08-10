@@ -119,6 +119,11 @@ a[disabled] {
   color: #999999;
 }
 
+@media (max-width: 992px) {
+  .deck-item .save {
+    display: flex;
+  }
+}
 .deck-item .save-active svg {
   fill: white;
 }
