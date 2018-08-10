@@ -12,10 +12,6 @@ h1 {
   font-weight: 500;
 }
 
-.markdown-body pre {
-  overflow-x: hidden !important;
-}
-
 .App {
   min-height: 100vh;
 }

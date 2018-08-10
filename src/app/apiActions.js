@@ -84,8 +84,11 @@ export const updateDeck = async (deckId, body) => {
 
 export const fetchCards = async deck => {
   const results = [];
+  const filterByFormula = deck.name.includes(",")
+    ? `({Deck} = '"${deck.name}"')`
+    : `({Deck} = '${deck.name}')`;
   await base("Cards")
-    .select({ filterByFormula: `NOT({Deck} != '${deck.name}' )` })
+    .select({ filterByFormula })
     .eachPage((records, fetchNextPage) => {
       records.forEach(record => {
         results.push({ id: record.id, front: record.get("Front"), back: record.get("Back") });
