@@ -6,10 +6,11 @@ import Chance from "chance";
 import moment from "moment";
 import { ResponsiveContainer, Cell, PieChart, Pie, Tooltip, Legend, Label } from "recharts";
 
-import config from "../config";
-import Octicon from "../components/Octicon";
-import * as api from "./apiActions";
-import * as analytics from "../components/GoogleAnalytics";
+import config from "../../config";
+import Octicon from "../../components/Octicon";
+import DeckFeedback from "./DeckFeedback";
+import * as api from "../apiActions";
+import * as analytics from "../../components/GoogleAnalytics";
 import "./Review.css";
 
 const chance = new Chance();
@@ -40,6 +41,58 @@ const StudyProgress = ({ index, items, pageSize, pageStart, pageEnd, isFinished 
   );
 };
 
+const ReviewHeader = ({ deck, className }) => (
+  <div className={className}>
+    <h1 className="m-0">{deck.name}</h1>
+    {deck.description && (
+      <div
+        className="deck-description mb-2"
+        dangerouslySetInnerHTML={{
+          __html: marked(deck.description),
+        }}
+      />
+    )}
+    {deck.source && (
+      <div className="mb-2">
+        <a href={deck.source}>{deck.source}</a>
+      </div>
+    )}
+  </div>
+);
+
+const ReviewNavigation = ({ location }) => (
+  <div className="navbar">
+    <Link
+      to={{ pathname: "/", search: location.search }}
+      className="py-2 d-flex align-items-center font-weight-medium text-dark"
+    >
+      <Octicon name="chevron-left" className="d-flex mr-1" />
+      Flashcards for Developers
+    </Link>
+  </div>
+);
+
+const ReviewType = ({ type }) => (
+  <div
+    className="badge badge-pill badge-light text-secondary position-absolute mr-4"
+    style={{ top: "12px", right: "0" }}
+  >
+    {type}
+  </div>
+);
+
+const ReportLink = ({ content }) => (
+  <a
+    href={config.airtableReportUrl}
+    target="_blank"
+    rel="noopener noreferrer"
+    className="btn btn-reset position-absolute d-flex align-items-center"
+    style={{ right: 0, bottom: 0, fill: "#cdcdcd", color: "#cdcdcd" }}
+  >
+    <small>{content}</small>
+  </a>
+);
+
 class Review extends Component {
   state = {
     deck: {},
@@ -50,12 +103,10 @@ class Review extends Component {
     isLoading: true,
     isError: false,
     isReversed: false,
-    isFinished: false,
     isRevealed: false,
     numCorrect: 0,
     numIncorrect: 0,
     selected: {},
-    isVoteSent: false,
     pageSize: getRandomPageSize(),
     page: 0,
   };
@@ -101,10 +152,10 @@ class Review extends Component {
   };
 
   onKeyPress = e => {
-    if (this.isFinished() && e.keyCode === 32) {
+    if (this.isStageFinished() && e.keyCode === 32) {
       e.preventDefault();
       this.onKeepGoing();
-    } else if (!this.isFinished()) {
+    } else if (!this.isStageFinished()) {
       const { options } = this.state;
       if (options.map((i, k) => String(k + 1)).includes(e.key)) {
         const answer = parseInt(e.key, 10) - 1;
@@ -126,8 +177,8 @@ class Review extends Component {
     const isReversed = this.isReversible(this.state.deck) && chance.bool();
     const options = this.getOptions(index, cards);
     const numCorrect = this.state.numCorrect + 1;
-    if (this.isFinished(index)) {
-      if (this.state.index <= this.state.cards.length - 1) {
+    if (this.isStageFinished(index)) {
+      if (this.isDeckCompleted(index)) {
         analytics.logCompletedEvent(this.state.deck.id);
       } else {
         analytics.logFinishedEvent(this.state.deck.id);
@@ -156,32 +207,13 @@ class Review extends Component {
   };
 
   onToggleReveal = () => {
-    this.setState({ isRevealed: !this.state.isRevealed }, () =>
-      this.setState({
-        options: this.getOptions(this.state.index, this.state.cards),
-      }),
-    );
+    const { isRevealed, index, cards } = this.state;
+    this.setState({ isRevealed: !isRevealed, options: this.getOptions(index, cards) });
   };
 
   onKeepGoing = () => {
     analytics.logKeepGoingEvent(this.state.deck.id);
     this.setState({ page: this.state.page + 1 });
-  };
-
-  onUpVote = () => {
-    const { deck } = this.state;
-    this.setState({ isVoteSent: true });
-    api.updateDeck(deck.id, { Upvotes: (deck.upvotes || 0) + 1 }).then(response => {
-      this.setState({ deck: response });
-    });
-  };
-
-  onDownVote = () => {
-    const { deck } = this.state;
-    this.setState({ isVoteSent: true });
-    api.updateDeck(deck.id, { Downvotes: (deck.downvotes || 0) + 1 }).then(response => {
-      this.setState({ deck: response });
-    });
   };
 
   fetchDeck = deckId => {
@@ -248,8 +280,9 @@ class Review extends Component {
   isMultiple = deck => (deck || this.state.deck).type === "Multiple select";
   isSelfGraded = deck => (deck || this.state.deck).type === "Self graded";
   isImageSelect = deck => (deck || this.state.deck).type === "Image select";
-  isFinished = index =>
+  isStageFinished = index =>
     (index || this.state.index) >= Math.min(this.getPageEnd(), this.state.cards.length);
+  isDeckCompleted = index => (index || this.state.index) > this.state.cards.length - 1;
   isCorrect = (option, card) =>
     this.isMultiple() ? option.back === card.back : option.id === card.id || this.isSelfGraded();
   isSelected = option =>
@@ -302,39 +335,16 @@ class Review extends Component {
     const progress = this.getProgress();
     const pageEnd = this.getPageEnd();
     const pageStart = this.getPageStart();
-    const isFinished = this.isFinished();
+    const isStageFinished = this.isStageFinished();
     const isCompleted = this.state.index > this.state.cards.length - 1;
 
     return (
       <div>
-        <div className="container px-0" style={{ maxWidth: "960px" }}>
-          <div className="navbar">
-            <Link
-              to={{ pathname: "/", search: this.props.location.search }}
-              className="py-2 d-flex align-items-center font-weight-medium text-dark"
-            >
-              <Octicon name="chevron-left" className="d-flex mr-1" />
-              Flashcards for Developers
-            </Link>
-          </div>
+        <div className="container container--narrow px-0">
+          <ReviewNavigation location={this.props.location} />
         </div>
-        <div className="container py-4" style={{ maxWidth: "960px" }}>
-          <div className="mb-5">
-            <h1 className="m-0">{deck.name}</h1>
-            {deck.description && (
-              <div
-                className="deck-description mb-2"
-                dangerouslySetInnerHTML={{
-                  __html: marked(deck.description),
-                }}
-              />
-            )}
-            {deck.source && (
-              <div className="mb-2">
-                <a href={deck.source}>{deck.source}</a>
-              </div>
-            )}
-          </div>
+        <div className="container container--narrow py-4">
+          <ReviewHeader deck={deck} className="mb-5" />
           <div className="flashcard-container row mt-4 px-3">
             <StudyProgress
               className="mt-2"
@@ -343,7 +353,7 @@ class Review extends Component {
               pageSize={this.state.pageSize}
               pageEnd={pageEnd}
               pageStart={pageStart}
-              isFinished={isFinished}
+              isFinished={isStageFinished}
             />
             <div
               style={{ minHeight: "400px" }}
@@ -354,16 +364,9 @@ class Review extends Component {
                 },
               )}
             >
-              {!isFinished ? (
+              {!isStageFinished ? (
                 <div className="row w-100 mx-0">
-                  {deck.type && (
-                    <div
-                      className="badge badge-pill badge-light text-secondary position-absolute mr-4"
-                      style={{ top: "12px", right: "0" }}
-                    >
-                      {this.getDeckType()}
-                    </div>
-                  )}
+                  <ReviewType type={this.getDeckType()} />
                   <div className="col-12 col-lg-6 d-flex align-items-center px-1 pb-2">
                     {this.isImageSelect(deck) ? (
                       <img className="img-fluid px-3 mx-auto" alt="" src={currentCard.front} />
@@ -417,20 +420,12 @@ class Review extends Component {
                     ))}
                     {this.isSelfGraded() &&
                       !this.state.isRevealed && (
-                        <button className="btn border rounded mt-2" onClick={this.onToggleReveal}>
+                        <button className="btn border rounded" onClick={this.onToggleReveal}>
                           Press space to show answer
                         </button>
                       )}
                   </div>
-                  <a
-                    href={config.airtableReportUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="btn btn-reset position-absolute d-flex align-items-center"
-                    style={{ right: 0, bottom: 0, fill: "#cdcdcd", color: "#cdcdcd" }}
-                  >
-                    <small>Report a problem</small>
-                  </a>
+                  <ReportLink content="Report a problem" />
                 </div>
               ) : (
                 <div className="w-100">
@@ -524,39 +519,8 @@ class Review extends Component {
                 </div>
               )}
             </div>
-            <div className={cx("deck-vote w-100", { "deck-vote--active": isCompleted })}>
-              <div className="bg-light border border-secondary rounded text-center p-2">
-                {!this.state.isVoteSent ? (
-                  <div>
-                    <p className="font-weight-medium mb-2">Was this deck helpful?</p>
-                    <div>
-                      <button
-                        className="btn btn-outline-dark bg-white px-5 py-2 mr-2"
-                        onClick={this.onDownVote}
-                        aria-label="No"
-                      >
-                        <Octicon className="d-flex" name="thumbsdown" />
-                      </button>
-                      <button
-                        className="btn btn-outline-dark bg-white px-5 py-2"
-                        onClick={this.onUpVote}
-                        aria-label="Yes"
-                      >
-                        <Octicon className="d-flex" name="thumbsup" />
-                      </button>
-                    </div>
-                  </div>
-                ) : (
-                  <div>
-                    <p className="font-weight-medium my-2">
-                      Your feedback will improve our content! Thank you!{" "}
-                      <span role="img" aria-label="Tada!">
-                        🎉
-                      </span>
-                    </p>
-                  </div>
-                )}
-              </div>
+            <div className="w-100">
+              <DeckFeedback deck={deck} isCompleted={this.isDeckCompleted()} />
             </div>
           </div>
         </div>

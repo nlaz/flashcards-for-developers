@@ -2,8 +2,8 @@ import React, { Component } from "react";
 import { HashRouter, Route, Switch } from "react-router-dom";
 
 // import Categories from "./Categories";
-import Decks from "./Decks";
-import Review from "./Review";
+import Decks from "./decks/Decks";
+import Review from "./review/Review";
 import NotFound from "../components/NotFound";
 import GoogleAnalytics from "../components/GoogleAnalytics";
 import Footer from "../components/Footer";

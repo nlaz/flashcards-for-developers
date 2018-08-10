@@ -20,6 +20,10 @@ h1 {
   cursor: pointer;
 }
 
+.container--narrow {
+  max-width: 960px;
+}
+
 a[disabled] {
   pointer-events: none;
 }
@@ -85,7 +89,7 @@ a[disabled] {
 }
 
 .flashcard-option--disabled {
-  opacity: 0.5;
+  display: none !important;
 }
 
 .deck-vote {
