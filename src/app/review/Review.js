@@ -9,6 +9,8 @@ import { ResponsiveContainer, Cell, PieChart, Pie, Tooltip, Legend, Label } from
 import config from "../../config";
 import Octicon from "../../components/Octicon";
 import DeckFeedback from "./DeckFeedback";
+import ReviewHeader from "./ReviewHeader";
+import StudyProgress from "./StudyProgress";
 import * as api from "../apiActions";
 import * as analytics from "../../components/GoogleAnalytics";
 import "./Review.css";
@@ -19,46 +21,6 @@ const SELF_GRADE_CORRECT = "I was right";
 const SELF_GRADE_INCORRECT = "I was wrong";
 
 const getRandomPageSize = () => chance.integer({ min: PAGE_SIZE - 2, max: PAGE_SIZE + 1 });
-
-const StudyProgress = ({ index, items, pageSize, pageStart, pageEnd, isFinished }) => {
-  return (
-    <div className="ml-auto mb-2 mx-2">
-      <div className="d-flex align-items-center">
-        {items.slice(pageStart, pageEnd).map((el, key) => (
-          <div
-            key={key}
-            className={cx("border border-dark rounded-circle border-width-2 ml-1", {
-              "bg-dark": isFinished || key < index % pageSize,
-            })}
-            style={{
-              width: "10px",
-              height: "10px",
-            }}
-          />
-        ))}
-      </div>
-    </div>
-  );
-};
-
-const ReviewHeader = ({ deck, className }) => (
-  <div className={className}>
-    <h1 className="m-0">{deck.name}</h1>
-    {deck.description && (
-      <div
-        className="deck-description mb-2"
-        dangerouslySetInnerHTML={{
-          __html: marked(deck.description),
-        }}
-      />
-    )}
-    {deck.source && (
-      <div className="mb-2">
-        <a href={deck.source}>{deck.source}</a>
-      </div>
-    )}
-  </div>
-);
 
 const ReviewNavigation = ({ location }) => (
   <div className="navbar">
@@ -111,12 +73,9 @@ class Review extends Component {
     page: 0,
   };
 
-  componentWillMount() {
+  componentDidMount() {
     const { params } = this.props.match;
     this.fetchDeck(params.deckId);
-  }
-
-  componentDidMount() {
     window.addEventListener("keyup", e => this.onKeyPress(e));
   }
 
@@ -125,85 +84,41 @@ class Review extends Component {
     clearTimeout(this.timeout);
   }
 
-  onSelect = (answer, card) => {
-    if (this.isSelfGraded()) {
-      if (this.state.isRevealed) {
-        this.setState({ selected: answer });
-        analytics.logReviewEvent(card.id);
-        if (answer === SELF_GRADE_INCORRECT) {
-          this.setState({
-            numCorrect: this.state.numCorrect - 1,
-            numIncorrect: this.state.numIncorrect + 1,
-          });
-        }
-        this.timeout = setTimeout(() => {
-          this.onCorrectAnswer();
-          this.onToggleReveal();
-        }, 300);
-      }
-    } else if (this.isCorrect(answer, card)) {
-      this.setState({ selected: answer });
-      analytics.logReviewEvent(card.id);
-      this.timeout = setTimeout(() => this.onCorrectAnswer(), 300);
-    } else {
-      this.setState({ selected: answer });
-      this.onIncorrectAnswer(card);
-    }
-  };
-
   onKeyPress = e => {
-    if (this.isStageFinished() && e.keyCode === 32) {
-      e.preventDefault();
+    e.preventDefault();
+    switch (e.key) {
+      case " ": // spacebar key
+        return this.onSpaceBarPress();
+      case (e.key.match(/^[0-9]$/) || {}).input: // number key
+        return this.onOptionPress(e.key);
+      default:
+        return;
+    }
+  };
+
+  onOptionPress = key => {
+    const index = parseInt(key, 10) - 1;
+    const answer = this.state.options[index];
+    this.onSelectAnswer(answer);
+  };
+
+  onSpaceBarPress = () => {
+    if (this.isStageFinished()) {
       this.onKeepGoing();
-    } else if (!this.isStageFinished()) {
-      const { options } = this.state;
-      if (options.map((i, k) => String(k + 1)).includes(e.key)) {
-        const answer = parseInt(e.key, 10) - 1;
-        const { options } = this.state;
-        const currentCard = this.getCurrentCard();
-        this.onSelect(options[answer], currentCard);
-      } else if (this.isSelfGraded() && !this.state.isRevealed) {
-        if (e.keyCode === 32) {
-          e.preventDefault();
-          this.onToggleReveal();
-        }
-      }
+    } else if (this.isSelfGraded() && !this.state.isRevealed) {
+      this.onToggleReveal();
     }
   };
 
-  onCorrectAnswer = () => {
-    const { cards } = this.state;
-    const index = Math.min(this.state.index + 1, cards.length);
-    const isReversed = this.isReversible(this.state.deck) && chance.bool();
-    const options = this.getOptions(index, cards);
-    const numCorrect = this.state.numCorrect + 1;
-    if (this.isStageFinished(index)) {
-      if (this.isDeckCompleted(index)) {
-        analytics.logCompletedEvent(this.state.deck.id);
-      } else {
-        analytics.logFinishedEvent(this.state.deck.id);
-      }
-      const progressObj = {
-        progress: this.getProgress(index) / 100,
-        reviewedAt: moment(),
-        leitnerBox: 1, //TODO increment/decrement leitner box
-      };
-      localStorage.setItem(this.state.deck.id, JSON.stringify(progressObj));
-    }
-    this.setState({
-      index,
-      options,
-      isReversed,
-      numCorrect,
-      selected: {},
-    });
-  };
+  onSelectAnswer = answer => {
+    const isSelfGraded = this.isSelfGraded();
 
-  onIncorrectAnswer = card => {
-    const numIncorrect = this.state.numIncorrect + 1;
-    this.setState({ isWrong: true, numIncorrect }, () =>
-      setTimeout(() => this.setState({ isWrong: false }), 500),
-    );
+    this.setState({ selected: answer });
+    if (isSelfGraded) {
+      this.handleSelfGradedAnswer(answer);
+    } else {
+      this.handleMultipleChoiceAnswer(answer);
+    }
   };
 
   onToggleReveal = () => {
@@ -214,6 +129,73 @@ class Review extends Component {
   onKeepGoing = () => {
     analytics.logKeepGoingEvent(this.state.deck.id);
     this.setState({ page: this.state.page + 1 });
+  };
+
+  handleSelfGradedAnswer = answer => {
+    const isCorrect = answer === SELF_GRADE_CORRECT;
+
+    if (!this.state.isRevealed) {
+      return;
+    }
+    if (!isCorrect) {
+      const numCorrect = this.state.numCorrect - 1;
+      const numIncorrect = this.state.numIncorrect + 1;
+      this.setState({ numCorrect, numIncorrect });
+    }
+
+    this.timeout = setTimeout(() => this.handleCorrectAnswer(), 300);
+  };
+
+  handleMultipleChoiceAnswer = answer => {
+    const card = this.getCurrentCard();
+    const isCorrect = this.isCorrectAnswer(answer, card);
+
+    if (isCorrect) {
+      this.timeout = setTimeout(() => this.handleCorrectAnswer(), 300);
+    } else {
+      this.handleIncorrectAnswer(card);
+    }
+  };
+
+  handleCorrectAnswer = () => {
+    const { cards } = this.state;
+    const index = Math.min(this.state.index + 1, cards.length);
+    if (this.isStageFinished(index)) {
+      this.logReviewEvent();
+      this.handleSaveProgress(index);
+    }
+    this.setState({
+      index,
+      selected: {},
+      isRevealed: false,
+      options: this.getOptions(index, cards),
+      isReversed: this.isReversible(this.state.deck) && chance.bool(),
+      numCorrect: this.state.numCorrect + 1,
+    });
+  };
+
+  handleSaveProgress = index => {
+    const progressObj = {
+      progress: this.getProgress(index) / 100,
+      reviewedAt: moment(),
+      leitnerBox: 1, //TODO increment/decrement leitner box
+    };
+    localStorage.setItem(this.state.deck.id, JSON.stringify(progressObj));
+  };
+
+  handleIncorrectAnswer = card => {
+    const numIncorrect = this.state.numIncorrect + 1;
+    this.setState({ isWrong: true, numIncorrect }, () => {
+      this.timeout = setTimeout(() => this.setState({ isWrong: false }), 500);
+    });
+  };
+
+  logReviewEvent = index => {
+    if (this.isDeckCompleted(index)) {
+      analytics.logCompletedEvent(this.state.deck.id);
+    } else {
+      analytics.logFinishedEvent(this.state.deck.id);
+    }
   };
 
   fetchDeck = deckId => {
@@ -283,7 +265,7 @@ class Review extends Component {
   isStageFinished = index =>
     (index || this.state.index) >= Math.min(this.getPageEnd(), this.state.cards.length);
   isDeckCompleted = index => (index || this.state.index) > this.state.cards.length - 1;
-  isCorrect = (option, card) =>
+  isCorrectAnswer = (option, card) =>
     this.isMultiple() ? option.back === card.back : option.id === card.id || this.isSelfGraded();
   isSelected = option =>
     option.id ? this.state.selected.id === option.id : this.state.selected === option;
@@ -293,16 +275,8 @@ class Review extends Component {
 
     if (isLoading) {
       return (
-        <div className="container px-0" style={{ maxWidth: "960px" }}>
-          <div className="navbar">
-            <Link
-              to={{ pathname: "/", search: this.props.location.search }}
-              className="py-2 d-flex align-items-center font-weight-medium text-dark"
-            >
-              <Octicon name="chevron-left" className="d-flex mr-1" />
-              Flashcards for Developers
-            </Link>
-          </div>
+        <div className="container container--narrow px-0">
+          <ReviewNavigation location={this.props.location} />
           <div className="p-4">
             <h1 className="text-secondary">Loading deck...</h1>
           </div>
@@ -312,16 +286,8 @@ class Review extends Component {
 
     if (isError) {
       return (
-        <div className="container px-0" style={{ maxWidth: "960px" }}>
-          <div className="navbar">
-            <Link
-              to={{ pathname: "/", search: this.props.location.search }}
-              className="py-2 d-flex align-items-center font-weight-medium text-dark"
-            >
-              <Octicon name="chevron-left" className="d-flex mr-1" />
-              Flashcards for Developers
-            </Link>
-          </div>
+        <div className="container container--narrow px-0">
+          <ReviewNavigation location={this.props.location} />
           <div className="text-center p-4">
             <h1 className="text-dark">Unable to load request</h1>
             <p>Please try again or go back home.</p>
@@ -394,16 +360,16 @@ class Review extends Component {
                     {options.map((option, key) => (
                       <div
                         key={option.id || option}
-                        onClick={() => this.onSelect(option, currentCard)}
+                        onClick={() => this.onSelectAnswer(option)}
                         className={cx(
                           "flashcard-option border rounded d-flex align-items-start p-3 w-100",
                           {
                             "flashcard-option--disabled":
                               this.isSelfGraded() && !this.state.isRevealed,
                             "border-success text-success":
-                              this.isSelected(option) && this.isCorrect(option, currentCard),
+                              this.isSelected(option) && this.isCorrectAnswer(option, currentCard),
                             "border-danger text-danger":
-                              this.isSelected(option) && !this.isCorrect(option, currentCard),
+                              this.isSelected(option) && !this.isCorrectAnswer(option, currentCard),
                           },
                         )}
                       >

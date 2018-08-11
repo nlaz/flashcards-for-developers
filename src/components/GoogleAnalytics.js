@@ -3,7 +3,7 @@ import ReactGA from "react-ga";
 import config from "../config";
 import queryString from "query-string";
 
-ReactGA.initialize(config.googleAnalyticsKey, { debug: true });
+ReactGA.initialize(config.googleAnalyticsKey);
 
 export function logReviewEvent(cardId) {
   ReactGA.event({

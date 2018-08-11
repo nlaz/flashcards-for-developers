@@ -1,7 +1,6 @@
 import React, { Component } from "react";
 import { HashRouter, Route, Switch } from "react-router-dom";
 
-// import Categories from "./Categories";
 import Decks from "./decks/Decks";
 import Review from "./review/Review";
 import NotFound from "../components/NotFound";
