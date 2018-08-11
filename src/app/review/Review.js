@@ -4,13 +4,13 @@ import cx from "classnames";
 import marked from "marked";
 import Chance from "chance";
 import moment from "moment";
-import { ResponsiveContainer, Cell, PieChart, Pie, Tooltip, Legend, Label } from "recharts";
 
 import config from "../../config";
 import Octicon from "../../components/Octicon";
 import DeckFeedback from "./DeckFeedback";
 import ReviewHeader from "./ReviewHeader";
 import StudyProgress from "./StudyProgress";
+import ReviewResults from "./ReviewResults";
 import * as api from "../apiActions";
 import * as analytics from "../../components/GoogleAnalytics";
 import "./Review.css";
@@ -98,8 +98,10 @@ class Review extends Component {
 
   onOptionPress = key => {
     const index = parseInt(key, 10) - 1;
-    const answer = this.state.options[index];
-    this.onSelectAnswer(answer);
+    if (index >= 0 && index < this.state.options.length) {
+      const answer = this.state.options[index];
+      this.onSelectAnswer(answer);
+    }
   };
 
   onSpaceBarPress = () => {
@@ -113,7 +115,6 @@ class Review extends Component {
   onSelectAnswer = answer => {
     const isSelfGraded = this.isSelfGraded();
 
-    this.setState({ selected: answer });
     if (isSelfGraded) {
       this.handleSelfGradedAnswer(answer);
     } else {
@@ -143,12 +144,14 @@ class Review extends Component {
       this.setState({ numCorrect, numIncorrect });
     }
 
+    this.setState({ selected: answer });
     this.timeout = setTimeout(() => this.handleCorrectAnswer(), 300);
   };
 
   handleMultipleChoiceAnswer = answer => {
     const card = this.getCurrentCard();
     const isCorrect = this.isCorrectAnswer(answer, card);
+    this.setState({ selected: answer });
 
     if (isCorrect) {
       this.timeout = setTimeout(() => this.handleCorrectAnswer(), 300);
@@ -161,7 +164,7 @@ class Review extends Component {
     const { cards } = this.state;
     const index = Math.min(this.state.index + 1, cards.length);
     if (this.isStageFinished(index)) {
-      this.logReviewEvent();
+      this.logReviewEvent(index);
       this.handleSaveProgress(index);
     }
     this.setState({
@@ -176,7 +179,7 @@ class Review extends Component {
 
   handleSaveProgress = index => {
     const progressObj = {
-      progress: this.getProgress(index) / 100,
+      progress: Math.round(100 * index / this.state.cards.length) / 100,
       reviewedAt: moment(),
       leitnerBox: 1, //TODO increment/decrement leitner box
     };
@@ -244,19 +247,9 @@ class Review extends Component {
   getOptionHTML = option => marked(this.state.isReversed ? option.front : option.back || option);
   getCardHTML = card => marked(this.state.isReversed ? card.back : card.front);
 
-  getProgress = index => Math.round(100 * (index || this.state.index) / this.state.cards.length);
   getPageStart = () => Math.max(Math.floor(this.state.page * this.state.pageSize), 0);
   getPageEnd = () =>
     Math.min(Math.floor((this.state.page + 1) * this.state.pageSize), this.state.cards.length);
-
-  getResults = () => [
-    { name: "Correct", value: this.state.numCorrect },
-    { name: "Incorrect", value: this.state.numIncorrect },
-  ];
-  getProgressData = () => [
-    { name: "Practiced", value: this.state.index },
-    { name: "Not started", value: this.state.cards.length - this.state.index },
-  ];
 
   isReversible = deck => (deck || this.state.deck).type === "Reversible select";
   isMultiple = deck => (deck || this.state.deck).type === "Multiple select";
@@ -265,8 +258,16 @@ class Review extends Component {
   isStageFinished = index =>
     (index || this.state.index) >= Math.min(this.getPageEnd(), this.state.cards.length);
   isDeckCompleted = index => (index || this.state.index) > this.state.cards.length - 1;
-  isCorrectAnswer = (option, card) =>
-    this.isMultiple() ? option.back === card.back : option.id === card.id || this.isSelfGraded();
+  isCorrectAnswer = (option, card) => {
+    if (this.isSelfGraded()) {
+      return option === SELF_GRADE_CORRECT;
+    } else if (this.isMultiple()) {
+      return option.back === card.back;
+    } else {
+      return option.id === card.id;
+    }
+  };
+
   isSelected = option =>
     option.id ? this.state.selected.id === option.id : this.state.selected === option;
 
@@ -297,12 +298,9 @@ class Review extends Component {
     }
 
     const currentCard = this.getCurrentCard();
-    const progressData = this.getProgressData();
-    const progress = this.getProgress();
     const pageEnd = this.getPageEnd();
     const pageStart = this.getPageStart();
     const isStageFinished = this.isStageFinished();
-    const isCompleted = this.state.index > this.state.cards.length - 1;
 
     return (
       <div>
@@ -394,95 +392,14 @@ class Review extends Component {
                   <ReportLink content="Report a problem" />
                 </div>
               ) : (
-                <div className="w-100">
-                  <h3 className="mb-5 text-center">
-                    {this.state.index <= this.state.cards.length - 1
-                      ? "Nice work!"
-                      : "You're done!"}
-                  </h3>
-                  <div className="row d-flex mb-2">
-                    <div className="px-5 position-relative col-12 col-lg-6">
-                      <ResponsiveContainer height={200} width="100%">
-                        <PieChart>
-                          <Pie
-                            data={progressData}
-                            dataKey="value"
-                            innerRadius={60}
-                            outerRadius={80}
-                            animationDuration={0}
-                            startAngle={180}
-                            endAngle={0}
-                            fill="#82ca9d"
-                          >
-                            <Cell fill="#343a40" />
-                            <Cell fill="#efefef" />
-                            <Label
-                              className="font-weight-bold"
-                              fill="#343a40"
-                              position="center"
-                              style={{ fontSize: "24px" }}
-                              value={`${progress}%`}
-                            />
-                          </Pie>
-                          <Legend className="w-100" verticalAlign="top" height={50} />
-                          <Tooltip />
-                        </PieChart>
-                      </ResponsiveContainer>
-                      <span
-                        className="text-center font-weight-medium position-absolute"
-                        style={{ right: 0, left: 0, top: "135px" }}
-                      >
-                        Progress
-                      </span>
-                    </div>
-                    <div className="px-4" style={{ flexGrow: 1 }}>
-                      <table className="table w-100">
-                        <thead>
-                          <tr>
-                            <th>Results</th>
-                            <th>#</th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          <tr>
-                            <td>Incorrect Answers</td>
-                            <td>{this.state.numIncorrect}</td>
-                          </tr>
-                          <tr>
-                            <td>Correct Answers</td>
-                            <td>{this.state.numCorrect}</td>
-                          </tr>
-                          <tr>
-                            <td>Total Seen</td>
-                            <td>{this.state.index}</td>
-                          </tr>
-                        </tbody>
-                      </table>
-                    </div>
-                  </div>
-                  <div className="d-flex justify-content-center">
-                    {!isCompleted ? (
-                      <div>
-                        <Link
-                          to={{ pathname: "/", search: this.props.location.search }}
-                          className="btn btn-outline-dark mr-2"
-                        >
-                          Go back
-                        </Link>
-                        <button className="btn btn-dark" onClick={this.onKeepGoing}>
-                          Press space to continue
-                        </button>
-                      </div>
-                    ) : (
-                      <Link
-                        to={{ pathname: "/", search: this.props.location.search }}
-                        className="btn btn-dark"
-                      >
-                        Go back home
-                      </Link>
-                    )}
-                  </div>
-                </div>
+                <ReviewResults
+                  index={this.state.index}
+                  cards={this.state.cards}
+                  location={this.props.location}
+                  numCorrect={this.state.numCorrect}
+                  numIncorrect={this.state.numIncorrect}
+                  onKeepGoing={this.onKeepGoing}
+                />
               )}
             </div>
             <div className="w-100">
