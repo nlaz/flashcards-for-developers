@@ -29,6 +29,7 @@ export function logFinishedEvent(deckId) {
   });
 }
 
+
 export function logKeepGoingEvent(deckId) {
   ReactGA.event({
     category: "User",
@@ -49,6 +50,13 @@ export function logFeedbackEvent() {
   ReactGA.event({
     category: "User",
     action: "Clicked on 'Start converation' button",
+  });
+}
+
+export function logDonateEvent() {
+  ReactGA.event({
+    category: "User",
+    action: "Clicked on 'Donate' button",
   });
 }
 

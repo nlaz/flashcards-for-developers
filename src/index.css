@@ -35,6 +35,9 @@ a[disabled] {
 .deck-item {
   height: 150px;
 }
+.donate-button{
+  margin-top: 10px;
+}
 @media (min-width: 576px) {
   .deck-item {
     height: 220px;

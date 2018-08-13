@@ -9,6 +9,7 @@ import * as leitner from "../../spaced/leitner";
 import Octicon from "../../components/Octicon";
 import SkillProgress from "./SkillProgress";
 import FeedbackForm from "./FeedbackForm";
+import DonateButton from "./DonateButton";
 import DeckItem from "./DeckItem";
 
 const FRONTEND_CATEGORY_ID = "recUROLxLzjGsSh8P";
@@ -223,6 +224,7 @@ class Decks extends Component {
         <div className="row">
           <div className="col-md-10 offset-md-1 col-lg-8 offset-lg-2 mt-5">
             <FeedbackForm onClick={() => analytics.logFeedbackEvent} />
+            <DonateButton onClick={() => analytics.logDonateEvent} />
           </div>
         </div>
       </div>
