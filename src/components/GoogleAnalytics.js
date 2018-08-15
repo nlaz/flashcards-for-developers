@@ -8,8 +8,15 @@ ReactGA.initialize(config.googleAnalyticsKey);
 
 export function logTwitterShare() {
   ReactGA.event({
-    category: "Twitter",
+    category: "SocialMedia",
     action: "Pressed the Twitter Share Button",
+  });
+}
+
+export function logFacebookShare() {
+  ReactGA.event({
+    category: "SocialMedia",
+    action: "Pressed the Facebook Share Button",
   });
 }
 
