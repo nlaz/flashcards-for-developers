@@ -5,6 +5,21 @@ import queryString from "query-string";
 
 ReactGA.initialize(config.googleAnalyticsKey);
 
+
+export function logTwitterShare() {
+  ReactGA.event({
+    category: "SocialMedia",
+    action: "Pressed the Twitter Share Button",
+  });
+}
+
+export function logFacebookShare() {
+  ReactGA.event({
+    category: "SocialMedia",
+    action: "Pressed the Facebook Share Button",
+  });
+}
+
 export function logReviewEvent(cardId) {
   ReactGA.event({
     category: "User",
