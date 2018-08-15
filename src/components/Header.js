@@ -14,17 +14,17 @@ const Header = (onTwitterShare, onFacebookShare) => (
             title={title}
             onShareWindowClose={onFacebookShare}
           >
-            <i class="fab fa-facebook"></i>
+            <i class="fab fa-facebook fa-1x6"></i>
           </FacebookShareButton>
         </li>
-
+        {' '}
         <li className="list-inline-item">
           <TwitterShareButton
             url="http://nlaz.github.io/flashcards-for-developers/#/"
             title={title}
             onShareWindowClose={onTwitterShare}
           >
-            <i class="fab fa-twitter fa-1x" style={{ padding: "0px 1px 2px 3px" }}></i>
+            <i class="fab fa-twitter fa-1x6"></i>
           </TwitterShareButton>
         </li>
       </ul>
