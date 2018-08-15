@@ -1,34 +1,35 @@
-import React, { Component } from "react";
-import { TwitterShareButton, TwitterIcon } from "react-share";
-import * as analytics from "./GoogleAnalytics";
+import React from "react";
+import { FacebookShareButton, FacebookIcon, TwitterShareButton, TwitterIcon } from "react-share";
 
 const title = "Helpful Flashcards for Developers @ ";
 
-class Header extends Component {
-  onShare = () => {
-    analytics.logTwitterShare();
-  };
 
-  render() {
-    return (
-      <div className="container mt-3">
-        <div className="row">
-          <ul className=" header-right text-md-right">
-            <li className="list-inline-item">
-              <TwitterShareButton
-                url="http://nlaz.github.io/flashcards-for-developers/#/"
-                title={title}
-                className="Demo__some-network__share-button"
-                onShareWindowClose={() => this.onShare()}
-              >
-                <TwitterIcon size={32} round />
-              </TwitterShareButton>
-            </li>
-          </ul>
-        </div>
+const Header = (onTwitterShare, onFacebookShare) => (
+  <div className="app container">
+    <div className="">
+      <ul className=" header-right text-md-right">
+        <li className="list-inline-item">
+          <FacebookShareButton
+            url="http://nlaz.github.io/flashcards-for-developers/#/"
+            title={title}
+            onShareWindowClose={onFacebookShare}
+          >
+            <i class="fab fa-facebook"></i>
+          </FacebookShareButton>
+        </li>
 
-      </div>
-    );
-  }
-}
+        <li className="list-inline-item">
+          <TwitterShareButton
+            url="http://nlaz.github.io/flashcards-for-developers/#/"
+            title={title}
+            onShareWindowClose={onTwitterShare}
+          >
+            <i class="fab fa-twitter fa-1x" style={{ padding: "0px 1px 2px 3px" }}></i>
+          </TwitterShareButton>
+        </li>
+      </ul>
+    </div>
+  </div>
+);
+
 export default Header;

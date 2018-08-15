@@ -137,9 +137,7 @@ a[disabled] {
 }
 
 .header-right {
-  position: absolute;
-  right: 5%;
-  top: 30px;
-  margin-top: 0;
+  margin-right: 10px;
+  margin-top: 10px;
   margin-bottom: -50px;
 }

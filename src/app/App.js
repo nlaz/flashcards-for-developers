@@ -14,7 +14,9 @@ class App extends Component {
   render() {
     return (
       <div className="App d-flex flex-column justify-content-between text-left">
-        <Header />
+        <Header 
+          onShareTwitter={() => GoogleAnalytics.logTwitterShare()}
+          onShareFacebook={() => GoogleAnalytics.logFacebookShare()}/>
         <HashRouter>
           <div className="app">
             <Route path="/" component={GoogleAnalytics} />
