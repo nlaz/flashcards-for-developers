@@ -38,6 +38,14 @@ a[disabled] {
 .donate-button{
   margin-top: 10px;
 }
+.text-support{
+  float: left;
+  margin-top: 27px;
+}
+.text-support_align{
+  margin-right: 10px;
+}
+
 @media (min-width: 576px) {
   .deck-item {
     height: 220px;

@@ -9,7 +9,6 @@ import * as leitner from "../../spaced/leitner";
 import Octicon from "../../components/Octicon";
 import SkillProgress from "./SkillProgress";
 import FeedbackForm from "./FeedbackForm";
-import DonateButton from "./DonateButton";
 import DeckItem from "./DeckItem";
 
 const FRONTEND_CATEGORY_ID = "recUROLxLzjGsSh8P";
@@ -161,7 +160,20 @@ class Decks extends Component {
             <h1 className="m-0">Flashcards for Frontend Developers</h1>
             <p className="m-0">A curated list of flashcards to boost your professional skills</p>
           </div>
-          <SkillProgress decks={filteredDecks} />
+          <div>
+            <li className="text-support list-inline-item">
+                <a
+                  href={config.buyMeACoffeeDonateUrl}
+                  onClick={() => analytics.logDonateEvent3}
+                  target="_blank"
+                  className="text-support_align text-secondary"
+                  rel="noopener noreferrer"
+                >
+                  Support Us
+                </a>
+            </li>
+            <SkillProgress decks={filteredDecks} />
+          </div>
         </div>
         <div className="d-flex mx-2">
           <button
@@ -223,8 +235,9 @@ class Decks extends Component {
         )}
         <div className="row">
           <div className="col-md-10 offset-md-1 col-lg-8 offset-lg-2 mt-5">
-            <FeedbackForm onClick={() => analytics.logFeedbackEvent} />
-            <DonateButton onClick={() => analytics.logDonateEvent} />
+            <FeedbackForm 
+              onClickConversation={() => analytics.logFeedbackEvent} 
+              onClickDonate={() => analytics.logDonateEvent1}/>
           </div>
         </div>
       </div>

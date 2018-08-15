@@ -53,10 +53,31 @@ export function logFeedbackEvent() {
   });
 }
 
-export function logDonateEvent() {
+export function logDonateEvent1() {
   ReactGA.event({
     category: "User",
-    action: "Clicked on 'Donate' button",
+    action: "Clicked on 'Donate' button in Feedback form",
+  });
+}
+
+export function logDonateEvent2() {
+  ReactGA.event({
+    category: "User",
+    action: "Clicked on 'Donate' button in Footer",
+  });
+}
+
+export function logDonateEvent3() {
+  ReactGA.event({
+    category: "User",
+    action: "Clicked on 'Donate' button next to skill progression",
+  });
+}
+
+export function logGithubInterest() {
+  ReactGA.event({
+    category: "User",
+    action: "Clicked on 'Github' button in Footer",
   });
 }
 

@@ -7,4 +7,5 @@ export default {
   airtableEmailUrl: process.env.REACT_APP_AIRTABLE_EMAIL_URL || "",
   slackinUrl: process.env.REACT_APP_SLACKIN_URL || "",
   googleAnalyticsKey: process.env.REACT_APP_GOOGLE_ANALYTICS_KEY || "",
+  buyMeACoffeeDonateUrl: process.env.REACT_APP_DONATE_URL || "",
 };
