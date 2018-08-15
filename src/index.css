@@ -146,3 +146,9 @@ a[disabled] {
 .deck-item .save:hover {
   background: #eeeeee;
 }
+
+.header-right {
+  margin-right: 10px;
+  margin-top: 10px;
+  margin-bottom: -50px;
+}

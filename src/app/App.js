@@ -6,6 +6,7 @@ import Review from "./review/Review";
 import NotFound from "../components/NotFound";
 import GoogleAnalytics from "../components/GoogleAnalytics";
 import Footer from "../components/Footer";
+import Header from "../components/Header";
 
 import "./App.css";
 
@@ -13,6 +14,9 @@ class App extends Component {
   render() {
     return (
       <div className="App d-flex flex-column justify-content-between text-left">
+        <Header 
+          onShareTwitter={() => GoogleAnalytics.logTwitterShare()}
+          onShareFacebook={() => GoogleAnalytics.logFacebookShare()}/>
         <HashRouter>
           <div className="app">
             <Route path="/" component={GoogleAnalytics} />
