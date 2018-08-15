@@ -178,11 +178,19 @@ class Review extends Component {
   };
 
   handleSaveProgress = index => {
+    const sessionsObj = JSON.parse(localStorage.getItem("sessions")) || [];
     const progressObj = {
       progress: Math.round(100 * index / this.state.cards.length) / 100,
       reviewedAt: moment(),
       leitnerBox: 1, //TODO increment/decrement leitner box
     };
+    const sessions = [
+      ...sessionsObj,
+      moment()
+        .startOf("day")
+        .format(),
+    ].filter((elem, pos, arr) => arr.indexOf(elem) === pos);
+    localStorage.setItem("sessions", JSON.stringify(sessions));
     localStorage.setItem(this.state.deck.id, JSON.stringify(progressObj));
   };
 
