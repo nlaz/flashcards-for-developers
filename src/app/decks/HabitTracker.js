@@ -2,8 +2,6 @@ import React, { Component } from "react";
 import pluralize from "pluralize";
 import moment from "moment";
 
-const DAYS_IN_A_ROW = Math.ceil(Math.random() * 8);
-
 const PAST_WEEK = [...new Array(7)];
 
 const EMOJIS = ["🐤", "🐛", "🐙", "⛳️", "👑", "🏆", "🦈", "🦑", "🦖", "🚀"];
@@ -11,10 +9,8 @@ const EMOJIS = ["🐤", "🐛", "🐙", "⛳️", "👑", "🏆", "🦈", "🦑"
 const EMOJI = EMOJIS[Math.floor(Math.random() * EMOJIS.length)];
 
 const DateColumn = ({ index, sessions }) => {
-  const date = moment()
-    .subtract(index, "days")
-    .startOf("day");
-  const hasStudied = sessions.find(el => moment(el).diff(date, "days") < 1);
+  const date = moment().subtract(index, "days");
+  const hasStudied = sessions.find(el => moment(el).isSame(date, "day"));
 
   return (
     <div
@@ -48,8 +44,7 @@ class HabitTracker extends Component {
 
   render() {
     const { sessions } = this.state;
-    console.log(sessions);
-    const daysThisWeek = sessions.length;
+    const daysThisWeek = sessions.filter(el => moment(el).isAfter(moment().subtract(7, "days")));
 
     return (
       <div className="d-flex flex-row-reverse flex-lg-row justify-content-end justify-content-lg-center align-items-center w-100">
@@ -61,7 +56,7 @@ class HabitTracker extends Component {
             Past Week
           </p>
           <p className="text-secondary m-0" style={{ fontSize: "14px" }}>
-            You studied {pluralize("day", daysThisWeek, true)} this week.
+            You studied {pluralize("day", daysThisWeek.length, true)} this week.
           </p>
         </div>
         <div className="d-flex flex-row-reverse mx-2">

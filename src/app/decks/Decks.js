@@ -162,7 +162,7 @@ class Decks extends Component {
             <p className="m-0">A curated list of flashcards to boost your professional skills</p>
           </div>
           <div
-            className="bg-light rounded p-2 border border-secondary mb-2 d-flex align-items-center"
+            className="bg-light rounded p-3 border border-secondary mb-2 d-flex align-items-center"
             style={{ minWidth: "260px", minHeight: "90px" }}
           >
             {activeTab === TABS.USER ? <SkillProgress decks={filteredDecks} /> : <HabitTracker />}

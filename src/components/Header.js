@@ -4,9 +4,9 @@ import { FacebookShareButton, TwitterShareButton } from "react-share";
 const title = "Helpful Flashcards for Developers @ ";
 
 const Header = ({ onTwitterShare, onFacebookShare }) => (
-  <div className="container">
+  <div className="container px-4">
     <div className="pt-3">
-      <ul className=" header-right text-md-right">
+      <ul className="header-right text-md-right p-0">
         <li className="list-inline-item mr-2">
           <FacebookShareButton
             url="http://nlaz.github.io/flashcards-for-developers/#/"
