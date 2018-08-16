@@ -5,7 +5,6 @@ import queryString from "query-string";
 
 ReactGA.initialize(config.googleAnalyticsKey);
 
-
 export function logTwitterShare() {
   ReactGA.event({
     category: "SocialMedia",
@@ -64,6 +63,34 @@ export function logFeedbackEvent() {
   ReactGA.event({
     category: "User",
     action: "Clicked on 'Start converation' button",
+  });
+}
+
+export function logDonateEvent1() {
+  ReactGA.event({
+    category: "User",
+    action: "Clicked on 'Donate' button in Feedback form",
+  });
+}
+
+export function logDonateEvent2() {
+  ReactGA.event({
+    category: "User",
+    action: "Clicked on 'Donate' button in Footer",
+  });
+}
+
+export function logDonateEvent3() {
+  ReactGA.event({
+    category: "User",
+    action: "Clicked on 'Donate' button next to skill progression",
+  });
+}
+
+export function logGithubInterest() {
+  ReactGA.event({
+    category: "User",
+    action: "Clicked on 'Github' button in Footer",
   });
 }
 

@@ -15,6 +15,7 @@ class App extends Component {
         <Header
           onShareTwitter={() => GoogleAnalytics.logTwitterShare()}
           onShareFacebook={() => GoogleAnalytics.logFacebookShare()}
+          onSupportUs={() => GoogleAnalytics.logDonateEvent3()}
         />
         <div style={{ flexGrow: 1 }}>
           <HashRouter>
@@ -30,7 +31,10 @@ class App extends Component {
             </div>
           </HashRouter>
         </div>
-        <Footer />
+        <Footer
+          onClickGithub={() => GoogleAnalytics.logGithubInterest()}
+          onClickDonate={() => GoogleAnalytics.logDonateEvent2()}
+        />
       </div>
     );
   }

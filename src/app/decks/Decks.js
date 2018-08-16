@@ -162,7 +162,7 @@ class Decks extends Component {
             <p className="m-0">A curated list of flashcards to boost your professional skills</p>
           </div>
           <div
-            className="bg-light rounded p-3 border border-secondary mb-2 d-flex align-items-center"
+            className="bg-light rounded p-3 mb-2 border border-secondary d-flex align-items-center"
             style={{ minWidth: "260px", minHeight: "90px" }}
           >
             {activeTab === TABS.USER ? <SkillProgress decks={filteredDecks} /> : <HabitTracker />}
@@ -228,7 +228,10 @@ class Decks extends Component {
         )}
         <div className="row">
           <div className="col-md-10 offset-md-1 col-lg-8 offset-lg-2 mt-5">
-            <FeedbackForm onClick={() => analytics.logFeedbackEvent} />
+            <FeedbackForm
+              onClickConversation={() => analytics.logFeedbackEvent()}
+              onClickDonate={() => analytics.logDonateEvent1()}
+            />
           </div>
         </div>
       </div>

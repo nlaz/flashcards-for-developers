@@ -1,7 +1,7 @@
 import React from "react";
 import config from "../config";
 
-const Footer = () => (
+const Footer = ({ onClickGithub, onClickDonate }) => (
   <div className="container mt-3 p-4" style={{ alignSelf: "flexEnd" }}>
     <div className="row">
       <small className="col-md-4 text-secondary text-center text-md-left">
@@ -17,7 +17,21 @@ const Footer = () => (
         <li className="list-inline-item">
           <small>
             <a
+              href={config.buyMeACoffeeDonateUrl}
+              onClick={onClickDonate}
+              target="_blank"
+              className="text-secondary"
+              rel="noopener noreferrer"
+            >
+              Support Us
+            </a>
+          </small>
+        </li>
+        <li className="list-inline-item">
+          <small>
+            <a
               href="https://github.com/nlaz/flashcards-for-developers"
+              onClick={onClickGithub}
               target="_blank"
               className="text-secondary"
               rel="noopener noreferrer"

@@ -35,6 +35,10 @@ a[disabled] {
 .deck-item {
   height: 150px;
 }
+.donate-button {
+  margin-top: 10px;
+}
+
 @media (min-width: 576px) {
   .deck-item {
     height: 220px;
@@ -140,4 +144,12 @@ a[disabled] {
   margin-right: 10px;
   margin-top: 10px;
   margin-bottom: -50px;
+}
+
+.feedback-form .text-underline {
+  text-decoration: underline;
+}
+
+.feedback-form .text-underline:hover {
+  text-decoration: none;
 }
