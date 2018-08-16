@@ -8,6 +8,7 @@ import * as analytics from "../../components/GoogleAnalytics";
 import * as leitner from "../../spaced/leitner";
 import Octicon from "../../components/Octicon";
 import SkillProgress from "./SkillProgress";
+import HabitTracker from "./HabitTracker";
 import FeedbackForm from "./FeedbackForm";
 import DeckItem from "./DeckItem";
 
@@ -160,19 +161,11 @@ class Decks extends Component {
             <h1 className="m-0">Flashcards for Frontend Developers</h1>
             <p className="m-0">A curated list of flashcards to boost your professional skills</p>
           </div>
-          <div>
-            <li className="text-support list-inline-item">
-                <a
-                  href={config.buyMeACoffeeDonateUrl}
-                  onClick={() => analytics.logDonateEvent3}
-                  target="_blank"
-                  className="text-support_align text-secondary"
-                  rel="noopener noreferrer"
-                >
-                  Support Us
-                </a>
-            </li>
-            <SkillProgress decks={filteredDecks} />
+          <div
+            className="bg-light rounded p-3 mb-2 border border-secondary d-flex align-items-center"
+            style={{ minWidth: "260px", minHeight: "90px" }}
+          >
+            {activeTab === TABS.USER ? <SkillProgress decks={filteredDecks} /> : <HabitTracker />}
           </div>
         </div>
         <div className="d-flex mx-2">
@@ -235,9 +228,10 @@ class Decks extends Component {
         )}
         <div className="row">
           <div className="col-md-10 offset-md-1 col-lg-8 offset-lg-2 mt-5">
-            <FeedbackForm 
-              onClickConversation={() => analytics.logFeedbackEvent} 
-              onClickDonate={() => analytics.logDonateEvent1}/>
+            <FeedbackForm
+              onClickConversation={() => analytics.logFeedbackEvent}
+              onClickDonate={() => analytics.logDonateEvent1}
+            />
           </div>
         </div>
       </div>

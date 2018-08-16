@@ -8,30 +8,33 @@ import GoogleAnalytics from "../components/GoogleAnalytics";
 import Footer from "../components/Footer";
 import Header from "../components/Header";
 
-import "./App.css";
-
 class App extends Component {
   render() {
     return (
       <div className="App d-flex flex-column justify-content-between text-left">
-        <Header 
+        <Header
           onShareTwitter={() => GoogleAnalytics.logTwitterShare()}
-          onShareFacebook={() => GoogleAnalytics.logFacebookShare()}/>
-        <HashRouter>
-          <div className="app">
-            <Route path="/" component={GoogleAnalytics} />
-            <Switch>
-              <Route exact path="/" component={Decks} />
-              <Route exact path="/categories/:categoryId" component={Decks} />
-              <Route exact path="/decks" component={Decks} />
-              <Route exact path="/decks/:deckId" component={Review} />
-              <Route exact path="*" component={NotFound} />
-            </Switch>
-          </div>
-        </HashRouter>
-        <Footer 
+          onShareFacebook={() => GoogleAnalytics.logFacebookShare()}
+          onSupportUs={() => GoogleAnalytics.logDonateEvent3()}
+        />
+        <div style={{ flexGrow: 1 }}>
+          <HashRouter>
+            <div>
+              <Route path="/" component={GoogleAnalytics} />
+              <Switch>
+                <Route exact path="/" component={Decks} />
+                <Route exact path="/categories/:categoryId" component={Decks} />
+                <Route exact path="/decks" component={Decks} />
+                <Route exact path="/decks/:deckId" component={Review} />
+                <Route exact path="*" component={NotFound} />
+              </Switch>
+            </div>
+          </HashRouter>
+        </div>
+        <Footer
           onClickGithub={() => GoogleAnalytics.logGithubInterest}
-          onClickDonate={() => GoogleAnalytics.logDonateEvent2}/>
+          onClickDonate={() => GoogleAnalytics.logDonateEvent2}
+        />
       </div>
     );
   }
