@@ -32,8 +32,8 @@ class App extends Component {
           </HashRouter>
         </div>
         <Footer
-          onClickGithub={() => GoogleAnalytics.logGithubInterest}
-          onClickDonate={() => GoogleAnalytics.logDonateEvent2}
+          onClickGithub={() => GoogleAnalytics.logGithubInterest()}
+          onClickDonate={() => GoogleAnalytics.logDonateEvent2()}
         />
       </div>
     );

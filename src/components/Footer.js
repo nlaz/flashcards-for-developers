@@ -1,7 +1,7 @@
 import React from "react";
 import config from "../config";
 
-const Footer = (onClickGithub, onClickDonate) => (
+const Footer = ({ onClickGithub, onClickDonate }) => (
   <div className="container mt-3 p-4" style={{ alignSelf: "flexEnd" }}>
     <div className="row">
       <small className="col-md-4 text-secondary text-center text-md-left">
@@ -14,7 +14,7 @@ const Footer = (onClickGithub, onClickDonate) => (
         cards studied
       </small>
       <ul className="col-md-4 list-inline mb-0 text-center text-md-right">
-      <li className="list-inline-item">
+        <li className="list-inline-item">
           <small>
             <a
               href={config.buyMeACoffeeDonateUrl}

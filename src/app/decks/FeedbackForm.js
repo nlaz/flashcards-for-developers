@@ -2,7 +2,7 @@ import React from "react";
 import config from "../../config";
 
 const FeedbackForm = ({ onClick }) => (
-  <div className="border border-secondary rounded rounded p-4 text-center bg-light">
+  <div className="feedback-form border border-secondary rounded rounded p-4 text-center bg-light">
     <div className="mx-auto" style={{ maxWidth: "500px" }}>
       <span>
         We want to hear from you. Let us know what features or content you would like to see.{" "}
@@ -25,17 +25,17 @@ const FeedbackForm = ({ onClick }) => (
       </div>
       <div className="mt-3">
         <a
+          className="text-secondary text-underline"
           href={config.buyMeACoffeeDonateUrl}
           onClick={onClick}
-          // className="btn btn-dark py-2"
-
-          style={{ borderRadius: "999px" }}
           target="_blank"
           rel="noopener noreferrer"
         >
-          {/* <i className="fa fa-gift mr-2" /> */}
-          Or buy us a coffee ❤️
+          ...or buy us a coffee{" "}
         </a>
+        <span role="img" aria-label="Heart emoji">
+          ❤️
+        </span>
       </div>
     </div>
   </div>

@@ -5,7 +5,6 @@ import queryString from "query-string";
 
 ReactGA.initialize(config.googleAnalyticsKey);
 
-
 export function logTwitterShare() {
   ReactGA.event({
     category: "SocialMedia",
@@ -43,7 +42,6 @@ export function logFinishedEvent(deckId) {
     label: deckId,
   });
 }
-
 
 export function logKeepGoingEvent(deckId) {
   ReactGA.event({
