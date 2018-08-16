@@ -24,10 +24,7 @@ const SkillProgress = ({ decks }) => {
   ];
 
   return (
-    <div
-      className="d-flex flex-row-reverse flex-lg-row justify-content-end justify-content-lg-center align-items-center mb-2 bg-light rounded p-2 border border-secondary"
-      style={{ minWidth: "260px" }}
-    >
+    <div className="d-flex flex-row-reverse flex-lg-row justify-content-end justify-content-lg-center align-items-center w-100">
       <div className="mx-2">
         <p
           className="m-0 text-uppercase font-weight-medium"
