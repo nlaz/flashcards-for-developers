@@ -1,7 +1,8 @@
 import React from "react";
 import config from "../config";
+import * as analytics from "./GoogleAnalytics";
 
-const Footer = ({ onClickGithub, onClickDonate }) => (
+const Footer = () => (
   <div className="container mt-3 p-4" style={{ alignSelf: "flexEnd" }}>
     <div className="row">
       <small className="col-md-4 text-secondary text-center text-md-left">
@@ -18,7 +19,7 @@ const Footer = ({ onClickGithub, onClickDonate }) => (
           <small>
             <a
               href={config.buyMeACoffeeDonateUrl}
-              onClick={onClickDonate}
+              onClick={() => analytics.logDonateEvent2()}
               target="_blank"
               className="text-secondary"
               rel="noopener noreferrer"
@@ -31,7 +32,7 @@ const Footer = ({ onClickGithub, onClickDonate }) => (
           <small>
             <a
               href="https://github.com/nlaz/flashcards-for-developers"
-              onClick={onClickGithub}
+              onClick={() => analytics.logGithubInterest()}
               target="_blank"
               className="text-secondary"
               rel="noopener noreferrer"

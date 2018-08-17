@@ -12,11 +12,7 @@ class App extends Component {
   render() {
     return (
       <div className="App d-flex flex-column justify-content-between text-left">
-        <Header
-          onShareTwitter={() => GoogleAnalytics.logTwitterShare()}
-          onShareFacebook={() => GoogleAnalytics.logFacebookShare()}
-          onSupportUs={() => GoogleAnalytics.logDonateEvent3()}
-        />
+        <Header />
         <div style={{ flexGrow: 1 }}>
           <HashRouter>
             <div>
@@ -31,10 +27,7 @@ class App extends Component {
             </div>
           </HashRouter>
         </div>
-        <Footer
-          onClickGithub={() => GoogleAnalytics.logGithubInterest()}
-          onClickDonate={() => GoogleAnalytics.logDonateEvent2()}
-        />
+        <Footer />
       </div>
     );
   }

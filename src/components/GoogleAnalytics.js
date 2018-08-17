@@ -83,7 +83,7 @@ export function logDonateEvent2() {
 export function logDonateEvent3() {
   ReactGA.event({
     category: "User",
-    action: "Clicked on 'Donate' button next to skill progression",
+    action: "Clicked on 'Donate' button in Header",
   });
 }
 
