@@ -98,9 +98,11 @@ class Review extends Component {
 
   onOptionPress = key => {
     const index = parseInt(key, 10) - 1;
-    if (index >= 0 && index < this.state.options.length) {
-      const answer = this.state.options[index];
-      this.onSelectAnswer(answer);
+    if (!this.isStageFinished()) {
+      if (index >= 0 && index < this.state.options.length) {
+        const answer = this.state.options[index];
+        this.onSelectAnswer(answer);
+      }
     }
   };
 
