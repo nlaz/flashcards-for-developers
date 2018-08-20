@@ -3,10 +3,10 @@ import { Link } from "react-router-dom";
 import cx from "classnames";
 import marked from "marked";
 import Chance from "chance";
-import moment from "moment";
 
 import config from "../../config";
 import Octicon from "../../components/Octicon";
+import * as utils from "../utils/studyProgress";
 import DeckFeedback from "./DeckFeedback";
 import ReviewHeader from "./ReviewHeader";
 import StudyProgress from "./StudyProgress";
@@ -165,7 +165,7 @@ class Review extends Component {
     const index = Math.min(this.state.index + 1, cards.length);
     if (this.isStageFinished(index)) {
       this.logReviewEvent(index);
-      this.handleSaveProgress(index);
+      this.saveProgress(index);
     }
     this.setState({
       index,
@@ -177,21 +177,12 @@ class Review extends Component {
     });
   };
 
-  handleSaveProgress = index => {
-    const sessionsObj = JSON.parse(localStorage.getItem("sessions")) || [];
-    const progressObj = {
-      progress: Math.round(100 * index / this.state.cards.length) / 100,
-      reviewedAt: moment(),
-      leitnerBox: 1, //TODO increment/decrement leitner box
-    };
-    const sessions = [
-      ...sessionsObj,
-      moment()
-        .startOf("day")
-        .format(),
-    ].filter((elem, pos, arr) => arr.indexOf(elem) === pos);
-    localStorage.setItem("sessions", JSON.stringify(sessions));
-    localStorage.setItem(this.state.deck.id, JSON.stringify(progressObj));
+  saveProgress = index => {
+    const progress = Math.round(100 * index / this.state.cards.length) / 100;
+    const deckId = this.state.deck.id;
+
+    utils.addStudyHistory();
+    utils.setStudyProgress(progress, deckId);
   };
 
   handleIncorrectAnswer = card => {
