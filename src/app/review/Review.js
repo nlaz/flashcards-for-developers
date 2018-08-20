@@ -135,11 +135,15 @@ class Review extends Component {
   };
 
   handleSelfGradedAnswer = answer => {
-    const isCorrect = answer === SELF_GRADE_CORRECT;
-
     if (!this.state.isRevealed) {
       return;
     }
+
+    const isCorrect = answer === SELF_GRADE_CORRECT;
+    const card = this.getCurrentCard();
+    const { deck } = this.state;
+
+    utils.setCardStudyProgress(card.id, deck.id, isCorrect);
     if (!isCorrect) {
       const numCorrect = this.state.numCorrect - 1;
       const numIncorrect = this.state.numIncorrect + 1;
@@ -152,9 +156,11 @@ class Review extends Component {
 
   handleMultipleChoiceAnswer = answer => {
     const card = this.getCurrentCard();
+    const { deck } = this.state;
     const isCorrect = this.isCorrectAnswer(answer, card);
     this.setState({ selected: answer });
 
+    utils.setCardStudyProgress(card.id, deck.id, isCorrect);
     if (isCorrect) {
       this.timeout = setTimeout(() => this.handleCorrectAnswer(), 300);
     } else {
@@ -165,26 +171,20 @@ class Review extends Component {
   handleCorrectAnswer = () => {
     const { cards } = this.state;
     const index = Math.min(this.state.index + 1, cards.length);
-    if (this.isStageFinished(index)) {
-      this.logReviewEvent(index);
-      this.saveProgress(index);
+
+    if (this.isStageFinished(this.state.index)) {
+      this.logReviewEvent(this.state.index);
+      utils.addStudyHistory();
     }
+
     this.setState({
-      index,
       selected: {},
+      index: Math.min(this.state.index + 1, cards.length),
       isRevealed: false,
       options: this.getOptions(index, cards),
       isReversed: this.isReversible(this.state.deck) && chance.bool(),
       numCorrect: this.state.numCorrect + 1,
     });
-  };
-
-  saveProgress = index => {
-    const progress = Math.round(100 * index / this.state.cards.length) / 100;
-    const deckId = this.state.deck.id;
-
-    utils.addStudyHistory();
-    utils.setStudyProgress(progress, deckId);
   };
 
   handleIncorrectAnswer = card => {

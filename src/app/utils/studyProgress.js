@@ -3,27 +3,90 @@ import * as leitner from "../../spaced/leitner";
 
 const SESSIONS_KEY = "sessions";
 
-export const getStudyProgress = deckId => {
-  let studyObj = JSON.parse(localStorage.getItem(deckId)) || {};
+/**
+ * Study progress data structure for each deck:
+ *
+ * <DECK_ID> : {
+ *    cards: {
+ *     <CARD_ID>: {
+ *        reviewedAt: <LAST_REVIEWED_DATE>,
+ *        leitnerBox: <CURRENT_LEITNER_BOX>
+ *      },
+ *   }
+ * }
+ */
 
-  return studyObj.progress || 0;
+export const getDeckStudyObject = deckId => {
+  return JSON.parse(localStorage.getItem(deckId)) || {};
 };
 
-export const getStudyProficiency = deckId => {
-  let studyObj = JSON.parse(localStorage.getItem(deckId)) || {};
-
-  const { reviewedAt, leitnerBox } = studyObj;
-
-  return leitner.getProficiency(leitnerBox, reviewedAt) || 0;
+export const setDeckStudyObject = (deckId, value) => {
+  localStorage.setItem(deckId, JSON.stringify(value));
 };
 
-export const setStudyProgress = (progress, deckId) => {
+export const getStudyProgress = deck => {
+  const studyObj = getDeckStudyObject(deck.id);
+
+  const numStudiedCards = Object.keys(studyObj.cards || {}).length;
+  const numTotalCards = (deck.cards || []).length;
+  const progress = numStudiedCards / numTotalCards;
+  return progress || 0;
+};
+
+export const getStudyProficiency = deck => {
+  const studyObj = getDeckStudyObject(deck.id);
+
+  const cardsObj = studyObj.cards || {};
+  const numStudiedCards = Object.keys(cardsObj).length;
+
+  return numStudiedCards > 0
+    ? Object.keys(cardsObj).reduce((avg, el) => {
+        const { leitnerBox, reviewedAt } = cardsObj[el];
+        return avg + leitner.getProficiency(leitnerBox, reviewedAt);
+      }, 0.0) / numStudiedCards
+    : 0.0;
+};
+
+export const setDeckStudyProgress = (progress, deckId) => {
   const progressObj = {
     progress,
     reviewedAt: moment(),
     leitnerBox: 1, //TODO increment/decrement leitner box
   };
-  localStorage.setItem(deckId, JSON.stringify(progressObj));
+
+  setDeckStudyObject(deckId, progressObj);
+};
+
+const getUpdatedCard = (card, isCorrect) => {
+  if (!card) {
+    return {
+      reviewedAt: moment(),
+      leitnerBox: isCorrect ? 1 : 0,
+    };
+  }
+
+  const { leitnerBox, reviewedAt } = card;
+  const diff = moment(reviewedAt).diff(moment(), "days");
+  // Update leitner levels level only if right number of days passed
+  if (diff < leitnerBox) {
+    return {
+      leitnerBox,
+      reviewedAt: moment(),
+    };
+  }
+  return {
+    reviewedAt: moment(),
+    leitnerBox: isCorrect ? leitnerBox + 1 : Math.max(1, leitnerBox - 1),
+  };
+};
+
+export const setCardStudyProgress = (cardId, deckId, isCorrect) => {
+  const deck = getDeckStudyObject(deckId);
+  console.table(deck.cards);
+  const { cards = {} } = deck;
+  const currentCard = getUpdatedCard(cards[cardId], isCorrect);
+  const newDeck = { cards: { ...cards, [cardId]: currentCard } };
+  setDeckStudyObject(deckId, newDeck);
 };
 
 export const addStudyHistory = () => {

@@ -83,7 +83,7 @@ class Decks extends Component {
       return (
         <div className="container p-4 my-5">
           <div className="mb-5">
-            <h1 className="m-0">Flashcards for Frontend Developers</h1>
+            <h1 className="m-0">Flashcards for Developers</h1>
             <p>A curated list of flashcards to boost your professional skills</p>
           </div>
           <h1 className="text-secondary">Loading decks...</h1>

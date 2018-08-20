@@ -6,13 +6,13 @@ import { getStudyProgress, getStudyProficiency } from "../utils/studyProgress";
 
 const SkillProgress = ({ decks }) => {
   const progress = Math.round(
-    decks.reduce((avg, el) => avg + getStudyProgress(el.id) * 100, 0) / decks.length,
+    decks.reduce((avg, el) => avg + getStudyProgress(el) * 100, 0) / decks.length,
   );
-  const numPractices = decks.filter(el => getStudyProgress(el.id) > 0).length;
+  const numPractices = decks.filter(el => getStudyProgress(el) > 0).length;
 
   const proficiency =
     decks.reduce((avg, el) => {
-      return getStudyProgress(el.id) > 0 ? avg + getStudyProficiency(el.id) : avg;
+      return getStudyProgress(el) > 0 ? avg + getStudyProficiency(el) : avg;
     }, 0.0) / numPractices;
 
   const subProgress = progress * proficiency || 0;
