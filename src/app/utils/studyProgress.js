@@ -82,11 +82,14 @@ const getUpdatedCard = (card, isCorrect) => {
 
 export const setCardStudyProgress = (cardId, deckId, isCorrect) => {
   const deck = getDeckStudyObject(deckId);
-  console.table(deck.cards);
   const { cards = {} } = deck;
   const currentCard = getUpdatedCard(cards[cardId], isCorrect);
   const newDeck = { cards: { ...cards, [cardId]: currentCard } };
   setDeckStudyObject(deckId, newDeck);
+};
+
+export const getStudyHistory = () => {
+  return JSON.parse(localStorage.getItem(SESSIONS_KEY)) || [];
 };
 
 export const addStudyHistory = () => {

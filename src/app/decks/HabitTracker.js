@@ -2,6 +2,8 @@ import React, { Component } from "react";
 import pluralize from "pluralize";
 import moment from "moment";
 
+import * as utils from "../utils/studyProgress";
+
 const PAST_WEEK = [...new Array(7)];
 
 const EMOJIS = ["🐤", "🐛", "🐙", "⛳️", "👑", "🏆", "🦈", "🦑", "🦖", "🚀"];
@@ -38,8 +40,7 @@ class HabitTracker extends Component {
   }
 
   fetchStudySessions = () => {
-    const sessionsObj = JSON.parse(localStorage.getItem("sessions")) || [];
-    this.setState({ sessions: sessionsObj });
+    this.setState({ sessions: utils.getStudyHistory() });
   };
 
   render() {
