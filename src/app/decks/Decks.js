@@ -95,7 +95,7 @@ class Decks extends Component {
       return (
         <div className="container p-4 my-5">
           <div className="mb-5">
-            <h1 className="m-0">Flashcards for Frontend Developers</h1>
+            <h1 className="m-0">Flashcards for Developers</h1>
             <p>A curated list of flashcards to boost your professional skills</p>
           </div>
           <div className="text-center mt-3">
@@ -113,7 +113,7 @@ class Decks extends Component {
       <div className="container p-4 my-5">
         <div className="d-flex flex-column flex-lg-row justify-content-between align-items-lg-center">
           <div className="mb-3">
-            <h1 className="m-0">Flashcards for Frontend Developers</h1>
+            <h1 className="m-0">Flashcards for Developers</h1>
             <p className="m-0">A curated list of flashcards to boost your professional skills</p>
           </div>
           <div
