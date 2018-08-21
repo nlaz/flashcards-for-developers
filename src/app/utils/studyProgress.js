@@ -47,16 +47,6 @@ export const getStudyProficiency = deck => {
     : 0.0;
 };
 
-export const setDeckStudyProgress = (progress, deckId) => {
-  const progressObj = {
-    progress,
-    reviewedAt: moment(),
-    leitnerBox: 1, //TODO increment/decrement leitner box
-  };
-
-  setDeckStudyObject(deckId, progressObj);
-};
-
 const getUpdatedCard = (card, isCorrect) => {
   if (!card) {
     return {

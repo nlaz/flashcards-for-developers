@@ -144,6 +144,7 @@ class Review extends Component {
     const { deck } = this.state;
 
     utils.setCardStudyProgress(card.id, deck.id, isCorrect);
+
     if (!isCorrect) {
       const numCorrect = this.state.numCorrect - 1;
       const numIncorrect = this.state.numIncorrect + 1;
