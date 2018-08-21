@@ -3,10 +3,10 @@ import { Link } from "react-router-dom";
 import cx from "classnames";
 import marked from "marked";
 import Chance from "chance";
-import moment from "moment";
 
 import config from "../../config";
 import Octicon from "../../components/Octicon";
+import * as utils from "../utils/studyProgress";
 import DeckFeedback from "./DeckFeedback";
 import ReviewHeader from "./ReviewHeader";
 import StudyProgress from "./StudyProgress";
@@ -98,9 +98,11 @@ class Review extends Component {
 
   onOptionPress = key => {
     const index = parseInt(key, 10) - 1;
-    if (index >= 0 && index < this.state.options.length) {
-      const answer = this.state.options[index];
-      this.onSelectAnswer(answer);
+    if (!this.isStageFinished()) {
+      if (index >= 0 && index < this.state.options.length) {
+        const answer = this.state.options[index];
+        this.onSelectAnswer(answer);
+      }
     }
   };
 
@@ -133,11 +135,16 @@ class Review extends Component {
   };
 
   handleSelfGradedAnswer = answer => {
-    const isCorrect = answer === SELF_GRADE_CORRECT;
-
     if (!this.state.isRevealed) {
       return;
     }
+
+    const isCorrect = answer === SELF_GRADE_CORRECT;
+    const card = this.getCurrentCard();
+    const { deck } = this.state;
+
+    utils.setCardStudyProgress(card.id, deck.id, isCorrect);
+
     if (!isCorrect) {
       const numCorrect = this.state.numCorrect - 1;
       const numIncorrect = this.state.numIncorrect + 1;
@@ -150,9 +157,11 @@ class Review extends Component {
 
   handleMultipleChoiceAnswer = answer => {
     const card = this.getCurrentCard();
+    const { deck } = this.state;
     const isCorrect = this.isCorrectAnswer(answer, card);
     this.setState({ selected: answer });
 
+    utils.setCardStudyProgress(card.id, deck.id, isCorrect);
     if (isCorrect) {
       this.timeout = setTimeout(() => this.handleCorrectAnswer(), 300);
     } else {
@@ -163,10 +172,12 @@ class Review extends Component {
   handleCorrectAnswer = () => {
     const { cards } = this.state;
     const index = Math.min(this.state.index + 1, cards.length);
+
     if (this.isStageFinished(index)) {
       this.logReviewEvent(index);
-      this.handleSaveProgress(index);
+      utils.addStudyHistory();
     }
+
     this.setState({
       index,
       selected: {},
@@ -175,23 +186,6 @@ class Review extends Component {
       isReversed: this.isReversible(this.state.deck) && chance.bool(),
       numCorrect: this.state.numCorrect + 1,
     });
-  };
-
-  handleSaveProgress = index => {
-    const sessionsObj = JSON.parse(localStorage.getItem("sessions")) || [];
-    const progressObj = {
-      progress: Math.round(100 * index / this.state.cards.length) / 100,
-      reviewedAt: moment(),
-      leitnerBox: 1, //TODO increment/decrement leitner box
-    };
-    const sessions = [
-      ...sessionsObj,
-      moment()
-        .startOf("day")
-        .format(),
-    ].filter((elem, pos, arr) => arr.indexOf(elem) === pos);
-    localStorage.setItem("sessions", JSON.stringify(sessions));
-    localStorage.setItem(this.state.deck.id, JSON.stringify(progressObj));
   };
 
   handleIncorrectAnswer = card => {

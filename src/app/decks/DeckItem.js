@@ -1,14 +1,14 @@
 import React from "react";
 import cx from "classnames";
 import { Link } from "react-router-dom";
-import { getProgress, getProficiency } from "./Decks";
 
+import { getStudyProgress, getStudyProficiency } from "../utils/studyProgress";
 import ProgressBar from "../../components/ProgressBar";
 import Octicon from "../../components/Octicon";
 
 const DeckItem = ({ deck, location, isSaved, onToggleSave }) => {
-  const progress = getProgress(deck.id);
-  const proficiency = getProficiency(deck.id);
+  const progress = getStudyProgress(deck);
+  const proficiency = getStudyProficiency(deck);
   return (
     <div className="deck-item col-12 col-sm-6 col-md-4 col-lg-3 d-flex">
       <Link

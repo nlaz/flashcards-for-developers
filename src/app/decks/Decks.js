@@ -1,11 +1,10 @@
 import React, { Component } from "react";
-import moment from "moment";
 import queryString from "query-string";
 
 import config from "../../config";
 import * as api from "../apiActions";
 import * as analytics from "../../components/GoogleAnalytics";
-import * as leitner from "../../spaced/leitner";
+import { setSavedDecks, getSavedDecks } from "../utils/savedDecks";
 import Octicon from "../../components/Octicon";
 import SkillProgress from "./SkillProgress";
 import HabitTracker from "./HabitTracker";
@@ -13,43 +12,6 @@ import FeedbackForm from "./FeedbackForm";
 import DeckItem from "./DeckItem";
 
 const FRONTEND_CATEGORY_ID = "recUROLxLzjGsSh8P";
-
-const getStudyObj = (deckId, progress) => {
-  return {
-    progress: progress,
-    reviewedAt: moment(),
-    leitnerBox: 1,
-  };
-};
-
-export const getProgress = deckId => {
-  let studyObj = JSON.parse(localStorage.getItem(deckId)) || {};
-
-  if (typeof studyObj === "number") {
-    studyObj = getStudyObj(deckId, studyObj);
-    localStorage.setItem(deckId, JSON.stringify(studyObj));
-  }
-
-  return studyObj.progress || 0;
-};
-
-export const getProficiency = deckId => {
-  let studyObj = JSON.parse(localStorage.getItem(deckId)) || {};
-
-  if (typeof studyObj === "number") {
-    studyObj = getStudyObj(deckId, studyObj);
-    localStorage.setItem(deckId, JSON.stringify(studyObj));
-  }
-
-  const { reviewedAt, leitnerBox } = studyObj;
-
-  return leitner.getProficiency(leitnerBox, reviewedAt) || 0;
-};
-
-const FILTERS = {
-  NEWEST: "newest",
-  POPULAR: "popular",
-};
 
 const TABS = {
   ALL: "all",
@@ -62,7 +24,6 @@ class Decks extends Component {
     decks: [],
     isLoading: true,
     isError: false,
-    filter: FILTERS.POPULAR,
     activeTab: TABS.ALL,
     savedDecks: [],
   };
@@ -76,8 +37,7 @@ class Decks extends Component {
     } else {
       this.fetchCategory(FRONTEND_CATEGORY_ID);
     }
-    const savedDecks = JSON.parse(localStorage.getItem("savedDecks")) || [];
-    this.setState({ savedDecks });
+    this.setState({ savedDecks: getSavedDecks() });
   }
 
   onToggleSave = (event, deck) => {
@@ -88,10 +48,7 @@ class Decks extends Component {
     this.saveDeck(deck);
   };
 
-  onSetFilter = filter =>
-    this.setState({ filter, decks: this.sortDecks(this.state.decks, filter) });
-
-  sortDecks = (decks, filter) => [...decks].sort((a, b) => b.new - a.new);
+  sortDecks = decks => [...decks].sort((a, b) => b.new - a.new);
 
   fetchCategory = categoryId => {
     api.fetchCategory(categoryId).then(response => {
@@ -102,7 +59,7 @@ class Decks extends Component {
   fetchDecks = category => {
     api.fetchDecks(category).then(
       response => {
-        this.setState({ decks: this.sortDecks(response, this.state.filter), isLoading: false });
+        this.setState({ decks: this.sortDecks(response), isLoading: false });
       },
       error => this.setState({ isError: true, isLoading: false }),
     );
@@ -113,9 +70,7 @@ class Decks extends Component {
       ? this.state.savedDecks.filter(el => el !== deck.id)
       : [...this.state.savedDecks, deck.id];
 
-    this.setState({ savedDecks }, () => {
-      localStorage.setItem("savedDecks", JSON.stringify(savedDecks));
-    });
+    this.setState({ savedDecks }, () => setSavedDecks(savedDecks));
   };
 
   isSaved = id => this.state.savedDecks.includes(id);
@@ -128,7 +83,7 @@ class Decks extends Component {
       return (
         <div className="container p-4 my-5">
           <div className="mb-5">
-            <h1 className="m-0">Flashcards for Frontend Developers</h1>
+            <h1 className="m-0">Flashcards for Developers</h1>
             <p>A curated list of flashcards to boost your professional skills</p>
           </div>
           <h1 className="text-secondary">Loading decks...</h1>
@@ -140,7 +95,7 @@ class Decks extends Component {
       return (
         <div className="container p-4 my-5">
           <div className="mb-5">
-            <h1 className="m-0">Flashcards for Frontend Developers</h1>
+            <h1 className="m-0">Flashcards for Developers</h1>
             <p>A curated list of flashcards to boost your professional skills</p>
           </div>
           <div className="text-center mt-3">
@@ -158,7 +113,7 @@ class Decks extends Component {
       <div className="container p-4 my-5">
         <div className="d-flex flex-column flex-lg-row justify-content-between align-items-lg-center">
           <div className="mb-3">
-            <h1 className="m-0">Flashcards for Frontend Developers</h1>
+            <h1 className="m-0">Flashcards for Developers</h1>
             <p className="m-0">A curated list of flashcards to boost your professional skills</p>
           </div>
           <div
