@@ -172,14 +172,14 @@ class Review extends Component {
     const { cards } = this.state;
     const index = Math.min(this.state.index + 1, cards.length);
 
-    if (this.isStageFinished(this.state.index)) {
-      this.logReviewEvent(this.state.index);
+    if (this.isStageFinished(index)) {
+      this.logReviewEvent(index);
       utils.addStudyHistory();
     }
 
     this.setState({
+      index,
       selected: {},
-      index: Math.min(this.state.index + 1, cards.length),
       isRevealed: false,
       options: this.getOptions(index, cards),
       isReversed: this.isReversible(this.state.deck) && chance.bool(),
