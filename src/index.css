@@ -153,3 +153,10 @@ a[disabled] {
 .feedback-form .text-underline:hover {
   text-decoration: none;
 }
+
+@media only screen and (max-device-width: 312px) {
+  .progress-review-buttons{
+    width: 100%;
+    text-align: center;
+  }
+}
