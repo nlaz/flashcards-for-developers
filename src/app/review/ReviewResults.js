@@ -76,16 +76,16 @@ const ReviewResults = ({ index, cards, location, numCorrect, numIncorrect, onKee
           </table>
         </div>
       </div>
-      <div className="d-flex justify-content-center">
+      <div className="progress-review-buttons d-flex justify-content-center">
         {!isCompleted ? (
           <div>
             <Link
               to={{ pathname: "/", search: location.search }}
-              className="btn btn-outline-dark mr-2"
+              className="btn btn-outline-dark mr-2 mb-2"
             >
               Go back
             </Link>
-            <button className="btn btn-dark" onClick={onKeepGoing}>
+            <button className="btn btn-dark mb-2" onClick={onKeepGoing}>
               Press space to continue
             </button>
           </div>
