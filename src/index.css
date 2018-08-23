@@ -144,6 +144,7 @@ a[disabled] {
   margin-right: 10px;
   margin-top: 10px;
   margin-bottom: -50px;
+  z-index: 2;
 }
 
 .feedback-form .text-underline {
@@ -158,3 +159,18 @@ a[disabled] {
     width: 100%;
     text-align: center;
 }
+
+.navbar {
+  padding: 0rem 1rem;
+  display: block;
+  margin-top: 20px;
+  z-index: 1;
+  width: 300px;
+}
+
+@media only screen and (max-width: 480px) {
+  .navbar {
+    margin-top: 50px;
+  }
+}
+
