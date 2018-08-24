@@ -183,10 +183,7 @@ class Decks extends Component {
         )}
         <div className="row">
           <div className="col-md-10 offset-md-1 col-lg-8 offset-lg-2 mt-5">
-            <FeedbackForm
-              onClickConversation={() => analytics.logFeedbackEvent()}
-              onClickDonate={() => analytics.logDonateEvent1()}
-            />
+            <FeedbackForm />
           </div>
         </div>
       </div>
