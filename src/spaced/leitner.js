@@ -1,5 +1,7 @@
 import moment from "moment";
 
+const EXPIRED_LEVEL = 0.5;
+
 export function getProficiency(box, reviewedAt) {
   const interval = getInterval(box);
   const daysSince = getDaysSince(reviewedAt);
@@ -16,6 +18,5 @@ export function getDaysSince(reviewedAt) {
 }
 
 export function isExpired(box, reviewedAt) {
-  console.log("checking is expired");
-  return false;
+  return getProficiency(box, reviewedAt) <= EXPIRED_LEVEL;
 }

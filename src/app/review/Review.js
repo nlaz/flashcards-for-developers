@@ -230,7 +230,6 @@ class Review extends Component {
       response => {
         const isSRS = preferences.getSRSPref();
         const filteredCards = isSRS ? this.filterExpiredCards(response) : response;
-        console.log("lengths", response.length, filteredCards.length);
         const cards = chance.shuffle(filteredCards);
         const options = this.getOptions(index, cards);
         this.setState({ cards, options, isLoading: false });
@@ -242,10 +241,13 @@ class Review extends Component {
   filterExpiredCards = cards => {
     const { deck } = this.state;
     const studyObj = utils.getDeckStudyObject(deck.id);
-    const studiedCards = studyObj.cards;
+    const studiedCards = studyObj.cards || {};
     return cards.filter(card => {
-      const cardObj = studiedCards[card.id];
-      return !!cardObj ? leitner.isExpired(cardObj.leitnerBox, cardObj.reviewedAt) : true;
+      if (card.id in studiedCards) {
+        const cardObj = studiedCards[card.id];
+        return leitner.isExpired(cardObj.leitnerBox, cardObj.reviewedAt);
+      }
+      return true;
     });
   };
 
@@ -346,9 +348,8 @@ class Review extends Component {
               />
             </div>
             <div
-              style={{ minHeight: "400px" }}
               className={cx(
-                "col-12 border border-dark rounded mb-4 py-5 d-flex align-items-stretch",
+                "wrapper col-12 border border-dark rounded mb-4 py-5 d-flex align-items-stretch",
                 {
                   shake: this.state.isWrong,
                 },

@@ -62,4 +62,17 @@ describe("Leitner study technique", () => {
       expect(leitner.getProficiency(4, moment().subtract(32, "days"))).toBeCloseTo(0);
     });
   });
+
+  describe("isExpired", () => {
+    const card1 = { box: 1, reviewedAt: moment().subtract(3, "days") };
+    const card2 = { box: 4, reviewedAt: moment().subtract(3, "days") };
+    it("should return expired if proficiency level under 50%", () => {
+      expect(leitner.getProficiency(card1.box, card1.reviewedAt)).toBe(0.25);
+      expect(leitner.isExpired(card1.box, card1.reviewedAt)).toBe(true);
+    });
+    it("should return not expired if proficiency level above 50%", () => {
+      expect(leitner.getProficiency(card2.box, card2.reviewedAt)).toBeCloseTo(0.91);
+      expect(leitner.isExpired(card2.box, card2.reviewedAt)).toBe(false);
+    });
+  });
 });
