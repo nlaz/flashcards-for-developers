@@ -108,6 +108,13 @@ export function logPressedSubscribe() {
   });
 }
 
+export function logToggleFamiliarCards(isChecked) {
+  ReactGA.event({
+    category: "User",
+    action: !isChecked ? "Unchecked 'Hide familiar cards'" : "Checked 'Hide familiar cards'",
+  });
+}
+
 class GoogleAnalytics extends Component {
   componentWillMount() {
     const searchParams = queryString.parse(this.props.location.search);

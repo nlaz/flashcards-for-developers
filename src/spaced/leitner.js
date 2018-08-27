@@ -20,3 +20,7 @@ export function getDaysSince(reviewedAt) {
 export function isExpired(box, reviewedAt) {
   return getProficiency(box, reviewedAt) <= EXPIRED_LEVEL;
 }
+
+export function getDaysUntilExpired(box, reviewedAt) {
+  return Math.max(getInterval(box) - getDaysSince(reviewedAt), 0);
+}

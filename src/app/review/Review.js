@@ -140,6 +140,7 @@ class Review extends Component {
 
   onSRSToggle = value => {
     const { deck } = this.state;
+    analytics.logToggleFamiliarCards(value);
     this.setState({ isCardsLoading: true }, () => this.fetchCards(deck));
   };
 
@@ -233,7 +234,7 @@ class Review extends Component {
         const filteredCards = isSRS ? this.filterExpiredCards(response) : response;
         const cards = chance.shuffle(filteredCards);
         const options = this.getOptions(index, cards);
-        this.setState({ cards, options, isCardsLoading: false });
+        this.setState({ cards, options, index: 0, isCardsLoading: false });
       },
       error => this.setState({ isError: true, isCardsLoading: false }),
     );
@@ -427,6 +428,7 @@ class Review extends Component {
                     </div>
                   ) : (
                     <ReviewResults
+                      deck={this.state.deck}
                       index={this.state.index}
                       cards={this.state.cards}
                       location={this.props.location}
