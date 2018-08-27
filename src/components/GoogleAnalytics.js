@@ -101,6 +101,13 @@ export function logSaveDeckAction(isSaved) {
   });
 }
 
+export function logPressedSubscribe() {
+  ReactGA.event({
+    category: "User",
+    action: "Clicked on 'Subscribe' button",
+  });
+}
+
 class GoogleAnalytics extends Component {
   componentWillMount() {
     const searchParams = queryString.parse(this.props.location.search);

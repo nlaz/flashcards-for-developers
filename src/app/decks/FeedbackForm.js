@@ -1,41 +1,45 @@
 import React from "react";
 import config from "../../config";
 
-const FeedbackForm = ({ onClick }) => (
+import * as analytics from "../../components/GoogleAnalytics";
+
+const FeedbackForm = () => (
   <div className="feedback-form border border-secondary rounded rounded p-4 text-center bg-light">
     <div className="mx-auto" style={{ maxWidth: "500px" }}>
       <span>
-        We want to hear from you. Let us know what features or content you would like to see.{" "}
+        Stay tuned! Subscribe for news about new decks, features, and other announcements.{" "}
         <span role="img" aria-label="Tada emoji">
           🎉
         </span>
       </span>
       <div className="mt-3">
         <a
-          href={config.airtableFeedbackUrl}
-          onClick={onClick}
-          className="btn btn-dark py-2"
+          href={config.mailchimpUrl}
+          onClick={() => analytics.logPressedSubscribe()}
+          className="btn btn-dark py-2 px-5"
           style={{ borderRadius: "999px" }}
           target="_blank"
           rel="noopener noreferrer"
         >
-          <i className="fa fa-paper-plane mr-2" />
-          Start a conversation
+          <i className="fa fa-bullhorn mr-2" />
+          Subscribe!
         </a>
       </div>
       <div className="mt-3">
-        <a
-          className="text-secondary text-underline"
-          href={config.buyMeACoffeeDonateUrl}
-          onClick={onClick}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          ...or buy us a coffee{" "}
-        </a>
-        <span role="img" aria-label="Heart emoji">
-          ❤️
-        </span>
+        <small>
+          <a
+            className="text-secondary text-underline"
+            href={config.buyMeACoffeeDonateUrl}
+            onClick={() => analytics.logDonateEvent1()}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            ...or buy us a coffee.{" "}
+          </a>
+          <span role="img" aria-label="Heart emoji">
+            ❤️
+          </span>
+        </small>
       </div>
     </div>
   </div>
