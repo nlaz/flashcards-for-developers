@@ -6,11 +6,11 @@ import Chance from "chance";
 
 import config from "../../config";
 import Octicon from "../../components/Octicon";
-import Toggle from "../../components/Toggle";
 import * as utils from "../utils/studyProgress";
 import DeckFeedback from "./DeckFeedback";
 import ReviewHeader from "./ReviewHeader";
 import StudyProgress from "./StudyProgress";
+import StudyToggle from "./StudyToggle";
 import ReviewResults from "./ReviewResults";
 import * as api from "../apiActions";
 import * as analytics from "../../components/GoogleAnalytics";
@@ -313,21 +313,17 @@ class Review extends Component {
         <div className="container container--narrow py-4">
           <ReviewHeader deck={deck} className="mb-5" />
           <div className="flashcard-container row mt-4 px-3">
-            <div className="d-flex align-items-center mb-2 mx-2">
-              <Toggle onClick={() => console.log("Hide cards!")} />
-              <small className="ml-2" style={{ opacity: 0.3 }}>
-                Hide familiar cards
-              </small>
+            <div className="d-flex justify-content-between w-100 m-2">
+              <StudyToggle />
+              <StudyProgress
+                index={index}
+                items={this.state.cards}
+                pageSize={this.state.pageSize}
+                pageEnd={pageEnd}
+                pageStart={pageStart}
+                isFinished={isStageFinished}
+              />
             </div>
-            <StudyProgress
-              className="mt-2"
-              index={index}
-              items={this.state.cards}
-              pageSize={this.state.pageSize}
-              pageEnd={pageEnd}
-              pageStart={pageStart}
-              isFinished={isStageFinished}
-            />
             <div
               style={{ minHeight: "400px" }}
               className={cx(

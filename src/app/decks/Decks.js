@@ -161,7 +161,7 @@ class Decks extends Component {
             ))}
           </div>
         ) : (
-          <div className="w-100 text-center my-5 pb-5">
+          <div className="w-100 text-center my-5 pb-5" style={{ minHeight: "30vh" }}>
             <span className="pb-5" style={{ opacity: 0.3 }}>
               No currently saved decks
             </span>
