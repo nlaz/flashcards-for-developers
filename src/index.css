@@ -179,3 +179,7 @@ a[disabled] {
     margin-top: 50px;
   }
 }
+
+.rc-tooltip-content {
+  max-width: 175px;
+}
