@@ -7,6 +7,8 @@ import Chance from "chance";
 import config from "../../config";
 import Octicon from "../../components/Octicon";
 import * as utils from "../utils/studyProgress";
+import * as preferences from "../utils/prefs";
+import * as leitner from "../../spaced/leitner";
 import DeckFeedback from "./DeckFeedback";
 import ReviewHeader from "./ReviewHeader";
 import StudyProgress from "./StudyProgress";
@@ -135,6 +137,11 @@ class Review extends Component {
     this.setState({ page: this.state.page + 1 });
   };
 
+  onSRSToggle = value => {
+    console.log("Toggle SRS", value);
+    // TODO: Reset cards in review set
+  };
+
   handleSelfGradedAnswer = answer => {
     if (!this.state.isRevealed) {
       return;
@@ -207,6 +214,7 @@ class Review extends Component {
   fetchDeck = deckId => {
     api.fetchDeck(deckId).then(
       response => {
+        // TODO: Set the name on the server-side
         document.title = response.name
           ? `${response.name} Flashcards`
           : "Flashcards for Developers";
@@ -220,12 +228,25 @@ class Review extends Component {
     const { index } = this.state;
     api.fetchCards(deck).then(
       response => {
-        const cards = chance.shuffle(response);
+        const isSRS = preferences.getSRSPref();
+        const filteredCards = isSRS ? this.filterExpiredCards(response) : response;
+        console.log("lengths", response.length, filteredCards.length);
+        const cards = chance.shuffle(filteredCards);
         const options = this.getOptions(index, cards);
         this.setState({ cards, options, isLoading: false });
       },
       error => this.setState({ isError: true, isLoading: false }),
     );
+  };
+
+  filterExpiredCards = cards => {
+    const { deck } = this.state;
+    const studyObj = utils.getDeckStudyObject(deck.id);
+    const studiedCards = studyObj.cards;
+    return cards.filter(card => {
+      const cardObj = studiedCards[card.id];
+      return !!cardObj ? leitner.isExpired(cardObj.leitnerBox, cardObj.reviewedAt) : true;
+    });
   };
 
   getOptions = (index, cards) => {
@@ -314,7 +335,7 @@ class Review extends Component {
           <ReviewHeader deck={deck} className="mb-5" />
           <div className="flashcard-container row mt-4 px-3">
             <div className="d-flex justify-content-between w-100 m-2">
-              <StudyToggle />
+              <StudyToggle onChange={this.onSRSToggle} />
               <StudyProgress
                 index={index}
                 items={this.state.cards}

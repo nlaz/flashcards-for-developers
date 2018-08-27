@@ -2,7 +2,6 @@ const PREFS_USE_SRS_KEY = "prefsUseSRS";
 const DEFAULT_SRS_PREF = true;
 
 export const setSRSPref = value => {
-  console.log("val", value);
   localStorage.setItem(PREFS_USE_SRS_KEY, JSON.stringify(value));
 };
 

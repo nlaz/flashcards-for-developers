@@ -11,9 +11,10 @@ class StudyToggle extends React.Component {
   }
 
   onChange = () => {
-    this.setState({ isChecked: !this.state.isChecked }, () =>
-      preferences.setSRSPref(this.state.isChecked),
-    );
+    this.setState({ isChecked: !this.state.isChecked }, () => {
+      preferences.setSRSPref(this.state.isChecked);
+      this.props.onChange(this.state.isChecked);
+    });
   };
 
   render() {

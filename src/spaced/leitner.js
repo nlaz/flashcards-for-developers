@@ -14,3 +14,8 @@ export function getInterval(box) {
 export function getDaysSince(reviewedAt) {
   return moment().diff(moment(reviewedAt), "days");
 }
+
+export function isExpired(box, reviewedAt) {
+  console.log("checking is expired");
+  return false;
+}
