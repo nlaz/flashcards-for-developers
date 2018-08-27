@@ -65,7 +65,8 @@ class Review extends Component {
     options: [],
     index: 0,
     isWrong: false,
-    isLoading: true,
+    isDeckLoading: true,
+    isCardsLoading: true,
     isError: false,
     isReversed: false,
     isRevealed: false,
@@ -138,8 +139,8 @@ class Review extends Component {
   };
 
   onSRSToggle = value => {
-    console.log("Toggle SRS", value);
-    // TODO: Reset cards in review set
+    const { deck } = this.state;
+    this.setState({ isCardsLoading: true }, () => this.fetchCards(deck));
   };
 
   handleSelfGradedAnswer = answer => {
@@ -218,9 +219,9 @@ class Review extends Component {
         document.title = response.name
           ? `${response.name} Flashcards`
           : "Flashcards for Developers";
-        this.setState({ deck: response }, () => this.fetchCards(response));
+        this.setState({ deck: response, isDeckLoading: false }, () => this.fetchCards(response));
       },
-      error => this.setState({ isError: true, isLoading: false }),
+      error => this.setState({ isError: true, isDeckLoading: false }),
     );
   };
 
@@ -232,9 +233,9 @@ class Review extends Component {
         const filteredCards = isSRS ? this.filterExpiredCards(response) : response;
         const cards = chance.shuffle(filteredCards);
         const options = this.getOptions(index, cards);
-        this.setState({ cards, options, isLoading: false });
+        this.setState({ cards, options, isCardsLoading: false });
       },
-      error => this.setState({ isError: true, isLoading: false }),
+      error => this.setState({ isError: true, isCardsLoading: false }),
     );
   };
 
@@ -298,14 +299,16 @@ class Review extends Component {
     option.id ? this.state.selected.id === option.id : this.state.selected === option;
 
   render() {
-    const { deck, options, index, isLoading, isError } = this.state;
+    const { deck, options, index, isDeckLoading, isCardsLoading, isError } = this.state;
 
-    if (isLoading) {
+    if (isDeckLoading) {
       return (
         <div className="container container--narrow px-0">
           <ReviewNavigation location={this.props.location} />
-          <div className="p-4">
-            <h1 className="text-secondary">Loading deck...</h1>
+          <div className="p-4 text-center w-100">
+            <h5 className="text-secondary">
+              <i className="fas fa-spinner fa-spin mr-1" />Loading deck...
+            </h5>
           </div>
         </div>
       );
@@ -355,83 +358,98 @@ class Review extends Component {
                 },
               )}
             >
-              {!isStageFinished ? (
+              {!isCardsLoading && (
                 <div className="row w-100 mx-0">
-                  <ReviewType type={this.getDeckType()} />
-                  <div className="col-12 col-lg-6 d-flex align-items-center px-1 pb-2">
-                    {this.isImageSelect(deck) ? (
-                      <img className="img-fluid px-3 mx-auto" alt="" src={currentCard.front} />
-                    ) : (
-                      <div className="flashcard-body border rounded px-3 py-5 w-100 h-100">
-                        <div
-                          className="markdown-body text-left d-flex align-items-center justify-content-center flex-column"
-                          dangerouslySetInnerHTML={{
-                            __html: this.getCardHTML(currentCard),
-                          }}
-                        />
-                        {this.state.isRevealed && (
+                  {!isStageFinished ? (
+                    <div className="row w-100 mx-0">
+                      <ReviewType type={this.getDeckType()} />
+                      <div className="col-12 col-lg-6 d-flex align-items-center px-1 pb-2">
+                        {this.isImageSelect(deck) ? (
+                          <img className="img-fluid px-3 mx-auto" alt="" src={currentCard.front} />
+                        ) : (
+                          <div className="flashcard-body border rounded px-3 py-5 w-100 h-100">
+                            <div
+                              className="markdown-body text-left d-flex align-items-center justify-content-center flex-column"
+                              dangerouslySetInnerHTML={{
+                                __html: this.getCardHTML(currentCard),
+                              }}
+                            />
+                            {this.state.isRevealed && (
+                              <div
+                                className="markdown-body text-left d-flex align-items-center justify-content-center flex-column mt-3 pt-3"
+                                style={{ borderTop: "1px solid #f5f5f5" }}
+                                dangerouslySetInnerHTML={{
+                                  __html: marked(currentCard.back),
+                                }}
+                              />
+                            )}
+                          </div>
+                        )}
+                      </div>
+                      <div className="col-12 col-lg-6 d-flex flex-column align-items-stretch px-1 pb-1">
+                        {options.map((option, key) => (
                           <div
-                            className="markdown-body text-left d-flex align-items-center justify-content-center flex-column mt-3 pt-3"
-                            style={{ borderTop: "1px solid #f5f5f5" }}
-                            dangerouslySetInnerHTML={{
-                              __html: marked(currentCard.back),
-                            }}
-                          />
-                        )}
+                            key={option.id || option}
+                            onClick={() => this.onSelectAnswer(option)}
+                            className={cx(
+                              "flashcard-option border rounded d-flex align-items-start p-3 w-100",
+                              {
+                                "flashcard-option--disabled":
+                                  this.isSelfGraded() && !this.state.isRevealed,
+                                "border-success text-success":
+                                  this.isSelected(option) &&
+                                  this.isCorrectAnswer(option, currentCard),
+                                "border-danger text-danger":
+                                  this.isSelected(option) &&
+                                  !this.isCorrectAnswer(option, currentCard),
+                              },
+                            )}
+                          >
+                            <div className="border rounded mr-3 px-2" style={{ fontSize: ".9em" }}>
+                              {key + 1}
+                            </div>
+                            <div
+                              className="markdown-body text-left bg-white w-100"
+                              dangerouslySetInnerHTML={{
+                                __html: this.getOptionHTML(option),
+                              }}
+                            />
+                          </div>
+                        ))}
+                        {this.isSelfGraded() &&
+                          !this.state.isRevealed && (
+                            <button className="btn border rounded" onClick={this.onToggleReveal}>
+                              Press space to show answer
+                            </button>
+                          )}
                       </div>
-                    )}
-                  </div>
-                  <div className="col-12 col-lg-6 d-flex flex-column align-items-stretch px-1 pb-1">
-                    {options.map((option, key) => (
-                      <div
-                        key={option.id || option}
-                        onClick={() => this.onSelectAnswer(option)}
-                        className={cx(
-                          "flashcard-option border rounded d-flex align-items-start p-3 w-100",
-                          {
-                            "flashcard-option--disabled":
-                              this.isSelfGraded() && !this.state.isRevealed,
-                            "border-success text-success":
-                              this.isSelected(option) && this.isCorrectAnswer(option, currentCard),
-                            "border-danger text-danger":
-                              this.isSelected(option) && !this.isCorrectAnswer(option, currentCard),
-                          },
-                        )}
-                      >
-                        <div className="border rounded mr-3 px-2" style={{ fontSize: ".9em" }}>
-                          {key + 1}
-                        </div>
-                        <div
-                          className="markdown-body text-left bg-white w-100"
-                          dangerouslySetInnerHTML={{
-                            __html: this.getOptionHTML(option),
-                          }}
-                        />
-                      </div>
-                    ))}
-                    {this.isSelfGraded() &&
-                      !this.state.isRevealed && (
-                        <button className="btn border rounded" onClick={this.onToggleReveal}>
-                          Press space to show answer
-                        </button>
-                      )}
-                  </div>
-                  <ReportLink content="Report a problem" />
+                      <ReportLink content="Report a problem" />
+                    </div>
+                  ) : (
+                    <ReviewResults
+                      index={this.state.index}
+                      cards={this.state.cards}
+                      location={this.props.location}
+                      numCorrect={this.state.numCorrect}
+                      numIncorrect={this.state.numIncorrect}
+                      onKeepGoing={this.onKeepGoing}
+                    />
+                  )}
                 </div>
-              ) : (
-                <ReviewResults
-                  index={this.state.index}
-                  cards={this.state.cards}
-                  location={this.props.location}
-                  numCorrect={this.state.numCorrect}
-                  numIncorrect={this.state.numIncorrect}
-                  onKeepGoing={this.onKeepGoing}
-                />
+              )}
+              {isCardsLoading && (
+                <div className="text-center w-100">
+                  <h6 className="text-center text-secondary">
+                    <i className="fas fa-spinner fa-spin mr-1" />Loading cards...
+                  </h6>
+                </div>
               )}
             </div>
-            <div className="w-100">
-              <DeckFeedback deck={deck} isCompleted={this.isDeckCompleted()} />
-            </div>
+            {!isCardsLoading && (
+              <div className="w-100">
+                <DeckFeedback deck={deck} isCompleted={this.isDeckCompleted()} />
+              </div>
+            )}
           </div>
         </div>
       </div>
