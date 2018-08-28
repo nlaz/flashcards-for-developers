@@ -153,6 +153,7 @@ class Review extends Component {
     const card = this.getCurrentCard();
     const { deck } = this.state;
 
+    analytics.logReviewEvent(card.id);
     utils.setCardStudyProgress(card.id, deck.id, isCorrect);
 
     if (!isCorrect) {
@@ -173,6 +174,7 @@ class Review extends Component {
 
     utils.setCardStudyProgress(card.id, deck.id, isCorrect);
     if (isCorrect) {
+      analytics.logReviewEvent(card.id);
       this.timeout = setTimeout(() => this.handleCorrectAnswer(), 300);
     } else {
       this.handleIncorrectAnswer(card);
