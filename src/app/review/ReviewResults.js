@@ -2,21 +2,48 @@ import React from "react";
 import { Link } from "react-router-dom";
 import { ResponsiveContainer, Cell, PieChart, Pie, Tooltip, Legend, Label } from "recharts";
 
-const ReviewResults = ({ index, cards, location, numCorrect, numIncorrect, onKeepGoing }) => {
+import * as leitner from "../../spaced/leitner";
+import * as utils from "../utils/studyProgress";
+
+const ReviewResults = ({ deck, index, cards, location, numCorrect, numIncorrect, onKeepGoing }) => {
   const progressData = [
-    { name: "Practiced", value: index },
+    { name: "Practiced", value: index || 1 },
     { name: "Not started", value: cards.length - index },
   ];
 
-  const progress = Math.round(100 * index / cards.length);
+  const progress = Math.round(100 * index / cards.length) || 100;
   const isCompleted = index > cards.length - 1;
+  const studyObj = utils.getDeckStudyObject(deck.id);
+  const studiedCards = studyObj.cards || {};
+
+  const daysUntilDeckProgressIsExpired =
+    Object.keys(studiedCards).reduce((avg, el) => {
+      const cardObj = studiedCards[el];
+      return leitner.getDaysUntilExpired(cardObj.leitnerBox, cardObj.reviewedA) + avg;
+    }, 0) / Object.keys(studiedCards).length;
 
   return (
     <div className="w-100">
-      <h3 className="mb-5 text-center">
-        {index <= cards.length - 1 ? "Nice work!" : "You're done!"}
-      </h3>
-      <div className="row d-flex mb-2">
+      {!isCompleted ? (
+        <h3 className="text-center">
+          Nice work!{" "}
+          <span role="img" aria-label="Tada!">
+            🎉
+          </span>
+        </h3>
+      ) : (
+        [
+          <h3 className="text-center mb-0" key="1">
+            You're finished for now!
+          </h3>,
+          <div className="text-center w-100" key="2">
+            Come back in{" "}
+            <span className="text-secondary">{Math.ceil(daysUntilDeckProgressIsExpired)} days</span>{" "}
+            to strengthen your progress.
+          </div>,
+        ]
+      )}
+      <div className="row d-flex mb-2 mt-5">
         <div className="px-5 position-relative col-12 col-lg-6">
           <ResponsiveContainer height={200} width="100%">
             <PieChart>

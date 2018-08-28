@@ -62,4 +62,52 @@ describe("Leitner study technique", () => {
       expect(leitner.getProficiency(4, moment().subtract(32, "days"))).toBeCloseTo(0);
     });
   });
+
+  describe("isExpired", () => {
+    const card1 = { box: 1, reviewedAt: moment().subtract(3, "days") };
+    const card2 = { box: 4, reviewedAt: moment().subtract(3, "days") };
+    it("should return expired if proficiency level under 50%", () => {
+      expect(leitner.getProficiency(card1.box, card1.reviewedAt)).toBe(0.25);
+      expect(leitner.isExpired(card1.box, card1.reviewedAt)).toBe(true);
+    });
+    it("should return not expired if proficiency level above 50%", () => {
+      expect(leitner.getProficiency(card2.box, card2.reviewedAt)).toBeCloseTo(0.91);
+      expect(leitner.isExpired(card2.box, card2.reviewedAt)).toBe(false);
+    });
+  });
+
+  describe("getDaysUntilExpired", () => {
+    const threeDaysAgo = moment().subtract(3, "days");
+    const eightDaysAgo = moment().subtract(8, "days");
+    const fiftyDaysAgo = moment().subtract(50, "days");
+    const card1 = { box: 3, reviewedAt: threeDaysAgo };
+    const card2 = { box: 3, reviewedAt: eightDaysAgo };
+    const card3 = { box: 4, reviewedAt: fiftyDaysAgo };
+    const card4 = { box: 5, reviewedAt: moment().add(1, "days") };
+
+    it("should return number of days until card reaches the expiration level", () => {
+      expect(leitner.getInterval(card1.box)).toBe(8);
+      expect(leitner.getDaysSince(card1.reviewedAt)).toBe(3);
+      expect(leitner.getProficiency(card1.box, card1.reviewedAt)).toBeCloseTo(0.81);
+      expect(leitner.getDaysUntilExpired(card1.box, card1.reviewedAt)).toBe(5);
+    });
+    it("should return 0 days if card is expired", () => {
+      expect(leitner.getInterval(card2.box)).toBe(8);
+      expect(leitner.getDaysSince(card2.reviewedAt)).toBe(8);
+      expect(leitner.getProficiency(card2.box, card2.reviewedAt)).toBeCloseTo(0.5);
+      expect(leitner.getDaysUntilExpired(card2.box, card2.reviewedAt)).toBe(0);
+    });
+    it("should return 0 days if card is really expired", () => {
+      expect(leitner.getInterval(card3.box)).toBe(16);
+      expect(leitner.getDaysSince(card3.reviewedAt)).toBe(50);
+      expect(leitner.getProficiency(card3.box, card3.reviewedAt)).toBeCloseTo(0);
+      expect(leitner.getDaysUntilExpired(card3.box, card3.reviewedAt)).toBe(0);
+    });
+    it("should return study interval if card has just been reviewed", () => {
+      expect(leitner.getInterval(card4.box)).toBe(32);
+      expect(leitner.getDaysSince(card4.reviewedAt)).toBe(0);
+      expect(leitner.getProficiency(card4.box, card4.reviewedAt)).toBe(1);
+      expect(leitner.getDaysUntilExpired(card4.box, card4.reviewedAt)).toBe(32);
+    });
+  });
 });

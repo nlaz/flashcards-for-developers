@@ -1,6 +1,8 @@
 import React from "react";
 import marked from "marked";
 
+import Octicon from "../../components/Octicon";
+
 const ReviewHeader = ({ deck, className }) => (
   <div className={className}>
     <h1 className="m-0">{deck.name}</h1>
@@ -13,8 +15,11 @@ const ReviewHeader = ({ deck, className }) => (
       />
     )}
     {deck.source && (
-      <div className="mb-2">
-        <a href={deck.source}>{deck.source}</a>
+      <div className="mb-2 d-flex align-items-center">
+        <Octicon name="link" className="d-flex mr-1" />
+        <a style={{ fontSize: ".9em" }} href={deck.source}>
+          {deck.source}
+        </a>
       </div>
     )}
   </div>
