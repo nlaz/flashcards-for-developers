@@ -1,5 +1,6 @@
 import React from "react";
 import { FacebookShareButton, TwitterShareButton } from "react-share";
+
 import config from "../config/index";
 import * as analytics from "./GoogleAnalytics";
 

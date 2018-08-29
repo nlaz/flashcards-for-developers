@@ -1,4 +1,5 @@
 import Airtable from "airtable";
+import axios from "axios";
 
 import config from "../config/index";
 
@@ -97,4 +98,12 @@ export const fetchCards = async deck => {
     });
 
   return results;
+};
+
+export const loginUser = params => {
+  return axios.post("/users/login", params);
+};
+
+export const signupUser = params => {
+  return axios.post("/users/signup", params);
 };

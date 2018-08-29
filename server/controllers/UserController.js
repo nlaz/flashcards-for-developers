@@ -3,12 +3,11 @@ const jwt = require("jsonwebtoken");
 
 const User = require("../models/User");
 const userSchemas = require("./validation/users");
-const passport = require("../passport/index");
 const config = require("../../config/index");
 
 module.exports.signupUser = async (req, res, next) => {
   try {
-    await Joi.validate(req, userSchemas.signupUser);
+    await Joi.validate(req, userSchemas.signupUser, { allowUnknown: true });
 
     const { username, password } = req.body;
     const user = await User.newUser({ username, password });
@@ -20,19 +19,7 @@ module.exports.signupUser = async (req, res, next) => {
 };
 
 module.exports.loginUser = async (req, res, next) => {
-  try {
-    await Joi.validate(req, userSchemas.loginUser);
-
-    passport.authenticate("local", (err, user, info) => {
-      if (err) {
-        return next(err);
-      }
-
-      res.send({
-        token: jwt.sign({ id: req.user._id, username: req.user.username }, config.sessionSecret),
-      });
-    });
-  } catch (error) {
-    next(error);
-  }
+  return res.send({
+    token: jwt.sign({ id: req.user._id, username: req.user.username }, config.sessionSecret),
+  });
 };

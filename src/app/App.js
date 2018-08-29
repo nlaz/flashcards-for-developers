@@ -7,6 +7,9 @@ import NotFound from "../components/NotFound";
 import GoogleAnalytics from "../components/GoogleAnalytics";
 import Footer from "../components/Footer";
 import Header from "../components/Header";
+import Login from "./auth/Login";
+import Logout from "./auth/Logout";
+import Signup from "./auth/Signup";
 
 class App extends Component {
   render() {
@@ -19,6 +22,9 @@ class App extends Component {
               <Route path="/" component={GoogleAnalytics} />
               <Switch>
                 <Route exact path="/" component={Decks} />
+                <Route path="/login" component={Login} />
+                <Route path="/signup" component={Signup} />
+                <Route path="/logout" component={Logout} />
                 <Route exact path="/categories/:categoryId" component={Decks} />
                 <Route exact path="/decks" component={Decks} />
                 <Route exact path="/decks/:deckId" component={Review} />
