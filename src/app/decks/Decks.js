@@ -43,7 +43,7 @@ class Decks extends Component {
   onToggleSave = (event, deck) => {
     event.preventDefault();
 
-    analytics.logSaveDeckAction(this.isSaved(deck.id));
+    analytics.logSaveDeckAction(this.isSaved(deck.id), deck.name);
 
     this.saveDeck(deck);
   };
