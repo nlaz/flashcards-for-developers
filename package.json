@@ -12,6 +12,7 @@
     "classnames": "^2.2.6",
     "cookie-parser": "^1.4.3",
     "express": "^4.16.3",
+    "express-session": "^1.15.6",
     "joi": "^13.6.0",
     "js-cookie": "^2.2.0",
     "jsonwebtoken": "^8.3.0",

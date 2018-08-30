@@ -13,4 +13,9 @@ module.exports = {
       password: Joi.string().required(),
     }),
   },
+  githubUser: {
+    body: Joi.object().keys({
+      code: Joi.string().required(),
+    }),
+  },
 };

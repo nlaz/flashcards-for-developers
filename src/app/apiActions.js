@@ -101,9 +101,9 @@ export const fetchCards = async deck => {
 };
 
 export const loginUser = params => {
-  return axios.post("/users/login", params);
+  return axios.post("/auth/login", params);
 };
 
 export const signupUser = params => {
-  return axios.post("/users/signup", params);
+  return axios.post("/auth/signup", params);
 };

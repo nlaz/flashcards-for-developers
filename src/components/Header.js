@@ -1,10 +1,18 @@
 import React from "react";
 import { FacebookShareButton, TwitterShareButton } from "react-share";
+import qs from "query-string";
 
 import config from "../config/index";
 import * as analytics from "./GoogleAnalytics";
 
 const title = "Helpful Flashcards for Developers @ ";
+
+const GITHUB_PARAMS = qs.stringify({
+  client_id: config.githubOAuthClientId,
+  redirect_uri: config.githubOAuthRedirectURI,
+});
+
+const GITHUB_OAUTH_URL = `https://github.com/login/oauth/authorize?${GITHUB_PARAMS}`;
 
 const Header = () => (
   <div className="container px-4">
@@ -40,6 +48,11 @@ const Header = () => (
           >
             <i className="fab fa-twitter" />
           </TwitterShareButton>
+        </li>
+        <li className="list-inline-item">
+          <a className="btn btn-sm btn-outline-dark" href={GITHUB_OAUTH_URL}>
+            Login with GitHub
+          </a>
         </li>
       </ul>
     </div>
