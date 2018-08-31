@@ -1,5 +1,6 @@
 import Airtable from "airtable";
 import axios from "axios";
+import cookie from "js-cookie";
 
 import config from "../config/index";
 
@@ -110,4 +111,9 @@ export const signupUser = params => {
 
 export const githubUser = code => {
   return axios.post("/auth/github", { code });
+};
+
+export const saveDecks = decks => {
+  const config = { headers: { Authorization: cookie.get("token") } };
+  return axios.put("/users/saved_decks", { decks }, config);
 };

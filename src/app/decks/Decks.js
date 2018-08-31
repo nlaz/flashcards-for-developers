@@ -5,6 +5,7 @@ import config from "../../config";
 import * as api from "../apiActions";
 import * as analytics from "../../components/GoogleAnalytics";
 import { setSavedDecks, getSavedDecks } from "../utils/savedDecks";
+import isAuthenticated from "../utils/isAuthenticated";
 import Octicon from "../../components/Octicon";
 import SkillProgress from "./SkillProgress";
 import HabitTracker from "./HabitTracker";
@@ -70,7 +71,14 @@ class Decks extends Component {
       ? this.state.savedDecks.filter(el => el !== deck.id)
       : [...this.state.savedDecks, deck.id];
 
-    this.setState({ savedDecks }, () => setSavedDecks(savedDecks));
+    if (isAuthenticated()) {
+      api
+        .saveDecks(savedDecks)
+        .then(response => this.setState({ savedDecks }, () => setSavedDecks(savedDecks)))
+        .catch(error => console.log(error));
+    } else {
+      this.setState({ savedDecks }, () => setSavedDecks(savedDecks));
+    }
   };
 
   isSaved = id => this.state.savedDecks.includes(id);

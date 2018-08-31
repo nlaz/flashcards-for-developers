@@ -68,3 +68,16 @@ module.exports.githubUser = async (req, res, next) => {
     next(error);
   }
 };
+
+module.exports.saveDecks = async (req, res, next) => {
+  try {
+    await Joi.validate(req, userSchemas.saveDecks, { allowUnknown: true });
+    const { decks } = req.body;
+
+    const user = await User.findOneAndUpdate({ _id: req.user }, { saved_decks: decks });
+
+    res.send(user);
+  } catch (error) {
+    next(error);
+  }
+};

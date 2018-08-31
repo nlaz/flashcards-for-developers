@@ -18,4 +18,9 @@ module.exports = {
       code: Joi.string().required(),
     }),
   },
+  saveDecks: {
+    body: Joi.object().keys({
+      decks: Joi.array().items(Joi.string()),
+    }),
+  },
 };

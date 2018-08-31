@@ -6,7 +6,7 @@ const UserSchema = new mongoose.Schema({
   email: { type: String, required: true, unique: true },
   avatar_url: { type: String },
   github_id: { type: String },
-  password: { type: String, select: false }, // deprecating
+  saved_decks: { type: [String] },
 });
 
 const generateHash = password => bcrypt.hashSync(password, bcrypt.genSaltSync(8), null);
