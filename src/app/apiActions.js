@@ -107,3 +107,7 @@ export const loginUser = params => {
 export const signupUser = params => {
   return axios.post("/auth/signup", params);
 };
+
+export const githubUser = code => {
+  return axios.post("/auth/github", { code });
+};

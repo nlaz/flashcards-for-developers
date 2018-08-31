@@ -1,6 +1,8 @@
 import React, { Component } from "react";
 import queryString from "query-string";
-import axios from "axios";
+import cookie from "js-cookie";
+
+import * as api from "../apiActions";
 
 class AuthRedirect extends Component {
   state = { user: {} };
@@ -8,15 +10,23 @@ class AuthRedirect extends Component {
     const { location } = this.props;
     if (location.search) {
       const { code } = queryString.parse(location.search);
-
-      axios
-        .post("/auth/github", { code })
-        .then(response => this.setState({ user: response.data }))
-        .catch(error => console.log(error));
+      this.fetchUser(code);
     } else {
       this.props.history.push("/");
     }
   }
+
+  fetchUser = code => {
+    api
+      .githubUser(code)
+      .then(response => {
+        const token = response.headers.authorization.split(" ")[1];
+        cookie.set("token", token);
+        cookie.set("user", response.data);
+        this.props.history.push("/");
+      })
+      .catch(error => console.log(error));
+  };
 
   render() {
     const { user } = this.state;
