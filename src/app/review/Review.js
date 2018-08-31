@@ -80,16 +80,17 @@ class Review extends Component {
   componentDidMount() {
     const { params } = this.props.match;
     this.fetchDeck(params.deckId);
-    window.addEventListener("keyup", e => this.onKeyPress(e));
-	window.addEventListener("keydown", e => this.onKeyRelease(e));
+    window.addEventListener("keyup", e => this.onKeyUp(e));
+    window.addEventListener("keydown", e => this.onKeyDown(e));
   }
 
   componentWillUnmount() {
-    window.removeEventListener("keydown", e => this.onKeyPress(e));
+    window.removeEventListener("keyup", e => this.onKeyUp(e));
+    window.removeEventListener("keydown", e => this.onKeyDown(e));
     clearTimeout(this.timeout);
   }
 
-  onKeyPress = e => {
+  onKeyUp = e => {
     e.preventDefault();
     switch (e.key) {
       case " ": // spacebar key
@@ -101,7 +102,7 @@ class Review extends Component {
     }
   };
 
-  onKeyRelease = e => {
+  onKeyDown = e => {
     if (e.key === " ") {
       e.preventDefault();
       return false;
