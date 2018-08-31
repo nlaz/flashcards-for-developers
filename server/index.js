@@ -1,6 +1,5 @@
 const express = require("express");
 const morgan = require("morgan");
-const passport = require("passport");
 const cookieParser = require("cookie-parser");
 const bodyParser = require("body-parser");
 const session = require("express-session");
@@ -26,9 +25,6 @@ app.use(
     saveUninitialized: true,
   }),
 );
-
-app.use(passport.initialize());
-app.use(passport.session());
 
 app.get("/", function(req, res) {
   res.sendFile(paths.appEntry);

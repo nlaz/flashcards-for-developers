@@ -7,8 +7,6 @@ const router = express.Router();
 
 router.get("/hello", (req, res) => res.send({ message: "Hello world!" }));
 
-router.get("/test", (req, res) => res.redirect("/hello"));
-
 router.post("/auth/github", UserController.githubUser);
 
 router.put("/users/saved_decks", isAuthenticated, UserController.saveDecks);

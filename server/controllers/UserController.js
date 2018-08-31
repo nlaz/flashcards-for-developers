@@ -10,25 +10,6 @@ const config = require("../../config/index");
 const GITHUB_OAUTH_ROUTE = "https://github.com/login/oauth/access_token";
 const GITHUB_USER_ROUTE = "https://api.github.com/user";
 
-module.exports.signupUser = async (req, res, next) => {
-  try {
-    await Joi.validate(req, userSchemas.signupUser, { allowUnknown: true });
-
-    const { username, password } = req.body;
-    const user = await User.newUser({ username, password });
-
-    res.send({ user });
-  } catch (error) {
-    next(error);
-  }
-};
-
-module.exports.loginUser = async (req, res, next) => {
-  return res.send({
-    token: jwt.sign({ id: req.user._id, username: req.user.username }, config.sessionSecret),
-  });
-};
-
 module.exports.githubUser = async (req, res, next) => {
   try {
     await Joi.validate(req, userSchemas.githubUser, { allowUnknown: true });
