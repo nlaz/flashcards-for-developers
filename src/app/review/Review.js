@@ -81,6 +81,7 @@ class Review extends Component {
     const { params } = this.props.match;
     this.fetchDeck(params.deckId);
     window.addEventListener("keyup", e => this.onKeyPress(e));
+	window.addEventListener("keydown", e => this.onKeyRelease(e));
   }
 
   componentWillUnmount() {
@@ -99,6 +100,13 @@ class Review extends Component {
         return;
     }
   };
+
+  onKeyRelease = e => {
+    if (e.key === " ") {
+      e.preventDefault();
+      return false;
+    }
+  }
 
   onOptionPress = key => {
     const index = parseInt(key, 10) - 1;
