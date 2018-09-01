@@ -48,7 +48,7 @@ class HabitTracker extends Component {
     const daysThisWeek = sessions.filter(el => moment(el).isAfter(moment().subtract(7, "days")));
 
     return (
-      <div className="d-flex flex-row-reverse flex-lg-row justify-content-end justify-content-lg-center align-items-center w-100">
+      <div className="habit-tracker d-flex flex-row-reverse flex-lg-row justify-content-end justify-content-lg-center align-items-center w-100">
         <div className="mx-2">
           <p
             className="m-0 text-uppercase font-weight-medium"
@@ -60,7 +60,7 @@ class HabitTracker extends Component {
             You studied {pluralize("day", daysThisWeek.length, true)} this week.
           </p>
         </div>
-        <div className="d-flex flex-row-reverse mx-2">
+        <div className=" d-flex flex-row-reverse mx-2 habit-tracker_calender">
           {PAST_WEEK.map((_, index) => (
             <DateColumn index={index} key={index} sessions={sessions} />
           ))}
