@@ -13,10 +13,10 @@ import AuthRedirect from "./auth/AuthRedirect";
 class App extends Component {
   render() {
     return (
-      <div className="App d-flex flex-column justify-content-between text-left">
-        <Header />
-        <div style={{ flexGrow: 1 }}>
-          <BrowserRouter>
+      <BrowserRouter>
+        <div className="App d-flex flex-column justify-content-between text-left">
+          <Header />
+          <div style={{ flexGrow: 1 }}>
             <div>
               <Route path="/" component={GoogleAnalytics} />
               <Switch>
@@ -29,10 +29,10 @@ class App extends Component {
                 <Route exact path="*" component={NotFound} />
               </Switch>
             </div>
-          </BrowserRouter>
+          </div>
+          <Footer />
         </div>
-        <Footer />
-      </div>
+      </BrowserRouter>
     );
   }
 }
