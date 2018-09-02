@@ -2,15 +2,21 @@
   "name": "flashcards-for-developers",
   "version": "0.1.0",
   "private": true,
-  "homepage": "https://nlaz.github.io/flashcards-for-developers",
+  "proxy": "http://localhost:5000",
   "dependencies": {
     "airtable": "^0.5.6",
+    "body-parser": "^1.18.3",
     "chance": "^1.0.16",
     "classnames": "^2.2.6",
-    "gh-pages": "^1.2.0",
+    "cookie-parser": "^1.4.3",
+    "express": "^4.16.3",
     "marked": "^0.4.0",
     "moment": "^2.22.2",
+    "mongoose": "^5.2.10",
+    "morgan": "^1.9.0",
+    "nodemon": "^1.18.3",
     "octicons": "^7.3.0",
+    "passport": "^0.4.0",
     "pluralize": "^7.0.0",
     "primer-markdown": "^3.7.7",
     "rc-tooltip": "^3.7.2",
@@ -24,11 +30,11 @@
     "recharts": "^1.0.0-beta.10"
   },
   "scripts": {
-    "start": "react-scripts start",
+    "start": "echo 'This script has changed. Please use `yarn web` or `yarn server` instead.'",
+    "web": "react-scripts start",
     "build": "react-scripts build",
-    "test": "react-scripts test --env=jsdom",
-    "predeploy": "npm run build",
-    "deploy": "gh-pages -d build",
-    "eject": "react-scripts eject"
+    "server": "NODE_ENV=development nodemon --watch server --exec 'node server/index'",
+    "deploy": "yarn build && NODE_ENV=production node server/index",
+    "test": "react-scripts test --env=jsdom"
   }
 }
