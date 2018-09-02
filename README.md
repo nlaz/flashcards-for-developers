@@ -42,7 +42,7 @@ For more information check the [`create-react-app` docs](https://github.com/face
 
 In the project directory, you can run:
 
-### `npm run web`
+### `yarn web`
 
 Runs the frontend side of the app in the development mode.<br>
 Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
@@ -50,7 +50,7 @@ Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
 The page will reload if you make edits.<br>
 You will also see any lint errors in the console.
 
-### `npm run server`
+### `yarn server`
 
 Runs the server side of the app in the development mode.<br>
 Make API requests to [http://localhost:5000](http://localhost:5000) to interact with the server.
@@ -58,12 +58,12 @@ Make API requests to [http://localhost:5000](http://localhost:5000) to interact 
 The server will also reload if you make edits.<br>
 _Note:_ It also initially loads the built React app on the server at [http://localhost:5000](http://localhost:5000)
 
-### `npm test`
+### `yarn test`
 
 Launches the test runner in the interactive watch mode.<br>
 See the section about [running tests](#running-tests) for more information.
 
-### `npm run build`
+### `yarn build`
 
 Builds the React app for production to the `build` folder.<br>
 It correctly bundles React in production mode and optimizes the build for the best performance.
@@ -73,7 +73,7 @@ Your app is ready to be deployed!
 
 See the section about [deployment](#deployment) for more information.
 
-### `npm run deploy`
+### `yarn deploy`
 
 Builds the React app for production and runs the server so the the app is ready to be deployed.
 
