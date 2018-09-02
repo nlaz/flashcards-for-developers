@@ -19,13 +19,17 @@ export const fetchCategories = async () => {
   return results;
 };
 
-export const fetchCategory = id => {
+export const fetchCollection = id => {
   return new Promise((success, failure) => {
     base("Categories").find(id, function(err, record) {
-      if (err) failure(err);
+      if (err) return failure(err);
+      if (!record) return failure(err);
 
-      const result = { id: record.id, name: record.get("Name") };
-      success(result);
+      return success({
+        id: record.id,
+        name: record.get("Name"),
+        description: record.get("Description"),
+      });
     });
   });
 };
@@ -46,9 +50,9 @@ const getDeckFromRecord = record => ({
   new: record.get("New") || false,
 });
 
-export const fetchDecks = async category => {
+export const fetchDecks = async collection => {
   const results = [];
-  const filter = category ? `({Category} = '${category.name}')` : "";
+  const filter = collection ? `FIND("${collection.name}", {Category})` : "";
   await base("Decks")
     .select({ filterByFormula: filter })
     .eachPage((records, fetchNextPage) => {
