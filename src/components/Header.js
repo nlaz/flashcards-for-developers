@@ -22,8 +22,6 @@ const Header = () => {
   const authenticated = isAuthenticated();
   const user = authenticated ? JSON.parse(cookie.get("user")) : {};
 
-  console.log("user", user);
-
   const tooltip = (
     <Link className="bg-light text-secondary" to="/logout">
       Logout

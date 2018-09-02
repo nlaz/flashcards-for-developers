@@ -4,7 +4,7 @@ import queryString from "query-string";
 import config from "../../config";
 import * as api from "../apiActions";
 import * as analytics from "../../components/GoogleAnalytics";
-import { setSavedDecks, getSavedDecks } from "../utils/savedDecks";
+import { setSavedDecks } from "../utils/savedDecks";
 import isAuthenticated from "../utils/isAuthenticated";
 import Octicon from "../../components/Octicon";
 import SkillProgress from "./SkillProgress";
@@ -38,7 +38,7 @@ class Decks extends Component {
     } else {
       this.fetchCategory(FRONTEND_CATEGORY_ID);
     }
-    this.setState({ savedDecks: getSavedDecks() });
+    this.fetchSavedDecks();
   }
 
   onToggleSave = (event, deck) => {
@@ -66,6 +66,12 @@ class Decks extends Component {
     );
   };
 
+  fetchSavedDecks = () => {
+    api.fetchSavedDecks().then(response => {
+      this.setState({ savedDecks: response.data });
+    });
+  };
+
   saveDeck = deck => {
     const savedDecks = this.isSaved(deck.id)
       ? this.state.savedDecks.filter(el => el !== deck.id)
@@ -73,7 +79,7 @@ class Decks extends Component {
 
     if (isAuthenticated()) {
       api
-        .saveDecks(savedDecks)
+        .setSavedDecks(savedDecks)
         .then(response => this.setState({ savedDecks }, () => setSavedDecks(savedDecks)))
         .catch(error => console.log(error));
     } else {

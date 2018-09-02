@@ -50,14 +50,26 @@ module.exports.githubUser = async (req, res, next) => {
   }
 };
 
-module.exports.saveDecks = async (req, res, next) => {
+module.exports.setSavedDecks = async (req, res, next) => {
   try {
     await Joi.validate(req, userSchemas.saveDecks, { allowUnknown: true });
     const { decks } = req.body;
 
-    const user = await User.findOneAndUpdate({ _id: req.user }, { saved_decks: decks });
+    const user = await User.findOneAndUpdate({ _id: req.user }, { saved_decks: decks }).select(
+      "+saved_decks",
+    );
 
     res.send(user);
+  } catch (error) {
+    next(error);
+  }
+};
+
+module.exports.getSavedDecks = async (req, res, next) => {
+  try {
+    const user = await User.findOne({ _id: req.user }).select("+saved_decks");
+
+    res.send(user.saved_decks);
   } catch (error) {
     next(error);
   }

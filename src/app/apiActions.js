@@ -113,7 +113,12 @@ export const githubUser = code => {
   return axios.post("/auth/github", { code });
 };
 
-export const saveDecks = decks => {
+export const setSavedDecks = decks => {
   const config = { headers: { Authorization: cookie.get("token") } };
   return axios.put("/users/saved_decks", { decks }, config);
+};
+
+export const fetchSavedDecks = () => {
+  const config = { headers: { Authorization: cookie.get("token") } };
+  return axios.get("/users/saved_decks", config);
 };
