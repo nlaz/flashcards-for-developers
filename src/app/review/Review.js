@@ -62,7 +62,6 @@ class Review extends Component {
   state = {
     deck: {},
     cards: [],
-    incorrectCards: [],
     correctness: [],
     options: [],
     index: 0,
@@ -166,7 +165,7 @@ class Review extends Component {
     const card = this.getCurrentCard();
     const { deck } = this.state;
     var newCorrectness = this.state.correctness.slice();
-    var newIncorrectCards = this.state.incorrectCards.slice();
+    var newIncorrectCards = this.state.cards.slice();
 
     analytics.logReviewEvent(card.id);
     utils.setCardStudyProgress(card.id, deck.id, isCorrect);
@@ -175,12 +174,11 @@ class Review extends Component {
       const numCorrect = this.state.numCorrect - 1;
       const numIncorrect = this.state.numIncorrect + 1;
       this.setState({ numCorrect, numIncorrect });
-      // Add incorrect card to incorrect card array, also keep track of incorrect answer for icon updating
       newCorrectness.push(false);
       newIncorrectCards.push(card);
       this.setState({correctness: newCorrectness,
-        incorrectCards: newIncorrectCards});
-    }
+        cards: newIncorrectCards});
+      }
 
     else{
       newCorrectness.push(true);
@@ -199,7 +197,6 @@ class Review extends Component {
 
     utils.setCardStudyProgress(card.id, deck.id, isCorrect);
     if (isCorrect) {
-      // for multiple choice answers only need to send the true on the correct answer, not letting users go through incorrect answers
       var newCorrectness = this.state.correctness.slice();
       newCorrectness.push(true);
       this.setState({correctness: newCorrectness});
