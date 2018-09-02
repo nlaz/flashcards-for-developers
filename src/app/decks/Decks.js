@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import queryString from "query-string";
+import { Typeahead } from "react-bootstrap-typeahead";
 
 import config from "../../config";
 import * as api from "../apiActions";
@@ -22,6 +23,7 @@ class Decks extends Component {
   state = {
     category: {},
     decks: [],
+    searchString: '',
     isLoading: true,
     isError: false,
     activeTab: TABS.ALL,
@@ -49,7 +51,7 @@ class Decks extends Component {
   };
 
   sortDecks = decks => [...decks].sort((a, b) => b.new - a.new);
-
+  
   fetchCategory = categoryId => {
     api.fetchCategory(categoryId).then(response => {
       this.setState({ category: response }, () => this.fetchDecks(response));
@@ -74,6 +76,11 @@ class Decks extends Component {
   };
 
   isSaved = id => this.state.savedDecks.includes(id);
+
+  handleSearch = () => {
+    // routing
+    console.log(this.state.searchString);
+  }
 
   render() {
     const { location } = this.props;
@@ -122,6 +129,22 @@ class Decks extends Component {
           >
             {activeTab === TABS.USER ? <SkillProgress decks={filteredDecks} /> : <HabitTracker />}
           </div>
+        </div>
+        <div className="d-flex justify-content-center">
+            <Typeahead
+              className="search-term border-primary"
+              labelKey="name"
+              options={[
+                'Warsaw'
+              ]}
+              onChange={(e) => {
+                this.setState({searchString: !e.target.value});
+              }}
+              placeholder="Search..."
+            />
+            <button type="submit" className="search-button text-white bg-primary border-info" onClick={this.handleSearch}>
+                <i className="fa fa-search"></i>
+            </button>
         </div>
         <div className="d-flex mx-2">
           <button
