@@ -1,6 +1,5 @@
 import React from "react";
 import Tooltip from "rc-tooltip";
-import "rc-tooltip/assets/bootstrap.css";
 
 import * as preferences from "../utils/prefs";
 import Toggle from "../../components/Toggle";

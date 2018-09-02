@@ -183,3 +183,14 @@ a[disabled] {
 .rc-tooltip-content {
   max-width: 175px;
 }
+
+#header-logout {
+  background: white;
+  text-transform: uppercase;
+  border-radius: 3px;
+  padding: 0.75em 1.25em;
+  font-weight: 500;
+  color: #e8e8e8;
+  border: 1px solid #e8e8e8;
+  box-shadow: none;
+}

@@ -1,7 +1,9 @@
 import React from "react";
+import { Link } from "react-router-dom";
 import { FacebookShareButton, TwitterShareButton } from "react-share";
 import qs from "query-string";
 import cookie from "js-cookie";
+import Tooltip from "rc-tooltip";
 
 import * as analytics from "./GoogleAnalytics";
 import config from "../config/index";
@@ -21,6 +23,12 @@ const Header = () => {
   const user = authenticated ? JSON.parse(cookie.get("user")) : {};
 
   console.log("user", user);
+
+  const tooltip = (
+    <Link className="bg-light text-secondary" to="/logout">
+      Logout
+    </Link>
+  );
 
   return (
     <div className="container px-4">
@@ -57,14 +65,21 @@ const Header = () => {
               <i className="fab fa-twitter" />
             </TwitterShareButton>
           </li>
-          <li className="list-inline-item ml-2">
+          <li className="header-login list-inline-item ml-2">
             {authenticated ? (
-              <img
-                src={user.avatar_url}
-                style={{ width: "35px", height: "35px" }}
-                alt="User profile"
-                className="rounded rounded-circle"
-              />
+              <Tooltip
+                placement="bottomRight"
+                trigger={["click"]}
+                overlay={tooltip}
+                id="header-logout"
+              >
+                <img
+                  src={user.avatar_url}
+                  style={{ width: "35px", height: "35px" }}
+                  alt="User profile"
+                  className="rounded rounded-circle"
+                />
+              </Tooltip>
             ) : (
               <a className="btn btn-sm btn-outline-dark" href={GITHUB_OAUTH_URL}>
                 Login with GitHub
