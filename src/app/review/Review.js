@@ -164,22 +164,18 @@ class Review extends Component {
     const isCorrect = answer === SELF_GRADE_CORRECT;
     const card = this.getCurrentCard();
     const { deck } = this.state;
-    var newCorrectness = this.state.correctness.slice();
 
     analytics.logReviewEvent(card.id);
     utils.setCardStudyProgress(card.id, deck.id, isCorrect);
+    this.setState({correctness: [ ...this.state.correctness, isCorrect ]});
 
     if (!isCorrect) {
       const numCorrect = this.state.numCorrect - 1;
       const numIncorrect = this.state.numIncorrect + 1;
-      this.setState({ numCorrect, numIncorrect });
-      newCorrectness.push(false);
-      this.setState({correctness: newCorrectness});
-      }
-
-    else{
-      newCorrectness.push(true);
-      this.setState({correctness: newCorrectness});
+      this.setState({
+        numCorrect,
+        numIncorrect
+      });
     }
 
     this.setState({ selected: answer });
@@ -194,9 +190,7 @@ class Review extends Component {
 
     utils.setCardStudyProgress(card.id, deck.id, isCorrect);
     if (isCorrect) {
-      var newCorrectness = this.state.correctness.slice();
-      newCorrectness.push(true);
-      this.setState({correctness: newCorrectness});
+      this.setState({correctness: [ ...this.state.correctness, isCorrect ]});
       analytics.logReviewEvent(card.id);
       this.timeout = setTimeout(() => this.handleCorrectAnswer(), 300);
     } else {
