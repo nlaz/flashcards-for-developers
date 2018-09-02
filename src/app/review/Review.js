@@ -62,6 +62,7 @@ class Review extends Component {
   state = {
     deck: {},
     cards: [],
+    correctness: [],
     options: [],
     index: 0,
     isWrong: false,
@@ -80,15 +81,17 @@ class Review extends Component {
   componentDidMount() {
     const { params } = this.props.match;
     this.fetchDeck(params.deckId);
-    window.addEventListener("keyup", e => this.onKeyPress(e));
+    window.addEventListener("keyup", e => this.onKeyUp(e));
+    window.addEventListener("keydown", e => this.onKeyDown(e));
   }
 
   componentWillUnmount() {
-    window.removeEventListener("keydown", e => this.onKeyPress(e));
+    window.removeEventListener("keyup", e => this.onKeyUp(e));
+    window.removeEventListener("keydown", e => this.onKeyDown(e));
     clearTimeout(this.timeout);
   }
 
-  onKeyPress = e => {
+  onKeyUp = e => {
     e.preventDefault();
     switch (e.key) {
       case " ": // spacebar key
@@ -99,6 +102,13 @@ class Review extends Component {
         return;
     }
   };
+
+  onKeyDown = e => {
+    if (e.key === " ") {
+      e.preventDefault();
+      return false;
+    }
+  }
 
   onOptionPress = key => {
     const index = parseInt(key, 10) - 1;
@@ -113,6 +123,8 @@ class Review extends Component {
   onSpaceBarPress = () => {
     if (this.isStageFinished()) {
       this.onKeepGoing();
+      // stage is finished, Reset correctness array
+      this.setState({correctness: []});
     } else if (this.isSelfGraded() && !this.state.isRevealed) {
       this.onToggleReveal();
     }
@@ -155,11 +167,15 @@ class Review extends Component {
 
     analytics.logReviewEvent(card.id);
     utils.setCardStudyProgress(card.id, deck.id, isCorrect);
+    this.setState({correctness: [ ...this.state.correctness, isCorrect ]});
 
     if (!isCorrect) {
       const numCorrect = this.state.numCorrect - 1;
       const numIncorrect = this.state.numIncorrect + 1;
-      this.setState({ numCorrect, numIncorrect });
+      this.setState({
+        numCorrect,
+        numIncorrect
+      });
     }
 
     this.setState({ selected: answer });
@@ -174,6 +190,7 @@ class Review extends Component {
 
     utils.setCardStudyProgress(card.id, deck.id, isCorrect);
     if (isCorrect) {
+      this.setState({correctness: [ ...this.state.correctness, isCorrect ]});
       analytics.logReviewEvent(card.id);
       this.timeout = setTimeout(() => this.handleCorrectAnswer(), 300);
     } else {
@@ -351,6 +368,7 @@ class Review extends Component {
                 pageEnd={pageEnd}
                 pageStart={pageStart}
                 isFinished={isStageFinished}
+                correctness={this.state.correctness}
               />
             </div>
             <div

@@ -174,9 +174,27 @@ a[disabled] {
   width: 300px;
 }
 
+.progress-current {
+  width: 14px!important;
+  height: 14px!important;
+}
+
+.progress-index{
+  width: 10px;
+  height: 10px;
+}
+
 @media only screen and (max-width: 480px) {
   .navbar {
     margin-top: 50px;
+  }
+  .habit-tracker {
+    display: block!important;
+    text-align: center;
+  }
+  .habit-tracker_calender {
+    display: -webkit-inline-box!important;
+    width: 160px;
   }
 }
 
