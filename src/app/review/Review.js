@@ -165,7 +165,6 @@ class Review extends Component {
     const card = this.getCurrentCard();
     const { deck } = this.state;
     var newCorrectness = this.state.correctness.slice();
-    var newIncorrectCards = this.state.cards.slice();
 
     analytics.logReviewEvent(card.id);
     utils.setCardStudyProgress(card.id, deck.id, isCorrect);
@@ -175,9 +174,7 @@ class Review extends Component {
       const numIncorrect = this.state.numIncorrect + 1;
       this.setState({ numCorrect, numIncorrect });
       newCorrectness.push(false);
-      newIncorrectCards.push(card);
-      this.setState({correctness: newCorrectness,
-        cards: newIncorrectCards});
+      this.setState({correctness: newCorrectness});
       }
 
     else{
