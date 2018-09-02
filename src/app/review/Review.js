@@ -62,6 +62,7 @@ class Review extends Component {
   state = {
     deck: {},
     cards: [],
+    correctness: [],
     options: [],
     index: 0,
     isWrong: false,
@@ -122,6 +123,8 @@ class Review extends Component {
   onSpaceBarPress = () => {
     if (this.isStageFinished()) {
       this.onKeepGoing();
+      // stage is finished, Reset correctness array
+      this.setState({correctness: []});
     } else if (this.isSelfGraded() && !this.state.isRevealed) {
       this.onToggleReveal();
     }
@@ -164,11 +167,15 @@ class Review extends Component {
 
     analytics.logReviewEvent(card.id);
     utils.setCardStudyProgress(card.id, deck.id, isCorrect);
+    this.setState({correctness: [ ...this.state.correctness, isCorrect ]});
 
     if (!isCorrect) {
       const numCorrect = this.state.numCorrect - 1;
       const numIncorrect = this.state.numIncorrect + 1;
-      this.setState({ numCorrect, numIncorrect });
+      this.setState({
+        numCorrect,
+        numIncorrect
+      });
     }
 
     this.setState({ selected: answer });
@@ -183,6 +190,7 @@ class Review extends Component {
 
     utils.setCardStudyProgress(card.id, deck.id, isCorrect);
     if (isCorrect) {
+      this.setState({correctness: [ ...this.state.correctness, isCorrect ]});
       analytics.logReviewEvent(card.id);
       this.timeout = setTimeout(() => this.handleCorrectAnswer(), 300);
     } else {
@@ -360,6 +368,7 @@ class Review extends Component {
                 pageEnd={pageEnd}
                 pageStart={pageStart}
                 isFinished={isStageFinished}
+                correctness={this.state.correctness}
               />
             </div>
             <div
