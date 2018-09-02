@@ -3,19 +3,16 @@ import cx from "classnames";
 
 const StudyProgress = ({ index, items, pageSize, pageStart, pageEnd, isFinished, correctness }) => {
   return (
-    <div className="d-flex align-items-end">
+    <div className="d-flex align-items-center">
       {items.slice(pageStart, pageEnd).map((el, key) => (
         <div
           key={key}
-          className={cx("border border-dark rounded-circle border-width-2 ml-1", 
+          className={cx("border progress-index border-secondary rounded-circle border-width-2 ml-1", 
           {
-            "bg-dark": (isFinished && correctness[key]) || ((key < index % pageSize) && correctness[key]),
-            "bg-danger": (isFinished && !correctness[key]) || ((key < index % pageSize) && !correctness[key]),
+            "bg-success border-success": (isFinished && correctness[key]) || ((key < index % pageSize) && correctness[key]),
+            "bg-secondary border-secondary": (isFinished && !correctness[key]) || ((key < index % pageSize) && !correctness[key]),
+            "progress-current": (key === index) || (key === (index - pageStart)),
           })}
-          style={{
-            width: "10px",
-            height: "10px",
-          }}
         />
       ))}
     </div>
