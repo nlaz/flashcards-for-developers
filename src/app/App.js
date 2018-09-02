@@ -3,6 +3,7 @@ import { BrowserRouter, Route, Switch } from "react-router-dom";
 
 import Decks from "./decks/Decks";
 import Review from "./review/Review";
+import Collections from "./collections/Collections";
 import NotFound from "../components/NotFound";
 import GoogleAnalytics from "../components/GoogleAnalytics";
 import Footer from "../components/Footer";
@@ -22,6 +23,7 @@ class App extends Component {
                 <Route exact path="/categories/:categoryId" component={Decks} />
                 <Route exact path="/decks" component={Decks} />
                 <Route exact path="/decks/:deckId" component={Review} />
+                <Route exact path="/collections/:collectionId" component={Collections} />
                 <Route exact path="*" component={NotFound} />
               </Switch>
             </div>

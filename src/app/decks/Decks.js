@@ -11,7 +11,7 @@ import HabitTracker from "./HabitTracker";
 import FeedbackForm from "./FeedbackForm";
 import DeckItem from "./DeckItem";
 
-const FRONTEND_COLLECTION_ID = "recUROLxLzjGsSh8P";
+const HOMEPAGE_COLLECTION_ID = "recUROLxLzjGsSh8P";
 
 const TABS = {
   ALL: "all",
@@ -35,7 +35,7 @@ class Decks extends Component {
     if (searchParams.beta) {
       this.fetchDecks();
     } else {
-      this.fetchCollection(FRONTEND_COLLECTION_ID);
+      this.fetchCollection(HOMEPAGE_COLLECTION_ID);
     }
     this.setState({ savedDecks: getSavedDecks() });
   }
