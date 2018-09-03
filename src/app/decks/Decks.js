@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import queryString from "query-string";
 import { Typeahead } from "react-bootstrap-typeahead";
+import { Redirect } from 'react-router';
 
 import config from "../../config";
 import * as api from "../apiActions";
@@ -23,6 +24,7 @@ class Decks extends Component {
   state = {
     collection: {},
     decks: [],
+    collections: [],
     searchString: '',
     isLoading: true,
     isError: false,
@@ -33,6 +35,7 @@ class Decks extends Component {
   componentWillMount() {
     document.title = "Flashcards for Developers";
     const searchParams = queryString.parse(this.props.location.search);
+    this.fetchCollectionList()
 
     if (searchParams.beta) {
       this.fetchDecks();
@@ -58,6 +61,12 @@ class Decks extends Component {
     });
   };
 
+  fetchCollectionList = () => {
+    api.fetchAllCollections().then(collections => {
+      this.setState({collections: collections})
+    });
+  }
+
   fetchDecks = collection => {
     api.fetchDecks(collection).then(
       response => {
@@ -78,13 +87,26 @@ class Decks extends Component {
   isSaved = id => this.state.savedDecks.includes(id);
 
   handleSearch = () => {
-    // routing
-    console.log(this.state.searchString);
+    this.setState({redirect: true});
+  }
+
+  onKeyStroke = (e) => {
+    if (e.key === 'Enter') {
+      this.handleSearch();
+    }
   }
 
   render() {
     const { location } = this.props;
     const { decks, isLoading, isError, savedDecks, activeTab } = this.state;
+
+    if (this.state.redirect) {
+      for(var i = 0; i< this.state.collections.length; i++){
+        if(this.state.collections[i].name === this.state.searchString){
+          return <Redirect push to={"/collections/" + this.state.collections[i].id }/>;
+        }        
+      }
+    }
 
     if (isLoading) {
       return (
@@ -115,6 +137,10 @@ class Decks extends Component {
 
     const filteredDecks =
       activeTab === TABS.USER ? decks.filter(el => savedDecks.includes(el.id)) : decks;
+    const filteredNames =
+      this.state.collections.map( collection =>
+        collection.name
+    );
 
     return (
       <div className="container p-4 my-5">
@@ -130,15 +156,15 @@ class Decks extends Component {
             {activeTab === TABS.USER ? <SkillProgress decks={filteredDecks} /> : <HabitTracker />}
           </div>
         </div>
-        <div className="d-flex justify-content-center">
+        <div 
+          className="d-flex justify-content-center" 
+          onKeyPress={this.onKeyStroke}
+          tabIndex="0">
             <Typeahead
               className="search-term border-primary"
-              labelKey="name"
-              options={[
-                'Warsaw'
-              ]}
+              options={filteredNames}
               onChange={(e) => {
-                this.setState({searchString: !e.target.value});
+                this.setState({searchString: e[0]});
               }}
               placeholder="Search..."
             />
