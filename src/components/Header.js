@@ -8,7 +8,7 @@ const title = "Helpful Flashcards for Developers @ ";
 const Header = () => (
   <div className="container px-4">
     <div className="pt-3">
-      <ul className="header-right text-right p-0">
+      <ul className="position-relative header-right text-right p-0">
         <li className="list-inline-item mr-2">
           <a
             className="text-secondary"
