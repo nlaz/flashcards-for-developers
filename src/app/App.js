@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { BrowserRouter, Route, Switch } from "react-router-dom";
+import { HashRouter, Route, Switch } from "react-router-dom";
 
 import Decks from "./decks/Decks";
 import Review from "./review/Review";
@@ -15,7 +15,7 @@ class App extends Component {
       <div className="App d-flex flex-column justify-content-between text-left">
         <Header />
         <div style={{ flexGrow: 1 }}>
-          <BrowserRouter>
+          <HashRouter>
             <div>
               <Route path="/" component={GoogleAnalytics} />
               <Switch>
@@ -27,7 +27,7 @@ class App extends Component {
                 <Route exact path="*" component={NotFound} />
               </Switch>
             </div>
-          </BrowserRouter>
+          </HashRouter>
         </div>
         <Footer />
       </div>

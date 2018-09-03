@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "proxy": "http://localhost:5000",
+  "homepage": "https://nlaz.github.io/flashcards-for-developers",
   "dependencies": {
     "airtable": "^0.5.6",
     "body-parser": "^1.18.3",
@@ -11,6 +12,7 @@
     "cookie-parser": "^1.4.3",
     "eslint-config-prettier": "^3.0.1",
     "express": "^4.16.3",
+    "gh-pages": "^1.2.0",
     "marked": "^0.4.0",
     "moment": "^2.22.2",
     "mongoose": "^5.2.10",
@@ -35,7 +37,9 @@
     "web": "react-scripts start",
     "build": "react-scripts build",
     "server": "NODE_ENV=development nodemon --watch server --exec 'node server/index'",
-    "deploy": "yarn build && NODE_ENV=production node server/index",
+    "deploy:local": "yarn build && NODE_ENV=production node server/index",
+	"predeploy": "npm run build",
+   "deploy": "gh-pages -d build",
     "test": "react-scripts test --env=jsdom"
   },
   "devDependencies": {
