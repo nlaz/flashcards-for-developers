@@ -200,7 +200,13 @@ a[disabled] {
 }
 
 .header {
+  cursor: pointer;
   border-bottom: 1px solid #e9ecef;
+}
+
+.header-login img {
+  width: 40px;
+  height: 40px;
 }
 
 #header-logout {

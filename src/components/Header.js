@@ -73,12 +73,7 @@ const Header = ({ location }) => {
                 overlay={tooltip}
                 id="header-logout"
               >
-                <img
-                  src={user.avatar_url}
-                  style={{ width: "35px", height: "35px" }}
-                  alt="User profile"
-                  className="rounded rounded-circle"
-                />
+                <img src={user.avatar_url} alt="User profile" className="rounded rounded-circle" />
               </Tooltip>
             ) : (
               <a className="btn btn-sm btn-outline-dark" href={GITHUB_OAUTH_URL}>
