@@ -108,7 +108,7 @@ class Review extends Component {
       e.preventDefault();
       return false;
     }
-  }
+  };
 
   onOptionPress = key => {
     const index = parseInt(key, 10) - 1;
@@ -327,7 +327,8 @@ class Review extends Component {
           <ReviewNavigation location={this.props.location} />
           <div className="p-4 text-center w-100">
             <h5 className="text-secondary">
-              <i className="fas fa-spinner fa-spin mr-1" />Loading deck...
+              <i className="fas fa-spinner fa-spin mr-1" />
+              Loading deck...
             </h5>
           </div>
         </div>
@@ -462,7 +463,8 @@ class Review extends Component {
               {isCardsLoading && (
                 <div className="text-center w-100">
                   <h6 className="text-center text-secondary">
-                    <i className="fas fa-spinner fa-spin mr-1" />Loading cards...
+                    <i className="fas fa-spinner fa-spin mr-1" />
+                    Loading cards...
                   </h6>
                 </div>
               )}

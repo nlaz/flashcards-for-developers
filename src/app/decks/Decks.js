@@ -12,7 +12,7 @@ import HabitTracker from "./HabitTracker";
 import FeedbackForm from "./FeedbackForm";
 import DeckItem from "./DeckItem";
 
-const FRONTEND_CATEGORY_ID = "recUROLxLzjGsSh8P";
+const HOMEPAGE_COLLECTION_ID = "recUROLxLzjGsSh8P";
 
 const TABS = {
   ALL: "all",
@@ -21,7 +21,7 @@ const TABS = {
 
 class Decks extends Component {
   state = {
-    category: {},
+    collection: {},
     decks: [],
     isLoading: true,
     isError: false,
@@ -37,7 +37,7 @@ class Decks extends Component {
     if (searchParams.beta) {
       this.fetchDecks();
     } else {
-      this.fetchCategory(FRONTEND_CATEGORY_ID);
+      this.fetchCollection(HOMEPAGE_COLLECTION_ID);
     }
 
     if (authenticated) {
@@ -57,14 +57,14 @@ class Decks extends Component {
 
   sortDecks = decks => [...decks].sort((a, b) => b.new - a.new);
 
-  fetchCategory = categoryId => {
-    api.fetchCategory(categoryId).then(response => {
-      this.setState({ category: response }, () => this.fetchDecks(response));
+  fetchCollection = id => {
+    api.fetchCollection(id).then(collection => {
+      this.setState({ collection }, () => this.fetchDecks(collection));
     });
   };
 
-  fetchDecks = category => {
-    api.fetchDecks(category).then(
+  fetchDecks = collection => {
+    api.fetchDecks(collection).then(
       response => {
         this.setState({ decks: this.sortDecks(response), isLoading: false });
       },
