@@ -1,16 +1,15 @@
 import React from "react";
 import cookie from "js-cookie";
+import { Redirect } from "react-router-dom";
 
 class Logout extends React.Component {
   componentWillMount() {
     cookie.remove("token");
     cookie.remove("user");
-
-    this.props.history.push("/");
   }
 
   render() {
-    return false;
+    return <Redirect to="/" />;
   }
 }
 
