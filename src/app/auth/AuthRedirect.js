@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import { Redirect } from "react-router-dom";
 import queryString from "query-string";
 import cookie from "js-cookie";
 
@@ -6,49 +7,44 @@ import * as api from "../apiActions";
 
 class AuthRedirect extends Component {
   state = { user: {} };
+
   componentDidMount() {
     const { location } = this.props;
     if (location.search) {
       const { code } = queryString.parse(location.search);
       this.fetchUser(code);
     } else {
-      this.props.history.push("/");
+      this.setState({ isRedirect: true });
     }
   }
 
   fetchUser = code => {
-    api
-      .githubUser(code)
-      .then(response => {
+    api.githubUser(code).then(
+      response => {
         const token = response.headers.authorization.split(" ")[1];
         cookie.set("token", token);
         cookie.set("user", response.data);
-        this.props.history.push("/");
-      })
-      .catch(error => console.log(error));
+        this.setState({ user: response.data });
+      },
+      error => {
+        console.log(error);
+        this.setState({ isRedirect: true });
+      },
+    );
   };
 
   render() {
-    const { user } = this.state;
-    if (Object.keys(user).length === 0) {
+    const { user, isRedirect } = this.state;
+    if (!isRedirect && Object.keys(user).length === 0) {
       return (
-        <div className="container my-5 pt-5">
-          <i className="fas fa-spinner fa-spin mr-1" />Loading profile...
+        <div className="container my-5">
+          <i className="fas fa-spinner fa-spin mr-1" />
+          Loading profile...
         </div>
       );
     }
 
-    return (
-      <div className="container my-5 pt-5">
-        <img src={user.avatar_url} alt="" />
-        <div className="mb-2">
-          <span className="font-weight-bold">Name:</span> {user.name}
-        </div>
-        <div className="mb-2">
-          <span className="font-weight-bold">Email:</span> {user.email}
-        </div>
-      </div>
-    );
+    return <Redirect to="/" />;
   }
 }
 
