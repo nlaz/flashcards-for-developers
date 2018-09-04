@@ -4,7 +4,7 @@ import queryString from "query-string";
 import config from "../../config";
 import * as api from "../apiActions";
 import * as analytics from "../../components/GoogleAnalytics";
-import { setSavedDecks } from "../utils/savedDecks";
+import * as localStorage from "../utils/savedDecks";
 import isAuthenticated from "../utils/isAuthenticated";
 import Octicon from "../../components/Octicon";
 import SkillProgress from "./SkillProgress";
@@ -32,13 +32,19 @@ class Decks extends Component {
   componentWillMount() {
     document.title = "Flashcards for Developers";
     const searchParams = queryString.parse(this.props.location.search);
+    const authenticated = isAuthenticated();
 
     if (searchParams.beta) {
       this.fetchDecks();
     } else {
       this.fetchCategory(FRONTEND_CATEGORY_ID);
     }
-    this.fetchSavedDecks();
+
+    if (authenticated) {
+      this.fetchSavedDecks();
+    } else {
+      this.setState({ savedDecks: localStorage.getSavedDecks() });
+    }
   }
 
   onToggleSave = (event, deck) => {
@@ -80,10 +86,12 @@ class Decks extends Component {
     if (isAuthenticated()) {
       api
         .setSavedDecks(savedDecks)
-        .then(response => this.setState({ savedDecks }, () => setSavedDecks(savedDecks)))
+        .then(response =>
+          this.setState({ savedDecks }, () => localStorage.setSavedDecks(savedDecks)),
+        )
         .catch(error => console.log(error));
     } else {
-      this.setState({ savedDecks }, () => setSavedDecks(savedDecks));
+      this.setState({ savedDecks }, () => localStorage.setSavedDecks(savedDecks));
     }
   };
 
