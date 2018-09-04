@@ -1,5 +1,5 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import { Link, withRouter } from "react-router-dom";
 import { FacebookShareButton, TwitterShareButton } from "react-share";
 import qs from "query-string";
 import cookie from "js-cookie";
@@ -8,6 +8,7 @@ import Tooltip from "rc-tooltip";
 import * as analytics from "./GoogleAnalytics";
 import config from "../config/index";
 import isAuthenticated from "../app/utils/isAuthenticated";
+import Octicon from "./Octicon";
 
 const title = "Helpful Flashcards for Developers @ ";
 
@@ -18,9 +19,10 @@ const GITHUB_PARAMS = qs.stringify({
 
 const GITHUB_OAUTH_URL = `https://github.com/login/oauth/authorize?${GITHUB_PARAMS}`;
 
-const Header = () => {
+const Header = ({ location }) => {
   const authenticated = isAuthenticated();
   const user = authenticated ? JSON.parse(cookie.get("user")) : {};
+  const isHomePage = location.pathname === "/";
 
   const tooltip = (
     <Link className="bg-light text-secondary" to="/logout">
@@ -29,21 +31,21 @@ const Header = () => {
   );
 
   return (
-    <div className="container px-4">
-      <div className="pt-3">
-        <ul className="header-right text-right p-0">
-          <li className="list-inline-item mr-2">
-            <a
-              className="text-secondary"
-              href={config.buyMeACoffeeDonateUrl}
-              onClick={() => analytics.logDonateEvent3()}
-              target="_blank"
-              rel="noopener noreferrer"
+    <div className="header">
+      <div className="container container--full d-flex justify-content-between align-items-center py-2 w-100">
+        <div>
+          {!isHomePage && (
+            <Link
+              to={{ pathname: "/", search: location.search }}
+              className="py-2 d-flex align-items-center font-weight-medium text-dark"
             >
-              <small>Support Us</small>
-            </a>
-          </li>
-          <li className="list-inline-item mr-2">
+              <Octicon name="chevron-left" className="d-flex mr-1" />
+              Flashcards for Developers
+            </Link>
+          )}
+        </div>
+        <ul className="p-0 m-0">
+          <li className="list-inline-item mr-3">
             <FacebookShareButton
               url="http://nlaz.github.io/flashcards-for-developers/#/"
               quote={title}
@@ -90,4 +92,4 @@ const Header = () => {
   );
 };
 
-export default Header;
+export default withRouter(Header);

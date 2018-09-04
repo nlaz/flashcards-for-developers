@@ -132,7 +132,7 @@ class Decks extends Component {
       activeTab === TABS.USER ? decks.filter(el => savedDecks.includes(el.id)) : decks;
 
     return (
-      <div className="container p-4 my-5">
+      <div className="container container--full px-4 my-5">
         <div className="d-flex flex-column flex-lg-row justify-content-between align-items-lg-center">
           <div className="mb-3">
             <h1 className="m-0">Flashcards for Developers</h1>
