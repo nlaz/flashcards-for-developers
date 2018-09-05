@@ -1,11 +1,9 @@
 import React, { Component } from "react";
-import { Link } from "react-router-dom";
 import cx from "classnames";
 import marked from "marked";
 import Chance from "chance";
 
 import config from "../../config";
-import Octicon from "../../components/Octicon";
 import * as utils from "../utils/studyProgress";
 import * as preferences from "../utils/prefs";
 import * as leitner from "../../spaced/leitner";
@@ -24,18 +22,6 @@ const SELF_GRADE_CORRECT = "I was right";
 const SELF_GRADE_INCORRECT = "I was wrong";
 
 const getRandomPageSize = () => chance.integer({ min: PAGE_SIZE - 2, max: PAGE_SIZE + 1 });
-
-const ReviewNavigation = ({ location }) => (
-  <div className="navbar">
-    <Link
-      to={{ pathname: "/", search: location.search }}
-      className="py-2 d-flex align-items-center font-weight-medium text-dark"
-    >
-      <Octicon name="chevron-left" className="d-flex mr-1" />
-      Flashcards for Developers
-    </Link>
-  </div>
-);
 
 const ReviewType = ({ type }) => (
   <div
@@ -124,7 +110,7 @@ class Review extends Component {
     if (this.isStageFinished()) {
       this.onKeepGoing();
       // stage is finished, Reset correctness array
-      this.setState({correctness: []});
+      this.setState({ correctness: [] });
     } else if (this.isSelfGraded() && !this.state.isRevealed) {
       this.onToggleReveal();
     }
@@ -167,14 +153,14 @@ class Review extends Component {
 
     analytics.logReviewEvent(card.id);
     utils.setCardStudyProgress(card.id, deck.id, isCorrect);
-    this.setState({correctness: [ ...this.state.correctness, isCorrect ]});
+    this.setState({ correctness: [...this.state.correctness, isCorrect] });
 
     if (!isCorrect) {
       const numCorrect = this.state.numCorrect - 1;
       const numIncorrect = this.state.numIncorrect + 1;
       this.setState({
         numCorrect,
-        numIncorrect
+        numIncorrect,
       });
     }
 
@@ -190,7 +176,7 @@ class Review extends Component {
 
     utils.setCardStudyProgress(card.id, deck.id, isCorrect);
     if (isCorrect) {
-      this.setState({correctness: [ ...this.state.correctness, isCorrect ]});
+      this.setState({ correctness: [...this.state.correctness, isCorrect] });
       analytics.logReviewEvent(card.id);
       this.timeout = setTimeout(() => this.handleCorrectAnswer(), 300);
     } else {
@@ -324,7 +310,6 @@ class Review extends Component {
     if (isDeckLoading) {
       return (
         <div className="container container--narrow px-0">
-          <ReviewNavigation location={this.props.location} />
           <div className="p-4 text-center w-100">
             <h5 className="text-secondary">
               <i className="fas fa-spinner fa-spin mr-1" />
@@ -338,7 +323,6 @@ class Review extends Component {
     if (isError) {
       return (
         <div className="container container--narrow px-0">
-          <ReviewNavigation location={this.props.location} />
           <div className="text-center p-4">
             <h1 className="text-dark">Unable to load request</h1>
             <p>Please try again or go back home.</p>
@@ -354,10 +338,7 @@ class Review extends Component {
 
     return (
       <div>
-        <div className="container container--narrow px-0">
-          <ReviewNavigation location={this.props.location} />
-        </div>
-        <div className="container container--narrow py-4">
+        <div className="container container--narrow py-5">
           <ReviewHeader deck={deck} className="mb-5" />
           <div className="flashcard-container row mt-4 px-3">
             <div className="d-flex justify-content-between w-100 m-2">

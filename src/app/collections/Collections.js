@@ -4,7 +4,6 @@ import config from "../../config";
 import * as api from "../apiActions";
 import * as analytics from "../../components/GoogleAnalytics";
 import Octicon from "../../components/Octicon";
-import ReviewNavigation from "../review/ReviewNavigation";
 import { setSavedDecks, getSavedDecks } from "../utils/savedDecks";
 import SkillProgress from "../decks/SkillProgress";
 import FeedbackForm from "../decks/FeedbackForm";
@@ -97,10 +96,7 @@ class Decks extends Component {
 
     return (
       <div>
-        <div className="container px-0">
-          <ReviewNavigation location={this.props.location} />
-        </div>
-        <div className="container py-4">
+        <div className="container container--full px-4 my-5">
           <div className="d-flex flex-column flex-lg-row justify-content-between align-items-lg-center">
             <div className="mb-3">
               <h1 className="m-0">{collection.name}</h1>
@@ -114,7 +110,7 @@ class Decks extends Component {
             </div>
           </div>
           {decks.length > 0 ? (
-            <div className="row pt-1">
+            <div className="row pt-4">
               {decks.map(deck => (
                 <DeckItem
                   deck={deck}
