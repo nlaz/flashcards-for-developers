@@ -11,7 +11,6 @@ import SkillProgress from "./SkillProgress";
 import HabitTracker from "./HabitTracker";
 import FeedbackForm from "./FeedbackForm";
 import DeckItem from "./DeckItem";
-import SearchBar from "../../components/SearchBar";
 
 const HOMEPAGE_COLLECTION_ID = "recUROLxLzjGsSh8P";
 
@@ -24,7 +23,6 @@ class Decks extends Component {
   state = {
     collection: {},
     decks: [],
-    collections: [],
     searchString: "",
     isLoading: true,
     isError: false,
@@ -36,8 +34,6 @@ class Decks extends Component {
     document.title = "Flashcards for Developers";
     const searchParams = queryString.parse(this.props.location.search);
     const authenticated = isAuthenticated();
-
-    this.fetchCollectionList();
 
     if (searchParams.beta) {
       this.fetchDecks();
@@ -65,12 +61,6 @@ class Decks extends Component {
   fetchCollection = id => {
     api.fetchCollection(id).then(collection => {
       this.setState({ collection }, () => this.fetchDecks(collection));
-    });
-  };
-
-  fetchCollectionList = () => {
-    api.fetchAllCollections().then(collections => {
-      this.setState({ collections: collections });
     });
   };
 
@@ -156,9 +146,6 @@ class Decks extends Component {
             {activeTab === TABS.USER ? <SkillProgress decks={filteredDecks} /> : <HabitTracker />}
           </div>
         </div>
-
-        <SearchBar collections={this.state.collections} />
-
         <div className="d-flex mx-2">
           <button
             className="btn px-2 py-1 m-1 rounded-0"
