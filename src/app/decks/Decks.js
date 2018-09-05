@@ -1,7 +1,5 @@
 import React, { Component } from "react";
 import queryString from "query-string";
-import { Typeahead } from "react-bootstrap-typeahead";
-import { Redirect } from 'react-router';
 
 import config from "../../config";
 import * as api from "../apiActions";
@@ -12,6 +10,7 @@ import SkillProgress from "./SkillProgress";
 import HabitTracker from "./HabitTracker";
 import FeedbackForm from "./FeedbackForm";
 import DeckItem from "./DeckItem";
+import SearchBar from "../../components/SearchBar";
 
 const HOMEPAGE_COLLECTION_ID = "recUROLxLzjGsSh8P";
 
@@ -86,27 +85,9 @@ class Decks extends Component {
 
   isSaved = id => this.state.savedDecks.includes(id);
 
-  handleSearch = () => {
-    this.setState({redirect: true});
-  }
-
-  onKeyStroke = (e) => {
-    if (e.key === 'Enter') {
-      this.handleSearch();
-    }
-  }
-
   render() {
     const { location } = this.props;
     const { decks, isLoading, isError, savedDecks, activeTab } = this.state;
-
-    if (this.state.redirect) {
-      for(var i = 0; i< this.state.collections.length; i++){
-        if(this.state.collections[i].name === this.state.searchString){
-          return <Redirect push to={"/collections/" + this.state.collections[i].id }/>;
-        }        
-      }
-    }
 
     if (isLoading) {
       return (
@@ -137,10 +118,6 @@ class Decks extends Component {
 
     const filteredDecks =
       activeTab === TABS.USER ? decks.filter(el => savedDecks.includes(el.id)) : decks;
-    const filteredNames =
-      this.state.collections.map( collection =>
-        collection.name
-    );
 
     return (
       <div className="container p-4 my-5">
@@ -156,22 +133,11 @@ class Decks extends Component {
             {activeTab === TABS.USER ? <SkillProgress decks={filteredDecks} /> : <HabitTracker />}
           </div>
         </div>
-        <div 
-          className="d-flex justify-content-center" 
-          onKeyPress={this.onKeyStroke}
-          tabIndex="0">
-            <Typeahead
-              className="search-term border-primary"
-              options={filteredNames}
-              onChange={(e) => {
-                this.setState({searchString: e[0]});
-              }}
-              placeholder="Search..."
-            />
-            <button type="submit" className="search-button text-white bg-primary border-info" onClick={this.handleSearch}>
-                <i className="fa fa-search"></i>
-            </button>
-        </div>
+        
+        <SearchBar
+          collections={this.state.collections}
+        />
+
         <div className="d-flex mx-2">
           <button
             className="btn px-2 py-1 m-1 rounded-0"
