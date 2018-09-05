@@ -35,7 +35,7 @@
     "recharts": "^1.0.0-beta.10"
   },
   "scripts": {
-    "start": "echo 'This script has changed. Please use `yarn web` or `yarn server` instead.'",
+	"start": "yarn deploy",
     "web": "react-scripts start",
     "build": "react-scripts build",
     "server": "NODE_ENV=development nodemon --watch server --exec 'node server/index'",
