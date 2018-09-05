@@ -1,4 +1,6 @@
 import Airtable from "airtable";
+import axios from "axios";
+import cookie from "js-cookie";
 
 import config from "../config/index";
 
@@ -101,4 +103,26 @@ export const fetchCards = async deck => {
     });
 
   return results;
+};
+
+export const loginUser = params => {
+  return axios.post("/auth/login", params);
+};
+
+export const signupUser = params => {
+  return axios.post("/auth/signup", params);
+};
+
+export const githubUser = code => {
+  return axios.post("/auth/github", { code });
+};
+
+export const setSavedDecks = decks => {
+  const config = { headers: { Authorization: cookie.get("token") } };
+  return axios.put("/users/saved_decks", { decks }, config);
+};
+
+export const fetchSavedDecks = () => {
+  const config = { headers: { Authorization: cookie.get("token") } };
+  return axios.get("/users/saved_decks", config);
 };

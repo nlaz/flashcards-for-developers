@@ -80,13 +80,6 @@ export function logDonateEvent2() {
   });
 }
 
-export function logDonateEvent3() {
-  ReactGA.event({
-    category: "User",
-    action: "Clicked on 'Donate' button in Header",
-  });
-}
-
 export function logGithubInterest() {
   ReactGA.event({
     category: "User",

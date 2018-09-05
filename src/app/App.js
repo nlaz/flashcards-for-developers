@@ -8,18 +8,22 @@ import NotFound from "../components/NotFound";
 import GoogleAnalytics from "../components/GoogleAnalytics";
 import Footer from "../components/Footer";
 import Header from "../components/Header";
+import Logout from "./auth/Logout";
+import AuthRedirect from "./auth/AuthRedirect";
 
 class App extends Component {
   render() {
     return (
-      <div className="App d-flex flex-column justify-content-between text-left">
-        <Header />
-        <div style={{ flexGrow: 1 }}>
-          <BrowserRouter>
+      <BrowserRouter>
+        <div className="App d-flex flex-column justify-content-between text-left">
+          <Header />
+          <div style={{ flexGrow: 1 }}>
             <div>
               <Route path="/" component={GoogleAnalytics} />
               <Switch>
                 <Route exact path="/" component={Decks} />
+                <Route path="/logout" component={Logout} />
+                <Route path="/auth/github" component={AuthRedirect} />
                 <Route exact path="/categories/:categoryId" component={Decks} />
                 <Route exact path="/decks" component={Decks} />
                 <Route exact path="/decks/:deckId" component={Review} />
@@ -27,10 +31,10 @@ class App extends Component {
                 <Route exact path="*" component={NotFound} />
               </Switch>
             </div>
-          </BrowserRouter>
+          </div>
+          <Footer />
         </div>
-        <Footer />
-      </div>
+      </BrowserRouter>
     );
   }
 }

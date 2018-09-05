@@ -4,7 +4,8 @@ import queryString from "query-string";
 import config from "../../config";
 import * as api from "../apiActions";
 import * as analytics from "../../components/GoogleAnalytics";
-import { setSavedDecks, getSavedDecks } from "../utils/savedDecks";
+import * as localStorage from "../utils/savedDecks";
+import isAuthenticated from "../utils/isAuthenticated";
 import Octicon from "../../components/Octicon";
 import SkillProgress from "./SkillProgress";
 import HabitTracker from "./HabitTracker";
@@ -31,13 +32,19 @@ class Decks extends Component {
   componentWillMount() {
     document.title = "Flashcards for Developers";
     const searchParams = queryString.parse(this.props.location.search);
+    const authenticated = isAuthenticated();
 
     if (searchParams.beta) {
       this.fetchDecks();
     } else {
       this.fetchCollection(HOMEPAGE_COLLECTION_ID);
     }
-    this.setState({ savedDecks: getSavedDecks() });
+
+    if (authenticated) {
+      this.fetchSavedDecks();
+    } else {
+      this.setState({ savedDecks: localStorage.getSavedDecks() });
+    }
   }
 
   onToggleSave = (event, deck) => {
@@ -65,12 +72,27 @@ class Decks extends Component {
     );
   };
 
+  fetchSavedDecks = () => {
+    api.fetchSavedDecks().then(response => {
+      this.setState({ savedDecks: response.data });
+    });
+  };
+
   saveDeck = deck => {
     const savedDecks = this.isSaved(deck.id)
       ? this.state.savedDecks.filter(el => el !== deck.id)
       : [...this.state.savedDecks, deck.id];
 
-    this.setState({ savedDecks }, () => setSavedDecks(savedDecks));
+    if (isAuthenticated()) {
+      api
+        .setSavedDecks(savedDecks)
+        .then(response =>
+          this.setState({ savedDecks }, () => localStorage.setSavedDecks(savedDecks)),
+        )
+        .catch(error => console.log(error));
+    } else {
+      this.setState({ savedDecks }, () => localStorage.setSavedDecks(savedDecks));
+    }
   };
 
   isSaved = id => this.state.savedDecks.includes(id);
@@ -110,7 +132,7 @@ class Decks extends Component {
       activeTab === TABS.USER ? decks.filter(el => savedDecks.includes(el.id)) : decks;
 
     return (
-      <div className="container p-4 my-5">
+      <div className="container container--full px-4 my-5">
         <div className="d-flex flex-column flex-lg-row justify-content-between align-items-lg-center">
           <div className="mb-3">
             <h1 className="m-0">Flashcards for Developers</h1>

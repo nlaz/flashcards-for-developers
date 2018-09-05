@@ -24,6 +24,10 @@ h1 {
   max-width: 960px;
 }
 
+.container--full {
+  max-width: 1140px;
+}
+
 a[disabled] {
   pointer-events: none;
 }
@@ -146,15 +150,6 @@ a[disabled] {
   background: #eeeeee;
 }
 
-.header-right {
-  margin-right: 10px;
-  margin-top: 10px;
-  margin-bottom: -50px;
-  z-index: 2;
-  width: 150px;
-  float: right;
-}
-
 .feedback-form .text-underline {
   text-decoration: underline;
 }
@@ -177,11 +172,11 @@ a[disabled] {
 }
 
 .progress-current {
-  width: 14px!important;
-  height: 14px!important;
+  width: 14px !important;
+  height: 14px !important;
 }
 
-.progress-index{
+.progress-index {
   width: 10px;
   height: 10px;
 }
@@ -191,15 +186,36 @@ a[disabled] {
     margin-top: 50px;
   }
   .habit-tracker {
-    display: block!important;
+    display: block !important;
     text-align: center;
   }
   .habit-tracker_calender {
-    display: -webkit-inline-box!important;
+    display: -webkit-inline-box !important;
     width: 160px;
   }
 }
 
 .rc-tooltip-content {
   max-width: 175px;
+}
+
+.header {
+  cursor: pointer;
+  border-bottom: 1px solid #e9ecef;
+}
+
+.header-login img {
+  width: 40px;
+  height: 40px;
+}
+
+#header-logout {
+  background: white;
+  text-transform: uppercase;
+  border-radius: 3px;
+  padding: 0.75em 1.25em;
+  font-weight: 500;
+  color: #e8e8e8;
+  border: 1px solid #e8e8e8;
+  box-shadow: none;
 }

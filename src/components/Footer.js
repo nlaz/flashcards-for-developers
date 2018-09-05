@@ -10,7 +10,7 @@ const Footer = () => (
       </small>
       <small className="col-md-4 text-secondary text-center">
         <span className="font-weight-bold mr-1" style={{ fontSize: "1.2em" }}>
-          30,812
+          34,456
         </span>
         cards studied
       </small>
