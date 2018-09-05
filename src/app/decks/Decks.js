@@ -23,6 +23,7 @@ class Decks extends Component {
   state = {
     collection: {},
     decks: [],
+    searchString: "",
     isLoading: true,
     isError: false,
     activeTab: TABS.ALL,

@@ -181,6 +181,30 @@ a[disabled] {
   height: 10px;
 }
 
+.search-button {
+  width: 40px;
+  height: 43px;
+  border: 1px solid;
+  text-align: center;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 20px;
+  margin-left: -6px;
+}
+
+.search-term {
+  float: left;
+  width: 200px;
+  border: 3px solid;
+  height: 43px;
+  border-radius: 5px;
+  outline: none;
+}
+
+.search-term:focus{
+  color: black;
+} 
+
 @media only screen and (max-width: 480px) {
   .navbar {
     margin-top: 50px;

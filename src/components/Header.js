@@ -8,6 +8,7 @@ import Tooltip from "rc-tooltip";
 import * as analytics from "./GoogleAnalytics";
 import config from "../config/index";
 import isAuthenticated from "../app/utils/isAuthenticated";
+import SearchBar from "./SearchBar";
 import Octicon from "./Octicon";
 
 const title = "Helpful Flashcards for Developers @ ";
@@ -33,16 +34,17 @@ const Header = ({ location }) => {
   return (
     <div className="header">
       <div className="container container--full d-flex justify-content-between align-items-center py-2 w-100">
-        <div>
+        <div className="d-flex">
           {!isHomePage && (
             <Link
               to={{ pathname: "/", search: location.search }}
-              className="py-2 d-flex align-items-center font-weight-medium text-dark"
+              className="py-2 d-flex align-items-center font-weight-medium text-dark mr-3"
             >
               <Octicon name="chevron-left" className="d-flex mr-1" />
               Flashcards for Developers
             </Link>
           )}
+          <SearchBar collections={[]} />
         </div>
         <ul className="p-0 m-0">
           <li className="list-inline-item mr-3">

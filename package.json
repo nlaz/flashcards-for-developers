@@ -26,6 +26,7 @@
     "primer-markdown": "^3.7.7",
     "rc-tooltip": "^3.7.2",
     "react": "^16.4.1",
+    "react-bootstrap-typeahead": "^3.2.2",
     "react-dom": "^16.4.1",
     "react-ga": "^2.5.3",
     "react-jss": "^8.5.1",
