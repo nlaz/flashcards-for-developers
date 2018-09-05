@@ -151,6 +151,8 @@ a[disabled] {
   margin-top: 10px;
   margin-bottom: -50px;
   z-index: 2;
+  width: 150px;
+  float: right;
 }
 
 .feedback-form .text-underline {
