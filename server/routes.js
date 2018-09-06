@@ -13,16 +13,4 @@ router.put("/users/saved_decks", isAuthenticated, UserController.setSavedDecks);
 
 router.get("/users/saved_decks", isAuthenticated, UserController.getSavedDecks);
 
-router.use((req, res) => {
-  return res.status(404).send({
-    url: req.originalUrl,
-    error: "Not found",
-  });
-});
-
-router.use((err, req, res, next) => {
-  console.log("❌", err.message);
-  return res.status(500).send({ error: err.stack });
-});
-
 module.exports = router;

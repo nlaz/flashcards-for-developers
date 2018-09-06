@@ -23,6 +23,14 @@ app.get("/", function(req, res) {
 app.use(express.static(paths.appBuild));
 app.use(routes);
 
+app.use((req, res) => {
+  res.sendFile(paths.appEntry);
+});
+
+app.use((err, req, res, next) => {
+  return res.status(500).send({ error: err.stack });
+});
+
 app.listen(config.port, () => {
   console.log(`✨ Starting the server on port ${config.port}`);
 });
