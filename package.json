@@ -3,6 +3,9 @@
   "version": "0.1.0",
   "private": true,
   "proxy": "http://localhost:5000",
+  "engine": {
+    "node": "8.11.1"
+  },
   "dependencies": {
     "airtable": "^0.5.6",
     "axios": "^0.18.0",
@@ -12,7 +15,6 @@
     "cookie-parser": "^1.4.3",
     "eslint-config-prettier": "^3.0.1",
     "express": "^4.16.3",
-    "express-session": "^1.15.6",
     "joi": "^13.6.0",
     "js-cookie": "^2.2.0",
     "jsonwebtoken": "^8.3.0",
@@ -35,11 +37,12 @@
     "recharts": "^1.0.0-beta.10"
   },
   "scripts": {
-	"start": "yarn deploy",
+    "start": "yarn deploy",
     "web": "react-scripts start",
     "build": "react-scripts build",
     "server": "NODE_ENV=development nodemon --watch server --exec 'node server/index'",
     "deploy": "yarn build && NODE_ENV=production node server/index",
+	"postinstall": "yarn build",
     "test": "react-scripts test --env=jsdom"
   },
   "devDependencies": {

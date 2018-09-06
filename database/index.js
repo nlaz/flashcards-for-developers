@@ -3,9 +3,10 @@ const config = require("../config/index");
 
 module.exports = () => {
   mongoose.Promise = global.Promise;
-  mongoose.connect(config.database.uri, {
-    useNewUrlParser: true,
-  });
+  mongoose.connect(
+    config.database.uri,
+    { useNewUrlParser: true },
+  );
 
   const database = mongoose.connection;
 
