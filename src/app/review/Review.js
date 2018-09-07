@@ -2,8 +2,10 @@ import React, { Component } from "react";
 import cx from "classnames";
 import marked from "marked";
 import Chance from "chance";
+import moment from "moment";
 
 import config from "../../config";
+import isAuthenticated from "../utils/isAuthenticated";
 import * as utils from "../utils/studyProgress";
 import * as preferences from "../utils/prefs";
 import * as leitner from "../../spaced/leitner";
@@ -14,6 +16,7 @@ import StudyToggle from "./StudyToggle";
 import ReviewResults from "./ReviewResults";
 import * as api from "../apiActions";
 import * as analytics from "../../components/GoogleAnalytics";
+
 import "./Review.css";
 
 const chance = new Chance();
@@ -190,7 +193,7 @@ class Review extends Component {
 
     if (this.isStageFinished(index)) {
       this.logReviewEvent(index);
-      utils.addStudyHistory();
+      this.logStudyHistory();
     }
 
     this.setState({
@@ -215,6 +218,18 @@ class Review extends Component {
       analytics.logCompletedEvent(this.state.deck.id);
     } else {
       analytics.logFinishedEvent(this.state.deck.id);
+    }
+  };
+
+  logStudyHistory = () => {
+    const currentDate = moment().startOf("day");
+
+    if (isAuthenticated()) {
+      api
+        .addStudyHistory(currentDate)
+        .then(response => utils.addStudyHistory(currentDate), error => console.error(error));
+    } else {
+      utils.addStudyHistory(currentDate);
     }
   };
 

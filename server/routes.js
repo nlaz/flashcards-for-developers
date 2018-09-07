@@ -13,4 +13,8 @@ router.put("/users/saved_decks", isAuthenticated, UserController.setSavedDecks);
 
 router.get("/users/saved_decks", isAuthenticated, UserController.getSavedDecks);
 
+router.put("/users/study_history", isAuthenticated, UserController.addStudyHistory);
+
+router.get("/users/study_history", isAuthenticated, UserController.getStudyHistory);
+
 module.exports = router;

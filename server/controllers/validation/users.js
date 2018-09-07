@@ -18,9 +18,14 @@ module.exports = {
       code: Joi.string().required(),
     }),
   },
-  saveDecks: {
+  setSavedDecks: {
     body: Joi.object().keys({
       decks: Joi.array().items(Joi.string()),
+    }),
+  },
+  setStudyHistory: {
+    body: Joi.object().keys({
+      date: Joi.string().required(),
     }),
   },
 };
