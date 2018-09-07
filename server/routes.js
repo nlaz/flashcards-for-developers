@@ -1,16 +1,19 @@
 const express = require("express");
 
 const isAuthenticated = require("./middleware/isAuthenticated");
-const UserController = require("./controllers/UserController");
+const UsersController = require("./controllers/UsersController");
+const CardsController = require("./controllers/CardsController");
 
 const router = express.Router();
 
 router.get("/hello", (req, res) => res.send({ message: "Hello world!" }));
 
-router.post("/auth/github", UserController.githubUser);
+router.get("/api/cards", CardsController.getCards);
 
-router.put("/users/saved_decks", isAuthenticated, UserController.setSavedDecks);
+router.post("/auth/github", UsersController.githubUser);
 
-router.get("/users/saved_decks", isAuthenticated, UserController.getSavedDecks);
+router.put("/users/saved_decks", isAuthenticated, UsersController.setSavedDecks);
+
+router.get("/users/saved_decks", isAuthenticated, UsersController.getSavedDecks);
 
 module.exports = router;

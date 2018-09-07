@@ -88,21 +88,26 @@ export const updateDeck = async (deckId, body) => {
   });
 };
 
-export const fetchCards = async deck => {
-  const results = [];
-  const filterByFormula = deck.name.includes(",")
-    ? `({Deck} = '"${deck.name}"')`
-    : `({Deck} = '${deck.name}')`;
-  await base("Cards")
-    .select({ filterByFormula })
-    .eachPage((records, fetchNextPage) => {
-      records.forEach(record => {
-        results.push({ id: record.id, front: record.get("Front"), back: record.get("Back") });
-      });
-      fetchNextPage();
-    });
+// export const fetchCards = async deck => {
+//   const results = [];
+//   const filterByFormula = deck.name.includes(",")
+//     ? `({Deck} = '"${deck.name}"')`
+//     : `({Deck} = '${deck.name}')`;
+//   await base("Cards")
+//     .select({ filterByFormula })
+//     .eachPage((records, fetchNextPage) => {
+//       records.forEach(record => {
+//         results.push({ id: record.id, front: record.get("Front"), back: record.get("Back") });
+//       });
+//       fetchNextPage();
+//     });
+//
+//   return results;
+// };
 
-  return results;
+export const fetchCards = async deckId => {
+  const config = { headers: { Authorization: cookie.get("token") } };
+  return axios.get(`/api/cards?deck=${deckId}`, config);
 };
 
 export const loginUser = params => {

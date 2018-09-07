@@ -233,10 +233,11 @@ class Review extends Component {
 
   fetchCards = deck => {
     const { index } = this.state;
-    api.fetchCards(deck).then(
-      response => {
+    api.fetchCards(deck.id).then(
+      ({ data }) => {
+        console.log("data", data);
         const isSRS = preferences.getSRSPref();
-        const filteredCards = isSRS ? this.filterExpiredCards(response) : response;
+        const filteredCards = isSRS ? this.filterExpiredCards(data) : data;
         const cards = chance.shuffle(filteredCards);
         const options = this.getOptions(index, cards);
         this.setState({ cards, options, index: 0, isCardsLoading: false });
