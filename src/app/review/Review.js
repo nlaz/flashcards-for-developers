@@ -220,12 +220,10 @@ class Review extends Component {
 
   fetchDeck = deckId => {
     api.fetchDeck(deckId).then(
-      response => {
+      ({ data }) => {
         // TODO: Set the name on the server-side
-        document.title = response.name
-          ? `${response.name} Flashcards`
-          : "Flashcards for Developers";
-        this.setState({ deck: response, isDeckLoading: false }, () => this.fetchCards(response));
+        document.title = data.name ? `${data.name} Flashcards` : "Flashcards for Developers";
+        this.setState({ deck: data, isDeckLoading: false }, () => this.fetchCards(data));
       },
       error => this.setState({ isError: true, isDeckLoading: false }),
     );
@@ -235,7 +233,6 @@ class Review extends Component {
     const { index } = this.state;
     api.fetchCards(deck.id).then(
       ({ data }) => {
-        console.log("data", data);
         const isSRS = preferences.getSRSPref();
         const filteredCards = isSRS ? this.filterExpiredCards(data) : data;
         const cards = chance.shuffle(filteredCards);
