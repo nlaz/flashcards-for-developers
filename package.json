@@ -7,7 +7,6 @@
     "node": "8.11.1"
   },
   "dependencies": {
-    "airtable": "^0.5.6",
     "axios": "^0.18.0",
     "body-parser": "^1.18.3",
     "chance": "^1.0.16",
@@ -42,7 +41,7 @@
     "build": "react-scripts build",
     "server": "NODE_ENV=development nodemon --watch server --exec 'node server/index'",
     "deploy": "yarn build && NODE_ENV=production node server/index",
-	"postinstall": "yarn build",
+    "postinstall": "yarn build",
     "test": "react-scripts test --env=jsdom"
   },
   "devDependencies": {
