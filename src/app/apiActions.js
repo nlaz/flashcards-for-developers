@@ -8,18 +8,8 @@ import config from "../config/index";
 const base = new Airtable({ apiKey: config.airtableApiKey }).base(config.airtableApiId);
 
 export const fetchCollection = id => {
-  return new Promise((success, failure) => {
-    base("Categories").find(id, function(err, record) {
-      if (err) return failure(err);
-      if (!record) return failure(err);
-
-      return success({
-        id: record.id,
-        name: record.get("Name"),
-        description: record.get("Description"),
-      });
-    });
-  });
+  const config = { headers: { Authorization: cookie.get("token") } };
+  return axios.get(`/api/collections/${id}`, config);
 };
 
 const getDeckFromRecord = record => ({
@@ -37,20 +27,6 @@ const getDeckFromRecord = record => ({
   downvotes: record.get("Downvotes"),
   new: record.get("New") || false,
 });
-
-// export const fetchDecks = async collection => {
-//   const results = [];
-//   const filter = collection ? `FIND("${collection.name}", {Category})` : "";
-//   await base("Decks")
-//     .select({ filterByFormula: filter })
-//     .eachPage((records, fetchNextPage) => {
-//       records.forEach(record => {
-//         results.push(getDeckFromRecord(record));
-//       });
-//       fetchNextPage();
-//     });
-//   return results;
-// };
 
 export const updateDeck = async (deckId, body) => {
   return new Promise((success, failure) => {

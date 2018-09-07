@@ -2,7 +2,7 @@ const Deck = require("../models/Deck");
 
 module.exports.getDecks = async (req, res, next) => {
   try {
-    const { collection } = req.query;
+    // const { collection } = req.query;
 
     const decks = await Deck.find();
 
