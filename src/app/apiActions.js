@@ -41,7 +41,7 @@ const getDeckFromRecord = record => ({
   name: record.get("Name"),
   cards: record.get("Cards"),
   description: record.get("Description"),
-  category: (record.get("Category") || [])[0],
+  category: record.get("Category") || [],
   type: record.get("Type"),
   source: record.get("Source"),
   difficulty: record.get("Difficulty"),
