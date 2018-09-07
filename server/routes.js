@@ -20,10 +20,6 @@ router.get("/api/cards", CardsController.getCards);
 
 router.post("/auth/github", UsersController.githubUser);
 
-router.get("/api/cards", CardsController.getCards);
-
-router.post("/auth/github", UsersController.githubUser);
-
 router.put("/users/saved_decks", isAuthenticated, UsersController.setSavedDecks);
 
 router.get("/users/saved_decks", isAuthenticated, UsersController.getSavedDecks);
