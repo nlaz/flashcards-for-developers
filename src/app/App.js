@@ -1,15 +1,17 @@
 import React, { Component } from "react";
 import { BrowserRouter, Route, Switch } from "react-router-dom";
 
+import Pages from "../pages/Pages";
 import Decks from "./decks/Decks";
 import Review from "./review/Review";
 import Collections from "./collections/Collections";
+import Logout from "./auth/Logout";
+import AuthRedirect from "./auth/AuthRedirect";
+
 import NotFound from "../components/NotFound";
 import GoogleAnalytics from "../components/GoogleAnalytics";
 import Footer from "../components/Footer";
 import Header from "../components/Header";
-import Logout from "./auth/Logout";
-import AuthRedirect from "./auth/AuthRedirect";
 
 class App extends Component {
   render() {
@@ -24,6 +26,7 @@ class App extends Component {
                 <Route exact path="/" component={Decks} />
                 <Route path="/logout" component={Logout} />
                 <Route path="/auth/github" component={AuthRedirect} />
+                <Route path="/pages" component={Pages} />
                 <Route exact path="/categories/:categoryId" component={Decks} />
                 <Route exact path="/decks" component={Decks} />
                 <Route exact path="/decks/:deckId" component={Review} />

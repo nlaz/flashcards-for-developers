@@ -1,0 +1,15 @@
+.pages .container--narrow {
+  max-width: 830px;
+}
+
+.pages h2 {
+  font-size: 1.5em;
+  margin-bottom: 0.9em;
+}
+
+.pages p {
+  font-size: 1.15em;
+  line-height: 1.5em;
+  margin-bottom: 1.5em;
+  color: #818182;
+}
