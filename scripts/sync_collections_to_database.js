@@ -39,15 +39,13 @@ const writeCollectionsToDatabase = async collections => {
   collections.forEach(async collection => {
     const { airtableDecks, ...rest } = collection;
     // Converts decks from airtable ids to mongodb ids
-    const decks = await Promise.all(
-      airtableDecks.map(async airtableId => {
-        const deck = await Deck.findOne({ airtableId });
-        return deck._id;
-      }),
-    );
+    const decks = await Deck.find({
+      airtableId: { $in: airtableDecks },
+    });
+
     await Collection.findOneAndUpdate(
       { airtableId: collection.airtableId },
-      { ...rest, decks },
+      { ...rest, decks: decks.map(el => el._id) },
       { upsert: true },
     );
   });

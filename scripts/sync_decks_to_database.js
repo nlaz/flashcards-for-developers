@@ -4,16 +4,20 @@ const Airtable = require("airtable");
 const mongoose = require("mongoose");
 
 const Deck = require("../server/models/Deck");
+const Card = require("../server/models/Card");
 const config = require("../config/index");
 
 const base = new Airtable({ apiKey: config.airtableApiKey }).base(config.airtableApiId);
 
 mongoose.set("useFindAndModify", false);
 
+require("../database/index")();
+
 const getDeckFromRecord = record => ({
   airtableId: record.id,
   name: record.get("Name"),
   description: record.get("Description"),
+  airtableCards: record.get("Cards"),
   type: record.get("Type"),
   source: record.get("Source"),
   difficulty: record.get("Difficulty"),
@@ -41,7 +45,18 @@ const fetchDecks = async () => {
 // Creates copy of record in the database
 const writeDecksToDatabase = async decks => {
   decks.forEach(async deck => {
-    await Deck.findOneAndUpdate({ airtableId: deck.airtableId }, { ...deck }, { upsert: true });
+    const { airtableCards, ...rest } = deck;
+
+    // Converts cards from airtable ids to mongodb ids
+    const cards = await Card.find({
+      airtableId: { $in: airtableCards },
+    });
+
+    await Deck.findOneAndUpdate(
+      { airtableId: deck.airtableId },
+      { ...rest, cards: cards.map(el => el._id) },
+      { upsert: true },
+    );
   });
 
   return await Deck.countDocuments();
