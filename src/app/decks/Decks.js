@@ -12,12 +12,9 @@ import HabitTracker from "./HabitTracker";
 import FeedbackForm from "./FeedbackForm";
 import DeckItem from "./DeckItem";
 
-const HOMEPAGE_COLLECTION_ID = "recUROLxLzjGsSh8P";
+const HOMEPAGE_COLLECTION_ID = "5b92fc84695afe81b2ed6914";
 
-const TABS = {
-  ALL: "all",
-  USER: "user",
-};
+const TABS = { ALL: "all", USER: "user" };
 
 class Decks extends Component {
   state = {
@@ -58,15 +55,15 @@ class Decks extends Component {
   sortDecks = decks => [...decks].sort((a, b) => b.new - a.new);
 
   fetchCollection = id => {
-    api.fetchCollection(id).then(collection => {
-      this.setState({ collection }, () => this.fetchDecks(collection));
+    api.fetchCollection(id).then(({ data }) => {
+      this.setState({ collection: data }, () => this.fetchDecks(data));
     });
   };
 
   fetchDecks = collection => {
-    api.fetchDecks(collection).then(
-      response => {
-        this.setState({ decks: this.sortDecks(response), isLoading: false });
+    api.fetchDecks(collection.id).then(
+      ({ data }) => {
+        this.setState({ decks: this.sortDecks(data), isLoading: false });
       },
       error => this.setState({ isError: true, isLoading: false }),
     );
@@ -146,8 +143,8 @@ class Decks extends Component {
           </div>
         </div>
         <div className="d-flex mx-2">
-          <button
-            className="btn px-2 py-1 m-1 rounded-0"
+          <div
+            className="btn btn-reset px-2 py-1 m-1 rounded-0"
             onClick={() => this.setState({ activeTab: TABS.ALL })}
           >
             <small
@@ -156,9 +153,9 @@ class Decks extends Component {
             >
               All Decks
             </small>
-          </button>
-          <button
-            className="btn px-2 py-1 m-1 rounded-0"
+          </div>
+          <div
+            className="btn btn-reset px-2 py-1 m-1 rounded-0"
             onClick={() => this.setState({ activeTab: TABS.USER })}
           >
             <small
@@ -167,7 +164,7 @@ class Decks extends Component {
             >
               My Decks {savedDecks.length > 0 && <span>{savedDecks.length}</span>}
             </small>
-          </button>
+          </div>
         </div>
         <hr className="mb-2 mt-0" />
         {filteredDecks.length > 0 ? (
