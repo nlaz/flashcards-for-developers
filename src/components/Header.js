@@ -10,7 +10,7 @@ import config from "../config/index";
 import isAuthenticated from "../app/utils/isAuthenticated";
 import Octicon from "./Octicon";
 
-const title = "Helpful Flashcards for Developers @ ";
+const title = "Ridiculously helpful collection of flashcards for developers ";
 
 const GITHUB_PARAMS = qs.stringify({
   client_id: config.githubOAuthClientId,
