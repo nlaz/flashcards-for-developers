@@ -1,17 +1,20 @@
 import React from "react";
 import { Route, Switch } from "react-router-dom";
 
+import About from "./About";
 import PrivacyPolicy from "./PrivacyPolicy";
+import TermsOfService from "./TermsOfService";
 import NotFound from "../components/NotFound";
 
 import "./Pages.css";
 
-const About = () => <h1>About</h1>;
-
-const TermsOfService = () => <h1>Terms of Service</h1>;
-
 const Pages = () => (
   <div className="pages">
+    <div className="pages-header">
+      <span className="pages-hero" role="img" aria-label="Tada!">
+        🎉
+      </span>
+    </div>
     <Switch>
       <Route path="/pages/about" component={About} />
       <Route path="/pages/privacy-policy" component={PrivacyPolicy} />

@@ -1,12 +1,13 @@
 import React from "react";
 
 const PrivacyPolicy = () => (
-  <div className="container container--narrow py-4">
+  <div className="container container--narrow py-5">
     <h2>Privacy Policy</h2>
     <p>
       Your privacy is important to us. It is Flashcards for Developers' policy to respect your
-      privacy regarding any information we may collect from you across our website,
-      http://www.flashcardsfordevelopers.com/, and other sites we own and operate.
+      privacy regarding any information we may collect from you across our website,{" "}
+      <a href="http://www.flashcardsfordevelopers.com">www.flashcardsfordevelopers.com</a>, and
+      other sites we own and operate.
     </p>
     <p>
       We only ask for personal information when we truly need it to provide a service to you. We
@@ -37,7 +38,7 @@ const PrivacyPolicy = () => (
       privacy and personal information. If you have any questions about how we handle user data and
       personal information, feel free to contact us.
     </p>
-    <p>This policy is effective as of 8 September 2018.</p>
+    <p>This policy is effective as of 1 September 2018.</p>
   </div>
 );
 
