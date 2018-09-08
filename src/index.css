@@ -217,3 +217,26 @@ a[disabled] {
   overflow: hidden;
   text-overflow: ellipsis;
 }
+
+.share-button {
+  color: #dddddd;
+  transition: all 0.2s ease-in-out;
+}
+
+.share-button:hover {
+  color: #363a40;
+  animation: jump 0.3s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
+  transform: translate3d(0, 0, 0);
+}
+
+@keyframes jump {
+  25% {
+    transform: translate3d(0, -4px, 0);
+  }
+  50% {
+    transform: translate3d(0, 0px, 0);
+  }
+  75% {
+    transform: translate3d(0, -2px, 0);
+  }
+}
