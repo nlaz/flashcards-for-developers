@@ -211,3 +211,9 @@ a[disabled] {
   border: 1px solid #e8e8e8;
   box-shadow: none;
 }
+
+.truncate {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
