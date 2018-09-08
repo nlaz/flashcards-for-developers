@@ -108,7 +108,7 @@ a[disabled] {
 
 .deck-vote {
   transition: all 0.3s ease-in-out;
-  /* opacity: 0; */
+  opacity: 0;
   padding-top: 20px;
   display: block;
 }
@@ -116,7 +116,7 @@ a[disabled] {
 .deck-vote--active {
   opacity: 1;
   padding-top: 0;
-  /* display: hidden; */
+  display: hidden;
 }
 
 .deck-vote .vote-options {
@@ -170,15 +170,15 @@ a[disabled] {
   background: #eeeeee;
 }
 
-.feedback-form .text-underline {
+.text-underline {
   text-decoration: underline;
 }
 
-.feedback-form .text-underline:hover {
+.text-underline:hover {
   text-decoration: none;
 }
 
-.progress-review-buttons {
+. .progress-review-buttons {
   width: 100%;
   text-align: center;
 }

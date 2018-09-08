@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import cx from "classnames";
 
 import * as analytics from "../../components/GoogleAnalytics";
+import config from "../../config/index";
 
 class DeckFeedback extends Component {
   state = { isVoteSent: false };
@@ -44,6 +45,13 @@ class DeckFeedback extends Component {
                 <span role="img" aria-label="Tada!">
                   🎉
                 </span>
+                <a
+                  className="font-weight-normal text-muted text-underline line ml-1"
+                  rel="noopener noreferrer"
+                  href={config.airtableFeedbackUrl}
+                >
+                  Leave a comment...
+                </a>
               </p>
             </div>
           )}
