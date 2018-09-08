@@ -36,18 +36,18 @@ class Decks extends Component {
 
   fetchCollection = id => {
     api.fetchCollection(id).then(
-      collection => {
-        this.setState({ collection });
-        this.fetchDecks(collection);
+      ({ data }) => {
+        this.setState({ collection: data });
+        this.fetchDecks(data);
       },
       error => console.error(error),
     );
   };
 
   fetchDecks = collection => {
-    api.fetchDecks(collection).then(
-      response => {
-        this.setState({ decks: this.sortDecks(response), isLoading: false });
+    api.fetchDecks(collection.id).then(
+      ({ data }) => {
+        this.setState({ decks: this.sortDecks(data), isLoading: false });
       },
       error => this.setState({ isError: true, isLoading: false }),
     );

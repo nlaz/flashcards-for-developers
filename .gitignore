@@ -9,6 +9,8 @@
 # production
 /build
 
+
+# local scripts
 /local
 
 # misc

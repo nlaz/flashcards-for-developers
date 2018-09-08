@@ -1,26 +1,11 @@
 const Joi = require("joi");
+Joi.objectId = require("joi-objectid")(Joi);
 
 module.exports = {
-  signupUser: {
-    body: Joi.object().keys({
-      username: Joi.string().required(),
-      password: Joi.string().required(),
-    }),
-  },
-  loginUser: {
-    body: Joi.object().keys({
-      username: Joi.string().required(),
-      password: Joi.string().required(),
-    }),
-  },
   githubUser: {
-    body: Joi.object().keys({
-      code: Joi.string().required(),
-    }),
+    code: Joi.string().required(),
   },
   saveDecks: {
-    body: Joi.object().keys({
-      decks: Joi.array().items(Joi.string()),
-    }),
+    decks: Joi.array().items(Joi.objectId()),
   },
 };

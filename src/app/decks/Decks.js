@@ -12,12 +12,9 @@ import HabitTracker from "./HabitTracker";
 import FeedbackForm from "./FeedbackForm";
 import DeckItem from "./DeckItem";
 
-const HOMEPAGE_COLLECTION_ID = "recUROLxLzjGsSh8P";
+const HOMEPAGE_COLLECTION_ID = "5b92fc84695afe81b2ed6914";
 
-const TABS = {
-  ALL: "all",
-  USER: "user",
-};
+const TABS = { ALL: "all", USER: "user" };
 
 class Decks extends Component {
   state = {
@@ -58,15 +55,15 @@ class Decks extends Component {
   sortDecks = decks => [...decks].sort((a, b) => b.new - a.new);
 
   fetchCollection = id => {
-    api.fetchCollection(id).then(collection => {
-      this.setState({ collection }, () => this.fetchDecks(collection));
+    api.fetchCollection(id).then(({ data }) => {
+      this.setState({ collection: data }, () => this.fetchDecks(data));
     });
   };
 
   fetchDecks = collection => {
-    api.fetchDecks(collection).then(
-      response => {
-        this.setState({ decks: this.sortDecks(response), isLoading: false });
+    api.fetchDecks(collection.id).then(
+      ({ data }) => {
+        this.setState({ decks: this.sortDecks(data), isLoading: false });
       },
       error => this.setState({ isError: true, isLoading: false }),
     );
