@@ -109,6 +109,13 @@ export function logToggleFamiliarCards(isChecked) {
   });
 }
 
+export function logUserAction(action) {
+  ReactGA.event({
+    category: "Users",
+    action: action,
+  });
+}
+
 class GoogleAnalytics extends Component {
   componentWillMount() {
     const searchParams = queryString.parse(this.props.location.search);

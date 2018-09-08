@@ -1,4 +1,6 @@
 import React from "react";
+import { Link } from "react-router-dom";
+
 import config from "../config";
 import * as analytics from "./GoogleAnalytics";
 
@@ -19,13 +21,34 @@ const Footer = () => (
           <small>
             <a
               href={config.buyMeACoffeeDonateUrl}
-              onClick={() => analytics.logDonateEvent2()}
               target="_blank"
               className="text-secondary"
               rel="noopener noreferrer"
             >
               Support Us
             </a>
+          </small>
+        </li>
+        <li className="list-inline-item">
+          <small>
+            <Link
+              onClick={() => analytics.logUserAction("Navigated to terms page")}
+              className="text-secondary"
+              to={"/pages/terms-of-service"}
+            >
+              Terms
+            </Link>
+          </small>
+        </li>
+        <li className="list-inline-item">
+          <small>
+            <Link
+              onClick={() => analytics.logUserAction("Navigated to privacy page")}
+              className="text-secondary"
+              to={"/pages/privacy-policy"}
+            >
+              Privacy
+            </Link>
           </small>
         </li>
         <li className="list-inline-item">
