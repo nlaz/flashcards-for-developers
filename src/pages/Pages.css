@@ -1,0 +1,46 @@
+.pages h2 {
+  font-size: 1.5em;
+  margin-bottom: 1em;
+}
+
+.pages h3 {
+  font-size: 1.25em;
+  margin-bottom: 0.9em;
+}
+
+.pages p,
+.pages li {
+  font-weight: 300;
+  color: #868e96;
+}
+
+.pages p {
+  line-height: 1.5em;
+  margin-bottom: 1.5em;
+  overflow-x: hidden;
+}
+
+.pages .container--narrow {
+  max-width: 830px;
+}
+
+.pages .pages-header {
+  align-items: center;
+  background: linear-gradient(0, #1d74f3, #3183f9);
+  height: 50px;
+  display: flex;
+  justify-content: center;
+}
+
+.pages .pages-hero {
+  font-size: 24px;
+}
+
+@media (min-width: 576px) {
+  .pages .pages-header {
+    height: 100px;
+  }
+  .pages .pages-hero {
+    font-size: 40px;
+  }
+}

@@ -117,19 +117,10 @@ export function logToggleFamiliarCards(isChecked) {
   });
 }
 
-export function logDownvoteDeck(deckName) {
+export function logUserAction(action) {
   ReactGA.event({
-    category: "User",
-    action: "Downvoted a deck",
-    label: deckName,
-  });
-}
-
-export function logUpvoteDeck(deckName) {
-  ReactGA.event({
-    category: "User",
-    action: "Downvoted a deck",
-    label: deckName,
+    category: "Users",
+    action: action,
   });
 }
 
