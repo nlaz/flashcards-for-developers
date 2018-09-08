@@ -26,15 +26,15 @@ Open [http://localhost:3000/](http://localhost:3000/) to view the app in the bro
 
 All configuration options can be passed to the server using environment variables. The following variables are supported:
 
-* `PORT` - The port on which the server will listen to requests (Default: 3000)
-* `DATABASE_URI` - The uri of the database used to store data
+- `PORT` - The port on which the server will listen to requests (Default: 3000)
+- `DATABASE_URI` - The uri of the database used to store data
 
 Environment variables are set by adding files like `.env` which should not be checked into source control. Additional `.env` files can be used:
 
-* `.env`: Default.
-* `.env.local`: Local overrides. **This file is loaded for all environments except test.**
-* `.env.development`, `.env.test`, `.env.production`: Environment-specific settings.
-* `.env.development.local`, `.env.test.local`, `.env.production.local`: Local overrides of environment-specific settings.
+- `.env`: Default.
+- `.env.local`: Local overrides. **This file is loaded for all environments except test.**
+- `.env.development`, `.env.test`, `.env.production`: Environment-specific settings.
+- `.env.development.local`, `.env.test.local`, `.env.production.local`: Local overrides of environment-specific settings.
 
 For more information check the [`create-react-app` docs](https://github.com/facebook/create-react-app/blob/master/packages/react-scripts/template/README.md#adding-development-environment-variables-in-env).
 
@@ -76,6 +76,22 @@ See the section about [deployment](#deployment) for more information.
 ### `yarn deploy`
 
 Builds the React app for production and runs the server so the the app is ready to be deployed.
+
+## Syncing with Airtable
+
+The database uses Airtable to manage our content. We have three records that we sync from Airtable: `Collections`, `Decks`, and `Cards`. If Airtable is updated, the changes will have to be synced to the database. There are three scripts provided in the `scripts/` folder to sync these records:
+
+- `sync_cards.js`
+- `sync_collections.js`
+- `sync_decks.js`
+
+Running these scripts will fetch the data from Airtable and **OVERWRITE** the records in the database. The database can changed through environment variables. The default environment is `development`.
+
+**Example:**
+
+```bash
+node scripts/sync_cards.js
+```
 
 ## Contributing
 
