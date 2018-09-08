@@ -143,8 +143,8 @@ class Decks extends Component {
           </div>
         </div>
         <div className="d-flex mx-2">
-          <button
-            className="btn px-2 py-1 m-1 rounded-0"
+          <div
+            className="btn btn-reset px-2 py-1 m-1 rounded-0"
             onClick={() => this.setState({ activeTab: TABS.ALL })}
           >
             <small
@@ -153,9 +153,9 @@ class Decks extends Component {
             >
               All Decks
             </small>
-          </button>
-          <button
-            className="btn px-2 py-1 m-1 rounded-0"
+          </div>
+          <div
+            className="btn btn-reset px-2 py-1 m-1 rounded-0"
             onClick={() => this.setState({ activeTab: TABS.USER })}
           >
             <small
@@ -164,7 +164,7 @@ class Decks extends Component {
             >
               My Decks {savedDecks.length > 0 && <span>{savedDecks.length}</span>}
             </small>
-          </button>
+          </div>
         </div>
         <hr className="mb-2 mt-0" />
         {filteredDecks.length > 0 ? (

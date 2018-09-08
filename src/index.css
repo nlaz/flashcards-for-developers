@@ -185,14 +185,6 @@ a[disabled] {
   .navbar {
     margin-top: 50px;
   }
-  .habit-tracker {
-    display: block !important;
-    text-align: center;
-  }
-  .habit-tracker_calender {
-    display: -webkit-inline-box !important;
-    width: 160px;
-  }
 }
 
 .rc-tooltip-content {
@@ -218,4 +210,33 @@ a[disabled] {
   color: #e8e8e8;
   border: 1px solid #e8e8e8;
   box-shadow: none;
+}
+
+.truncate {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.share-button {
+  color: #dddddd;
+  transition: all 0.2s ease-in-out;
+}
+
+.share-button:hover {
+  color: #363a40;
+  animation: jump 0.3s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
+  transform: translate3d(0, 0, 0);
+}
+
+@keyframes jump {
+  25% {
+    transform: translate3d(0, -4px, 0);
+  }
+  50% {
+    transform: translate3d(0, 0px, 0);
+  }
+  75% {
+    transform: translate3d(0, -2px, 0);
+  }
 }
