@@ -185,14 +185,6 @@ a[disabled] {
   .navbar {
     margin-top: 50px;
   }
-  .habit-tracker {
-    display: block !important;
-    text-align: center;
-  }
-  .habit-tracker_calender {
-    display: -webkit-inline-box !important;
-    width: 160px;
-  }
 }
 
 .rc-tooltip-content {
