@@ -12,6 +12,14 @@ export function logTwitterShare() {
   });
 }
 
+export function logDeckFeedback(value, deckId) {
+  ReactGA.event({
+    category: "User Feedback",
+    action: `Voted ${value} on deck`,
+    label: deckId,
+  });
+}
+
 export function logFacebookShare() {
   ReactGA.event({
     category: "SocialMedia",

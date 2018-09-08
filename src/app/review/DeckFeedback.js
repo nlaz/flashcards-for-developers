@@ -1,22 +1,16 @@
 import React, { Component } from "react";
 import cx from "classnames";
 
-import Octicon from "../../components/Octicon";
 import * as analytics from "../../components/GoogleAnalytics";
+import config from "../../config/index";
 
 class DeckFeedback extends Component {
   state = { isVoteSent: false };
 
-  onUpVote = () => {
+  onVote = value => {
     const { deck } = this.props;
     this.setState({ isVoteSent: true });
-    analytics.logUpvoteDeck(deck.name);
-  };
-
-  onDownVote = () => {
-    const { deck } = this.props;
-    this.setState({ isVoteSent: true });
-    analytics.logDownvoteDeck(deck.name);
+    analytics.logDeckFeedback(value, deck.id);
   };
 
   render() {
@@ -26,21 +20,22 @@ class DeckFeedback extends Component {
           {!this.state.isVoteSent ? (
             <div>
               <p className="font-weight-medium mb-2">Was this deck helpful?</p>
-              <div>
-                <button
-                  className="btn btn-outline-dark bg-white px-5 py-2 mr-2"
-                  onClick={this.onDownVote}
-                  aria-label="No"
-                >
-                  <Octicon className="d-flex" name="thumbsdown" />
-                </button>
-                <button
-                  className="btn btn-outline-dark bg-white px-5 py-2"
-                  onClick={this.onUpVote}
-                  aria-label="Yes"
-                >
-                  <Octicon className="d-flex" name="thumbsup" />
-                </button>
+              <div className="vote-options">
+                <div onClick={() => this.onVote("😞")}>
+                  <span role="img" aria-label="Sad">
+                    😞
+                  </span>
+                </div>
+                <div onClick={() => this.onVote("😐")}>
+                  <span role="img" aria-label="Neutral">
+                    😐
+                  </span>
+                </div>
+                <div onClick={() => this.onVote("😄")}>
+                  <span role="img" aria-label="Happy">
+                    😄
+                  </span>
+                </div>
               </div>
             </div>
           ) : (
@@ -50,6 +45,13 @@ class DeckFeedback extends Component {
                 <span role="img" aria-label="Tada!">
                   🎉
                 </span>
+                <a
+                  className="font-weight-normal text-muted text-underline line ml-1"
+                  rel="noopener noreferrer"
+                  href={config.airtableFeedbackUrl}
+                >
+                  Leave a comment...
+                </a>
               </p>
             </div>
           )}

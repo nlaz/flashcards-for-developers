@@ -119,6 +119,26 @@ a[disabled] {
   display: hidden;
 }
 
+.deck-vote .vote-options {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.deck-vote .vote-options div {
+  cursor: pointer;
+  width: 50px;
+  height: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 32px;
+}
+
+.deck-vote .vote-options div:hover {
+  font-size: 40px;
+}
+
 .deck-item .save svg {
   width: 10px;
   height: 10px;
@@ -150,15 +170,15 @@ a[disabled] {
   background: #eeeeee;
 }
 
-.feedback-form .text-underline {
+.text-underline {
   text-decoration: underline;
 }
 
-.feedback-form .text-underline:hover {
+.text-underline:hover {
   text-decoration: none;
 }
 
-.progress-review-buttons {
+. .progress-review-buttons {
   width: 100%;
   text-align: center;
 }
