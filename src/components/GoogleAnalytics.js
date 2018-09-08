@@ -109,6 +109,22 @@ export function logToggleFamiliarCards(isChecked) {
   });
 }
 
+export function logDownvoteDeck(deckName) {
+  ReactGA.event({
+    category: "User",
+    action: "Downvoted a deck",
+    label: deckName,
+  });
+}
+
+export function logUpvoteDeck(deckName) {
+  ReactGA.event({
+    category: "User",
+    action: "Downvoted a deck",
+    label: deckName,
+  });
+}
+
 class GoogleAnalytics extends Component {
   componentWillMount() {
     const searchParams = queryString.parse(this.props.location.search);

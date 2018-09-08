@@ -1,8 +1,8 @@
 import React, { Component } from "react";
 import cx from "classnames";
 
-import * as api from "../apiActions";
 import Octicon from "../../components/Octicon";
+import * as analytics from "../../components/GoogleAnalytics";
 
 class DeckFeedback extends Component {
   state = { isVoteSent: false };
@@ -10,17 +10,13 @@ class DeckFeedback extends Component {
   onUpVote = () => {
     const { deck } = this.props;
     this.setState({ isVoteSent: true });
-    api.updateDeck(deck.id, { Upvotes: (deck.upvotes || 0) + 1 }).then(response => {
-      this.setState({ deck: response });
-    });
+    analytics.logUpvoteDeck(deck.name);
   };
 
   onDownVote = () => {
     const { deck } = this.props;
     this.setState({ isVoteSent: true });
-    api.updateDeck(deck.id, { Downvotes: (deck.downvotes || 0) + 1 }).then(response => {
-      this.setState({ deck: response });
-    });
+    analytics.logDownvoteDeck(deck.name);
   };
 
   render() {
