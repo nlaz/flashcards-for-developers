@@ -25,7 +25,11 @@ const Header = ({ location }) => {
   const isHomePage = location.pathname === "/";
 
   const tooltip = (
-    <Link className="bg-light text-secondary" to="/logout">
+    <Link
+      className="bg-light text-secondary"
+      onClick={() => analytics.logUserAction("Clicked 'Logout'")}
+      to="/logout"
+    >
       Logout
     </Link>
   );
@@ -80,6 +84,7 @@ const Header = ({ location }) => {
             ) : (
               <a
                 className="btn btn-sm btn-outline-dark d-flex align-items-center text-uppercase p-2"
+                onClick={() => analytics.logUserAction("Clicked 'Login'")}
                 href={GITHUB_OAUTH_URL}
               >
                 <i className="fab fa-github-alt fa-lg mr-2 ml-1" />

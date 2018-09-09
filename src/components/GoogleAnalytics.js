@@ -119,7 +119,7 @@ export function logToggleFamiliarCards(isChecked) {
 
 export function logUserAction(action) {
   ReactGA.event({
-    category: "Users",
+    category: "User",
     action: action,
   });
 }
