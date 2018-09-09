@@ -13,7 +13,7 @@ const GITHUB_USER_ROUTE = "https://api.github.com/user";
 
 module.exports.githubUser = async (req, res, next) => {
   try {
-    await Joi.validate(req, userSchemas.githubUser, { allowUnknown: true });
+    await Joi.validate(req.body, userSchemas.githubUser);
 
     // Request access token
     const response = await axios.post(GITHUB_OAUTH_ROUTE, {
@@ -53,7 +53,8 @@ module.exports.githubUser = async (req, res, next) => {
 
 module.exports.setSavedDecks = async (req, res, next) => {
   try {
-    await Joi.validate(req, userSchemas.setSavedDecks, { allowUnknown: true });
+    await Joi.validate(req, userSchemas.setSavedDecks);
+
     const { decks } = req.body;
 
     const user = await User.findOneAndUpdate({ _id: req.user }, { saved_decks: decks }).select(

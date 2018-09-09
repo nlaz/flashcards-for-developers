@@ -12,6 +12,14 @@ export function logTwitterShare() {
   });
 }
 
+export function logDeckFeedback(value, deckId) {
+  ReactGA.event({
+    category: "User Feedback",
+    action: `Voted ${value} on deck`,
+    label: deckId,
+  });
+}
+
 export function logFacebookShare() {
   ReactGA.event({
     category: "SocialMedia",
@@ -106,6 +114,13 @@ export function logToggleFamiliarCards(isChecked) {
   ReactGA.event({
     category: "User",
     action: !isChecked ? "Unchecked 'Hide familiar cards'" : "Checked 'Hide familiar cards'",
+  });
+}
+
+export function logUserAction(action) {
+  ReactGA.event({
+    category: "Users",
+    action: action,
   });
 }
 

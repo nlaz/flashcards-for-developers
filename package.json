@@ -16,6 +16,7 @@
     "eslint-config-prettier": "^3.0.1",
     "express": "^4.16.3",
     "joi": "^13.6.0",
+    "joi-objectid": "^2.0.0",
     "js-cookie": "^2.2.0",
     "jsonwebtoken": "^8.3.0",
     "marked": "^0.4.0",
@@ -42,7 +43,7 @@
     "build": "react-scripts build",
     "server": "NODE_ENV=development nodemon --watch server --exec 'node server/index'",
     "deploy": "yarn build && NODE_ENV=production node server/index",
-	"postinstall": "yarn build",
+    "postinstall": "yarn build",
     "test": "react-scripts test --env=jsdom"
   },
   "devDependencies": {

@@ -17,7 +17,7 @@ const ReviewHeader = ({ deck, className }) => (
     {deck.source && (
       <div className="mb-2 d-flex align-items-center">
         <Octicon name="link" className="d-flex mr-1" />
-        <a style={{ fontSize: ".9em" }} href={deck.source}>
+        <a className="truncate" rel="noopener noreferrer" style={{ fontSize: ".9em" }} href={deck.source}>
           {deck.source}
         </a>
       </div>

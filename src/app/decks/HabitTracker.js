@@ -24,9 +24,9 @@ const DateColumn = ({ index, sessions }) => {
     >
       <small className="text-secondary mb-1 text-center">{date.format("dd")}</small>
       {hasStudied ? (
-        <span className="mt-1 mb-3 text-center">{EMOJI}</span>
+        <span className="mt-1 mb-2 text-center">{EMOJI}</span>
       ) : (
-        <small className="mt-1 mb-3 text-center" style={{ opacity: 0.5 }}>
+        <small className="mt-1 mb-2 text-center" style={{ opacity: 0.5 }}>
           -
         </small>
       )}
@@ -59,19 +59,19 @@ class HabitTracker extends Component {
     const daysThisWeek = sessions.filter(el => moment(el).isAfter(moment().subtract(7, "days")));
 
     return (
-      <div className="habit-tracker d-flex flex-row-reverse flex-lg-row justify-content-end justify-content-lg-center align-items-center w-100">
-        <div className="mx-2">
+      <div className="d-sm-flex flex-row-reverse flex-lg-row justify-content-end justify-content-lg-center align-items-center text-center text-sm-left w-100">
+        <div className="mx-2 mb-1">
           <p
             className="m-0 text-uppercase font-weight-medium"
-            style={{ fontSize: "14px", lineHeight: "12px" }}
+            style={{ fontSize: "12px", lineHeight: "12px" }}
           >
             Past Week
           </p>
-          <p className="text-secondary m-0" style={{ fontSize: "14px" }}>
+          <p className="text-secondary m-0" style={{ fontSize: "12px" }}>
             You studied {pluralize("day", daysThisWeek.length, true)} this week.
           </p>
         </div>
-        <div className=" d-flex flex-row-reverse mx-2 habit-tracker_calender">
+        <div className=" d-flex flex-row-reverse mx-2 justify-content-center">
           {PAST_WEEK.map((_, index) => (
             <DateColumn index={index} key={index} sessions={sessions} />
           ))}
