@@ -20,12 +20,11 @@ router.get("/api/cards", CardsController.getCards);
 
 router.post("/auth/github", UsersController.getGithubUser);
 
-router.put("/users/saved_decks", isAuthenticated, UsersController.setSavedDecks);
-
 router.get("/users/saved_decks", isAuthenticated, UsersController.getSavedDecks);
-
-router.put("/users/study_sessions", isAuthenticated, UsersController.addStudySession);
+router.put("/users/saved_decks", isAuthenticated, UsersController.addSavedDeck);
+router.delete("/users/saved_decks", isAuthenticated, UsersController.removeSavedDeck);
 
 router.get("/users/study_sessions", isAuthenticated, UsersController.getStudySessions);
+router.put("/users/study_sessions", isAuthenticated, UsersController.addStudySession);
 
 module.exports = router;

@@ -5,8 +5,11 @@ module.exports = {
   getGithubUser: {
     code: Joi.string().required(),
   },
-  setSavedDecks: {
-    decks: Joi.array().items(Joi.objectId()),
+  addSavedDeck: {
+    deck: Joi.objectId().required(),
+  },
+  removeSavedDeck: {
+    deck: Joi.objectId().required(),
   },
   addStudySession: {
     date: Joi.string().required(),

@@ -40,10 +40,20 @@ export const fetchSavedDecks = () => {
   return axios.get("/users/saved_decks", config);
 };
 
-export const setSavedDecks = decks => {
+export const removeSavedDeck = deckId => {
   const config = { headers: { Authorization: cookie.get("token") } };
-  return axios.put("/users/saved_decks", { decks }, config);
+  return axios.delete("/users/saved_decks", { ...config, data: { deck: deckId } });
 };
+
+export const addSavedDeck = deckId => {
+  const config = { headers: { Authorization: cookie.get("token") } };
+  return axios.put("/users/saved_decks", { deck: deckId }, config);
+};
+
+export const toggleSavedDeck = (deckId, isSaved) => {
+  return isSaved ? removeSavedDeck(deckId) : addSavedDeck(deckId);
+};
+
 export const fetchStudyHistory = () => {
   const config = { headers: { Authorization: cookie.get("token") } };
   return axios.get("/users/study_sessions", config);

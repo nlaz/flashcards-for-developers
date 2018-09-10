@@ -70,25 +70,26 @@ class Decks extends Component {
   };
 
   fetchSavedDecks = () => {
-    api.fetchSavedDecks().then(response => {
-      this.setState({ savedDecks: response.data });
+    api.fetchSavedDecks().then(({ data }) => {
+      this.setState({ savedDecks: data.decks });
     });
   };
 
   saveDeck = deck => {
-    const savedDecks = this.isSaved(deck.id)
-      ? this.state.savedDecks.filter(el => el !== deck.id)
-      : [...this.state.savedDecks, deck.id];
+    const isSaved = this.isSaved(deck.id);
 
     if (isAuthenticated()) {
-      api
-        .setSavedDecks(savedDecks)
-        .then(response =>
-          this.setState({ savedDecks }, () => localStorage.setSavedDecks(savedDecks)),
-        )
-        .catch(error => console.log(error));
+      api.toggleSavedDeck(deck.id, isSaved).then(
+        ({ data }) => {
+          this.setState({ savedDecks: data.decks });
+          localStorage.setSavedDecks(data.decks);
+        },
+        error => console.log(error),
+      );
     } else {
-      this.setState({ savedDecks }, () => localStorage.setSavedDecks(savedDecks));
+      const savedDecks = localStorage.toggleSavedDeck(deck.id, isSaved);
+
+      this.setState({ savedDecks });
     }
   };
 

@@ -51,25 +51,45 @@ module.exports.getGithubUser = async (req, res, next) => {
   }
 };
 
-module.exports.setSavedDecks = async (req, res, next) => {
+module.exports.getSavedDecks = async (req, res, next) => {
   try {
-    await Joi.validate(req, userSchemas.setSavedDecks);
+    const user = await User.findOne({ _id: req.user }).select("+saved_decks");
 
-    const { decks } = req.body;
-
-    const user = await User.findOneAndUpdate({ _id: req.user }, { saved_decks: decks }).select(
-      "+saved_decks",
-    );
-
-    res.send(user);
+    res.send(user.saved_decks);
   } catch (error) {
     next(error);
   }
 };
 
-module.exports.getSavedDecks = async (req, res, next) => {
+module.exports.addSavedDeck = async (req, res, next) => {
   try {
-    const user = await User.findOne({ _id: req.user }).select("+saved_decks");
+    await Joi.validate(req.body, userSchemas.addSavedDeck);
+
+    const { deck } = req.body;
+
+    const user = await User.findOneAndUpdate(
+      { _id: req.user },
+      { $addToSet: { "saved_decks.decks": deck } },
+      { new: true },
+    ).select("+saved_decks");
+
+    res.send(user.saved_decks);
+  } catch (error) {
+    next(error);
+  }
+};
+
+module.exports.removeSavedDeck = async (req, res, next) => {
+  try {
+    await Joi.validate(req.body, userSchemas.removeSavedDeck);
+
+    const { deck } = req.body;
+
+    const user = await User.findOneAndUpdate(
+      { _id: req.user },
+      { $pull: { "saved_decks.decks": deck } },
+      { new: true },
+    ).select("+saved_decks");
 
     res.send(user.saved_decks);
   } catch (error) {
@@ -85,7 +105,7 @@ module.exports.addStudySession = async (req, res, next) => {
 
     const user = await User.findOneAndUpdate(
       { _id: req.user },
-      { $push: { "study_sessions.dates": moment(date).format() } },
+      { $addToSet: { "study_sessions.dates": moment(date).format() } },
       { new: true },
     ).select("+study_sessions");
 
