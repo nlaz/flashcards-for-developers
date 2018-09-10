@@ -1,10 +1,8 @@
 import moment from "moment";
-import * as leitner from "../../spaced/leitner";
-
-const SESSIONS_KEY = "sessions";
+import * as leitner from "../../../spaced/leitner";
 
 /**
- * Study progress data structure for each deck:
+ * User study progress data structure for each deck:
  *
  * <DECK_ID> : {
  *    cards: {
@@ -76,18 +74,4 @@ export const setCardStudyProgress = (cardId, deckId, isCorrect) => {
   const currentCard = getUpdatedCard(cards[cardId], isCorrect);
   const newDeck = { cards: { ...cards, [cardId]: currentCard } };
   setDeckStudyObject(deckId, newDeck);
-};
-
-export const getStudyHistory = () => {
-  return JSON.parse(localStorage.getItem(SESSIONS_KEY)) || [];
-};
-
-export const addStudyHistory = date => {
-  const sessionsObj = JSON.parse(localStorage.getItem(SESSIONS_KEY)) || [];
-
-  const sessions = [...sessionsObj, moment(date).format()].filter(
-    (elem, pos, arr) => arr.indexOf(elem) === pos,
-  );
-
-  localStorage.setItem(SESSIONS_KEY, JSON.stringify(sessions));
 };

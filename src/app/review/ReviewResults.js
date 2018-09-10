@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import { ResponsiveContainer, Cell, PieChart, Pie, Tooltip, Legend, Label } from "recharts";
 
 import * as leitner from "../../spaced/leitner";
-import * as utils from "../utils/studyProgress";
+import * as localStorage from "../utils/localStorage/userStudyProgress";
 
 const ReviewResults = ({ deck, index, cards, location, numCorrect, numIncorrect, onKeepGoing }) => {
   const progressData = [
@@ -11,9 +11,9 @@ const ReviewResults = ({ deck, index, cards, location, numCorrect, numIncorrect,
     { name: "Not started", value: cards.length - index },
   ];
 
-  const progress = Math.round(100 * index / cards.length) || 100;
+  const progress = Math.round((100 * index) / cards.length) || 100;
   const isCompleted = index > cards.length - 1;
-  const studyObj = utils.getDeckStudyObject(deck.id);
+  const studyObj = localStorage.getDeckStudyObject(deck.id);
   const studiedCards = studyObj.cards || {};
 
   const daysUntilDeckProgressIsExpired =

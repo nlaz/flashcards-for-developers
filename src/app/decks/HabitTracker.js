@@ -3,7 +3,7 @@ import pluralize from "pluralize";
 import moment from "moment";
 
 import * as api from "../apiActions";
-import * as utils from "../utils/studyProgress";
+import * as localStorage from "../utils/localStorage/userStudySessions";
 import isAuthenticated from "../utils/isAuthenticated";
 
 const PAST_WEEK = [...new Array(7)];
@@ -50,7 +50,7 @@ class HabitTracker extends Component {
           error => this.handleError(error),
         );
     } else {
-      this.setState({ sessions: utils.getStudyHistory() });
+      this.setState({ sessions: localStorage.getStudySessions() });
     }
   };
 

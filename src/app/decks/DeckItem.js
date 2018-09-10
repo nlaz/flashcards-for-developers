@@ -2,7 +2,8 @@ import React from "react";
 import cx from "classnames";
 import { Link } from "react-router-dom";
 
-import { getStudyProgress, getStudyProficiency } from "../utils/studyProgress";
+import { getStudyProgress, getStudyProficiency } from "../utils/localStorage/userStudyProgress";
+
 import ProgressBar from "../../components/ProgressBar";
 import Octicon from "../../components/Octicon";
 

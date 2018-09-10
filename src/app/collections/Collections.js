@@ -3,8 +3,9 @@ import React, { Component } from "react";
 import config from "../../config";
 import * as api from "../apiActions";
 import * as analytics from "../../components/GoogleAnalytics";
+import { setSavedDecks, getSavedDecks } from "../utils/localStorage/userSavedDecks";
+
 import Octicon from "../../components/Octicon";
-import { setSavedDecks, getSavedDecks } from "../utils/savedDecks";
 import SkillProgress from "../decks/SkillProgress";
 import FeedbackForm from "../decks/FeedbackForm";
 import DeckItem from "../decks/DeckItem";

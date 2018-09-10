@@ -2,10 +2,11 @@ import React, { Component } from "react";
 import queryString from "query-string";
 
 import config from "../../config";
+import isAuthenticated from "../utils/isAuthenticated";
 import * as api from "../apiActions";
 import * as analytics from "../../components/GoogleAnalytics";
-import * as localStorage from "../utils/savedDecks";
-import isAuthenticated from "../utils/isAuthenticated";
+import * as localStorage from "../utils/localStorage/userSavedDecks";
+
 import Octicon from "../../components/Octicon";
 import SkillProgress from "./SkillProgress";
 import HabitTracker from "./HabitTracker";

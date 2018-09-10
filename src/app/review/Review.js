@@ -6,16 +6,18 @@ import moment from "moment";
 
 import config from "../../config";
 import isAuthenticated from "../utils/isAuthenticated";
-import * as utils from "../utils/studyProgress";
-import * as preferences from "../utils/prefs";
 import * as leitner from "../../spaced/leitner";
+import * as api from "../apiActions";
+import * as preferences from "../utils/prefs";
+import * as storeStudyProgress from "../utils/localStorage/userStudyProgress";
+import * as storeStudySessions from "../utils/localStorage/userStudySessions";
+import * as analytics from "../../components/GoogleAnalytics";
+
 import DeckFeedback from "./DeckFeedback";
 import ReviewHeader from "./ReviewHeader";
 import StudyProgress from "./StudyProgress";
 import StudyToggle from "./StudyToggle";
 import ReviewResults from "./ReviewResults";
-import * as api from "../apiActions";
-import * as analytics from "../../components/GoogleAnalytics";
 
 import "./Review.css";
 
@@ -155,7 +157,7 @@ class Review extends Component {
     const { deck } = this.state;
 
     analytics.logReviewEvent(card.id);
-    utils.setCardStudyProgress(card.id, deck.id, isCorrect);
+    storeStudyProgress.setCardStudyProgress(card.id, deck.id, isCorrect);
     this.setState({ correctness: [...this.state.correctness, isCorrect] });
 
     if (!isCorrect) {
@@ -177,7 +179,7 @@ class Review extends Component {
     const isCorrect = this.isCorrectAnswer(answer, card);
     this.setState({ selected: answer });
 
-    utils.setCardStudyProgress(card.id, deck.id, isCorrect);
+    storeStudyProgress.setCardStudyProgress(card.id, deck.id, isCorrect);
     if (isCorrect) {
       this.setState({ correctness: [...this.state.correctness, isCorrect] });
       analytics.logReviewEvent(card.id);
@@ -227,9 +229,12 @@ class Review extends Component {
     if (isAuthenticated()) {
       api
         .addStudyHistory(currentDate)
-        .then(response => utils.addStudyHistory(currentDate), error => console.error(error));
+        .then(
+          response => storeStudySessions.addStudySession(currentDate),
+          error => console.error(error),
+        );
     } else {
-      utils.addStudyHistory(currentDate);
+      storeStudySessions.addStudySession(currentDate);
     }
   };
 
@@ -260,7 +265,7 @@ class Review extends Component {
 
   filterExpiredCards = cards => {
     const { deck } = this.state;
-    const studyObj = utils.getDeckStudyObject(deck.id);
+    const studyObj = storeStudyProgress.getDeckStudyObject(deck.id);
     const studiedCards = studyObj.cards || {};
     return cards.filter(card => {
       if (card.id in studiedCards) {

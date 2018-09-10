@@ -2,7 +2,7 @@ import React from "react";
 import pluralize from "pluralize";
 import { Cell, PieChart, Pie, Label } from "recharts";
 
-import { getStudyProgress, getStudyProficiency } from "../utils/studyProgress";
+import { getStudyProgress, getStudyProficiency } from "../utils/localStorage/userStudyProgress";
 
 const SkillProgress = ({ decks }) => {
   const progress = Math.round(
