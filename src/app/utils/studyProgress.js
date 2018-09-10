@@ -82,12 +82,10 @@ export const getStudyHistory = () => {
   return JSON.parse(localStorage.getItem(SESSIONS_KEY)) || [];
 };
 
-export const addStudyHistory = () => {
+export const addStudyHistory = date => {
   const sessionsObj = JSON.parse(localStorage.getItem(SESSIONS_KEY)) || [];
 
-  const currentDate = moment().startOf("day");
-
-  const sessions = [...sessionsObj, currentDate.format()].filter(
+  const sessions = [...sessionsObj, moment(date).format()].filter(
     (elem, pos, arr) => arr.indexOf(elem) === pos,
   );
 

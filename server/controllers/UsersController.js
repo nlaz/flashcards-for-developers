@@ -1,6 +1,7 @@
 const Joi = require("joi");
-const jwt = require("jsonwebtoken");
 const axios = require("axios");
+const moment = require("moment");
+const jwt = require("jsonwebtoken");
 const queryString = require("query-string");
 
 const User = require("../models/User");
@@ -52,7 +53,8 @@ module.exports.githubUser = async (req, res, next) => {
 
 module.exports.setSavedDecks = async (req, res, next) => {
   try {
-    await Joi.validate(req.body, userSchemas.saveDecks);
+    await Joi.validate(req, userSchemas.setSavedDecks);
+
     const { decks } = req.body;
 
     const user = await User.findOneAndUpdate({ _id: req.user }, { saved_decks: decks }).select(
@@ -70,6 +72,38 @@ module.exports.getSavedDecks = async (req, res, next) => {
     const user = await User.findOne({ _id: req.user }).select("+saved_decks");
 
     res.send(user.saved_decks);
+  } catch (error) {
+    next(error);
+  }
+};
+
+module.exports.addStudyHistory = async (req, res, next) => {
+  try {
+    await Joi.validate(req, userSchemas.setStudyHistory, { allowUnknown: true });
+    const user = await User.findOne({ _id: req.user }).select("+study_history");
+    const { date } = req.body;
+    const { study_history = [] } = user;
+
+    const history = [...study_history, moment(date).format()].filter(
+      (elem, pos, arr) => arr.indexOf(elem) === pos,
+    );
+
+    const newUser = await User.findOneAndUpdate(
+      { _id: req.user },
+      { study_history: history },
+    ).select("+study_history");
+
+    res.send(newUser.study_history);
+  } catch (error) {
+    next(error);
+  }
+};
+
+module.exports.getStudyHistory = async (req, res, next) => {
+  try {
+    const user = await User.findOne({ _id: req.user }).select("+study_history");
+
+    res.send(user.study_history);
   } catch (error) {
     next(error);
   }

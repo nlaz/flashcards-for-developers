@@ -5,7 +5,12 @@ module.exports = {
   githubUser: {
     code: Joi.string().required(),
   },
-  saveDecks: {
+  setSavedDecks: {
     decks: Joi.array().items(Joi.objectId()),
+  },
+  setStudyHistory: {
+    body: Joi.object().keys({
+      date: Joi.string().required(),
+    }),
   },
 };

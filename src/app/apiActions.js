@@ -44,3 +44,12 @@ export const setSavedDecks = decks => {
   const config = { headers: { Authorization: cookie.get("token") } };
   return axios.put("/users/saved_decks", { decks }, config);
 };
+export const fetchStudyHistory = () => {
+  const config = { headers: { Authorization: cookie.get("token") } };
+  return axios.get("/users/study_history", config);
+};
+
+export const addStudyHistory = date => {
+  const config = { headers: { Authorization: cookie.get("token") } };
+  return axios.put("/users/study_history", { date }, config);
+};
