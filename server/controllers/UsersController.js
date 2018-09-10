@@ -11,9 +11,9 @@ const config = require("../../config/index");
 const GITHUB_OAUTH_ROUTE = "https://github.com/login/oauth/access_token";
 const GITHUB_USER_ROUTE = "https://api.github.com/user";
 
-module.exports.githubUser = async (req, res, next) => {
+module.exports.getGithubUser = async (req, res, next) => {
   try {
-    await Joi.validate(req.body, userSchemas.githubUser);
+    await Joi.validate(req.body, userSchemas.getGithubUser);
 
     // Request access token
     const response = await axios.post(GITHUB_OAUTH_ROUTE, {
@@ -77,33 +77,29 @@ module.exports.getSavedDecks = async (req, res, next) => {
   }
 };
 
-module.exports.addStudyHistory = async (req, res, next) => {
+module.exports.addStudySession = async (req, res, next) => {
   try {
-    await Joi.validate(req, userSchemas.setStudyHistory, { allowUnknown: true });
-    const user = await User.findOne({ _id: req.user }).select("+study_history");
+    await Joi.validate(req.body, userSchemas.addStudySession);
+
     const { date } = req.body;
-    const { study_history = [] } = user;
 
-    const history = [...study_history, moment(date).format()].filter(
-      (elem, pos, arr) => arr.indexOf(elem) === pos,
-    );
-
-    const newUser = await User.findOneAndUpdate(
+    const user = await User.findOneAndUpdate(
       { _id: req.user },
-      { study_history: history },
-    ).select("+study_history");
+      { $push: { "study_sessions.dates": moment(date).format() } },
+      { new: true },
+    ).select("+study_sessions");
 
-    res.send(newUser.study_history);
+    res.send(user.study_sessions);
   } catch (error) {
     next(error);
   }
 };
 
-module.exports.getStudyHistory = async (req, res, next) => {
+module.exports.getStudySessions = async (req, res, next) => {
   try {
-    const user = await User.findOne({ _id: req.user }).select("+study_history");
+    const user = await User.findOne({ _id: req.user }).select("+study_sessions");
 
-    res.send(user.study_history);
+    res.send(user.study_sessions);
   } catch (error) {
     next(error);
   }

@@ -18,14 +18,14 @@ router.get("/api/collections/:collectionId", CollectionsController.getCollection
 
 router.get("/api/cards", CardsController.getCards);
 
-router.post("/auth/github", UsersController.githubUser);
+router.post("/auth/github", UsersController.getGithubUser);
 
 router.put("/users/saved_decks", isAuthenticated, UsersController.setSavedDecks);
 
 router.get("/users/saved_decks", isAuthenticated, UsersController.getSavedDecks);
 
-router.put("/users/study_history", isAuthenticated, UserController.addStudyHistory);
+router.put("/users/study_sessions", isAuthenticated, UsersController.addStudySession);
 
-router.get("/users/study_history", isAuthenticated, UserController.getStudyHistory);
+router.get("/users/study_sessions", isAuthenticated, UsersController.getStudySessions);
 
 module.exports = router;

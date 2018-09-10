@@ -35,7 +35,7 @@ const DateColumn = ({ index, sessions }) => {
 };
 
 class HabitTracker extends Component {
-  state = { sessions: [] };
+  state = { sessions: [], isError: false };
 
   componentDidMount() {
     this.fetchStudySessions();
@@ -46,16 +46,33 @@ class HabitTracker extends Component {
       api
         .fetchStudyHistory()
         .then(
-          response => this.setState({ sessions: response.data }),
-          error => console.error(error),
+          ({ data }) => this.setState({ sessions: data.dates }),
+          error => this.handleError(error),
         );
     } else {
       this.setState({ sessions: utils.getStudyHistory() });
     }
   };
 
+  handleError = error => {
+    console.error(error);
+    this.setState({ isError: true });
+  };
+
   render() {
-    const { sessions } = this.state;
+    const { sessions, isError } = this.state;
+
+    if (isError) {
+      return (
+        <div className="container container--narrow px-0">
+          <div className="text-center p-4">
+            <h1 className="text-dark">Unable to load request</h1>
+            <p>Please try again or go back home.</p>
+          </div>
+        </div>
+      );
+    }
+
     const daysThisWeek = sessions.filter(el => moment(el).isAfter(moment().subtract(7, "days")));
 
     return (
