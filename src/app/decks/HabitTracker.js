@@ -46,7 +46,7 @@ class HabitTracker extends Component {
       api
         .fetchStudyHistory()
         .then(
-          ({ data }) => this.setState({ sessions: data.dates }),
+          response => this.setState({ sessions: response.data }),
           error => this.handleError(error),
         );
     } else {

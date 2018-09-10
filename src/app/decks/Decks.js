@@ -72,7 +72,7 @@ class Decks extends Component {
 
   fetchSavedDecks = () => {
     api.fetchSavedDecks().then(({ data }) => {
-      this.setState({ savedDecks: data.decks });
+      this.setState({ savedDecks: data });
     });
   };
 
@@ -82,8 +82,8 @@ class Decks extends Component {
     if (isAuthenticated()) {
       api.toggleSavedDeck(deck.id, isSaved).then(
         ({ data }) => {
-          this.setState({ savedDecks: data.decks });
-          localStorage.setSavedDecks(data.decks);
+          this.setState({ savedDecks: data });
+          localStorage.setSavedDecks(data);
         },
         error => console.log(error),
       );
