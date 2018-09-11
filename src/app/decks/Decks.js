@@ -107,7 +107,7 @@ class Decks extends Component {
 
   render() {
     const { location } = this.props;
-    const { decks, isLoading, isError, savedDecks, activeTab } = this.state;
+    const { decks, isLoading, isError, savedDecks, studyProgress, activeTab } = this.state;
 
     if (isLoading) {
       return (
@@ -150,7 +150,11 @@ class Decks extends Component {
             className="bg-light rounded p-3 mb-2 border border-secondary d-flex align-items-center"
             style={{ minWidth: "260px", minHeight: "90px" }}
           >
-            {activeTab === TABS.USER ? <SkillProgress decks={filteredDecks} /> : <HabitTracker />}
+            {activeTab === TABS.USER ? (
+              <SkillProgress decks={filteredDecks} studyProgress={studyProgress} />
+            ) : (
+              <HabitTracker />
+            )}
           </div>
         </div>
         <div className="d-flex mx-2">
