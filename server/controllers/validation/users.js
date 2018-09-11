@@ -14,4 +14,9 @@ module.exports = {
   addStudySession: {
     date: Joi.string().required(),
   },
+  addDeckStudyProgress: {
+    card: Joi.objectId().required(),
+    reviewedAt: Joi.string().required(),
+    isCorrect: Joi.boolean(),
+  },
 };

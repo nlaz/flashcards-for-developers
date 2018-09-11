@@ -1,12 +1,11 @@
 const mongoose = require("mongoose");
 
-const UserStudyProgressSchema = require("./UserStudyProgress");
-
 const UserSchema = new mongoose.Schema({
   name: { type: String, required: true },
   email: { type: String, required: true, unique: true },
   avatar_url: { type: String },
   github_id: { type: String },
+
   // Extensions of the user model
   saved_decks: {
     type: [{ type: mongoose.Schema.Types.ObjectId, ref: "Deck" }],
@@ -19,7 +18,7 @@ const UserSchema = new mongoose.Schema({
     select: false,
   },
   study_progress: {
-    type: [UserStudyProgressSchema],
+    type: [{ type: mongoose.Schema.Types.ObjectId, ref: "UserDeckProgress" }],
     default: [],
     select: false,
   },

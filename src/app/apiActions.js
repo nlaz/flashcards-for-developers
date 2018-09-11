@@ -54,12 +54,21 @@ export const toggleSavedDeck = (deckId, isSaved) => {
   return isSaved ? removeSavedDeck(deckId) : addSavedDeck(deckId);
 };
 
-export const fetchStudyHistory = () => {
+export const fetchStudySessions = () => {
   const config = { headers: { Authorization: cookie.get("token") } };
   return axios.get("/users/study_sessions", config);
 };
 
-export const addStudyHistory = date => {
+export const addStudySession = date => {
   const config = { headers: { Authorization: cookie.get("token") } };
   return axios.put("/users/study_sessions", { date }, config);
+};
+
+export const addDeckStudyProgress = (cardId, deckId, isCorrect, reviewedAt) => {
+  const config = { headers: { Authorization: cookie.get("token") } };
+  return axios.put(
+    `/users/study_progress/${deckId}`,
+    { card: cardId, isCorrect, reviewedAt },
+    config,
+  );
 };

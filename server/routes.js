@@ -27,4 +27,9 @@ router.delete("/users/saved_decks", isAuthenticated, UsersController.removeSaved
 router.get("/users/study_sessions", isAuthenticated, UsersController.getStudySessions);
 router.put("/users/study_sessions", isAuthenticated, UsersController.addStudySession);
 
+router.get("/users/study_progress", isAuthenticated, UsersController.getStudyProgress);
+router.get("/users/study_progress/:deckId", isAuthenticated, UsersController.getDeckStudyProgress);
+router.put("/users/study_progress/:deckId", isAuthenticated, UsersController.addDeckStudyProgress);
+router.delete("/users/study_progress", isAuthenticated, UsersController.deleteStudyProgress);
+
 module.exports = router;

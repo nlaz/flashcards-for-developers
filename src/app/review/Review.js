@@ -157,7 +157,9 @@ class Review extends Component {
     const { deck } = this.state;
 
     analytics.logReviewEvent(card.id);
+    this.setStudyProgress(card.id, deck.id, isCorrect);
     storeStudyProgress.setCardStudyProgress(card.id, deck.id, isCorrect);
+
     this.setState({ correctness: [...this.state.correctness, isCorrect] });
 
     if (!isCorrect) {
@@ -179,7 +181,7 @@ class Review extends Component {
     const isCorrect = this.isCorrectAnswer(answer, card);
     this.setState({ selected: answer });
 
-    storeStudyProgress.setCardStudyProgress(card.id, deck.id, isCorrect);
+    this.setStudyProgress(card.id, deck.id, isCorrect);
     if (isCorrect) {
       this.setState({ correctness: [...this.state.correctness, isCorrect] });
       analytics.logReviewEvent(card.id);
@@ -195,7 +197,7 @@ class Review extends Component {
 
     if (this.isStageFinished(index)) {
       this.logReviewEvent(index);
-      this.logStudyHistory();
+      this.setStudySession();
     }
 
     this.setState({
@@ -223,21 +225,6 @@ class Review extends Component {
     }
   };
 
-  logStudyHistory = () => {
-    const currentDate = moment().startOf("day");
-
-    if (isAuthenticated()) {
-      api
-        .addStudyHistory(currentDate)
-        .then(
-          response => storeStudySessions.addStudySession(currentDate),
-          error => console.error(error),
-        );
-    } else {
-      storeStudySessions.addStudySession(currentDate);
-    }
-  };
-
   fetchDeck = deckId => {
     api.fetchDeck(deckId).then(
       ({ data }) => {
@@ -261,6 +248,31 @@ class Review extends Component {
       },
       error => this.setState({ isError: true, isCardsLoading: false }),
     );
+  };
+
+  setStudyProgress = (cardId, deckId, isCorrect) => {
+    if (isAuthenticated()) {
+      api
+        .addDeckStudyProgress(cardId, deckId, isCorrect)
+        .then(response => console.log(response), error => console.log(error));
+    } else {
+      storeStudyProgress.setCardStudyProgress(cardId, deckId, isCorrect);
+    }
+  };
+
+  setStudySession = () => {
+    const currentDate = moment().startOf("day");
+
+    if (isAuthenticated()) {
+      api
+        .addStudySession(currentDate)
+        .then(
+          response => storeStudySessions.addStudySession(currentDate),
+          error => console.error(error),
+        );
+    } else {
+      storeStudySessions.addStudySession(currentDate);
+    }
   };
 
   filterExpiredCards = cards => {

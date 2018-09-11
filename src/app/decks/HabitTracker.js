@@ -44,7 +44,7 @@ class HabitTracker extends Component {
   fetchStudySessions = () => {
     if (isAuthenticated()) {
       api
-        .fetchStudyHistory()
+        .fetchStudySessions()
         .then(
           response => this.setState({ sessions: response.data }),
           error => this.handleError(error),
