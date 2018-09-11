@@ -253,7 +253,7 @@ class Review extends Component {
     if (isAuthenticated()) {
       api
         .fetchDeckStudyProgress(deckId)
-        .then(({ data }) => this.setState({ cardProgress: data.cards }))
+        .then(({ data }) => this.setState({ cardProgress: data.cards || [] }))
         .catch(this.handleError);
     } else {
       const deckProgress = localStorage.getDeckProgressObject(deckId);
@@ -289,7 +289,7 @@ class Review extends Component {
   handleError = error => console.error(error);
 
   filterExpiredCards = cards => {
-    const { cardProgress } = this.state;
+    const { cardProgress = [] } = this.state;
 
     return cards.filter(card => {
       const cardObj = cardProgress.find(el => el.card === card.id);

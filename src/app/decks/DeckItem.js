@@ -6,10 +6,9 @@ import * as utils from "../utils/studyProgress";
 import ProgressBar from "../../components/ProgressBar";
 import Octicon from "../../components/Octicon";
 
-const DeckItem = ({ deck, location, isSaved, onToggleSave }) => {
-  // TODO: Fetch or pass in study progress
-  const progress = utils.calcStudyProgress(deck);
-  const proficiency = utils.calcStudyProficiency(deck);
+const DeckItem = ({ deck, deckProgress, location, isSaved, onToggleSave }) => {
+  const progress = utils.calcStudyProgress(deck, deckProgress);
+  const proficiency = utils.calcStudyProficiency(deck, deckProgress);
 
   return (
     <div className="deck-item col-12 col-sm-6 col-md-4 col-lg-3 d-flex">

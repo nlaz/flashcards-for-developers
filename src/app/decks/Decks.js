@@ -25,12 +25,12 @@ class Decks extends Component {
     isError: false,
     activeTab: TABS.ALL,
     savedDecks: [],
+    studyProgress: [],
   };
 
   componentWillMount() {
     document.title = "Flashcards for Developers";
     const searchParams = queryString.parse(this.props.location.search);
-    const authenticated = isAuthenticated();
 
     if (searchParams.beta) {
       this.fetchDecks();
@@ -38,19 +38,17 @@ class Decks extends Component {
       this.fetchCollection(HOMEPAGE_COLLECTION_ID);
     }
 
-    if (authenticated) {
-      this.fetchSavedDecks();
-    } else {
-      this.setState({ savedDecks: localStorage.getSavedDecks() });
-    }
+    this.fetchSavedDecks();
+    this.fetchStudyProgress();
   }
 
   onToggleSave = (event, deck) => {
     event.preventDefault();
+    const isSaved = this.isSaved(deck.id);
 
-    analytics.logSaveDeckAction(this.isSaved(deck.id), deck.name);
+    analytics.logSaveDeckAction(deck.name, isSaved);
 
-    this.saveDeck(deck);
+    this.saveDeck(deck, isSaved);
   };
 
   sortDecks = decks => [...decks].sort((a, b) => b.new - a.new);
@@ -71,30 +69,41 @@ class Decks extends Component {
   };
 
   fetchSavedDecks = () => {
-    api.fetchSavedDecks().then(({ data }) => {
-      this.setState({ savedDecks: data });
-    });
-  };
-
-  saveDeck = deck => {
-    const isSaved = this.isSaved(deck.id);
-
     if (isAuthenticated()) {
-      api.toggleSavedDeck(deck.id, isSaved).then(
-        ({ data }) => {
-          this.setState({ savedDecks: data });
-          localStorage.setSavedDecks(data);
-        },
-        error => console.log(error),
-      );
+      api.fetchSavedDecks().then(({ data }) => {
+        this.setState({ savedDecks: data });
+      });
     } else {
-      const savedDecks = localStorage.toggleSavedDeck(deck.id, isSaved);
-
-      this.setState({ savedDecks });
+      this.setState({ savedDecks: localStorage.getSavedDecks() });
     }
   };
 
+  fetchStudyProgress = () => {
+    if (isAuthenticated()) {
+      api
+        .fetchStudyProgress()
+        .then(response => this.setState({ studyProgress: response.data }))
+        .catch(this.handleError);
+    } else {
+      this.setState({ studyProgress: localStorage.getStudyProgress() });
+    }
+  };
+
+  saveDeck = (deck, isSaved) => {
+    if (isAuthenticated()) {
+      api
+        .toggleSavedDeck(deck.id, isSaved)
+        .then(response => this.setState({ savedDecks: response.data }))
+        .catch(this.handleError);
+    } else {
+      this.setState({ savedDecks: localStorage.toggleSavedDeck(deck.id, isSaved) });
+    }
+  };
+
+  handleError = error => console.error(error);
+
   isSaved = id => this.state.savedDecks.includes(id);
+  getDeckProgress = id => this.state.studyProgress.find(el => el.deck === id);
 
   render() {
     const { location } = this.props;
@@ -174,6 +183,7 @@ class Decks extends Component {
             {filteredDecks.map(deck => (
               <DeckItem
                 deck={deck}
+                deckProgress={this.getDeckProgress(deck.id)}
                 key={deck.id}
                 location={location}
                 isSaved={this.isSaved(deck.id)}
