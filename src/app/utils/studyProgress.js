@@ -1,27 +1,25 @@
 import moment from "moment";
 import * as leitner from "../../spaced/leitner";
 
-export const getUpdatedCard = (card, isCorrect) => {
-  if (!card) {
+export const calcUpdatedLevel = (cardObj, isCorrect) => {
+  const { leitnerBox, reviewedAt } = cardObj;
+  const newReviewTimestamp = moment();
+  const diffReviewDays = moment(newReviewTimestamp).diff(moment(reviewedAt), "days");
+
+  if (!leitnerBox || !reviewedAt) {
     return {
-      reviewedAt: moment(),
+      reviewedAt: newReviewTimestamp.format(),
       leitnerBox: isCorrect ? 1 : 0,
     };
   }
 
-  const { leitnerBox, reviewedAt } = card;
-  const diff = moment(reviewedAt).diff(moment(), "days");
-  // Update leitner levels level only if right number of days passed
-  if (diff < leitnerBox) {
-    return {
-      leitnerBox,
-      reviewedAt: moment(),
-    };
+  // Don't update card progress if not right number of days passed
+  if (diffReviewDays < leitnerBox) {
+    return { leitnerBox, reviewedAt };
   }
-  return {
-    reviewedAt: moment(),
-    leitnerBox: isCorrect ? leitnerBox + 1 : Math.max(1, leitnerBox - 1),
-  };
+
+  const newLeitnerBox = isCorrect ? leitnerBox + 1 : Math.max(1, leitnerBox - 1);
+  return { reviewedAt: newReviewTimestamp.format(), leitnerBox: newLeitnerBox };
 };
 
 export const calcStudyProgress = (deck = {}, deckProgressObj = {}) => {

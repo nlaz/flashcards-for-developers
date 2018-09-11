@@ -51,13 +51,13 @@ module.exports.addProgress = async (req, res, next) => {
       { new: true, upsert: true },
     );
 
-    await DeckProgress.findOneAndUpdate(
+    const deckProgress = await DeckProgress.findOneAndUpdate(
       { deck: deckId, user: user },
       { $addToSet: { cards: cardProgress } },
       { new: true, upsert: true },
-    );
+    ).populate("cards");
 
-    res.send(cardProgress);
+    res.send(deckProgress);
   } catch (error) {
     next(error);
   }

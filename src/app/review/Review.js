@@ -10,8 +10,7 @@ import * as leitner from "../../spaced/leitner";
 import * as api from "../apiActions";
 import * as preferences from "../utils/preferences";
 import * as localStorage from "../utils/localStorage";
-// import * as storeStudyProgress from "../utils/localStorage/userStudyProgress";
-// import * as storeStudySessions from "../utils/localStorage/userStudySessions";
+import * as studyProgress from "../utils/studyProgress";
 import * as analytics from "../../components/GoogleAnalytics";
 
 import DeckFeedback from "./DeckFeedback";
@@ -66,6 +65,7 @@ class Review extends Component {
     numCorrect: 0,
     numIncorrect: 0,
     selected: {},
+    cardProgress: [],
     pageSize: getRandomPageSize(),
     page: 0,
   };
@@ -73,6 +73,7 @@ class Review extends Component {
   componentDidMount() {
     const { params } = this.props.match;
     this.fetchDeck(params.deckId);
+    this.fetchDeckProgress(params.deckId);
     window.addEventListener("keyup", e => this.onKeyUp(e));
     window.addEventListener("keydown", e => this.onKeyDown(e));
   }
@@ -165,10 +166,7 @@ class Review extends Component {
     if (!isCorrect) {
       const numCorrect = this.state.numCorrect - 1;
       const numIncorrect = this.state.numIncorrect + 1;
-      this.setState({
-        numCorrect,
-        numIncorrect,
-      });
+      this.setState({ numCorrect, numIncorrect });
     }
 
     this.setState({ selected: answer });
@@ -182,6 +180,7 @@ class Review extends Component {
     this.setState({ selected: answer });
 
     this.setStudyProgress(card.id, deck.id, isCorrect);
+
     if (isCorrect) {
       this.setState({ correctness: [...this.state.correctness, isCorrect] });
       analytics.logReviewEvent(card.id);
@@ -250,16 +249,30 @@ class Review extends Component {
     );
   };
 
+  fetchDeckProgress = deckId => {
+    if (isAuthenticated()) {
+      api
+        .fetchDeckStudyProgress(deckId)
+        .then(({ data }) => this.setState({ cardProgress: data.cards }))
+        .catch(this.handleError);
+    } else {
+      const deckProgress = localStorage.getDeckProgressObject(deckId);
+      this.setState({ cardProgress: deckProgress.cards });
+    }
+  };
+
   setStudyProgress = (cardId, deckId, isCorrect) => {
-    const reviewedAt = moment().format();
-    const leitnerBox = 2; // TODO update
+    const cardObj = this.state.cardProgress.find(el => el.card === cardId) || {};
+    const { reviewedAt, leitnerBox } = studyProgress.calcUpdatedLevel(cardObj, isCorrect);
 
     if (isAuthenticated()) {
       api
         .addStudyProgress(deckId, cardId, leitnerBox, reviewedAt)
-        .then(response => console.log(response), error => console.log(error));
+        .then(({ data }) => this.setState({ cardProgress: data.cards }))
+        .catch(this.handleError);
     } else {
-      localStorage.addStudyProgress(cardId, deckId, leitnerBox, reviewedAt);
+      const deckProgress = localStorage.addStudyProgress(cardId, deckId, leitnerBox, reviewedAt);
+      this.setState({ cardProgress: deckProgress.cards });
     }
   };
 
@@ -267,25 +280,20 @@ class Review extends Component {
     const currentDate = moment().startOf("day");
 
     if (isAuthenticated()) {
-      api
-        .addStudySession(currentDate)
-        .then(response => localStorage.addStudySession(currentDate), error => console.error(error));
+      api.addStudySession(currentDate).catch(this.handleError);
     } else {
       localStorage.addStudySession(currentDate);
     }
   };
 
-  filterExpiredCards = cards => {
-    const { deck } = this.state;
-    const studyObj = localStorage.getDeckProgressObject(deck.id);
+  handleError = error => console.error(error);
 
-    const studiedCards = studyObj.cards || {};
+  filterExpiredCards = cards => {
+    const { cardProgress } = this.state;
+
     return cards.filter(card => {
-      if (card.id in studiedCards) {
-        const cardObj = studiedCards[card.id];
-        return leitner.isExpired(cardObj.leitnerBox, cardObj.reviewedAt);
-      }
-      return true;
+      const cardObj = cardProgress.find(el => el.card === card.id);
+      return !!cardObj ? leitner.isExpired(cardObj.leitnerBox, cardObj.reviewedAt) : true;
     });
   };
 
@@ -337,6 +345,8 @@ class Review extends Component {
 
   render() {
     const { deck, options, index, isDeckLoading, isCardsLoading, isError } = this.state;
+
+    console.table(this.state.cardProgress);
 
     if (isDeckLoading) {
       return (

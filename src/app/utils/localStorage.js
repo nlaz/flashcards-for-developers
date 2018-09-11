@@ -65,6 +65,12 @@ export const setDeckProgressObject = (deckId, value) => {
 
 export const addStudyProgress = (cardId, deckId, leitnerBox, reviewedAt) => {
   const deckProgressObj = getDeckProgressObject(deckId);
-  const newDeck = { cards: { ...deckProgressObj.cards, [cardId]: { leitnerBox, reviewedAt } } };
+  const newCards = ((deckProgressObj || {}).cards || []).filter(el => el.card !== cardId);
+  const newDeck = {
+    ...deckProgressObj,
+    cards: [...newCards, { card: cardId, leitnerBox, reviewedAt }],
+  };
   setDeckProgressObject(deckId, newDeck);
+
+  return getDeckProgressObject(deckId);
 };
