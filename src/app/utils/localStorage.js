@@ -2,7 +2,7 @@ import moment from "moment";
 
 const SESSIONS_KEY = "sessions";
 const SAVED_DECKS_KEY = "savedDecks";
-// const STUDY_PROGRESS_KEY = "studyProgress";
+const STUDY_PROGRESS_KEY = "studyProgress";
 
 /* Study sessions localStorage helpers */
 export const getStudySessions = () => {
@@ -42,33 +42,43 @@ export const toggleSavedDeck = (deckId, isSaved) => {
  * Study progress localStorage helpers:
  * User study progress data structure for each deck:
  *
- * <DECK_ID> : {
- *    cards: {
- *     <CARD_ID>: {
- *        reviewedAt: <LAST_REVIEWED_DATE>,
- *        leitnerBox: <CURRENT_LEITNER_BOX>
- *      },
- *   }
- * }
+ *  <STUDY_PROGRESS_KEY> : [
+ *     {
+ *        deck: <DECK_ID>
+ *        cards: [
+ *           card: <CARD_ID>
+ *           reviewedAt: <LAST_REVIEWED_DATE>
+ *           leitnerBox: <CURRENT_LEITNER_BOX>
+ *        ]
+ *     }
+ *  ]
  */
 export const getStudyProgress = () => {
-  // TODO
+  return JSON.parse(localStorage.getItem(STUDY_PROGRESS_KEY)) || [];
+};
+
+export const setStudyProgress = studyProgress => {
+  localStorage.setItem(STUDY_PROGRESS_KEY, JSON.stringify(studyProgress));
 };
 
 export const getDeckProgressObject = deckId => {
-  return JSON.parse(localStorage.getItem(deckId)) || {};
+  const studyObj = getStudyProgress();
+  return studyObj.find(el => el.deck === deckId) || {};
 };
 
 export const setDeckProgressObject = (deckId, value) => {
-  localStorage.setItem(deckId, JSON.stringify(value));
+  const studyObj = getStudyProgress();
+  const filtered = studyObj.filter(el => el.deck !== deckId);
+
+  setStudyProgress([...filtered, value]);
 };
 
 export const addStudyProgress = (cardId, deckId, leitnerBox, reviewedAt) => {
   const deckProgressObj = getDeckProgressObject(deckId);
-  const newCards = ((deckProgressObj || {}).cards || []).filter(el => el.card !== cardId);
+  const filtered = (deckProgressObj.cards || []).filter(el => el.card !== cardId);
   const newDeck = {
-    ...deckProgressObj,
-    cards: [...newCards, { card: cardId, leitnerBox, reviewedAt }],
+    deck: deckId,
+    cards: [...filtered, { card: cardId, leitnerBox, reviewedAt }],
   };
   setDeckProgressObject(deckId, newDeck);
 
