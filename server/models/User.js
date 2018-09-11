@@ -18,7 +18,7 @@ const UserSchema = new mongoose.Schema({
     select: false,
   },
   study_progress: {
-    type: [{ type: mongoose.Schema.Types.ObjectId, ref: "UserDeckProgress" }],
+    type: [{ type: mongoose.Schema.Types.ObjectId, ref: "DeckProgress" }],
     default: [],
     select: false,
   },

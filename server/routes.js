@@ -4,6 +4,7 @@ const isAuthenticated = require("./middleware/isAuthenticated");
 const UsersController = require("./controllers/UsersController");
 const CardsController = require("./controllers/CardsController");
 const DecksController = require("./controllers/DecksController");
+const ProgressController = require("./controllers/ProgressController");
 const CollectionsController = require("./controllers/CollectionsController");
 
 const router = express.Router();
@@ -27,9 +28,11 @@ router.delete("/users/saved_decks", isAuthenticated, UsersController.removeSaved
 router.get("/users/study_sessions", isAuthenticated, UsersController.getStudySessions);
 router.put("/users/study_sessions", isAuthenticated, UsersController.addStudySession);
 
-router.get("/users/study_progress", isAuthenticated, UsersController.getStudyProgress);
 router.get("/users/study_progress/:deckId", isAuthenticated, UsersController.getDeckStudyProgress);
 router.put("/users/study_progress/:deckId", isAuthenticated, UsersController.addDeckStudyProgress);
-router.delete("/users/study_progress", isAuthenticated, UsersController.deleteStudyProgress);
+
+router.get("/study_progress", isAuthenticated, ProgressController.getStudyProgress);
+router.get("/study_progress/:deckId", isAuthenticated, ProgressController.getDeckProgress);
+router.put("/study_progress/:deckId/:cardId", isAuthenticated, ProgressController.addStudyProgress);
 
 module.exports = router;

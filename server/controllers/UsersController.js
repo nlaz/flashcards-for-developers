@@ -127,30 +127,6 @@ module.exports.getStudySessions = async (req, res, next) => {
   }
 };
 
-module.exports.getStudyProgress = async (req, res, next) => {
-  try {
-    const user = await User.findOne({ _id: req.user })
-      .select("+study_progress")
-      .populate("study_progress");
-
-    res.send(user.study_progress);
-  } catch (error) {
-    next(error);
-  }
-};
-
-module.exports.getDeckStudyProgress = async (req, res, next) => {
-  try {
-    const { deckId } = req.params;
-
-    const deckProgress = await UserDeckProgress.findOne({ deck: deckId, user: req.user });
-
-    res.send(deckProgress);
-  } catch (error) {
-    next(error);
-  }
-};
-
 module.exports.deleteStudyProgress = async (req, res, next) => {
   try {
     const user = await User.findOneAndUpdate(
