@@ -17,11 +17,6 @@ const UserSchema = new mongoose.Schema({
     default: [],
     select: false,
   },
-  study_progress: {
-    type: [{ type: mongoose.Schema.Types.ObjectId, ref: "DeckProgress" }],
-    default: [],
-    select: false,
-  },
 });
 
 UserSchema.set("toJSON", {

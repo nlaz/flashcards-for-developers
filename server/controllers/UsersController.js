@@ -126,31 +126,3 @@ module.exports.getStudySessions = async (req, res, next) => {
     next(error);
   }
 };
-
-module.exports.deleteStudyProgress = async (req, res, next) => {
-  try {
-    const user = await User.findOneAndUpdate(
-      { _id: req.user },
-      { $set: { study_progress: [] } },
-    ).select("+study_progress");
-
-    res.send(user.study_progress);
-  } catch (error) {
-    next(error);
-  }
-};
-
-module.exports.addDeckStudyProgress = async (req, res, next) => {
-  try {
-    const { deckId } = req.params;
-    const { card, reviewedAt, isCorrect } = req.body;
-
-    await Joi.validate(req.body, userSchemas.addDeckStudyProgress);
-
-    const deckProgress = await UserDeckProgress.findOne({ deck: deckId, user: req.user });
-
-    res.send(deckProgress);
-  } catch (error) {
-    next(error);
-  }
-};
