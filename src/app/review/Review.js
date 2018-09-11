@@ -257,7 +257,7 @@ class Review extends Component {
         .catch(this.handleError);
     } else {
       const deckProgress = localStorage.getDeckProgressObject(deckId);
-      this.setState({ cardProgress: deckProgress.cards });
+      this.setState({ cardProgress: deckProgress.cards || [] });
     }
   };
 
@@ -345,8 +345,6 @@ class Review extends Component {
 
   render() {
     const { deck, options, index, isDeckLoading, isCardsLoading, isError } = this.state;
-
-    console.table(this.state.cardProgress);
 
     if (isDeckLoading) {
       return (
@@ -471,12 +469,12 @@ class Review extends Component {
                     </div>
                   ) : (
                     <ReviewResults
-                      deck={this.state.deck}
                       index={this.state.index}
                       cards={this.state.cards}
                       location={this.props.location}
                       numCorrect={this.state.numCorrect}
                       numIncorrect={this.state.numIncorrect}
+                      cardProgress={this.state.cardProgress}
                       onKeepGoing={this.onKeepGoing}
                     />
                   )}

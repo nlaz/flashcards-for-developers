@@ -21,8 +21,8 @@ module.exports.getDeckProgress = async (req, res, next) => {
   try {
     const { deckId } = req.params;
 
-    await Joi.validate(req.user, progressSchemas.getProgress.user);
-    await Joi.validate(req.params, progressSchemas.getProgress.params);
+    await Joi.validate(req.user, progressSchemas.getDeckProgress.user);
+    await Joi.validate(req.params, progressSchemas.getDeckProgress.params);
 
     const deckProgress = await DeckProgress.findOne({
       deck: deckId,
