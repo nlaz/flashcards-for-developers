@@ -24,9 +24,10 @@ module.exports.getDeckProgress = async (req, res, next) => {
     await Joi.validate(req.user, progressSchemas.getProgress.user);
     await Joi.validate(req.params, progressSchemas.getProgress.params);
 
-    const deckProgress = await DeckProgress.findOne({ deck: deckId, user: req.user }).populate(
-      "cards",
-    );
+    const deckProgress = await DeckProgress.findOne({
+      deck: deckId,
+      user: req.user,
+    }).populate("cards");
 
     res.send(deckProgress);
   } catch (error) {
@@ -45,12 +46,8 @@ module.exports.addProgress = async (req, res, next) => {
     await Joi.validate(req.body, progressSchemas.addProgress.body);
 
     const cardProgress = await CardProgress.findOneAndUpdate(
-      {
-        card: cardId,
-        user: user,
-        leitnerBox: leitnerBox,
-        reviewedAt: reviewedAt,
-      },
+      { card: cardId, user: user },
+      { leitnerBox: leitnerBox, reviewedAt: reviewedAt },
       { new: true, upsert: true },
     );
 

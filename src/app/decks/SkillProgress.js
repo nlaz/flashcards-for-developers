@@ -2,17 +2,18 @@ import React from "react";
 import pluralize from "pluralize";
 import { Cell, PieChart, Pie, Label } from "recharts";
 
-import { getStudyProgress, getStudyProficiency } from "../utils/localStorage/userStudyProgress";
+import * as utils from "../utils/studyProgress";
 
 const SkillProgress = ({ decks }) => {
+  // TODO: Fetch or pass in study Object
   const progress = Math.round(
-    decks.reduce((avg, el) => avg + getStudyProgress(el) * 100, 0) / decks.length,
+    decks.reduce((avg, el) => avg + utils.calcStudyProgress(el) * 100, 0) / decks.length,
   );
-  const numPractices = decks.filter(el => getStudyProgress(el) > 0).length;
+  const numPractices = decks.filter(el => utils.calcStudyProgress(el) > 0).length;
 
   const proficiency =
     decks.reduce((avg, el) => {
-      return getStudyProgress(el) > 0 ? avg + getStudyProficiency(el) : avg;
+      return utils.calcStudyProgress(el) > 0 ? avg + utils.calcStudyProficiency(el) : avg;
     }, 0.0) / numPractices;
 
   const subProgress = progress * proficiency || 0;

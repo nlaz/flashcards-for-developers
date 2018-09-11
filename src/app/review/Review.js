@@ -8,9 +8,10 @@ import config from "../../config";
 import isAuthenticated from "../utils/isAuthenticated";
 import * as leitner from "../../spaced/leitner";
 import * as api from "../apiActions";
-import * as preferences from "../utils/prefs";
-import * as storeStudyProgress from "../utils/localStorage/userStudyProgress";
-import * as storeStudySessions from "../utils/localStorage/userStudySessions";
+import * as preferences from "../utils/preferences";
+import * as localStorage from "../utils/localStorage";
+// import * as storeStudyProgress from "../utils/localStorage/userStudyProgress";
+// import * as storeStudySessions from "../utils/localStorage/userStudySessions";
 import * as analytics from "../../components/GoogleAnalytics";
 
 import DeckFeedback from "./DeckFeedback";
@@ -158,7 +159,6 @@ class Review extends Component {
 
     analytics.logReviewEvent(card.id);
     this.setStudyProgress(card.id, deck.id, isCorrect);
-    storeStudyProgress.setCardStudyProgress(card.id, deck.id, isCorrect);
 
     this.setState({ correctness: [...this.state.correctness, isCorrect] });
 
@@ -251,12 +251,15 @@ class Review extends Component {
   };
 
   setStudyProgress = (cardId, deckId, isCorrect) => {
+    const reviewedAt = moment().format();
+    const leitnerBox = 2; // TODO update
+
     if (isAuthenticated()) {
       api
-        .addDeckStudyProgress(cardId, deckId, isCorrect)
+        .addStudyProgress(deckId, cardId, leitnerBox, reviewedAt)
         .then(response => console.log(response), error => console.log(error));
     } else {
-      storeStudyProgress.setCardStudyProgress(cardId, deckId, isCorrect);
+      localStorage.addStudyProgress(cardId, deckId, leitnerBox, reviewedAt);
     }
   };
 
@@ -266,18 +269,16 @@ class Review extends Component {
     if (isAuthenticated()) {
       api
         .addStudySession(currentDate)
-        .then(
-          response => storeStudySessions.addStudySession(currentDate),
-          error => console.error(error),
-        );
+        .then(response => localStorage.addStudySession(currentDate), error => console.error(error));
     } else {
-      storeStudySessions.addStudySession(currentDate);
+      localStorage.addStudySession(currentDate);
     }
   };
 
   filterExpiredCards = cards => {
     const { deck } = this.state;
-    const studyObj = storeStudyProgress.getDeckStudyObject(deck.id);
+    const studyObj = localStorage.getDeckProgressObject(deck.id);
+
     const studiedCards = studyObj.cards || {};
     return cards.filter(card => {
       if (card.id in studiedCards) {

@@ -3,7 +3,7 @@ import pluralize from "pluralize";
 import moment from "moment";
 
 import * as api from "../apiActions";
-import * as localStorage from "../utils/localStorage/userStudySessions";
+import * as localStorage from "../utils/localStorage";
 import isAuthenticated from "../utils/isAuthenticated";
 
 const PAST_WEEK = [...new Array(7)];

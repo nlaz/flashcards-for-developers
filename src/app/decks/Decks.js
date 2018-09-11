@@ -5,7 +5,7 @@ import config from "../../config";
 import isAuthenticated from "../utils/isAuthenticated";
 import * as api from "../apiActions";
 import * as analytics from "../../components/GoogleAnalytics";
-import * as localStorage from "../utils/localStorage/userSavedDecks";
+import * as localStorage from "../utils/localStorage";
 
 import Octicon from "../../components/Octicon";
 import SkillProgress from "./SkillProgress";

@@ -1,7 +1,7 @@
 import React from "react";
 import Tooltip from "rc-tooltip";
 
-import * as preferences from "../utils/prefs";
+import * as preferences from "../utils/preferences";
 import Toggle from "../../components/Toggle";
 
 class StudyToggle extends React.Component {

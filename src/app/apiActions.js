@@ -64,11 +64,19 @@ export const addStudySession = date => {
   return axios.put("/users/study_sessions", { date }, config);
 };
 
-export const addDeckStudyProgress = (cardId, deckId, isCorrect, reviewedAt) => {
+export const fetchStudyProgress = () => {
   const config = { headers: { Authorization: cookie.get("token") } };
-  return axios.put(
-    `/users/study_progress/${deckId}`,
-    { card: cardId, isCorrect, reviewedAt },
-    config,
-  );
+  return axios.get("/study_progress", config);
+};
+
+export const fetchDeckStudyProgress = deckId => {
+  const config = { headers: { Authorization: cookie.get("token") } };
+  return axios.get(`/study_progress/${deckId}`, config);
+};
+
+export const addStudyProgress = (deckId, cardId, leitnerBox, reviewedAt) => {
+  const config = { headers: { Authorization: cookie.get("token") } };
+  const params = { leitnerBox, reviewedAt };
+
+  return axios.put(`/study_progress/${deckId}/${cardId}`, params, config);
 };

@@ -3,7 +3,7 @@ import React, { Component } from "react";
 import config from "../../config";
 import * as api from "../apiActions";
 import * as analytics from "../../components/GoogleAnalytics";
-import { setSavedDecks, getSavedDecks } from "../utils/localStorage/userSavedDecks";
+import { setSavedDecks, getSavedDecks } from "../utils/localStorage";
 
 import Octicon from "../../components/Octicon";
 import SkillProgress from "../decks/SkillProgress";
