@@ -5,8 +5,6 @@ const jwt = require("jsonwebtoken");
 const queryString = require("query-string");
 
 const User = require("../models/User");
-const UserCardProgress = require("../models/UserCardProgress").Model;
-const UserDeckProgress = require("../models/UserDeckProgress").Model;
 const userSchemas = require("./validation/users");
 const config = require("../../config/index");
 
