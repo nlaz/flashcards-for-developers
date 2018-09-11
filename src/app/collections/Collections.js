@@ -1,9 +1,10 @@
 import React, { Component } from "react";
 
 import config from "../../config";
+import isAuthenticated from "../utils/isAuthenticated";
 import * as api from "../apiActions";
 import * as analytics from "../../components/GoogleAnalytics";
-import { setSavedDecks, getSavedDecks } from "../utils/localStorage";
+import * as localStorage from "../utils/localStorage";
 
 import Octicon from "../../components/Octicon";
 import SkillProgress from "../decks/SkillProgress";
@@ -17,20 +18,24 @@ class Decks extends Component {
     isLoading: false,
     isError: false,
     savedDecks: [],
+    studyProgress: [],
   };
 
   componentWillMount() {
     const { collectionId } = this.props.match.params;
     this.fetchCollection(collectionId);
-    this.setState({ savedDecks: getSavedDecks() });
+
+    this.fetchSavedDecks();
+    this.fetchStudyProgress();
   }
 
   onToggleSave = (event, deck) => {
     event.preventDefault();
+    const isSaved = this.isSaved(deck.id);
 
-    analytics.logSaveDeckAction(this.isSaved(deck.id), deck.name);
+    analytics.logSaveDeckAction(deck.name, deck.id);
 
-    this.saveDeck(deck);
+    this.saveDeck(deck, isSaved);
   };
 
   sortDecks = decks => [...decks].sort((a, b) => b.new - a.new);
@@ -54,19 +59,44 @@ class Decks extends Component {
     );
   };
 
-  saveDeck = deck => {
-    const savedDecks = this.isSaved(deck.id)
-      ? this.state.savedDecks.filter(el => el !== deck.id)
-      : [...this.state.savedDecks, deck.id];
+  fetchSavedDecks = () => {
+    if (isAuthenticated()) {
+      api.fetchSavedDecks().then(({ data }) => {
+        this.setState({ savedDecks: data });
+      });
+    } else {
+      this.setState({ savedDecks: localStorage.getSavedDecks() });
+    }
+  };
 
-    this.setState({ savedDecks }, () => setSavedDecks(savedDecks));
+  fetchStudyProgress = () => {
+    if (isAuthenticated()) {
+      api
+        .fetchStudyProgress()
+        .then(response => this.setState({ studyProgress: response.data }))
+        .catch(this.handleError);
+    } else {
+      this.setState({ studyProgress: localStorage.getStudyProgress() });
+    }
+  };
+
+  saveDeck = (deck, isSaved) => {
+    if (isAuthenticated()) {
+      api
+        .toggleSavedDeck(deck.id, isSaved)
+        .then(response => this.setState({ savedDecks: response.data }))
+        .catch(this.handleError);
+    } else {
+      this.setState({ savedDecks: localStorage.toggleSavedDeck(deck.id, isSaved) });
+    }
   };
 
   isSaved = id => this.state.savedDecks.includes(id);
+  getDeckProgress = id => this.state.studyProgress.find(el => el.deck === id);
 
   render() {
     const { location } = this.props;
-    const { collection, decks, isLoading, isError } = this.state;
+    const { collection, decks, studyProgress, isLoading, isError } = this.state;
 
     if (isLoading) {
       return (
@@ -107,7 +137,7 @@ class Decks extends Component {
               className="bg-light rounded p-3 mb-2 border border-secondary d-flex align-items-center"
               style={{ minWidth: "260px", minHeight: "90px" }}
             >
-              <SkillProgress decks={decks} />
+              <SkillProgress decks={decks} studyProgress={studyProgress} />
             </div>
           </div>
           {decks.length > 0 ? (
@@ -115,6 +145,7 @@ class Decks extends Component {
               {decks.map(deck => (
                 <DeckItem
                   deck={deck}
+                  deckProgress={this.getDeckProgress(deck.id)}
                   key={deck.id}
                   location={location}
                   isSaved={this.isSaved(deck.id)}
