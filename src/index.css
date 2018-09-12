@@ -270,3 +270,8 @@ a[disabled] {
     transform: translate3d(0, -2px, 0);
   }
 }
+
+.icon-dark {
+  color: transparent;
+  text-shadow: 0 0 #212529;
+}

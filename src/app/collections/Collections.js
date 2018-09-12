@@ -117,10 +117,10 @@ class Decks extends Component {
 
     return (
       <div className="container container--full px-4 my-5">
-        <div className="d-flex flex-column flex-lg-row justify-content-between align-items-lg-center">
-          <div className="mb-3">
+        <div className="d-flex flex-column flex-lg-row justify-content-between align-items-lg-end">
+          <div className="m-0">
             <h1 className="m-0">{collection.name}</h1>
-            <p className="m-0">{collection.description}</p>
+            {collection.description && <p className="m-0 mb-3">{collection.description}</p>}
           </div>
           <div
             className="bg-light rounded p-3 mb-2 border border-secondary d-flex align-items-center"

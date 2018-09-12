@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import queryString from "query-string";
+import { Link } from "react-router-dom";
 
 import config from "../../config";
 import isAuthenticated from "../utils/isAuthenticated";
@@ -7,36 +7,27 @@ import * as api from "../apiActions";
 import * as analytics from "../../components/GoogleAnalytics";
 import * as localStorage from "../utils/localStorage";
 
-import Octicon from "../../components/Octicon";
-import SkillProgress from "./SkillProgress";
 import HabitTracker from "./HabitTracker";
 import FeedbackForm from "./FeedbackForm";
 import DeckItem from "./DeckItem";
 
-const HOMEPAGE_COLLECTION_ID = "5b92fc84695afe81b2ed6914";
-
-const TABS = { ALL: "all", USER: "user" };
-
 class Decks extends Component {
   state = {
-    collection: {},
-    decks: [],
-    isLoading: true,
-    isError: false,
-    activeTab: TABS.ALL,
+    newestRow: {},
+    trendingRow: {},
+    featuredRow: {},
     savedDecks: [],
     studyProgress: [],
+    isLoading: true,
+    isError: false,
   };
 
   componentWillMount() {
     document.title = "Flashcards for Developers";
-    const searchParams = queryString.parse(this.props.location.search);
 
-    if (searchParams.beta) {
-      this.fetchDecks();
-    } else {
-      this.fetchCollection(HOMEPAGE_COLLECTION_ID);
-    }
+    this.fetchFeaturedCollection();
+    this.fetchTrendingCollection();
+    this.fetchNewestCollection();
 
     this.fetchSavedDecks();
     this.fetchStudyProgress();
@@ -52,12 +43,6 @@ class Decks extends Component {
   };
 
   sortDecks = decks => [...decks].sort((a, b) => b.new - a.new);
-
-  fetchCollection = id => {
-    api.fetchCollection(id).then(({ data }) => {
-      this.setState({ collection: data }, () => this.fetchDecks(data));
-    });
-  };
 
   fetchDecks = collection => {
     api.fetchDecks(collection.id).then(
@@ -82,11 +67,29 @@ class Decks extends Component {
     if (isAuthenticated()) {
       api
         .fetchStudyProgress()
-        .then(response => this.setState({ studyProgress: response.data }))
+        .then(response => this.setState({ studyProgress: response.data, isLoading: false }))
         .catch(this.handleError);
     } else {
       this.setState({ studyProgress: localStorage.getStudyProgress() });
     }
+  };
+
+  fetchFeaturedCollection = () => {
+    api.fetchCollections("Featured").then(response => {
+      this.setState({ featuredRow: response.data.pop() });
+    });
+  };
+
+  fetchTrendingCollection = () => {
+    api
+      .fetchCollections("Trending")
+      .then(response => this.setState({ trendingRow: response.data.pop() }));
+  };
+
+  fetchNewestCollection = () => {
+    api
+      .fetchCollections("Recently Added")
+      .then(({ data }) => this.setState({ newestRow: data.pop() }));
   };
 
   saveDeck = (deck, isSaved) => {
@@ -106,8 +109,8 @@ class Decks extends Component {
   getDeckProgress = id => this.state.studyProgress.find(el => el.deck === id);
 
   render() {
-    const { location } = this.props;
-    const { decks, isLoading, isError, savedDecks, studyProgress, activeTab } = this.state;
+    const { featuredRow, trendingRow, newestRow } = this.state;
+    const { isLoading, isError } = this.state;
 
     if (isLoading) {
       return (
@@ -136,9 +139,6 @@ class Decks extends Component {
       );
     }
 
-    const filteredDecks =
-      activeTab === TABS.USER ? decks.filter(el => savedDecks.includes(el.id)) : decks;
-
     return (
       <div className="container container--full px-4 my-5">
         <div className="d-flex flex-column flex-lg-row justify-content-between align-items-lg-center">
@@ -150,72 +150,105 @@ class Decks extends Component {
             className="bg-light rounded p-3 mb-2 border border-secondary d-flex align-items-center"
             style={{ minWidth: "260px", minHeight: "90px" }}
           >
-            {activeTab === TABS.USER ? (
-              <SkillProgress decks={filteredDecks} studyProgress={studyProgress} />
-            ) : (
-              <HabitTracker />
-            )}
+            <HabitTracker />
           </div>
         </div>
-        <div className="d-flex mx-2">
-          <div
-            className="btn btn-reset px-2 py-1 m-1 rounded-0"
-            onClick={() => this.setState({ activeTab: TABS.ALL })}
+
+        {featuredRow &&
+          Object.keys(featuredRow).length > 0 && (
+            <div className="my-4 mt-5">
+              <div className="d-flex justify-content-between align-items-end mb-2 mx-1">
+                <h6 className="text-uppercase m-0">
+                  Featured
+                  <i className="fa fa-bullhorn ml-1" />
+                </h6>
+              </div>
+              {featuredRow.decks.length > 0 && (
+                <div className="row">
+                  {featuredRow.decks.slice(0, 4).map(deck => (
+                    <DeckItem
+                      deck={deck}
+                      key={deck.id}
+                      isSaved={this.isSaved(deck.id)}
+                      deckProgress={this.getDeckProgress(deck.id)}
+                      onToggleSave={this.onToggleSave}
+                    />
+                  ))}
+                </div>
+              )}
+            </div>
+          )}
+
+        {trendingRow &&
+          Object.keys(trendingRow).length > 0 && (
+            <div className="my-4">
+              <div className="d-flex justify-content-between align-items-end mb-2 mx-1">
+                <h6 className="text-uppercase m-0">
+                  {trendingRow.name}
+                  <span className="icon-dark ml-1" role="img" aria-label="Sparkles">
+                    ✨
+                  </span>
+                </h6>
+                <Link className="text-dark text-underline" to={`/collections/${trendingRow.id}`}>
+                  See all
+                </Link>
+              </div>
+              {trendingRow.decks.length > 0 && (
+                <div className="row">
+                  {trendingRow.decks.slice(0, 4).map(deck => (
+                    <DeckItem
+                      deck={deck}
+                      key={deck.id}
+                      isSaved={this.isSaved(deck.id)}
+                      deckProgress={this.getDeckProgress(deck.id)}
+                      onToggleSave={this.onToggleSave}
+                    />
+                  ))}
+                </div>
+              )}
+            </div>
+          )}
+
+        {newestRow &&
+          Object.keys(newestRow).length > 0 && (
+            <div className="my-4">
+              <div className="d-flex justify-content-between align-items-end mb-2 mx-1">
+                <h6 className="text-uppercase m-0">
+                  {newestRow.name}
+                  <i className="far fa-clock ml-1" />
+                </h6>
+                <Link className="text-dark text-underline" to={`/collections/${newestRow.id}`}>
+                  See all
+                </Link>
+              </div>
+              {newestRow.decks.length > 0 && (
+                <div className="row">
+                  {newestRow.decks.slice(0, 4).map(deck => (
+                    <DeckItem
+                      deck={deck}
+                      key={deck.id}
+                      isSaved={this.isSaved(deck.id)}
+                      deckProgress={this.getDeckProgress(deck.id)}
+                      onToggleSave={this.onToggleSave}
+                    />
+                  ))}
+                </div>
+              )}
+            </div>
+          )}
+
+        <div className="row d-flex justify-content-center mt-2 mb-5">
+          <a
+            className="d-flex align-items-center btn btn-outline-dark px-3"
+            href={config.airtableSuggestionsUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            style={{ borderRadius: "999px" }}
           >
-            <small
-              className="text-uppercase font-weight-medium"
-              style={{ opacity: activeTab === TABS.ALL ? 1 : 0.5 }}
-            >
-              All Decks
-            </small>
-          </div>
-          <div
-            className="btn btn-reset px-2 py-1 m-1 rounded-0"
-            onClick={() => this.setState({ activeTab: TABS.USER })}
-          >
-            <small
-              className="text-uppercase font-weight-medium"
-              style={{ opacity: activeTab === TABS.USER ? 1 : savedDecks.length > 0 ? 0.5 : 0.2 }}
-            >
-              My Decks {savedDecks.length > 0 && <span>{savedDecks.length}</span>}
-            </small>
-          </div>
+            <i className="fa fa-plus mr-2" />
+            <span>Suggest a deck</span>
+          </a>
         </div>
-        <hr className="mb-2 mt-0" />
-        {filteredDecks.length > 0 ? (
-          <div className="row pt-1">
-            {filteredDecks.map(deck => (
-              <DeckItem
-                deck={deck}
-                deckProgress={this.getDeckProgress(deck.id)}
-                key={deck.id}
-                location={location}
-                isSaved={this.isSaved(deck.id)}
-                onToggleSave={this.onToggleSave}
-              />
-            ))}
-          </div>
-        ) : (
-          <div className="w-100 text-center my-5 pb-5" style={{ minHeight: "30vh" }}>
-            <span className="pb-5" style={{ opacity: 0.3 }}>
-              No currently saved decks
-            </span>
-          </div>
-        )}
-        {activeTab === TABS.ALL && (
-          <div className="row d-flex justify-content-center mt-2 mb-5">
-            <a
-              className="text-dark d-flex align-items-center btn btn-outline-dark"
-              href={config.airtableSuggestionsUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              style={{ borderRadius: "999px" }}
-            >
-              <Octicon className="d-flex mr-2" name="plus" />
-              <span>Suggest a deck</span>
-            </a>
-          </div>
-        )}
         <div className="row">
           <div className="col-md-10 offset-md-1 col-lg-8 offset-lg-2 mt-5">
             <FeedbackForm />

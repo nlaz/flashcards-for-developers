@@ -1,6 +1,6 @@
 import React from "react";
 import cx from "classnames";
-import { Link } from "react-router-dom";
+import { Link, withRouter } from "react-router-dom";
 
 import * as utils from "../utils/studyProgress";
 import ProgressBar from "../../components/ProgressBar";
@@ -54,4 +54,4 @@ const DeckItem = ({ deck, deckProgress, location, isSaved, onToggleSave }) => {
   );
 };
 
-export default DeckItem;
+export default withRouter(DeckItem);
