@@ -149,134 +149,140 @@ class Decks extends Component {
     }
 
     return (
-      <div className="container container--full px-4 my-5">
-        <div className="d-flex flex-column flex-lg-row justify-content-between align-items-lg-center">
-          <div className="mb-3">
-            <h1 className="m-0">Flashcards for Developers</h1>
-            <p className="m-0">A curated list of flashcards to boost your professional skills</p>
-          </div>
-          <div
-            className="bg-light rounded p-3 mb-2 border border-secondary d-flex align-items-center"
-            style={{ minWidth: "260px", minHeight: "90px" }}
-          >
-            <HabitTracker />
+      <div className="my-5">
+        <div className="container container--full px-4 my-5">
+          <div className="d-flex flex-column flex-lg-row justify-content-between align-items-lg-center">
+            <div className="mb-3">
+              <h1 className="m-0">Flashcards for Developers</h1>
+              <p className="m-0">A curated list of flashcards to boost your professional skills</p>
+            </div>
+            <div
+              className="bg-light rounded p-3 mb-2 border border-secondary d-flex align-items-center"
+              style={{ minWidth: "260px", minHeight: "90px" }}
+            >
+              <HabitTracker />
+            </div>
           </div>
         </div>
 
         {collections && (
-          <div className="collection-container py-4 px-5 mt-3">
-            <div className="d-flex justify-content-between align-items-end mb-2 mx-1">
-              <h6 className="text-uppercase m-0">Collections</h6>
-              <Link className="text-dark text-underline" to="/collections">
-                See all
-              </Link>
-            </div>
-            <div className="row">
-              {collections.slice(0, 4).map(item => (
-                <CollectionItem key={item.id} collection={item} />
-              ))}
+          <div className="container container--full px-0 px-lg-4 mx-0 mx-lg-auto">
+            <div className="collection-container py-4 px-4 px-lg-5 mt-3">
+              <div className="d-flex justify-content-between align-items-end mb-2 mx-1">
+                <h6 className="text-uppercase m-0">Collections</h6>
+                <Link className="text-dark text-underline" to="/collections">
+                  See all
+                </Link>
+              </div>
+              <div className="row">
+                {collections.slice(0, 4).map(item => (
+                  <CollectionItem key={item.id} collection={item} />
+                ))}
+              </div>
             </div>
           </div>
         )}
 
-        {featuredRow &&
-          Object.keys(featuredRow).length > 0 && (
-            <div className="my-4 mt-5">
-              <div className="d-flex justify-content-between align-items-end mb-2 mx-1">
-                <h6 className="text-uppercase m-0">
-                  Featured
-                  <i className="fa fa-bullhorn ml-1" />
-                </h6>
-              </div>
-              {featuredRow.decks.length > 0 && (
-                <div className="row">
-                  {featuredRow.decks.slice(0, 4).map(deck => (
-                    <DeckItem
-                      deck={deck}
-                      key={deck.id}
-                      isSaved={this.isSaved(deck.id)}
-                      deckProgress={this.getDeckProgress(deck.id)}
-                      onToggleSave={this.onToggleSave}
-                    />
-                  ))}
+        <div className="container container--full px-4">
+          {featuredRow &&
+            Object.keys(featuredRow).length > 0 && (
+              <div className="my-4 mt-5">
+                <div className="d-flex justify-content-between align-items-end mb-2 mx-1">
+                  <h6 className="text-uppercase m-0">
+                    Featured
+                    <i className="fa fa-bullhorn ml-1" />
+                  </h6>
                 </div>
-              )}
-            </div>
-          )}
-
-        {trendingRow &&
-          Object.keys(trendingRow).length > 0 && (
-            <div className="my-4">
-              <div className="d-flex justify-content-between align-items-end mb-2 mx-1">
-                <h6 className="text-uppercase m-0">
-                  {trendingRow.name}
-                  <span className="icon-dark ml-1" role="img" aria-label="Sparkles">
-                    ✨
-                  </span>
-                </h6>
-                <Link className="text-dark text-underline" to={`/collections/${trendingRow.id}`}>
-                  See all
-                </Link>
+                {featuredRow.decks.length > 0 && (
+                  <div className="row">
+                    {featuredRow.decks.slice(0, 4).map(deck => (
+                      <DeckItem
+                        deck={deck}
+                        key={deck.id}
+                        isSaved={this.isSaved(deck.id)}
+                        deckProgress={this.getDeckProgress(deck.id)}
+                        onToggleSave={this.onToggleSave}
+                      />
+                    ))}
+                  </div>
+                )}
               </div>
-              {trendingRow.decks.length > 0 && (
-                <div className="row">
-                  {trendingRow.decks.slice(0, 4).map(deck => (
-                    <DeckItem
-                      deck={deck}
-                      key={deck.id}
-                      isSaved={this.isSaved(deck.id)}
-                      deckProgress={this.getDeckProgress(deck.id)}
-                      onToggleSave={this.onToggleSave}
-                    />
-                  ))}
-                </div>
-              )}
-            </div>
-          )}
+            )}
 
-        {newestRow &&
-          Object.keys(newestRow).length > 0 && (
-            <div className="my-4">
-              <div className="d-flex justify-content-between align-items-end mb-2 mx-1">
-                <h6 className="text-uppercase m-0">
-                  {newestRow.name}
-                  <i className="far fa-clock ml-1" />
-                </h6>
-                <Link className="text-dark text-underline" to={`/collections/${newestRow.id}`}>
-                  See all
-                </Link>
+          {trendingRow &&
+            Object.keys(trendingRow).length > 0 && (
+              <div className="my-4">
+                <div className="d-flex justify-content-between align-items-end mb-2 mx-1">
+                  <h6 className="text-uppercase m-0">
+                    {trendingRow.name}
+                    <span className="icon-dark ml-1" role="img" aria-label="Sparkles">
+                      ✨
+                    </span>
+                  </h6>
+                  <Link className="text-dark text-underline" to={`/collections/${trendingRow.id}`}>
+                    See all
+                  </Link>
+                </div>
+                {trendingRow.decks.length > 0 && (
+                  <div className="row">
+                    {trendingRow.decks.slice(0, 4).map(deck => (
+                      <DeckItem
+                        deck={deck}
+                        key={deck.id}
+                        isSaved={this.isSaved(deck.id)}
+                        deckProgress={this.getDeckProgress(deck.id)}
+                        onToggleSave={this.onToggleSave}
+                      />
+                    ))}
+                  </div>
+                )}
               </div>
-              {newestRow.decks.length > 0 && (
-                <div className="row">
-                  {newestRow.decks.slice(0, 4).map(deck => (
-                    <DeckItem
-                      deck={deck}
-                      key={deck.id}
-                      isSaved={this.isSaved(deck.id)}
-                      deckProgress={this.getDeckProgress(deck.id)}
-                      onToggleSave={this.onToggleSave}
-                    />
-                  ))}
-                </div>
-              )}
-            </div>
-          )}
+            )}
 
-        <div className="row d-flex justify-content-center mt-2 mb-5">
-          <a
-            className="d-flex align-items-center btn btn-outline-dark px-3"
-            href={config.airtableSuggestionsUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            style={{ borderRadius: "999px" }}
-          >
-            <i className="fa fa-plus mr-2" />
-            <span>Suggest a deck</span>
-          </a>
-        </div>
-        <div className="row">
-          <div className="col-md-10 offset-md-1 col-lg-8 offset-lg-2 mt-5">
-            <FeedbackForm />
+          {newestRow &&
+            Object.keys(newestRow).length > 0 && (
+              <div className="my-4">
+                <div className="d-flex justify-content-between align-items-end mb-2 mx-1">
+                  <h6 className="text-uppercase m-0">
+                    {newestRow.name}
+                    <i className="far fa-clock ml-1" />
+                  </h6>
+                  <Link className="text-dark text-underline" to={`/collections/${newestRow.id}`}>
+                    See all
+                  </Link>
+                </div>
+                {newestRow.decks.length > 0 && (
+                  <div className="row">
+                    {newestRow.decks.slice(0, 4).map(deck => (
+                      <DeckItem
+                        deck={deck}
+                        key={deck.id}
+                        isSaved={this.isSaved(deck.id)}
+                        deckProgress={this.getDeckProgress(deck.id)}
+                        onToggleSave={this.onToggleSave}
+                      />
+                    ))}
+                  </div>
+                )}
+              </div>
+            )}
+
+          <div className="row d-flex justify-content-center mt-2 mb-5">
+            <a
+              className="d-flex align-items-center btn btn-outline-dark px-3"
+              href={config.airtableSuggestionsUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              style={{ borderRadius: "999px" }}
+            >
+              <i className="fa fa-plus mr-2" />
+              <span>Suggest a deck</span>
+            </a>
+          </div>
+          <div className="row">
+            <div className="col-md-10 offset-md-1 col-lg-8 offset-lg-2 mt-5">
+              <FeedbackForm />
+            </div>
           </div>
         </div>
       </div>

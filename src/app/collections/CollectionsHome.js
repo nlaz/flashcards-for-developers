@@ -22,7 +22,7 @@ class CollectionsHome extends React.Component {
   render() {
     const { collections } = this.state;
     return (
-      <div className="container container--narrow px-4 my-5">
+      <div className="container container--full px-4 my-5">
         <h1 className="m-0 mb-3">Collections</h1>
         <div className="row">
           {collections.map(item => (
