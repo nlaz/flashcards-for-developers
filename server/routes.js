@@ -15,6 +15,7 @@ router.get("/api/decks", DecksController.getDecks);
 
 router.get("/api/decks/:deckId", DecksController.getDeck);
 
+router.get("/api/collections", CollectionsController.getCollections);
 router.get("/api/collections/:collectionId", CollectionsController.getCollection);
 
 router.get("/api/cards", CardsController.getCards);

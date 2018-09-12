@@ -4,6 +4,7 @@ import { BrowserRouter, Route, Switch } from "react-router-dom";
 import Pages from "../pages/Pages";
 import Decks from "./decks/Decks";
 import Review from "./review/Review";
+import CollectionsHome from "./collections/CollectionsHome";
 import Collections from "./collections/Collections";
 import Logout from "./auth/Logout";
 import AuthRedirect from "./auth/AuthRedirect";
@@ -27,9 +28,9 @@ class App extends Component {
                 <Route path="/logout" component={Logout} />
                 <Route path="/auth/github" component={AuthRedirect} />
                 <Route path="/pages" component={Pages} />
-                <Route exact path="/categories/:categoryId" component={Decks} />
                 <Route exact path="/decks" component={Decks} />
                 <Route exact path="/decks/:deckId" component={Review} />
+                <Route exact path="/collections" component={CollectionsHome} />
                 <Route exact path="/collections/:collectionId" component={Collections} />
                 <Route exact path="*" component={NotFound} />
               </Switch>

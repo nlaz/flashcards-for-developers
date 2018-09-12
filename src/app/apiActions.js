@@ -2,6 +2,15 @@ import axios from "axios";
 import cookie from "js-cookie";
 import queryString from "query-string";
 
+export const githubUser = code => {
+  return axios.post("/auth/github", { code });
+};
+
+export const fetchCollections = () => {
+  const config = { headers: { Authorization: cookie.get("token") } };
+  return axios.get(`/api/collections`, config);
+};
+
 export const fetchCollection = id => {
   const config = { headers: { Authorization: cookie.get("token") } };
   return axios.get(`/api/collections/${id}`, config);
@@ -21,18 +30,6 @@ export const fetchDeck = id => {
 export const fetchCards = deckId => {
   const config = { headers: { Authorization: cookie.get("token") } };
   return axios.get(`/api/cards?deck=${deckId}`, config);
-};
-
-export const loginUser = params => {
-  return axios.post("/auth/login", params);
-};
-
-export const signupUser = params => {
-  return axios.post("/auth/signup", params);
-};
-
-export const githubUser = code => {
-  return axios.post("/auth/github", { code });
 };
 
 export const fetchSavedDecks = () => {
