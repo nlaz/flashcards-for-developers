@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import { BrowserRouter, Route, Switch } from "react-router-dom";
 
 import Pages from "../pages/Pages";
-import Decks from "./decks/Decks";
+import Home from "./home/Home";
 import Review from "./review/Review";
 import CollectionsHome from "./collections/CollectionsHome";
 import Collections from "./collections/Collections";
@@ -24,11 +24,11 @@ class App extends Component {
             <div>
               <Route path="/" component={GoogleAnalytics} />
               <Switch>
-                <Route exact path="/" component={Decks} />
+                <Route exact path="/" component={Home} />
+                <Route path="/pages" component={Pages} />
                 <Route path="/logout" component={Logout} />
                 <Route path="/auth/github" component={AuthRedirect} />
                 <Route path="/pages" component={Pages} />
-                <Route exact path="/decks" component={Decks} />
                 <Route exact path="/decks/:deckId" component={Review} />
                 <Route exact path="/collections" component={CollectionsHome} />
                 <Route exact path="/collections/:collectionId" component={Collections} />
