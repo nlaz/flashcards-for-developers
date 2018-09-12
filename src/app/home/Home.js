@@ -20,7 +20,7 @@ class Decks extends Component {
     savedDecks: [],
     studyProgress: [],
     collections: [],
-    isLoading: true,
+    isLoading: false,
     isError: false,
   };
 
