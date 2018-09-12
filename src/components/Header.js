@@ -52,7 +52,7 @@ const Header = ({ location }) => {
           <li className="list-inline-item">
             <FacebookShareButton
               className="share-button p-2"
-              url="http://nlaz.github.io/flashcards-for-developers/#/"
+              url="http://www.flashcardsfordevelopers.com"
               quote={title}
               onShareWindowClose={() => analytics.logFacebookShare()}
               style={{ cursor: "pointer" }}
@@ -63,7 +63,7 @@ const Header = ({ location }) => {
           <li className="list-inline-item">
             <TwitterShareButton
               className="share-button p-2"
-              url="http://nlaz.github.io/flashcards-for-developers/#/"
+              url="http://www.flashcardsfordevelopers.com"
               title={title}
               onShareWindowClose={() => analytics.logTwitterShare()}
               style={{ cursor: "pointer" }}
