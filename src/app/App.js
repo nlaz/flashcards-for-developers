@@ -28,6 +28,7 @@ class App extends Component {
                 <Route path="/pages" component={Pages} />
                 <Route path="/logout" component={Logout} />
                 <Route path="/auth/github" component={AuthRedirect} />
+                <Route path="/pages" component={Pages} />
                 <Route exact path="/decks/:deckId" component={Review} />
                 <Route exact path="/collections" component={CollectionsHome} />
                 <Route exact path="/collections/:collectionId" component={Collections} />
