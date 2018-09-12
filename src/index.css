@@ -275,3 +275,11 @@ a[disabled] {
   color: transparent;
   text-shadow: 0 0 #212529;
 }
+
+.collection-container {
+  background: #f8f8f8;
+  margin-right: -40px;
+  margin-left: -40px;
+  border: 1px solid #e8e8e8;
+  border-radius: 2px;
+}

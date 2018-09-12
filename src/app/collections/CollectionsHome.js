@@ -1,7 +1,7 @@
 import React from "react";
-import { Link } from "react-router-dom";
 
 import * as api from "../apiActions";
+import CollectionItem from "./CollectionItem";
 
 class CollectionsHome extends React.Component {
   state = { collections: [] };
@@ -25,18 +25,8 @@ class CollectionsHome extends React.Component {
       <div className="container container--narrow px-4 my-5">
         <h1 className="m-0 mb-3">Collections</h1>
         <div className="row">
-          {collections.map(collection => (
-            <div
-              className="collection-item col-12 col-sm-6 col-md-4 col-lg-3 d-flex mb-3"
-              key={collection.id}
-            >
-              <Link
-                className="bg-dark text-light w-100 d-flex p-3"
-                to={`/collections/${collection.id}`}
-              >
-                {collection.name}
-              </Link>
-            </div>
+          {collections.map(item => (
+            <CollectionItem key={item.id} collection={item} />
           ))}
         </div>
       </div>

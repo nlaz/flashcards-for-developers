@@ -7,6 +7,7 @@ import * as api from "../apiActions";
 import * as analytics from "../../components/GoogleAnalytics";
 import * as localStorage from "../utils/localStorage";
 
+import CollectionItem from "../collections/CollectionItem";
 import HabitTracker from "./HabitTracker";
 import FeedbackForm from "./FeedbackForm";
 import DeckItem from "./DeckItem";
@@ -18,6 +19,7 @@ class Decks extends Component {
     featuredRow: {},
     savedDecks: [],
     studyProgress: [],
+    collections: [],
     isLoading: true,
     isError: false,
   };
@@ -31,6 +33,7 @@ class Decks extends Component {
 
     this.fetchSavedDecks();
     this.fetchStudyProgress();
+    this.fetchCollections();
   }
 
   onToggleSave = (event, deck) => {
@@ -92,6 +95,13 @@ class Decks extends Component {
       .then(({ data }) => this.setState({ newestRow: data.pop() }));
   };
 
+  fetchCollections = () => {
+    api
+      .fetchCollections()
+      .then(response => this.setState({ collections: response.data }))
+      .catch(this.handleError);
+  };
+
   saveDeck = (deck, isSaved) => {
     if (isAuthenticated()) {
       api
@@ -109,8 +119,7 @@ class Decks extends Component {
   getDeckProgress = id => this.state.studyProgress.find(el => el.deck === id);
 
   render() {
-    const { featuredRow, trendingRow, newestRow } = this.state;
-    const { isLoading, isError } = this.state;
+    const { featuredRow, trendingRow, newestRow, collections, isLoading, isError } = this.state;
 
     if (isLoading) {
       return (
@@ -153,6 +162,22 @@ class Decks extends Component {
             <HabitTracker />
           </div>
         </div>
+
+        {collections && (
+          <div className="collection-container py-4 px-5 mt-3">
+            <div className="d-flex justify-content-between align-items-end mb-2 mx-1">
+              <h6 className="text-uppercase m-0">Collections</h6>
+              <Link className="text-dark text-underline" to="/collections">
+                See all
+              </Link>
+            </div>
+            <div className="row">
+              {collections.slice(0, 4).map(item => (
+                <CollectionItem key={item.id} collection={item} />
+              ))}
+            </div>
+          </div>
+        )}
 
         {featuredRow &&
           Object.keys(featuredRow).length > 0 && (
