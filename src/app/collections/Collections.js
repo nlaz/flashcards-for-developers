@@ -7,9 +7,9 @@ import * as analytics from "../../components/GoogleAnalytics";
 import * as localStorage from "../utils/localStorage";
 
 import Octicon from "../../components/Octicon";
-import SkillProgress from "../decks/SkillProgress";
-import FeedbackForm from "../decks/FeedbackForm";
-import DeckItem from "../decks/DeckItem";
+import SkillProgress from "../home/SkillProgress";
+import FeedbackForm from "../home/FeedbackForm";
+import DeckItem from "../home/DeckItem";
 
 class Decks extends Component {
   state = {
