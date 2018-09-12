@@ -6,16 +6,18 @@ import moment from "moment";
 
 import config from "../../config";
 import isAuthenticated from "../utils/isAuthenticated";
-import * as utils from "../utils/studyProgress";
-import * as preferences from "../utils/prefs";
 import * as leitner from "../../spaced/leitner";
+import * as api from "../apiActions";
+import * as preferences from "../utils/preferences";
+import * as localStorage from "../utils/localStorage";
+import * as studyProgress from "../utils/studyProgress";
+import * as analytics from "../../components/GoogleAnalytics";
+
 import DeckFeedback from "./DeckFeedback";
 import ReviewHeader from "./ReviewHeader";
 import StudyProgress from "./StudyProgress";
 import StudyToggle from "./StudyToggle";
 import ReviewResults from "./ReviewResults";
-import * as api from "../apiActions";
-import * as analytics from "../../components/GoogleAnalytics";
 
 import "./Review.css";
 
@@ -63,6 +65,7 @@ class Review extends Component {
     numCorrect: 0,
     numIncorrect: 0,
     selected: {},
+    cardProgress: [],
     pageSize: getRandomPageSize(),
     page: 0,
   };
@@ -70,6 +73,7 @@ class Review extends Component {
   componentDidMount() {
     const { params } = this.props.match;
     this.fetchDeck(params.deckId);
+    this.fetchDeckProgress(params.deckId);
     window.addEventListener("keyup", e => this.onKeyUp(e));
     window.addEventListener("keydown", e => this.onKeyDown(e));
   }
@@ -155,16 +159,14 @@ class Review extends Component {
     const { deck } = this.state;
 
     analytics.logReviewEvent(card.id);
-    utils.setCardStudyProgress(card.id, deck.id, isCorrect);
+    this.setStudyProgress(card.id, deck.id, isCorrect);
+
     this.setState({ correctness: [...this.state.correctness, isCorrect] });
 
     if (!isCorrect) {
       const numCorrect = this.state.numCorrect - 1;
       const numIncorrect = this.state.numIncorrect + 1;
-      this.setState({
-        numCorrect,
-        numIncorrect,
-      });
+      this.setState({ numCorrect, numIncorrect });
     }
 
     this.setState({ selected: answer });
@@ -177,7 +179,8 @@ class Review extends Component {
     const isCorrect = this.isCorrectAnswer(answer, card);
     this.setState({ selected: answer });
 
-    utils.setCardStudyProgress(card.id, deck.id, isCorrect);
+    this.setStudyProgress(card.id, deck.id, isCorrect);
+
     if (isCorrect) {
       this.setState({ correctness: [...this.state.correctness, isCorrect] });
       analytics.logReviewEvent(card.id);
@@ -193,7 +196,7 @@ class Review extends Component {
 
     if (this.isStageFinished(index)) {
       this.logReviewEvent(index);
-      this.logStudyHistory();
+      this.setStudySession();
     }
 
     this.setState({
@@ -218,18 +221,6 @@ class Review extends Component {
       analytics.logCompletedEvent(this.state.deck.id);
     } else {
       analytics.logFinishedEvent(this.state.deck.id);
-    }
-  };
-
-  logStudyHistory = () => {
-    const currentDate = moment().startOf("day");
-
-    if (isAuthenticated()) {
-      api
-        .addStudyHistory(currentDate)
-        .then(response => utils.addStudyHistory(currentDate), error => console.error(error));
-    } else {
-      utils.addStudyHistory(currentDate);
     }
   };
 
@@ -258,16 +249,51 @@ class Review extends Component {
     );
   };
 
+  fetchDeckProgress = deckId => {
+    if (isAuthenticated()) {
+      api
+        .fetchDeckStudyProgress(deckId)
+        .then(({ data }) => this.setState({ cardProgress: data.cards || [] }))
+        .catch(this.handleError);
+    } else {
+      const deckProgress = localStorage.getDeckProgressObject(deckId);
+      this.setState({ cardProgress: deckProgress.cards || [] });
+    }
+  };
+
+  setStudyProgress = (cardId, deckId, isCorrect) => {
+    const cardObj = this.state.cardProgress.find(el => el.card === cardId) || {};
+    const { reviewedAt, leitnerBox } = studyProgress.calcUpdatedLevel(cardObj, isCorrect);
+
+    if (isAuthenticated()) {
+      api
+        .addStudyProgress(deckId, cardId, leitnerBox, reviewedAt)
+        .then(({ data }) => this.setState({ cardProgress: data.cards }))
+        .catch(this.handleError);
+    } else {
+      const deckProgress = localStorage.addStudyProgress(cardId, deckId, leitnerBox, reviewedAt);
+      this.setState({ cardProgress: deckProgress.cards });
+    }
+  };
+
+  setStudySession = () => {
+    const currentDate = moment().startOf("day");
+
+    if (isAuthenticated()) {
+      api.addStudySession(currentDate).catch(this.handleError);
+    } else {
+      localStorage.addStudySession(currentDate);
+    }
+  };
+
+  handleError = error => console.error(error);
+
   filterExpiredCards = cards => {
-    const { deck } = this.state;
-    const studyObj = utils.getDeckStudyObject(deck.id);
-    const studiedCards = studyObj.cards || {};
+    const { cardProgress = [] } = this.state;
+
     return cards.filter(card => {
-      if (card.id in studiedCards) {
-        const cardObj = studiedCards[card.id];
-        return leitner.isExpired(cardObj.leitnerBox, cardObj.reviewedAt);
-      }
-      return true;
+      const cardObj = cardProgress.find(el => el.card === card.id);
+      return !!cardObj ? leitner.isExpired(cardObj.leitnerBox, cardObj.reviewedAt) : true;
     });
   };
 
@@ -443,12 +469,12 @@ class Review extends Component {
                     </div>
                   ) : (
                     <ReviewResults
-                      deck={this.state.deck}
                       index={this.state.index}
                       cards={this.state.cards}
                       location={this.props.location}
                       numCorrect={this.state.numCorrect}
                       numIncorrect={this.state.numIncorrect}
+                      cardProgress={this.state.cardProgress}
                       onKeepGoing={this.onKeepGoing}
                     />
                   )}

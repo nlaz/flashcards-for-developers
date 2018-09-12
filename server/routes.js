@@ -4,6 +4,7 @@ const isAuthenticated = require("./middleware/isAuthenticated");
 const UsersController = require("./controllers/UsersController");
 const CardsController = require("./controllers/CardsController");
 const DecksController = require("./controllers/DecksController");
+const ProgressController = require("./controllers/ProgressController");
 const CollectionsController = require("./controllers/CollectionsController");
 
 const router = express.Router();
@@ -18,14 +19,17 @@ router.get("/api/collections/:collectionId", CollectionsController.getCollection
 
 router.get("/api/cards", CardsController.getCards);
 
-router.post("/auth/github", UsersController.githubUser);
-
-router.put("/users/saved_decks", isAuthenticated, UsersController.setSavedDecks);
+router.post("/auth/github", UsersController.getGithubUser);
 
 router.get("/users/saved_decks", isAuthenticated, UsersController.getSavedDecks);
+router.put("/users/saved_decks", isAuthenticated, UsersController.addSavedDeck);
+router.delete("/users/saved_decks", isAuthenticated, UsersController.removeSavedDeck);
 
-router.put("/users/study_history", isAuthenticated, UserController.addStudyHistory);
+router.get("/users/study_sessions", isAuthenticated, UsersController.getStudySessions);
+router.put("/users/study_sessions", isAuthenticated, UsersController.addStudySession);
 
-router.get("/users/study_history", isAuthenticated, UserController.getStudyHistory);
+router.get("/study_progress", isAuthenticated, ProgressController.getProgress);
+router.get("/study_progress/:deckId", isAuthenticated, ProgressController.getDeckProgress);
+router.put("/study_progress/:deckId/:cardId", isAuthenticated, ProgressController.addProgress);
 
 module.exports = router;

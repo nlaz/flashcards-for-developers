@@ -11,9 +11,9 @@ const config = require("../../config/index");
 const GITHUB_OAUTH_ROUTE = "https://github.com/login/oauth/access_token";
 const GITHUB_USER_ROUTE = "https://api.github.com/user";
 
-module.exports.githubUser = async (req, res, next) => {
+module.exports.getGithubUser = async (req, res, next) => {
   try {
-    await Joi.validate(req.body, userSchemas.githubUser);
+    await Joi.validate(req.body, userSchemas.getGithubUser);
 
     // Request access token
     const response = await axios.post(GITHUB_OAUTH_ROUTE, {
@@ -51,22 +51,6 @@ module.exports.githubUser = async (req, res, next) => {
   }
 };
 
-module.exports.setSavedDecks = async (req, res, next) => {
-  try {
-    await Joi.validate(req, userSchemas.setSavedDecks);
-
-    const { decks } = req.body;
-
-    const user = await User.findOneAndUpdate({ _id: req.user }, { saved_decks: decks }).select(
-      "+saved_decks",
-    );
-
-    res.send(user);
-  } catch (error) {
-    next(error);
-  }
-};
-
 module.exports.getSavedDecks = async (req, res, next) => {
   try {
     const user = await User.findOne({ _id: req.user }).select("+saved_decks");
@@ -77,33 +61,65 @@ module.exports.getSavedDecks = async (req, res, next) => {
   }
 };
 
-module.exports.addStudyHistory = async (req, res, next) => {
+module.exports.addSavedDeck = async (req, res, next) => {
   try {
-    await Joi.validate(req, userSchemas.setStudyHistory, { allowUnknown: true });
-    const user = await User.findOne({ _id: req.user }).select("+study_history");
-    const { date } = req.body;
-    const { study_history = [] } = user;
+    await Joi.validate(req.body, userSchemas.addSavedDeck);
 
-    const history = [...study_history, moment(date).format()].filter(
-      (elem, pos, arr) => arr.indexOf(elem) === pos,
-    );
+    const { deck } = req.body;
 
-    const newUser = await User.findOneAndUpdate(
+    const user = await User.findOneAndUpdate(
       { _id: req.user },
-      { study_history: history },
-    ).select("+study_history");
+      { $addToSet: { saved_decks: deck } },
+      { new: true },
+    ).select("+saved_decks");
 
-    res.send(newUser.study_history);
+    res.send(user.saved_decks);
   } catch (error) {
     next(error);
   }
 };
 
-module.exports.getStudyHistory = async (req, res, next) => {
+module.exports.removeSavedDeck = async (req, res, next) => {
   try {
-    const user = await User.findOne({ _id: req.user }).select("+study_history");
+    await Joi.validate(req.body, userSchemas.removeSavedDeck);
 
-    res.send(user.study_history);
+    const { deck } = req.body;
+
+    const user = await User.findOneAndUpdate(
+      { _id: req.user },
+      { $pull: { saved_decks: deck } },
+      { new: true },
+    ).select("+saved_decks");
+
+    res.send(user.saved_decks);
+  } catch (error) {
+    next(error);
+  }
+};
+
+module.exports.addStudySession = async (req, res, next) => {
+  try {
+    await Joi.validate(req.body, userSchemas.addStudySession);
+
+    const { date } = req.body;
+
+    const user = await User.findOneAndUpdate(
+      { _id: req.user },
+      { $addToSet: { study_sessions: moment(date).format() } },
+      { new: true },
+    ).select("+study_sessions");
+
+    res.send(user.study_sessions);
+  } catch (error) {
+    next(error);
+  }
+};
+
+module.exports.getStudySessions = async (req, res, next) => {
+  try {
+    const user = await User.findOne({ _id: req.user }).select("+study_sessions");
+
+    res.send(user.study_sessions);
   } catch (error) {
     next(error);
   }

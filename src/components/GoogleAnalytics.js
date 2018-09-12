@@ -95,7 +95,7 @@ export function logGithubInterest() {
   });
 }
 
-export function logSaveDeckAction(isSaved, deckName) {
+export function logSaveDeckAction(deckName, isSaved) {
   ReactGA.event({
     category: "User",
     action: !isSaved ? "Saved a deck" : "Unsaved a deck",

@@ -3,7 +3,7 @@ import pluralize from "pluralize";
 import moment from "moment";
 
 import * as api from "../apiActions";
-import * as utils from "../utils/studyProgress";
+import * as localStorage from "../utils/localStorage";
 import isAuthenticated from "../utils/isAuthenticated";
 
 const PAST_WEEK = [...new Array(7)];
@@ -35,7 +35,7 @@ const DateColumn = ({ index, sessions }) => {
 };
 
 class HabitTracker extends Component {
-  state = { sessions: [] };
+  state = { sessions: [], isError: false };
 
   componentDidMount() {
     this.fetchStudySessions();
@@ -44,18 +44,35 @@ class HabitTracker extends Component {
   fetchStudySessions = () => {
     if (isAuthenticated()) {
       api
-        .fetchStudyHistory()
+        .fetchStudySessions()
         .then(
           response => this.setState({ sessions: response.data }),
-          error => console.error(error),
+          error => this.handleError(error),
         );
     } else {
-      this.setState({ sessions: utils.getStudyHistory() });
+      this.setState({ sessions: localStorage.getStudySessions() });
     }
   };
 
+  handleError = error => {
+    console.error(error);
+    this.setState({ isError: true });
+  };
+
   render() {
-    const { sessions } = this.state;
+    const { sessions, isError } = this.state;
+
+    if (isError) {
+      return (
+        <div className="container container--narrow px-0">
+          <div className="text-center p-4">
+            <h1 className="text-dark">Unable to load request</h1>
+            <p>Please try again or go back home.</p>
+          </div>
+        </div>
+      );
+    }
+
     const daysThisWeek = sessions.filter(el => moment(el).isAfter(moment().subtract(7, "days")));
 
     return (

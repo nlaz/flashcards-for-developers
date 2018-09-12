@@ -2,10 +2,11 @@ import React, { Component } from "react";
 import queryString from "query-string";
 
 import config from "../../config";
+import isAuthenticated from "../utils/isAuthenticated";
 import * as api from "../apiActions";
 import * as analytics from "../../components/GoogleAnalytics";
-import * as localStorage from "../utils/savedDecks";
-import isAuthenticated from "../utils/isAuthenticated";
+import * as localStorage from "../utils/localStorage";
+
 import Octicon from "../../components/Octicon";
 import SkillProgress from "./SkillProgress";
 import HabitTracker from "./HabitTracker";
@@ -24,12 +25,12 @@ class Decks extends Component {
     isError: false,
     activeTab: TABS.ALL,
     savedDecks: [],
+    studyProgress: [],
   };
 
   componentWillMount() {
     document.title = "Flashcards for Developers";
     const searchParams = queryString.parse(this.props.location.search);
-    const authenticated = isAuthenticated();
 
     if (searchParams.beta) {
       this.fetchDecks();
@@ -37,19 +38,17 @@ class Decks extends Component {
       this.fetchCollection(HOMEPAGE_COLLECTION_ID);
     }
 
-    if (authenticated) {
-      this.fetchSavedDecks();
-    } else {
-      this.setState({ savedDecks: localStorage.getSavedDecks() });
-    }
+    this.fetchSavedDecks();
+    this.fetchStudyProgress();
   }
 
   onToggleSave = (event, deck) => {
     event.preventDefault();
+    const isSaved = this.isSaved(deck.id);
 
-    analytics.logSaveDeckAction(this.isSaved(deck.id), deck.name);
+    analytics.logSaveDeckAction(deck.name, isSaved);
 
-    this.saveDeck(deck);
+    this.saveDeck(deck, isSaved);
   };
 
   sortDecks = decks => [...decks].sort((a, b) => b.new - a.new);
@@ -70,33 +69,45 @@ class Decks extends Component {
   };
 
   fetchSavedDecks = () => {
-    api.fetchSavedDecks().then(response => {
-      this.setState({ savedDecks: response.data });
-    });
-  };
-
-  saveDeck = deck => {
-    const savedDecks = this.isSaved(deck.id)
-      ? this.state.savedDecks.filter(el => el !== deck.id)
-      : [...this.state.savedDecks, deck.id];
-
     if (isAuthenticated()) {
-      api
-        .setSavedDecks(savedDecks)
-        .then(response =>
-          this.setState({ savedDecks }, () => localStorage.setSavedDecks(savedDecks)),
-        )
-        .catch(error => console.log(error));
+      api.fetchSavedDecks().then(({ data }) => {
+        this.setState({ savedDecks: data });
+      });
     } else {
-      this.setState({ savedDecks }, () => localStorage.setSavedDecks(savedDecks));
+      this.setState({ savedDecks: localStorage.getSavedDecks() });
     }
   };
 
+  fetchStudyProgress = () => {
+    if (isAuthenticated()) {
+      api
+        .fetchStudyProgress()
+        .then(response => this.setState({ studyProgress: response.data }))
+        .catch(this.handleError);
+    } else {
+      this.setState({ studyProgress: localStorage.getStudyProgress() });
+    }
+  };
+
+  saveDeck = (deck, isSaved) => {
+    if (isAuthenticated()) {
+      api
+        .toggleSavedDeck(deck.id, isSaved)
+        .then(response => this.setState({ savedDecks: response.data }))
+        .catch(this.handleError);
+    } else {
+      this.setState({ savedDecks: localStorage.toggleSavedDeck(deck.id, isSaved) });
+    }
+  };
+
+  handleError = error => console.error(error);
+
   isSaved = id => this.state.savedDecks.includes(id);
+  getDeckProgress = id => this.state.studyProgress.find(el => el.deck === id);
 
   render() {
     const { location } = this.props;
-    const { decks, isLoading, isError, savedDecks, activeTab } = this.state;
+    const { decks, isLoading, isError, savedDecks, studyProgress, activeTab } = this.state;
 
     if (isLoading) {
       return (
@@ -139,7 +150,11 @@ class Decks extends Component {
             className="bg-light rounded p-3 mb-2 border border-secondary d-flex align-items-center"
             style={{ minWidth: "260px", minHeight: "90px" }}
           >
-            {activeTab === TABS.USER ? <SkillProgress decks={filteredDecks} /> : <HabitTracker />}
+            {activeTab === TABS.USER ? (
+              <SkillProgress decks={filteredDecks} studyProgress={studyProgress} />
+            ) : (
+              <HabitTracker />
+            )}
           </div>
         </div>
         <div className="d-flex mx-2">
@@ -172,6 +187,7 @@ class Decks extends Component {
             {filteredDecks.map(deck => (
               <DeckItem
                 deck={deck}
+                deckProgress={this.getDeckProgress(deck.id)}
                 key={deck.id}
                 location={location}
                 isSaved={this.isSaved(deck.id)}

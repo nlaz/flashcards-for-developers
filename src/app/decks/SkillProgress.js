@@ -2,24 +2,36 @@ import React from "react";
 import pluralize from "pluralize";
 import { Cell, PieChart, Pie, Label } from "recharts";
 
-import { getStudyProgress, getStudyProficiency } from "../utils/studyProgress";
+import * as utils from "../utils/studyProgress";
 
-const SkillProgress = ({ decks }) => {
-  const progress = Math.round(
-    decks.reduce((avg, el) => avg + getStudyProgress(el) * 100, 0) / decks.length,
+const SkillProgress = ({ decks, studyProgress }) => {
+  const avgProgress = Math.round(
+    decks.reduce((avg, deck) => {
+      const deckObj = studyProgress.find(el => el.deck === deck.id);
+      const progress = utils.calcStudyProgress(deck, deckObj);
+      return avg + progress * 100;
+    }, 0) / decks.length,
   );
-  const numPractices = decks.filter(el => getStudyProgress(el) > 0).length;
 
-  const proficiency =
-    decks.reduce((avg, el) => {
-      return getStudyProgress(el) > 0 ? avg + getStudyProficiency(el) : avg;
+  const numPractices = decks.filter(deck => {
+    const deckObj = studyProgress.find(el => el.deck === deck.id);
+    const progress = utils.calcStudyProgress(deck, deckObj);
+    return progress > 0;
+  }).length;
+
+  const avgProficiency =
+    decks.reduce((avg, deck) => {
+      const deckObj = studyProgress.find(el => el.deck === deck.id);
+      const progress = utils.calcStudyProgress(deck, deckObj);
+      const proficiency = utils.calcStudyProficiency(deck, deckObj);
+      return progress > 0 ? avg + proficiency : avg;
     }, 0.0) / numPractices;
 
-  const subProgress = progress * proficiency || 0;
+  const subProgress = avgProgress * avgProficiency || 0;
 
   const progressData = [
-    { name: "Offset", value: 100 - progress || 1 },
-    { name: "Progress", value: progress - subProgress },
+    { name: "Offset", value: 100 - avgProgress || 0.01 },
+    { name: "Progress", value: avgProgress - subProgress },
     { name: "Proficiency", value: subProgress },
   ];
 

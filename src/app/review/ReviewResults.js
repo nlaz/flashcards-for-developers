@@ -3,24 +3,28 @@ import { Link } from "react-router-dom";
 import { ResponsiveContainer, Cell, PieChart, Pie, Tooltip, Legend, Label } from "recharts";
 
 import * as leitner from "../../spaced/leitner";
-import * as utils from "../utils/studyProgress";
 
-const ReviewResults = ({ deck, index, cards, location, numCorrect, numIncorrect, onKeepGoing }) => {
+const ReviewResults = ({
+  index,
+  cards,
+  location,
+  numCorrect,
+  numIncorrect,
+  cardProgress,
+  onKeepGoing,
+}) => {
   const progressData = [
     { name: "Practiced", value: index || 1 },
     { name: "Not started", value: cards.length - index },
   ];
 
-  const progress = Math.round(100 * index / cards.length) || 100;
+  const progress = Math.round((100 * index) / cards.length) || 100;
   const isCompleted = index > cards.length - 1;
-  const studyObj = utils.getDeckStudyObject(deck.id);
-  const studiedCards = studyObj.cards || {};
 
   const daysUntilDeckProgressIsExpired =
-    Object.keys(studiedCards).reduce((avg, el) => {
-      const cardObj = studiedCards[el];
+    cardProgress.reduce((avg, cardObj) => {
       return leitner.getDaysUntilExpired(cardObj.leitnerBox, cardObj.reviewedA) + avg;
-    }, 0) / Object.keys(studiedCards).length;
+    }, 0) / cardProgress.length;
 
   return (
     <div className="w-100">

@@ -2,15 +2,21 @@ const Joi = require("joi");
 Joi.objectId = require("joi-objectid")(Joi);
 
 module.exports = {
-  githubUser: {
+  getGithubUser: {
     code: Joi.string().required(),
   },
-  setSavedDecks: {
-    decks: Joi.array().items(Joi.objectId()),
+  addSavedDeck: {
+    deck: Joi.objectId().required(),
   },
-  setStudyHistory: {
-    body: Joi.object().keys({
-      date: Joi.string().required(),
-    }),
+  removeSavedDeck: {
+    deck: Joi.objectId().required(),
+  },
+  addStudySession: {
+    date: Joi.string().required(),
+  },
+  addDeckStudyProgress: {
+    card: Joi.objectId().required(),
+    reviewedAt: Joi.string().required(),
+    isCorrect: Joi.boolean(),
   },
 };
