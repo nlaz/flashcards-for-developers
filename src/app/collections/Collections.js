@@ -43,19 +43,9 @@ class Decks extends Component {
   fetchCollection = id => {
     api.fetchCollection(id).then(
       ({ data }) => {
-        this.setState({ collection: data });
-        this.fetchDecks(data);
+        this.setState({ collection: data, decks: this.sortDecks(data.decks), isLoading: false });
       },
       error => console.error(error),
-    );
-  };
-
-  fetchDecks = collection => {
-    api.fetchDecks(collection.id).then(
-      ({ data }) => {
-        this.setState({ decks: this.sortDecks(data), isLoading: false });
-      },
-      error => this.setState({ isError: true, isLoading: false }),
     );
   };
 
@@ -126,57 +116,55 @@ class Decks extends Component {
     }
 
     return (
-      <div>
-        <div className="container container--full px-4 my-5">
-          <div className="d-flex flex-column flex-lg-row justify-content-between align-items-lg-center">
-            <div className="mb-3">
-              <h1 className="m-0">{collection.name}</h1>
-              <p className="m-0">{collection.description}</p>
+      <div className="container container--full px-4 my-5">
+        <div className="d-flex flex-column flex-lg-row justify-content-between align-items-lg-center">
+          <div className="mb-3">
+            <h1 className="m-0">{collection.name}</h1>
+            <p className="m-0">{collection.description}</p>
+          </div>
+          <div
+            className="bg-light rounded p-3 mb-2 border border-secondary d-flex align-items-center"
+            style={{ minWidth: "260px", minHeight: "90px" }}
+          >
+            <SkillProgress decks={decks} studyProgress={studyProgress} />
+          </div>
+        </div>
+        {decks.length > 0 ? (
+          <div className="row pt-4">
+            {decks.map(deck => (
+              <DeckItem
+                deck={deck}
+                deckProgress={this.getDeckProgress(deck.id)}
+                key={deck.id}
+                location={location}
+                isSaved={this.isSaved(deck.id)}
+                onToggleSave={this.onToggleSave}
+              />
+            ))}
+          </div>
+        ) : (
+          <div className="w-100 text-center my-5 pb-5" style={{ minHeight: "30vh" }}>
+            <div className="h4" style={{ opacity: 0.8 }}>
+              This collection is currently empty.
             </div>
-            <div
-              className="bg-light rounded p-3 mb-2 border border-secondary d-flex align-items-center"
-              style={{ minWidth: "260px", minHeight: "90px" }}
-            >
-              <SkillProgress decks={decks} studyProgress={studyProgress} />
+            <div className="mb-4">Let us know what topics you want to see.</div>
+            <div className="row d-flex justify-content-center mt-2 mb-5">
+              <a
+                className="text-dark d-flex align-items-center btn btn-outline-dark px-4"
+                href={config.airtableSuggestionsUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                style={{ borderRadius: "999px" }}
+              >
+                <Octicon className="d-flex mr-2" name="plus" />
+                <span>Suggest a deck</span>
+              </a>
             </div>
           </div>
-          {decks.length > 0 ? (
-            <div className="row pt-4">
-              {decks.map(deck => (
-                <DeckItem
-                  deck={deck}
-                  deckProgress={this.getDeckProgress(deck.id)}
-                  key={deck.id}
-                  location={location}
-                  isSaved={this.isSaved(deck.id)}
-                  onToggleSave={this.onToggleSave}
-                />
-              ))}
-            </div>
-          ) : (
-            <div className="w-100 text-center my-5 pb-5" style={{ minHeight: "30vh" }}>
-              <div className="h4" style={{ opacity: 0.8 }}>
-                This collection is currently empty.
-              </div>
-              <div className="mb-4">Let us know what topics you want to see.</div>
-              <div className="row d-flex justify-content-center mt-2 mb-5">
-                <a
-                  className="text-dark d-flex align-items-center btn btn-outline-dark px-4"
-                  href={config.airtableSuggestionsUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  style={{ borderRadius: "999px" }}
-                >
-                  <Octicon className="d-flex mr-2" name="plus" />
-                  <span>Suggest a deck</span>
-                </a>
-              </div>
-            </div>
-          )}
-          <div className="row mt-5">
-            <div className="col-md-10 offset-md-1 col-lg-8 offset-lg-2 mt-5">
-              <FeedbackForm />
-            </div>
+        )}
+        <div className="row mt-5">
+          <div className="col-md-10 offset-md-1 col-lg-8 offset-lg-2 mt-5">
+            <FeedbackForm />
           </div>
         </div>
       </div>

@@ -5,7 +5,7 @@ const CollectionSchema = new mongoose.Schema(
     name: String,
     description: String,
     airtableId: { type: String, index: true },
-    decks: [{ type: mongoose.Schema.Types.ObjectId, ref: "Deck" }],
+    decks: { type: [{ type: mongoose.Schema.Types.ObjectId, ref: "Deck" }], select: false },
   },
   {
     timestamps: true,

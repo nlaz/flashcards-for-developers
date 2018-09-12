@@ -170,6 +170,16 @@ a[disabled] {
   background: #eeeeee;
 }
 
+.collection-item {
+  height: 100px;
+}
+
+@media (min-width: 992px) {
+  .collection-item {
+    height: 175px;
+  }
+}
+
 .text-underline {
   text-decoration: underline;
 }
