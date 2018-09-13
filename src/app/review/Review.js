@@ -143,6 +143,10 @@ class Review extends Component {
     this.setState({ page: this.state.page + 1 });
   };
 
+  onGoBack = () => {
+    this.props.history.goBack();
+  };
+
   onSRSToggle = value => {
     const { deck } = this.state;
     analytics.logToggleFamiliarCards(value);
@@ -476,6 +480,7 @@ class Review extends Component {
                       numIncorrect={this.state.numIncorrect}
                       cardProgress={this.state.cardProgress}
                       onKeepGoing={this.onKeepGoing}
+                      onGoBack={this.onGoBack}
                     />
                   )}
                 </div>

@@ -12,6 +12,7 @@ const ReviewResults = ({
   numIncorrect,
   cardProgress,
   onKeepGoing,
+  onGoBack,
 }) => {
   const progressData = [
     { name: "Practiced", value: index || 1 },
@@ -110,12 +111,9 @@ const ReviewResults = ({
       <div className="progress-review-buttons d-flex justify-content-center">
         {!isCompleted ? (
           <div>
-            <Link
-              to={{ pathname: "/", search: location.search }}
-              className="btn btn-outline-dark mr-2 mb-2"
-            >
+            <button className="btn btn-outline-dark mr-2 mb-2" onClick={onGoBack}>
               Go back
-            </Link>
+            </button>
             <button className="btn btn-dark mb-2" onClick={onKeepGoing}>
               Press space to continue
             </button>
