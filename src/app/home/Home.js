@@ -215,9 +215,7 @@ class Decks extends Component {
                 <div className="d-flex justify-content-between align-items-end mb-2 mx-1">
                   <h6 className="text-uppercase m-0">
                     {trendingRow.name}
-                    <span className="icon-dark ml-1" role="img" aria-label="Sparkles">
-                      ✨
-                    </span>
+                    <i className="fa fa-fire ml-1" />
                   </h6>
                   <Link className="text-dark text-underline" to={`/collections/${trendingRow.id}`}>
                     See all

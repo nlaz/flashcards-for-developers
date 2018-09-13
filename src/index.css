@@ -261,11 +261,6 @@ a[disabled] {
   }
 }
 
-.icon-dark {
-  color: transparent;
-  text-shadow: 0 0 #212529;
-}
-
 .collection-container {
   background: #f9f9f9;
   border: 1px solid #e8e8e8;
