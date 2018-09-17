@@ -48,4 +48,8 @@ class AuthRedirect extends Component {
   }
 }
 
+AuthRedirect.defaultProps = {
+  location: {},
+};
+
 export default AuthRedirect;
