@@ -72,8 +72,10 @@ class Review extends Component {
 
   componentDidMount() {
     const { params } = this.props.match;
-    this.fetchDeck(params.deckId);
-    this.fetchDeckProgress(params.deckId);
+    if (params.deckId) {
+      this.fetchDeck(params.deckId);
+      this.fetchDeckProgress(params.deckId);
+    }
     window.addEventListener("keyup", e => this.onKeyUp(e));
     window.addEventListener("keydown", e => this.onKeyDown(e));
   }
@@ -505,5 +507,9 @@ class Review extends Component {
     );
   }
 }
+
+Review.defaultProps = {
+  match: { params: {} },
+};
 
 export default Review;
