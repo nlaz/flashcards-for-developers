@@ -3,6 +3,18 @@ import moment from "moment";
 const SESSIONS_KEY = "sessions";
 const SAVED_DECKS_KEY = "savedDecks";
 const STUDY_PROGRESS_KEY = "studyProgress";
+const PREFS_USE_SRS_KEY = "prefsUseSRS";
+const DEFAULT_SRS_PREF = true;
+
+/* Preferences localStorage helpers */
+export const setSRSPref = value => {
+  localStorage.setItem(PREFS_USE_SRS_KEY, JSON.stringify(value));
+};
+
+export const getSRSPref = () => {
+  const pref = JSON.parse(localStorage.getItem(PREFS_USE_SRS_KEY));
+  return pref !== null ? pref : DEFAULT_SRS_PREF;
+};
 
 /* Study sessions localStorage helpers */
 export const getStudySessions = () => {

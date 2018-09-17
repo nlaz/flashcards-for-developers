@@ -12,4 +12,8 @@ const CollectionItem = ({ collection }) => (
   </div>
 );
 
+CollectionItem.defaultProps = {
+  collection: {},
+};
+
 export default CollectionItem;
