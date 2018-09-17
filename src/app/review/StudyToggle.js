@@ -1,19 +1,19 @@
 import React from "react";
 import Tooltip from "rc-tooltip";
 
-import * as preferences from "../utils/preferences";
+import * as localStorage from "../utils/localStorage";
 import Toggle from "../../components/Toggle";
 
 class StudyToggle extends React.Component {
   state = { isChecked: true };
 
   componentDidMount() {
-    this.setState({ isChecked: preferences.getSRSPref() });
+    this.setState({ isChecked: localStorage.getSRSPref() });
   }
 
   onChange = () => {
     this.setState({ isChecked: !this.state.isChecked }, () => {
-      preferences.setSRSPref(this.state.isChecked);
+      localStorage.setSRSPref(this.state.isChecked);
       this.props.onChange(this.state.isChecked);
     });
   };
