@@ -11,7 +11,7 @@ import SkillProgress from "../home/SkillProgress";
 import FeedbackForm from "../home/FeedbackForm";
 import DeckItem from "../home/DeckItem";
 
-class Decks extends Component {
+class Collections extends Component {
   state = {
     collection: {},
     decks: [],
@@ -22,9 +22,11 @@ class Decks extends Component {
   };
 
   componentWillMount() {
-    const { collectionId } = this.props.match.params;
-    this.fetchCollection(collectionId);
+    const { params } = this.props.match;
 
+    if (params.collectionId) {
+      this.fetchCollection(params.collectionId);
+    }
     this.fetchSavedDecks();
     this.fetchStudyProgress();
   }
@@ -172,4 +174,8 @@ class Decks extends Component {
   }
 }
 
-export default Decks;
+Collections.defaultProps = {
+  match: { params: {} },
+};
+
+export default Collections;

@@ -10,13 +10,12 @@ const isAuthenticated = () => {
 
   // checks if token is malformed
   try {
-    jwt.decode(token);
+    return jwt.decode(token) !== null;
   } catch (error) {
     cookie.remove("token");
     cookie.remove("user");
     return false;
   }
-  return true;
 };
 
 export default isAuthenticated;

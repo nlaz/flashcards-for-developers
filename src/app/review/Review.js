@@ -8,7 +8,6 @@ import config from "../../config";
 import isAuthenticated from "../utils/isAuthenticated";
 import * as leitner from "../../spaced/leitner";
 import * as api from "../apiActions";
-import * as preferences from "../utils/preferences";
 import * as localStorage from "../utils/localStorage";
 import * as studyProgress from "../utils/studyProgress";
 import * as analytics from "../../components/GoogleAnalytics";
@@ -72,8 +71,10 @@ class Review extends Component {
 
   componentDidMount() {
     const { params } = this.props.match;
-    this.fetchDeck(params.deckId);
-    this.fetchDeckProgress(params.deckId);
+    if (params.deckId) {
+      this.fetchDeck(params.deckId);
+      this.fetchDeckProgress(params.deckId);
+    }
     window.addEventListener("keyup", e => this.onKeyUp(e));
     window.addEventListener("keydown", e => this.onKeyDown(e));
   }
@@ -243,7 +244,7 @@ class Review extends Component {
     const { index } = this.state;
     api.fetchCards(deck.id).then(
       ({ data }) => {
-        const isSRS = preferences.getSRSPref();
+        const isSRS = localStorage.getSRSPref();
         const filteredCards = isSRS ? this.filterExpiredCards(data) : data;
         const cards = chance.shuffle(filteredCards);
         const options = this.getOptions(index, cards);
@@ -505,5 +506,9 @@ class Review extends Component {
     );
   }
 }
+
+Review.defaultProps = {
+  match: { params: {} },
+};
 
 export default Review;

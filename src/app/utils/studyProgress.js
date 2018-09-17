@@ -25,10 +25,10 @@ export const calcUpdatedLevel = (cardObj, isCorrect) => {
 export const calcStudyProgress = (deck = {}, deckProgressObj = {}) => {
   const numStudiedCards = (deckProgressObj.cards || []).length;
   const numTotalCards = (deck.cards || []).length;
-  return numStudiedCards / numTotalCards || 0;
+  return Math.min(numStudiedCards / numTotalCards, 1) || 0;
 };
 
-export const calcStudyProficiency = (deck = {}, deckProgressObj = {}) => {
+export const calcStudyProficiency = (deckProgressObj = {}) => {
   const cardsObj = deckProgressObj.cards || {};
   const numStudiedCards = Object.keys(cardsObj).length;
 

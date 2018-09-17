@@ -23,7 +23,7 @@ const SkillProgress = ({ decks, studyProgress }) => {
     decks.reduce((avg, deck) => {
       const deckObj = studyProgress.find(el => el.deck === deck.id);
       const progress = utils.calcStudyProgress(deck, deckObj);
-      const proficiency = utils.calcStudyProficiency(deck, deckObj);
+      const proficiency = utils.calcStudyProficiency(deckObj);
       return progress > 0 ? avg + proficiency : avg;
     }, 0.0) / numPractices;
 
