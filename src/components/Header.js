@@ -24,15 +24,22 @@ const Header = ({ location }) => {
   const user = authenticated ? JSON.parse(cookie.get("user")) : {};
   const isHomePage = location.pathname === "/";
 
-  const tooltip = (
-    <Link
-      className="bg-light text-secondary"
-      onClick={() => analytics.logUserAction("Clicked 'Logout'")}
-      to="/logout"
-    >
-      Logout
-    </Link>
-  );
+  const tooltip = [
+    <div className="tooltip-item">
+      <Link className="text-secondary" to="/collections/saved">
+        My Saved Decks
+      </Link>
+    </div>,
+    <div className="tooltip-item">
+      <Link
+        className="text-secondary"
+        onClick={() => analytics.logUserAction("Clicked 'Logout'")}
+        to="/logout"
+      >
+        Logout
+      </Link>
+    </div>,
+  ];
 
   return (
     <div className="header">
