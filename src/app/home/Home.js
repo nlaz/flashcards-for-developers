@@ -98,7 +98,9 @@ class Decks extends Component {
   fetchCollections = () => {
     api
       .fetchCollections()
-      .then(response => this.setState({ collections: response.data }))
+      .then(({ data }) => {
+        this.setState({ collections: [{ name: "Saved Decks", id: "saved" }, ...data] });
+      })
       .catch(this.handleError);
   };
 
