@@ -24,10 +24,13 @@ class Collections extends Component {
   componentWillMount() {
     const { params } = this.props.match;
 
-    if (params.collectionId) {
+    if (this.isSavedDecksPage()) {
+      this.fetchSavedDecksCollection();
+    } else {
+      this.fetchSavedDecks();
       this.fetchCollection(params.collectionId);
     }
-    this.fetchSavedDecks();
+
     this.fetchStudyProgress();
   }
 
@@ -61,6 +64,17 @@ class Collections extends Component {
     }
   };
 
+  fetchSavedDecksCollection = () => {
+    api.fetchSavedDecks().then(({ data }) => {
+      this.setState({
+        savedDecks: data,
+        collection: { name: "Saved Decks" },
+        decks: this.sortDecks(data),
+        isLoading: false,
+      });
+    });
+  };
+
   fetchStudyProgress = () => {
     if (isAuthenticated()) {
       api
@@ -73,17 +87,21 @@ class Collections extends Component {
   };
 
   saveDeck = (deck, isSaved) => {
+    const { decks } = this.state;
     if (isAuthenticated()) {
       api
         .toggleSavedDeck(deck.id, isSaved)
-        .then(response => this.setState({ savedDecks: response.data }))
+        .then(({ data }) =>
+          this.setState({ savedDecks: data, decks: this.isSavedDecksPage() ? data : decks }),
+        )
         .catch(this.handleError);
     } else {
       this.setState({ savedDecks: localStorage.toggleSavedDeck(deck.id, isSaved) });
     }
   };
 
-  isSaved = id => this.state.savedDecks.includes(id);
+  isSaved = id => this.state.savedDecks.find(el => el.id === id);
+  isSavedDecksPage = () => this.props.match.params.collectionId === "saved";
   getDeckProgress = id => this.state.studyProgress.find(el => el.deck === id);
 
   render() {
@@ -117,12 +135,13 @@ class Collections extends Component {
       );
     }
 
+    console.log(this.state.savedDecks);
     return (
       <div className="container container--full px-4 my-5">
-        <div className="d-flex flex-column flex-lg-row justify-content-between align-items-lg-end">
-          <div className="m-0">
+        <div className="d-flex flex-column-reverse flex-lg-row justify-content-between align-items-lg-end">
+          <div className="m-0 my-3">
             <h1 className="m-0">{collection.name}</h1>
-            {collection.description && <p className="m-0 mb-3">{collection.description}</p>}
+            {collection.description && <p className="m-0">{collection.description}</p>}
           </div>
           <div
             className="bg-light rounded p-3 mb-2 border border-secondary d-flex align-items-center"
