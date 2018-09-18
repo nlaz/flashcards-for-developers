@@ -6,7 +6,13 @@ export const githubUser = code => {
   return axios.post("/auth/github", { code });
 };
 
-export const fetchCollections = searchStr => {
+export const fetchCollections = collectionIds => {
+  const config = { headers: { Authorization: cookie.get("token") } };
+  const params = collectionIds ? `?${queryString.stringify({ collections: collectionIds })}` : "";
+  return axios.get(`/api/collections${params}`, config);
+};
+
+export const searchCollections = searchStr => {
   const config = { headers: { Authorization: cookie.get("token") } };
   const params = searchStr ? `?${queryString.stringify({ search: searchStr })}` : "";
   return axios.get(`/api/collections${params}`, config);
