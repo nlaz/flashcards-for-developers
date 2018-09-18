@@ -57,6 +57,9 @@ module.exports.getGithubUser = async (req, res, next) => {
 module.exports.createGithubUser = async (req, res, next) => {
   try {
     const { email, name, avatar_url, github_id } = req.body;
+
+    await Joi.validate(req.body, userSchemas.createGithubUser);
+
     const user = await User.create({ email, name, avatar_url, github_id });
 
     const token = jwt.sign(

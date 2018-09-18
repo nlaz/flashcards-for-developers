@@ -5,6 +5,12 @@ module.exports = {
   getGithubUser: {
     code: Joi.string().required(),
   },
+  createGithubUser: {
+    email: Joi.string().required(),
+    name: Joi.string().required(),
+    avatar_url: Joi.string(),
+    github_id: Joi.number().required(),
+  },
   addSavedDeck: {
     deck: Joi.objectId().required(),
   },
