@@ -220,7 +220,7 @@ a[disabled] {
   border-bottom: 1px solid #e9ecef;
 }
 
-.header-login img {
+.header-login .header-image {
   width: 40px;
   height: 40px;
 }

@@ -21,6 +21,18 @@ const LogoutTooltip = () => (
   </Link>
 );
 
+const PlaceholderImage = () => (
+  <div className="header-image d-flex align-items-center justify-content-center rounded rounded-circle bg-primary">
+    <span
+      role="img"
+      aria-label="Placeholder profile image"
+      style={{ marginRight: "3.5px", marginTop: "1px" }}
+    >
+      🐤
+    </span>
+  </div>
+);
+
 class Header extends Component {
   state = { showModal: false };
 
@@ -77,11 +89,17 @@ class Header extends Component {
                   overlay={<LogoutTooltip />}
                   id="header-logout"
                 >
-                  <img
-                    src={user.avatar_url}
-                    alt="User profile"
-                    className="rounded rounded-circle"
-                  />
+                  <div>
+                    {user.avatar_url ? (
+                      <img
+                        className="header-image rounded rounded-circle"
+                        src={user.avatar_url}
+                        alt="User profile"
+                      />
+                    ) : (
+                      <PlaceholderImage />
+                    )}
+                  </div>
                 </Tooltip>
               ) : (
                 <button
