@@ -19,6 +19,10 @@ h1 {
 .btn {
   cursor: pointer;
 }
+.btn-reset {
+  background: none;
+  border: none;
+}
 
 .container--narrow {
   max-width: 960px;
@@ -286,4 +290,40 @@ a[disabled] {
     margin-right: -40px;
     margin-left: -40px;
   }
+}
+
+.loginModal {
+  left: 0;
+  right: 0;
+  top: 20px;
+  bottom: 20px;
+  margin-left: auto;
+  margin-right: auto;
+  padding: auto;
+  background-color: white;
+  border-radius: 4px;
+  position: absolute;
+  max-width: 600px;
+}
+
+@media (min-width: 576px) {
+  .loginModal {
+    top: 200px;
+    bottom: auto;
+  }
+}
+
+.loginModal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.75);
+}
+
+.loginModal-close {
+  position: absolute;
+  top: 8px;
+  right: 12px;
 }
