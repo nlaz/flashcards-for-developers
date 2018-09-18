@@ -2,8 +2,12 @@ import axios from "axios";
 import cookie from "js-cookie";
 import queryString from "query-string";
 
-export const githubUser = code => {
-  return axios.post("/auth/github", { code });
+export const loginGithubUser = code => {
+  return axios.post("/auth/github/login", { code });
+};
+
+export const registerGithubUser = profile => {
+  return axios.post("/auth/github/register", { ...profile });
 };
 
 export const fetchCollections = searchStr => {

@@ -7,7 +7,7 @@ import * as api from "../apiActions";
 import SignupFormModal from "./SignupFormModal";
 
 class AuthRedirect extends Component {
-  state = { user: {}, showModal: true };
+  state = { user: {}, profile: {}, showModal: false };
 
   componentDidMount() {
     const { location } = this.props;
@@ -20,7 +20,7 @@ class AuthRedirect extends Component {
   }
 
   fetchUser = code => {
-    api.githubUser(code).then(
+    api.loginGithubUser(code).then(
       response => {
         const token = response.headers.authorization.split(" ")[1];
         cookie.set("token", token);
@@ -28,17 +28,25 @@ class AuthRedirect extends Component {
         this.setState({ user: response.data });
       },
       error => {
-        console.log(error);
-        // this.setState({ isRedirect: true });
+        if (error.response.status === 403) {
+          const { profile } = error.response.data;
+          this.setState({ profile, showModal: true });
+        } else {
+          this.setState({ isRedirect: true });
+        }
       },
     );
   };
 
+  onCloseModal = () => this.setState({ isRedirect: true, showModal: false });
+
   render() {
-    const { user, isRedirect, showModal } = this.state;
+    const { user, profile, isRedirect, showModal } = this.state;
+
+    console.log("profile", profile);
 
     if (showModal) {
-      return <SignupFormModal />;
+      return <SignupFormModal profile={profile} onClose={this.onCloseModal} />;
     }
 
     if (!isRedirect && Object.keys(user).length === 0) {
