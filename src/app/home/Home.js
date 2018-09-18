@@ -117,7 +117,7 @@ class Decks extends Component {
 
   handleError = error => console.error(error);
 
-  isSaved = id => this.state.savedDecks.find(el => el.id === id);
+  isSaved = id => this.state.savedDecks.find(el => el.id === id || el === id);
   getDeckProgress = id => this.state.studyProgress.find(el => el.deck === id);
 
   render() {

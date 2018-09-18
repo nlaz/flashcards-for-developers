@@ -6,15 +6,21 @@ const deckSchemas = require("./validation/decks");
 
 module.exports.getDecks = async (req, res, next) => {
   try {
-    await Joi.validate(req.query, deckSchemas.getDecksQuery);
-
+    let decks;
     const collectionId = req.query.collection;
+    const deckIds = req.query.ids.split(",");
 
-    const collection = collectionId
-      ? await Collection.findOne({ _id: collectionId }).populate("decks")
-      : {};
+    await Joi.validate(req.query, deckSchemas.getDecksQuery);
+    await Joi.validate(deckIds, deckSchemas.getDecksIds);
 
-    const decks = collectionId ? collection.decks : await Deck.find();
+    if (collectionId) {
+      const collection = await Collection.findOne({ _id: collectionId }).populate("decks");
+      decks = collection.decks;
+    } else if (deckIds) {
+      decks = await Deck.find({ _id: { $in: deckIds } });
+    } else {
+      decks = await Deck.find();
+    }
 
     res.send(decks);
   } catch (error) {

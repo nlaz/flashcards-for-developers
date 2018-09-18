@@ -65,14 +65,26 @@ class Collections extends Component {
   };
 
   fetchSavedDecksCollection = () => {
-    api.fetchSavedDecks().then(({ data }) => {
-      this.setState({
-        savedDecks: data,
-        collection: { name: "Saved Decks" },
-        decks: this.sortDecks(data),
-        isLoading: false,
+    if (isAuthenticated()) {
+      api.fetchSavedDecks().then(({ data }) => {
+        this.setState({
+          savedDecks: data,
+          collection: { name: "Saved Decks" },
+          decks: this.sortDecks(data),
+          isLoading: false,
+        });
       });
-    });
+    } else {
+      const savedDecks = localStorage.getSavedDecks();
+      api.fetchDecksById(savedDecks).then(({ data }) => {
+        this.setState({
+          savedDecks: data,
+          collection: { name: "Saved Decks" },
+          decks: this.sortDecks(data),
+          isLoading: false,
+        });
+      });
+    }
   };
 
   fetchStudyProgress = () => {
@@ -100,7 +112,7 @@ class Collections extends Component {
     }
   };
 
-  isSaved = id => this.state.savedDecks.find(el => el.id === id);
+  isSaved = id => this.state.savedDecks.find(el => el.id === id || el === id);
   isSavedDecksPage = () => this.props.match.params.collectionId === "saved";
   getDeckProgress = id => this.state.studyProgress.find(el => el.deck === id);
 
@@ -135,7 +147,6 @@ class Collections extends Component {
       );
     }
 
-    console.log(this.state.savedDecks);
     return (
       <div className="container container--full px-4 my-5">
         <div className="d-flex flex-column-reverse flex-lg-row justify-content-between align-items-lg-end">
