@@ -4,9 +4,10 @@ import queryString from "query-string";
 import cookie from "js-cookie";
 
 import * as api from "../apiActions";
+import SignupFormModal from "./SignupFormModal";
 
 class AuthRedirect extends Component {
-  state = { user: {} };
+  state = { user: {}, showModal: true };
 
   componentDidMount() {
     const { location } = this.props;
@@ -28,13 +29,18 @@ class AuthRedirect extends Component {
       },
       error => {
         console.log(error);
-        this.setState({ isRedirect: true });
+        // this.setState({ isRedirect: true });
       },
     );
   };
 
   render() {
-    const { user, isRedirect } = this.state;
+    const { user, isRedirect, showModal } = this.state;
+
+    if (showModal) {
+      return <SignupFormModal />;
+    }
+
     if (!isRedirect && Object.keys(user).length === 0) {
       return (
         <div className="container my-5">
