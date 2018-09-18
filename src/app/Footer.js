@@ -2,7 +2,7 @@ import React from "react";
 import { Link } from "react-router-dom";
 
 import config from "../config";
-import * as analytics from "./GoogleAnalytics";
+import * as analytics from "../components/GoogleAnalytics";
 
 const Footer = () => (
   <div className="container mt-3 p-4" style={{ alignSelf: "flexEnd" }}>

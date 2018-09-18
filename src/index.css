@@ -306,13 +306,6 @@ a[disabled] {
   max-width: 600px;
 }
 
-@media (min-width: 576px) {
-  .loginModal {
-    top: 200px;
-    bottom: auto;
-  }
-}
-
 .loginModal-overlay {
   position: fixed;
   top: 0;
@@ -326,4 +319,23 @@ a[disabled] {
   position: absolute;
   top: 8px;
   right: 12px;
+}
+
+.loginModal-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-transform: uppercase;
+  width: 100%;
+  padding: 0.5rem 1rem;
+}
+
+@media (min-width: 576px) {
+  .loginModal {
+    top: 200px;
+    bottom: auto;
+  }
+  .loginModal-button {
+    width: auto;
+  }
 }

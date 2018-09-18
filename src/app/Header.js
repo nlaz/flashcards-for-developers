@@ -1,26 +1,15 @@
 import React, { Component } from "react";
 import { Link, withRouter } from "react-router-dom";
 import { FacebookShareButton, TwitterShareButton } from "react-share";
-import qs from "query-string";
 import cookie from "js-cookie";
 import Tooltip from "rc-tooltip";
-import Modal from "react-modal";
 
-import * as analytics from "./GoogleAnalytics";
-import config from "../config/index";
-import isAuthenticated from "../app/utils/isAuthenticated";
-import Octicon from "./Octicon";
+import * as analytics from "../components/GoogleAnalytics";
+import isAuthenticated from "./utils/isAuthenticated";
+import Octicon from "../components/Octicon";
+import LoginModal from "./auth/LoginModal";
 
 const title = "Ridiculously helpful collection of flashcards for developers ";
-
-const GITHUB_PARAMS = qs.stringify({
-  client_id: config.githubOAuthClientId,
-  redirect_uri: config.githubOAuthRedirectURI,
-});
-
-const GITHUB_OAUTH_URL = `https://github.com/login/oauth/authorize?${GITHUB_PARAMS}`;
-
-Modal.setAppElement("#root");
 
 const LogoutTooltip = () => (
   <Link
@@ -32,41 +21,8 @@ const LogoutTooltip = () => (
   </Link>
 );
 
-const LoginModal = ({ isOpen, onClose }) => (
-  <Modal isOpen={isOpen} className="loginModal" overlayClassName="loginModal-overlay">
-    <button className="loginModal-close btn btn-reset p-2" onClick={onClose}>
-      <Octicon name="x" />
-    </button>
-    <div className="py-5 px-4 my-2">
-      <div className="text-center mx-auto" style={{ maxWidth: "400px" }}>
-        <h5 className="text-center mb-1">Login to Flashcards for Developers</h5>
-        <p className="text-secondary font-weight-light">
-          Sign in to save your progress and keep your favorite decks across devices.
-        </p>
-      </div>
-      <div className="d-flex justify-content-center mt-4">
-        <button
-          className="btn btn-sm btn-outline-dark text-uppercase py-2 px-3 d-flex"
-          onClick={() => analytics.logUserAction("Clicked 'Login'")}
-          href={GITHUB_OAUTH_URL}
-        >
-          <i className="fab fa-github-alt fa-lg mr-2" />
-          <small className="font-weight-bold" style={{ lineHeight: "1.3em" }}>
-            Log in with GitHub
-          </small>
-        </button>
-      </div>
-      <div className="text-center mt-2" style={{ opacity: 0.5 }}>
-        <small className="text-muted">
-          We'll never post to your account without your permission.
-        </small>
-      </div>
-    </div>
-  </Modal>
-);
-
 class Header extends Component {
-  state = { showModal: true };
+  state = { showModal: false };
 
   onToggleModal = () => this.setState({ showModal: !this.state.showModal });
 
