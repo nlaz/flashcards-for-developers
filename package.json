@@ -39,7 +39,8 @@
     "react-scripts": "1.1.4",
     "react-share": "^2.2.0",
     "react-test-renderer": "^16.5.1",
-    "recharts": "^1.0.0-beta.10"
+    "recharts": "^1.0.0-beta.10",
+    "supertest": "^3.3.0"
   },
   "scripts": {
     "start": "yarn deploy",
@@ -48,6 +49,7 @@
     "server": "NODE_ENV=development nodemon --watch server --exec 'node server/index'",
     "deploy": "yarn build && NODE_ENV=production node server/index",
     "test": "react-scripts test --env=jsdom",
+    "test:server": "node scripts/run_server_tests.js",
     "heroku-postbuild": "yarn build"
   },
   "devDependencies": {
