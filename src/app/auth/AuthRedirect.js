@@ -43,8 +43,6 @@ class AuthRedirect extends Component {
   render() {
     const { user, profile, isRedirect, showModal } = this.state;
 
-    console.log("profile", profile);
-
     if (showModal) {
       return <SignupFormModal profile={profile} onClose={this.onCloseModal} />;
     }

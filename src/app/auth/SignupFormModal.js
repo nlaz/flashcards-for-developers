@@ -8,31 +8,68 @@ import Octicon from "../../components/Octicon";
 
 Modal.setAppElement("#root");
 
+const ERRORS = { REQUIRED: "Required", INVALID: "Invalid" };
+
 class SignupFormModal extends Component {
-  state = { profile: { email: "", name: "" } };
+  state = {
+    profile: { email: "", name: "" },
+    errors: { email: undefined, name: undefined },
+  };
 
-  constructor(props) {
-    super(props);
-
-    this.state = { profile: { ...props.profile } };
+  componentDidMount() {
+    this.setState({ profile: { ...this.props.profile } });
   }
+
+  validateEmail = email => {
+    const isValid = email.match(/^([\w.%+-]+)@([\w-]+\.)+([\w]{2,})$/i);
+    const validMessage = !isValid ? ERRORS.INVALID : undefined;
+    return email.length === 0 ? ERRORS.REQUIRED : validMessage;
+  };
+
+  validateName = name => {
+    return name.length === 0 ? ERRORS.REQUIRED : undefined;
+  };
 
   onChange = e =>
     this.setState({ profile: { ...this.state.profile, [e.target.name]: e.target.value } });
 
   onSubmit = e => {
     e.preventDefault();
-    api.registerGithubUser(this.state.profile).then(response => {
-      const token = response.headers.authorization.split(" ")[1];
-      cookie.set("token", token);
-      cookie.set("user", response.data);
-      this.props.onClose();
-    });
+    const { profile, errors } = this.state;
+    const { email, name } = profile;
+
+    this.setState(
+      {
+        errors: {
+          ...errors,
+          email: this.validateEmail(email || ""),
+          name: this.validateName(name || ""),
+        },
+      },
+      () => this.signupUser(),
+    );
   };
+
+  signupUser = () => {
+    const { errors } = this.state;
+    if (!errors.email && !errors.name) {
+      api
+        .registerGithubUser(this.state.profile)
+        .then(response => {
+          const token = response.headers.authorization.split(" ")[1];
+          cookie.set("token", token);
+          cookie.set("user", response.data);
+          this.props.onClose();
+        })
+        .catch(this.handleError);
+    }
+  };
+
+  handleError = error => this.props.onClose();
 
   render() {
     const { onClose } = this.props;
-    const { profile = {} } = this.state;
+    const { profile = {}, errors = {} } = this.state;
 
     return (
       <Modal isOpen={true} className="loginModal" overlayClassName="loginModal-overlay">
@@ -49,9 +86,16 @@ class SignupFormModal extends Component {
             </h5>
             <form style={{ maxWidth: "325px" }} onSubmit={this.onSubmit}>
               <div className="form-group">
-                <label className="small font-weight-bold mb-1" style={{ opacity: 0.85 }}>
-                  Enter your full name
-                </label>
+                <div className="d-flex justify-content-between align-items-center mb-1">
+                  <label className="small font-weight-bold m-0" style={{ opacity: 0.85 }}>
+                    Enter your full name
+                  </label>
+                  {errors.name && (
+                    <small className="text-danger text-uppercase ml-2 shake--error">
+                      {errors.name}
+                    </small>
+                  )}
+                </div>
                 <input
                   type="text"
                   name="name"
@@ -62,11 +106,18 @@ class SignupFormModal extends Component {
                 />
               </div>
               <div className="form-group">
-                <label className="small font-weight-bold mb-1" style={{ opacity: 0.85 }}>
-                  Enter your email address
-                </label>
+                <div className="d-flex justify-content-between align-items-center mb-1">
+                  <label className="small font-weight-bold m-0  " style={{ opacity: 0.85 }}>
+                    Enter your email address
+                  </label>
+                  {errors.email && (
+                    <small className="text-danger text-uppercase ml-2 shake--error">
+                      {errors.email}
+                    </small>
+                  )}
+                </div>
                 <input
-                  type="email"
+                  type="text"
                   name="email"
                   className="form-control form-control-sm"
                   placeholder="you@your-domain.com"
