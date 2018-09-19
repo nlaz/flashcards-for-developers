@@ -229,7 +229,7 @@ a[disabled] {
   background: white;
   text-transform: uppercase;
   border-radius: 3px;
-  padding: 0.75em 1.25em;
+  padding: 8px 12px;
   font-weight: 500;
   color: #e8e8e8;
   border: 1px solid #e8e8e8;
@@ -290,6 +290,11 @@ a[disabled] {
     margin-right: -40px;
     margin-left: -40px;
   }
+}
+
+.rc-tooltip-content .tooltip-item {
+  padding-bottom: 6px;
+  padding-top: 6px;
 }
 
 .loginModal {
