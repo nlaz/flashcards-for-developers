@@ -78,27 +78,29 @@ class Decks extends Component {
   };
 
   fetchFeaturedCollection = () => {
-    api.fetchCollections("Featured").then(response => {
+    api.searchCollections("Featured").then(response => {
       this.setState({ featuredRow: response.data.pop() });
     });
   };
 
   fetchTrendingCollection = () => {
     api
-      .fetchCollections("Trending")
+      .searchCollections("Trending")
       .then(response => this.setState({ trendingRow: response.data.pop() }));
   };
 
   fetchNewestCollection = () => {
     api
-      .fetchCollections("Recently Added")
+      .searchCollections("Recently Added")
       .then(({ data }) => this.setState({ newestRow: data.pop() }));
   };
 
   fetchCollections = () => {
     api
       .fetchCollections()
-      .then(response => this.setState({ collections: response.data }))
+      .then(({ data }) => {
+        this.setState({ collections: [{ name: "Saved Decks", id: "saved" }, ...data] });
+      })
       .catch(this.handleError);
   };
 
@@ -115,7 +117,7 @@ class Decks extends Component {
 
   handleError = error => console.error(error);
 
-  isSaved = id => this.state.savedDecks.includes(id);
+  isSaved = id => this.state.savedDecks.find(el => el.id === id || el === id);
   getDeckProgress = id => this.state.studyProgress.find(el => el.deck === id);
 
   render() {

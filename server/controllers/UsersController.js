@@ -53,7 +53,9 @@ module.exports.getGithubUser = async (req, res, next) => {
 
 module.exports.getSavedDecks = async (req, res, next) => {
   try {
-    const user = await User.findOne({ _id: req.user }).select("+saved_decks");
+    const user = await User.findOne({ _id: req.user })
+      .select("+saved_decks")
+      .populate("saved_decks");
 
     res.send(user.saved_decks);
   } catch (error) {
@@ -71,7 +73,9 @@ module.exports.addSavedDeck = async (req, res, next) => {
       { _id: req.user },
       { $addToSet: { saved_decks: deck } },
       { new: true },
-    ).select("+saved_decks");
+    )
+      .select("+saved_decks")
+      .populate("saved_decks");
 
     res.send(user.saved_decks);
   } catch (error) {
@@ -89,7 +93,9 @@ module.exports.removeSavedDeck = async (req, res, next) => {
       { _id: req.user },
       { $pull: { saved_decks: deck } },
       { new: true },
-    ).select("+saved_decks");
+    )
+      .select("+saved_decks")
+      .populate("saved_decks");
 
     res.send(user.saved_decks);
   } catch (error) {

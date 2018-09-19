@@ -25,13 +25,22 @@ const Header = ({ location }) => {
   const isHomePage = location.pathname === "/";
 
   const tooltip = (
-    <Link
-      className="bg-light text-secondary"
-      onClick={() => analytics.logUserAction("Clicked 'Logout'")}
-      to="/logout"
-    >
-      Logout
-    </Link>
+    <div className="tooltip-content">
+      <div className="tooltip-item">
+        <Link className="text-secondary" to="/collections/saved">
+          My Saved Decks
+        </Link>
+      </div>
+      <div className="tooltip-item">
+        <Link
+          className="text-secondary"
+          onClick={() => analytics.logUserAction("Clicked 'Logout'")}
+          to="/logout"
+        >
+          Logout
+        </Link>
+      </div>
+    </div>
   );
 
   return (
