@@ -4,6 +4,7 @@ import queryString from "query-string";
 import cookie from "js-cookie";
 
 import * as api from "../apiActions";
+import * as analytics from "../../components/GoogleAnalytics";
 import SignupFormModal from "./SignupFormModal";
 
 class AuthRedirect extends Component {
@@ -22,6 +23,7 @@ class AuthRedirect extends Component {
   fetchUser = code => {
     api.loginGithubUser(code).then(
       response => {
+        analytics.logLoginAction("User logged in");
         const token = response.headers.authorization.split(" ")[1];
         cookie.set("token", token);
         cookie.set("user", response.data);
@@ -38,7 +40,10 @@ class AuthRedirect extends Component {
     );
   };
 
-  onCloseModal = () => this.setState({ isRedirect: true, showModal: false });
+  onCloseModal = () => {
+    analytics.logLoginAction("User exited sign up modal");
+    this.setState({ isRedirect: true, showModal: false });
+  };
 
   render() {
     const { user, profile, isRedirect, showModal } = this.state;

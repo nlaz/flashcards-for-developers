@@ -21,7 +21,7 @@ const LogoutTooltip = () => (
     <div className="tooltip-item">
       <Link
         className="text-secondary"
-        onClick={() => analytics.logUserAction("Clicked 'Logout'")}
+        onClick={() => analytics.logLoginAction("User logged out")}
         to="/logout"
       >
         Logout
@@ -45,7 +45,15 @@ const PlaceholderImage = () => (
 class Header extends Component {
   state = { showModal: false };
 
-  onToggleModal = () => this.setState({ showModal: !this.state.showModal });
+  onOpenModal = () => {
+    analytics.logLoginAction("User opened login modal");
+    this.setState({ showModal: true });
+  };
+
+  onCloseModal = () => {
+    analytics.logLoginAction("User exited login modal");
+    this.setState({ showModal: false });
+  };
 
   render() {
     const authenticated = isAuthenticated();
@@ -54,7 +62,7 @@ class Header extends Component {
 
     return (
       <div className="header">
-        <LoginModal isOpen={this.state.showModal} onClose={this.onToggleModal} />
+        <LoginModal isOpen={this.state.showModal} onClose={this.onCloseModal} />
         <div className="container container--full d-flex justify-content-between align-items-center py-2 w-100">
           <div>
             {!isHomePage && (
@@ -113,7 +121,7 @@ class Header extends Component {
               ) : (
                 <button
                   className="btn btn-sm btn-outline-dark d-flex px-3 py-2"
-                  onClick={this.onToggleModal}
+                  onClick={this.onOpenModal}
                 >
                   <small className="font-weight-bold">LOGIN</small>
                 </button>

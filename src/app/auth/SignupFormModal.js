@@ -5,6 +5,7 @@ import cookie from "js-cookie";
 
 import * as api from "../apiActions";
 import Octicon from "../../components/Octicon";
+import * as analytics from "../../components/GoogleAnalytics";
 
 Modal.setAppElement("#root");
 
@@ -56,6 +57,7 @@ class SignupFormModal extends Component {
       api
         .registerGithubUser(this.state.profile)
         .then(response => {
+          analytics.logLoginAction("User signed up");
           const token = response.headers.authorization.split(" ")[1];
           cookie.set("token", token);
           cookie.set("user", response.data);

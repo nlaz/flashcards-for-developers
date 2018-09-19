@@ -124,6 +124,14 @@ export function logUserAction(action) {
   });
 }
 
+export function logLoginAction(action) {
+  console.log("User login", action);
+  ReactGA.event({
+    category: "User Login",
+    action: action,
+  });
+}
+
 class GoogleAnalytics extends Component {
   componentWillMount() {
     const searchParams = queryString.parse(this.props.location.search);

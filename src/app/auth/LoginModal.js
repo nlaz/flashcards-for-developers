@@ -29,7 +29,7 @@ const LoginModal = ({ isOpen, onClose }) => (
       <div className="d-flex justify-content-center mt-4">
         <a
           className="loginModal-button btn btn-sm btn-outline-dark"
-          onClick={() => analytics.logUserAction("Clicked 'Login'")}
+          onClick={() => analytics.logLoginAction("Clicked on GitHub login button")}
           href={GITHUB_OAUTH_URL}
         >
           <i className="fab fa-github-alt fa-lg mr-2" />
