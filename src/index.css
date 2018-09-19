@@ -19,6 +19,10 @@ h1 {
 .btn {
   cursor: pointer;
 }
+.btn-reset {
+  background: none;
+  border: none;
+}
 
 .container--narrow {
   max-width: 960px;
@@ -216,7 +220,7 @@ a[disabled] {
   border-bottom: 1px solid #e9ecef;
 }
 
-.header-login img {
+.header-login .header-image {
   width: 40px;
   height: 40px;
 }
@@ -291,4 +295,52 @@ a[disabled] {
 .rc-tooltip-content .tooltip-item {
   padding-bottom: 6px;
   padding-top: 6px;
+}
+
+.loginModal {
+  left: 0;
+  right: 0;
+  top: 20px;
+  bottom: 20px;
+  margin-left: auto;
+  margin-right: auto;
+  padding: auto;
+  background-color: white;
+  border-radius: 4px;
+  position: absolute;
+  max-width: 600px;
+}
+
+.loginModal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.75);
+}
+
+.loginModal-close {
+  position: absolute;
+  top: 8px;
+  right: 12px;
+}
+
+.loginModal-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-transform: uppercase;
+  width: 100%;
+  padding: 0.5rem 1rem;
+}
+
+@media (min-width: 576px) {
+  .loginModal {
+    top: 200px;
+    bottom: auto;
+  }
+  .loginModal-button {
+    width: auto;
+  }
 }

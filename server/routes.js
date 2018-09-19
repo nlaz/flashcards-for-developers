@@ -20,7 +20,8 @@ router.get("/api/collections/:collectionId", CollectionsController.getCollection
 
 router.get("/api/cards", CardsController.getCards);
 
-router.post("/auth/github", UsersController.getGithubUser);
+router.post("/auth/github/login", UsersController.getGithubUser);
+router.post("/auth/github/register", UsersController.createGithubUser);
 
 router.get("/users/saved_decks", isAuthenticated, UsersController.getSavedDecks);
 router.put("/users/saved_decks", isAuthenticated, UsersController.addSavedDeck);

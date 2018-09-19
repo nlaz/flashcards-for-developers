@@ -8,11 +8,11 @@ import CollectionsHome from "./collections/CollectionsHome";
 import Collections from "./collections/Collections";
 import Logout from "./auth/Logout";
 import AuthRedirect from "./auth/AuthRedirect";
+import Footer from "./Footer";
+import Header from "./Header";
 
 import NotFound from "../components/NotFound";
 import GoogleAnalytics from "../components/GoogleAnalytics";
-import Footer from "../components/Footer";
-import Header from "../components/Header";
 
 class App extends Component {
   render() {

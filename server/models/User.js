@@ -3,8 +3,8 @@ const mongoose = require("mongoose");
 const UserSchema = new mongoose.Schema({
   name: { type: String, required: true },
   email: { type: String, required: true, unique: true },
+  github_id: { type: String, required: true, unique: true },
   avatar_url: { type: String },
-  github_id: { type: String },
 
   // Extensions of the user model
   saved_decks: {

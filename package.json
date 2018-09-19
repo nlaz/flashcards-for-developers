@@ -35,6 +35,7 @@
     "react-dom": "^16.4.1",
     "react-ga": "^2.5.3",
     "react-jss": "^8.5.1",
+    "react-modal": "^3.5.1",
     "react-router-dom": "^4.3.1",
     "react-scripts": "1.1.4",
     "react-share": "^2.2.0",

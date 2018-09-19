@@ -28,16 +28,39 @@ module.exports.getGithubUser = async (req, res, next) => {
     const opts = { headers: { Authorization: `token ${auth.access_token}` } };
     const { data } = await axios.get(GITHUB_USER_ROUTE, opts);
 
-    let user = await User.findOne({ email: data.email });
+    let user = await User.findOne({ github_id: data.id });
 
     if (!user) {
-      user = await User.create({
-        email: data.email,
-        name: data.name,
-        avatar_url: data.avatar_url,
-        github_id: data.id,
+      return res.status(403).json({
+        message: "User not found. Please provide required fields.",
+        profile: {
+          name: data.name,
+          email: data.email,
+          avatar_url: data.avatar_url,
+          github_id: data.id,
+        },
       });
     }
+
+    const token = jwt.sign(
+      { id: user.id, email: user.email, name: user.name },
+      config.sessionSecret,
+    );
+
+    res.set("Authorization", `Bearer ${token}`);
+    res.send(user);
+  } catch (error) {
+    next(error);
+  }
+};
+
+module.exports.createGithubUser = async (req, res, next) => {
+  try {
+    const { email, name, avatar_url, github_id } = req.body;
+
+    await Joi.validate(req.body, userSchemas.createGithubUser);
+
+    const user = await User.create({ email, name, avatar_url, github_id });
 
     const token = jwt.sign(
       { id: user.id, email: user.email, name: user.name },

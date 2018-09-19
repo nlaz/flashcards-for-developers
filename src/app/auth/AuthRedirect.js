@@ -4,9 +4,11 @@ import queryString from "query-string";
 import cookie from "js-cookie";
 
 import * as api from "../apiActions";
+import * as analytics from "../../components/GoogleAnalytics";
+import SignupFormModal from "./SignupFormModal";
 
 class AuthRedirect extends Component {
-  state = { user: {} };
+  state = { user: {}, profile: {}, showModal: false };
 
   componentDidMount() {
     const { location } = this.props;
@@ -19,22 +21,37 @@ class AuthRedirect extends Component {
   }
 
   fetchUser = code => {
-    api.githubUser(code).then(
+    api.loginGithubUser(code).then(
       response => {
+        analytics.logLoginAction("User logged in");
         const token = response.headers.authorization.split(" ")[1];
         cookie.set("token", token);
         cookie.set("user", response.data);
         this.setState({ user: response.data });
       },
       error => {
-        console.log(error);
-        this.setState({ isRedirect: true });
+        if (error.response.status === 403) {
+          const { profile } = error.response.data;
+          this.setState({ profile, showModal: true });
+        } else {
+          this.setState({ isRedirect: true });
+        }
       },
     );
   };
 
+  onCloseModal = () => {
+    analytics.logLoginAction("User exited sign up modal");
+    this.setState({ isRedirect: true, showModal: false });
+  };
+
   render() {
-    const { user, isRedirect } = this.state;
+    const { user, profile, isRedirect, showModal } = this.state;
+
+    if (showModal) {
+      return <SignupFormModal profile={profile} onClose={this.onCloseModal} />;
+    }
+
     if (!isRedirect && Object.keys(user).length === 0) {
       return (
         <div className="container my-5">
