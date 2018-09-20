@@ -125,7 +125,6 @@ export function logUserAction(action) {
 }
 
 export function logLoginAction(action) {
-  console.log("User login", action);
   ReactGA.event({
     category: "User Login",
     action: action,

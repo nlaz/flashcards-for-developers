@@ -6,6 +6,7 @@ import cookie from "js-cookie";
 import * as api from "../apiActions";
 import Octicon from "../../components/Octicon";
 import * as analytics from "../../components/GoogleAnalytics";
+import * as localStorage from "../utils/localStorage";
 
 Modal.setAppElement("#root");
 
@@ -61,9 +62,25 @@ class SignupFormModal extends Component {
           const token = response.headers.authorization.split(" ")[1];
           cookie.set("token", token);
           cookie.set("user", response.data);
+          this.syncSavedDecks();
+          this.syncStudySessions();
           this.props.onClose();
         })
         .catch(this.handleError);
+    }
+  };
+
+  syncSavedDecks = () => {
+    const savedDecks = localStorage.getSavedDecks();
+    if (savedDecks.length > 0) {
+      api.addSavedDecks(savedDecks).catch(this.handleError);
+    }
+  };
+
+  syncStudySessions = () => {
+    const studySessions = localStorage.getStudySessions();
+    if (studySessions.length > 0) {
+      api.addStudySessions(studySessions).catch(this.handleError);
     }
   };
 
@@ -72,6 +89,10 @@ class SignupFormModal extends Component {
   render() {
     const { onClose } = this.props;
     const { profile = {}, errors = {} } = this.state;
+
+    console.log(localStorage.getSavedDecks());
+    console.log(localStorage.getStudyProgress());
+    console.log(localStorage.getStudySessions());
 
     return (
       <Modal isOpen={true} className="loginModal" overlayClassName="loginModal-overlay">
