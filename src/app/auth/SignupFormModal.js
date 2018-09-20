@@ -64,6 +64,7 @@ class SignupFormModal extends Component {
           cookie.set("user", response.data);
           this.syncSavedDecks();
           this.syncStudySessions();
+          this.syncStudyProgress();
           this.props.onClose();
         })
         .catch(this.handleError);
@@ -84,15 +85,18 @@ class SignupFormModal extends Component {
     }
   };
 
+  syncStudyProgress = () => {
+    const studyProgress = localStorage.getStudyProgress();
+    if (studyProgress.length > 0) {
+      api.addStudyProgress(studyProgress).catch(this.handleError);
+    }
+  };
+
   handleError = error => this.props.onClose();
 
   render() {
     const { onClose } = this.props;
     const { profile = {}, errors = {} } = this.state;
-
-    console.log(localStorage.getSavedDecks());
-    console.log(localStorage.getStudyProgress());
-    console.log(localStorage.getStudySessions());
 
     return (
       <Modal isOpen={true} className="loginModal" overlayClassName="loginModal-overlay">

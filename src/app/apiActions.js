@@ -87,7 +87,13 @@ export const fetchDeckStudyProgress = deckId => {
   return axios.get(`/study_progress/${deckId}`, config);
 };
 
-export const addStudyProgress = (deckId, cardId, leitnerBox, reviewedAt) => {
+export const addStudyProgress = progressObjs => {
+  const config = { headers: { Authorization: cookie.get("token") } };
+
+  return axios.put(`/study_progress`, progressObjs, config);
+};
+
+export const addCardProgress = (deckId, cardId, leitnerBox, reviewedAt) => {
   const config = { headers: { Authorization: cookie.get("token") } };
   const params = { leitnerBox, reviewedAt };
 

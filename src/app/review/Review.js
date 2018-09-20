@@ -272,11 +272,11 @@ class Review extends Component {
 
     if (isAuthenticated()) {
       api
-        .addStudyProgress(deckId, cardId, leitnerBox, reviewedAt)
+        .addCardProgress(deckId, cardId, leitnerBox, reviewedAt)
         .then(({ data }) => this.setState({ cardProgress: data.cards }))
         .catch(this.handleError);
     } else {
-      const deckProgress = localStorage.addStudyProgress(cardId, deckId, leitnerBox, reviewedAt);
+      const deckProgress = localStorage.addCardProgress(cardId, deckId, leitnerBox, reviewedAt);
       this.setState({ cardProgress: deckProgress.cards });
     }
   };

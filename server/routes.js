@@ -30,8 +30,9 @@ router.delete("/users/saved_decks", isAuthenticated, UsersController.removeSaved
 router.get("/users/study_sessions", isAuthenticated, UsersController.getStudySessions);
 router.put("/users/study_sessions", isAuthenticated, UsersController.addStudySessions);
 
-router.get("/study_progress", isAuthenticated, ProgressController.getProgress);
+router.get("/study_progress", isAuthenticated, ProgressController.getStudyProgress);
+router.put("/study_progress", isAuthenticated, ProgressController.addStudyProgress);
 router.get("/study_progress/:deckId", isAuthenticated, ProgressController.getDeckProgress);
-router.put("/study_progress/:deckId/:cardId", isAuthenticated, ProgressController.addProgress);
+router.put("/study_progress/:deckId/:cardId", isAuthenticated, ProgressController.addCardProgress);
 
 module.exports = router;
