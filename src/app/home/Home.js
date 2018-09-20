@@ -27,11 +27,12 @@ class Decks extends Component {
   componentWillMount() {
     document.title = "Flashcards for Developers";
 
+    this.fetchSavedDecks();
+
     this.fetchFeaturedCollection();
     this.fetchTrendingCollection();
     this.fetchNewestCollection();
 
-    this.fetchSavedDecks();
     this.fetchStudyProgress();
     this.fetchCollections();
   }
@@ -99,7 +100,9 @@ class Decks extends Component {
     api
       .fetchCollections()
       .then(({ data }) => {
-        this.setState({ collections: [{ name: "Saved Decks", id: "saved" }, ...data] });
+        const savedCollection = { name: "Saved Decks", id: "saved" };
+        const collections = this.state.savedDecks.length > 0 ? [savedCollection, ...data] : data;
+        this.setState({ collections });
       })
       .catch(this.handleError);
   };
