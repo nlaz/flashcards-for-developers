@@ -1,6 +1,6 @@
 import React from "react";
 
-const Image = ({ src, alt }) => (
+const Avatar = ({ src, alt }) => (
   <img
     className="rounded rounded-circle"
     style={{ width: "75px", height: "75px" }}
@@ -23,24 +23,62 @@ const About = () => (
         <a href="mailto:hello@flashcardsfordevelopers.com">Have a question? Drop us a line.</a>
       </div>
 
-      <div className="my-5" style={{ minHeight: "50vh" }}>
+      <div className="my-5 pb-2">
         <h6 className="font-weight-bold text-uppercase">Use it or lose it</h6>
         <p className="text-dark">
-          80% of what you hear, read, and write will be forgotten tomorrow. Repetition will help you
-          remember things you want to learn. Flashcards for Developers helps you practice at the
-          best time so you spend less effort to learn what you want.
+          Flashcards for Developers is built around the idea that memory fades. Flashcards are
+          perfect for testing your recall and strengthening the signal in your brain. The flashcards
+          helps you practice at the best time so you spend less effort to learn what you want.
         </p>
-        <img
-          src={require("./graph.png")}
-          style={{ maxHeight: "240px", maxWidth: "420px" }}
-          alt="Graph of forgetting curve"
-        />
+      </div>
+
+      <div
+        className="mb-5 py-5"
+        style={{
+          background: "#e7f2ff",
+          marginRight: "-40px",
+          marginLeft: "-40px",
+          paddingRight: "40px",
+          paddingLeft: "40px",
+          borderRadius: "1px",
+        }}
+      >
+        <div className="mb-3">
+          <h6 className="font-weight-bold text-uppercase" style={{ color: "#0a69e8" }}>
+            Spaced repetition
+          </h6>
+          <p className="text-dark">
+            Flashcards for Developers is built around the idea that memory fades. Flashcards are
+            perfect for testing your recall and strengthening the signal in your brain. The
+            flashcards helps you practice at the best time so you spend less effort to learn what
+            you want.
+          </p>
+        </div>
+        <div className="d-flex align-items-center">
+          <img
+            className="mx-auto"
+            src={require("./graph.png")}
+            alt="Graph of forgetting curve"
+            style={{ maxWidth: "400px" }}
+          />
+        </div>
+        <p className="text-dark text-center font-italic mt-3" style={{ opacity: 0.8 }}>
+          This technique is has been written about in depth by{" "}
+          <a className="text-dark text-underline" href="">
+            Derek Sivers
+          </a>{" "}
+          and{" "}
+          <a className="text-dark text-underline" href="">
+            Michael Nielsen
+          </a>
+          .
+        </p>
       </div>
     </div>
     <div className="py-5 mt-5 text-white" style={{ background: "#0d69e8" }}>
-      <div className="container container-narrow my-3">
+      <div className="container container-narrow">
         <div className="row">
-          <div className="col-8">
+          <div className="col-lg-8 py-3">
             <h6 className="text-uppercase font-weight-medium mb-3">About us</h6>
             <div className="d-flex mb-3">
               <a
@@ -49,7 +87,7 @@ const About = () => (
                 rel="noopener noreferrer"
                 target="_blank"
               >
-                <Image src={nikoImage} alt="Niko's profile" />
+                <Avatar src={nikoImage} alt="Niko's profile" />
                 <div className="d-flex flex-column align-items-start ml-2">
                   <div>
                     <span>Niko Lazaris</span>
@@ -65,7 +103,7 @@ const About = () => (
                 rel="noopener noreferrer"
                 target="_blank"
               >
-                <Image src={nickImage} alt="Nick's profile" />
+                <Avatar src={nickImage} alt="Nick's profile" />
                 <div className="d-flex flex-column align-items-start ml-2">
                   <div>
                     <span>Nick Engmann</span>
@@ -80,11 +118,19 @@ const About = () => (
               className="text-white font-weight-light mb-4"
               style={{ opacity: 0.85, maxWidth: "500px" }}
             >
-              We met 6+ years ago in school and have built a developer community together. We are
-              passionate developers and love learning new things.
+              We met 6+ years ago in school and built a{" "}
+              <a
+                className="text-white text-underline"
+                target="_blank"
+                rel="noopener noreferrer"
+                href="https://hacktx.com/"
+              >
+                hackathon community
+              </a>{" "}
+              together. We are passionate developers and love learning new things.
             </div>
           </div>
-          <div className="col-4">
+          <div className="col-lg-4 py-3">
             <h6 className="text-uppercase font-weight-medium mb-3">Stats</h6>
             <div>
               <span className="h2 font-weight-light">
