@@ -34,7 +34,7 @@ export const fetchDecks = collectionId => {
 
 export const fetchDecksById = deckIds => {
   const config = { headers: { Authorization: cookie.get("token") } };
-  const params = deckIds ? `?${queryString.stringify({ ids: deckIds.join(",") })}` : "";
+  const params = deckIds.length > 0 ? `?${queryString.stringify({ ids: deckIds.join(",") })}` : "";
   return axios.get(`/api/decks${params}`, config);
 };
 

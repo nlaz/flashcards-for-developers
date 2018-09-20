@@ -38,7 +38,7 @@ class Collections extends Component {
     event.preventDefault();
     const isSaved = this.isSaved(deck.id);
 
-    analytics.logSaveDeckAction(deck.name, deck.id);
+    analytics.logSaveDeckAction(deck.name, isSaved);
 
     this.saveDeck(deck, isSaved);
   };
@@ -76,14 +76,16 @@ class Collections extends Component {
       });
     } else {
       const savedDecks = localStorage.getSavedDecks();
-      api.fetchDecksById(savedDecks).then(({ data }) => {
-        this.setState({
-          savedDecks: data,
-          collection: { name: "Saved Decks" },
-          decks: this.sortDecks(data),
-          isLoading: false,
+      if (savedDecks.length > 0) {
+        api.fetchDecksById(savedDecks).then(({ data }) => {
+          this.setState({
+            savedDecks: data,
+            collection: { name: "Saved Decks" },
+            decks: this.sortDecks(data),
+            isLoading: false,
+          });
         });
-      });
+      }
     }
   };
 
