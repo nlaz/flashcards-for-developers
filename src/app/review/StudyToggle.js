@@ -26,9 +26,9 @@ class StudyToggle extends React.Component {
     );
 
     return (
-      <div className="d-flex align-items-center">
-        <Toggle onChange={this.onChange} checked={isChecked} />
-        <Tooltip placement="bottom" trigger={["click", "hover", "focus"]} overlay={tooltip}>
+      <Tooltip placement="bottom" trigger={["hover", "focus"]} overlay={tooltip}>
+        <div className="d-flex align-items-center">
+          <Toggle onChange={this.onChange} checked={isChecked} />
           <small className="ml-2" style={{ opacity: 0.4 }}>
             Hide familiar cards{" "}
             <span
@@ -39,8 +39,8 @@ class StudyToggle extends React.Component {
               <i className="fas fa-info fa-stack-1x fa-inverse" />
             </span>
           </small>
-        </Tooltip>
-      </div>
+        </div>
+      </Tooltip>
     );
   }
 }
