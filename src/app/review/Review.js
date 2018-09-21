@@ -75,6 +75,7 @@ class Review extends Component {
     if (this.isCollectionPage()) {
       this.fetchCollection(params.collectionId);
       this.fetchMixedCards(params.collectionId);
+      this.fetchStudyProgress();
     } else {
       this.fetchDeck(params.deckId);
       this.fetchDeckProgress(params.deckId);
@@ -286,13 +287,29 @@ class Review extends Component {
     }
   };
 
+  fetchStudyProgress = () => {
+    if (isAuthenticated()) {
+      api
+        .fetchStudyProgress()
+        .then(({ data }) => {
+          const cardProgress = data.reduce((acc, el) => [...acc, ...el.cards], []);
+          this.setState({ cardProgress });
+        })
+        .catch(this.handleError);
+    } else {
+      const studyProgress = localStorage.getStudyProgress();
+      const cardProgress = studyProgress.reduce((acc, el) => [...acc, ...el.cards], []);
+      this.setState({ cardProgress });
+    }
+  };
+
   setStudyProgress = (card, isCorrect) => {
     const cardObj = this.state.cardProgress.find(el => el.card === card.id) || {};
     const { reviewedAt, leitnerBox } = studyProgress.calcUpdatedLevel(cardObj, isCorrect);
 
     if (isAuthenticated()) {
       api
-        .addCardProgress(card.deck, card.id, leitnerBox, reviewedAt)
+        .addCardProgress(card.deck.id, card.id, leitnerBox, reviewedAt)
         .then(({ data }) => this.setState({ cardProgress: data.cards }))
         .catch(this.handleError);
     } else {
@@ -401,8 +418,6 @@ class Review extends Component {
     const pageStart = this.getPageStart();
     const isStageFinished = this.isStageFinished();
 
-    // console.log("CARDS", this.state.cards);
-    console.log("CURRENT CARD", currentCard);
     return (
       <div>
         <div className="container container--narrow py-5">
