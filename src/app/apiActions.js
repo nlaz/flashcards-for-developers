@@ -77,6 +77,8 @@ export const addStudySessions = dates => {
   return axios.put("/users/study_sessions", { dates: [...dates] }, config);
 };
 
+export const addStudySession = date => addStudySessions([date]);
+
 export const fetchStudyProgress = () => {
   const config = { headers: { Authorization: cookie.get("token") } };
   return axios.get("/study_progress", config);

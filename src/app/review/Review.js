@@ -285,7 +285,7 @@ class Review extends Component {
     const currentDate = moment().startOf("day");
 
     if (isAuthenticated()) {
-      api.addStudySessions(currentDate).catch(this.handleError);
+      api.addStudySession(currentDate).catch(this.handleError);
     } else {
       localStorage.addStudySession(currentDate);
     }

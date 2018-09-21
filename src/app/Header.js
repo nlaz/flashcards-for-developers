@@ -118,7 +118,7 @@ class Header extends Component {
               </li>
             ) : (
               [
-                <li className="list-inline-item ml-2">
+                <li className="list-inline-item ml-2" key={1}>
                   <button
                     className="btn btn-sm btn-outline-dark d-flex px-3 py-2"
                     onClick={() => {
@@ -129,7 +129,7 @@ class Header extends Component {
                     <small className="font-weight-bold">LOG IN</small>
                   </button>
                 </li>,
-                <li className="list-inline-item ml-1">
+                <li className="list-inline-item ml-1" key={2}>
                   <button
                     className="btn btn-sm btn-dark d-flex px-3 py-2"
                     onClick={() => {
