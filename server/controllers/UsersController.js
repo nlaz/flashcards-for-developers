@@ -86,15 +86,15 @@ module.exports.getSavedDecks = async (req, res, next) => {
   }
 };
 
-module.exports.addSavedDeck = async (req, res, next) => {
+module.exports.addSavedDecks = async (req, res, next) => {
   try {
-    await Joi.validate(req.body, userSchemas.addSavedDeck);
+    await Joi.validate(req.body, userSchemas.addSavedDecks);
 
-    const { deck } = req.body;
+    const { decks } = req.body;
 
     const user = await User.findOneAndUpdate(
       { _id: req.user },
-      { $addToSet: { saved_decks: deck } },
+      { $addToSet: { saved_decks: decks } },
       { new: true },
     )
       .select("+saved_decks")
@@ -126,15 +126,16 @@ module.exports.removeSavedDeck = async (req, res, next) => {
   }
 };
 
-module.exports.addStudySession = async (req, res, next) => {
+module.exports.addStudySessions = async (req, res, next) => {
   try {
-    await Joi.validate(req.body, userSchemas.addStudySession);
+    await Joi.validate(req.body, userSchemas.addStudySessions);
 
-    const { date } = req.body;
+    const { dates } = req.body;
 
+    const fmtDates = dates.map(el => moment(el).format());
     const user = await User.findOneAndUpdate(
       { _id: req.user },
-      { $addToSet: { study_sessions: moment(date).format() } },
+      { $addToSet: { study_sessions: fmtDates } },
       { new: true },
     ).select("+study_sessions");
 
