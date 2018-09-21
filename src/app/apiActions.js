@@ -58,13 +58,13 @@ export const removeSavedDeck = deckId => {
   return axios.delete("/users/saved_decks", { ...config, data: { deck: deckId } });
 };
 
-export const addSavedDeck = deckId => {
+export const addSavedDecks = deckIds => {
   const config = { headers: { Authorization: cookie.get("token") } };
-  return axios.put("/users/saved_decks", { deck: deckId }, config);
+  return axios.put("/users/saved_decks", { decks: [...deckIds] }, config);
 };
 
 export const toggleSavedDeck = (deckId, isSaved) => {
-  return isSaved ? removeSavedDeck(deckId) : addSavedDeck(deckId);
+  return isSaved ? removeSavedDeck(deckId) : addSavedDecks([deckId]);
 };
 
 export const fetchStudySessions = () => {
@@ -72,10 +72,12 @@ export const fetchStudySessions = () => {
   return axios.get("/users/study_sessions", config);
 };
 
-export const addStudySession = date => {
+export const addStudySessions = dates => {
   const config = { headers: { Authorization: cookie.get("token") } };
-  return axios.put("/users/study_sessions", { date }, config);
+  return axios.put("/users/study_sessions", { dates: [...dates] }, config);
 };
+
+export const addStudySession = date => addStudySessions([date]);
 
 export const fetchStudyProgress = () => {
   const config = { headers: { Authorization: cookie.get("token") } };
@@ -87,7 +89,13 @@ export const fetchDeckStudyProgress = deckId => {
   return axios.get(`/study_progress/${deckId}`, config);
 };
 
-export const addStudyProgress = (deckId, cardId, leitnerBox, reviewedAt) => {
+export const addStudyProgress = progressObjs => {
+  const config = { headers: { Authorization: cookie.get("token") } };
+
+  return axios.put(`/study_progress`, progressObjs, config);
+};
+
+export const addCardProgress = (deckId, cardId, leitnerBox, reviewedAt) => {
   const config = { headers: { Authorization: cookie.get("token") } };
   const params = { leitnerBox, reviewedAt };
 

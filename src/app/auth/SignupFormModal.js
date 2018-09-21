@@ -6,6 +6,7 @@ import cookie from "js-cookie";
 import * as api from "../apiActions";
 import Octicon from "../../components/Octicon";
 import * as analytics from "../../components/GoogleAnalytics";
+import * as localStorage from "../utils/localStorage";
 
 Modal.setAppElement("#root");
 
@@ -61,9 +62,33 @@ class SignupFormModal extends Component {
           const token = response.headers.authorization.split(" ")[1];
           cookie.set("token", token);
           cookie.set("user", response.data);
+          this.syncSavedDecks();
+          this.syncStudySessions();
+          this.syncStudyProgress();
           this.props.onClose();
         })
         .catch(this.handleError);
+    }
+  };
+
+  syncSavedDecks = () => {
+    const savedDecks = localStorage.getSavedDecks();
+    if (savedDecks.length > 0) {
+      api.addSavedDecks(savedDecks).catch(this.handleError);
+    }
+  };
+
+  syncStudySessions = () => {
+    const studySessions = localStorage.getStudySessions();
+    if (studySessions.length > 0) {
+      api.addStudySessions(studySessions).catch(this.handleError);
+    }
+  };
+
+  syncStudyProgress = () => {
+    const studyProgress = localStorage.getStudyProgress();
+    if (studyProgress.length > 0) {
+      api.addStudyProgress(studyProgress).catch(this.handleError);
     }
   };
 

@@ -45,10 +45,7 @@ const PlaceholderImage = () => (
 class Header extends Component {
   state = { showModal: false };
 
-  onOpenModal = () => {
-    analytics.logLoginAction("User opened login modal");
-    this.setState({ showModal: true });
-  };
+  onOpenModal = () => this.setState({ showModal: true });
 
   onCloseModal = () => {
     analytics.logLoginAction("User exited login modal");
@@ -98,8 +95,8 @@ class Header extends Component {
                 <i className="fab fa-twitter" />
               </TwitterShareButton>
             </li>
-            <li className="header-login list-inline-item ml-2">
-              {authenticated ? (
+            {authenticated ? (
+              <li className="header-login list-inline-item ml-2">
                 <Tooltip
                   placement="bottomRight"
                   trigger={["click"]}
@@ -118,15 +115,33 @@ class Header extends Component {
                     )}
                   </div>
                 </Tooltip>
-              ) : (
-                <button
-                  className="btn btn-sm btn-outline-dark d-flex px-3 py-2"
-                  onClick={this.onOpenModal}
-                >
-                  <small className="font-weight-bold">LOGIN</small>
-                </button>
-              )}
-            </li>
+              </li>
+            ) : (
+              [
+                <li className="list-inline-item ml-2" key={1}>
+                  <button
+                    className="btn btn-sm btn-outline-dark d-flex px-3 py-2"
+                    onClick={() => {
+                      analytics.logLoginAction("User clicked 'Login' button");
+                      this.onOpenModal();
+                    }}
+                  >
+                    <small className="font-weight-bold">LOG IN</small>
+                  </button>
+                </li>,
+                <li className="list-inline-item ml-1" key={2}>
+                  <button
+                    className="btn btn-sm btn-dark d-flex px-3 py-2"
+                    onClick={() => {
+                      analytics.logLoginAction("User clicked 'Signup' button");
+                      this.onOpenModal();
+                    }}
+                  >
+                    <small className="font-weight-bold">SIGN UP</small>
+                  </button>
+                </li>,
+              ]
+            )}
           </ul>
         </div>
       </div>
