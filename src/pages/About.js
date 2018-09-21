@@ -24,6 +24,15 @@ const About = () => (
       </div>
 
       <div className="my-5 pb-2">
+        <h6 className="font-weight-bold text-uppercase">SUPPLEMENT YOUR LEARNING</h6>
+        <p className="text-dark">
+          Flashcards for Developers is built around the idea that memory fades. Flashcards are
+          perfect for testing your recall and strengthening the signal in your brain. The flashcards
+          helps you practice at the best time so you spend less effort to learn what you want.
+        </p>
+      </div>
+
+      <div className="my-5 pb-2">
         <h6 className="font-weight-bold text-uppercase">Use it or lose it</h6>
         <p className="text-dark">
           Flashcards for Developers is built around the idea that memory fades. Flashcards are
