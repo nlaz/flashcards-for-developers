@@ -2,7 +2,7 @@ const express = require("express");
 const morgan = require("morgan");
 const cookieParser = require("cookie-parser");
 const bodyParser = require("body-parser");
-const sslRedirect = require("heroku-ssl-redirect");
+const forceDomain = require("forcedomain");
 
 const routes = require("./routes");
 const paths = require("../config/paths");
@@ -13,10 +13,10 @@ require("../database/index")();
 const app = express();
 
 app.use(morgan("tiny"));
-app.use(sslRedirect());
 app.use(cookieParser());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
+app.use(forceDomain({ hostname: config.publicUrl, protocol: "https" }));
 
 app.get("/", function(req, res) {
   res.sendFile(paths.appEntry);

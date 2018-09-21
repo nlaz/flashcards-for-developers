@@ -3130,6 +3130,12 @@ for-own@^0.1.4:
   dependencies:
     for-in "^1.0.1"
 
+forcedomain@^1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/forcedomain/-/forcedomain-1.0.0.tgz#d7af1cff638e85d375f5a8b4b1b210d1c614b81c"
+  dependencies:
+    lodash "4.17.10"
+
 foreach@^2.0.5:
   version "2.0.5"
   resolved "https://registry.yarnpkg.com/foreach/-/foreach-2.0.5.tgz#0bee005018aeb260d0a3af3ae658dd0136ec1b99"
@@ -3485,10 +3491,6 @@ hawk@~6.0.2:
 he@1.1.x:
   version "1.1.1"
   resolved "https://registry.yarnpkg.com/he/-/he-1.1.1.tgz#93410fd21b009735151f8868c2f271f3427e23fd"
-
-heroku-ssl-redirect@^0.0.4:
-  version "0.0.4"
-  resolved "https://registry.yarnpkg.com/heroku-ssl-redirect/-/heroku-ssl-redirect-0.0.4.tgz#21ba0707aa503b50a412a0946abfaa88ef7d082c"
 
 history@^4.7.2:
   version "4.7.2"

@@ -13,4 +13,5 @@ module.exports = {
   githubOAuthClientSecret: process.env.GITHUB_OAUTH_CLIENT_SECRET || "",
   airtableApiKey: process.env.REACT_APP_AIRTABLE_API_KEY || "",
   airtableApiId: process.env.REACT_APP_AIRTABLE_API_ID || "",
+  publicUrl: process.env.PUBLIC_URL || "",
 };
