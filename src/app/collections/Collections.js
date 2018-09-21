@@ -153,12 +153,12 @@ class Collections extends Component {
     return (
       <div className="container container--full px-4 my-5">
         <div className="d-flex flex-column-reverse flex-lg-row justify-content-between align-items-lg-end">
-          <div className="mb-2">
+          <div className="mb-2 mt-3">
             <h1 className="m-0">{collection.name}</h1>
             {collection.description && <p className="m-0">{collection.description}</p>}
             {this.isSavedDecksPage() && (
               <Link
-                className="btn btn-dark font-weight-medium text-uppercase mt-2"
+                className="btn btn-dark font-weight-medium text-uppercase d-block d-sm-inline-block mt-2"
                 style={{ borderRadius: "999px", fontSize: ".75em", padding: "5px 25px" }}
                 to={`/collections/${collection.id}/review`}
               >
