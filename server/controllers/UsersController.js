@@ -128,9 +128,9 @@ module.exports.removeSavedDeck = async (req, res, next) => {
 
 module.exports.addStudySessions = async (req, res, next) => {
   try {
-    await Joi.validate(req.body, userSchemas.addStudySessions);
-
     const { dates } = req.body;
+
+    await Joi.validate(req.body, userSchemas.addStudySessions);
 
     const fmtDates = dates.map(el => moment(el).format());
     const user = await User.findOneAndUpdate(
