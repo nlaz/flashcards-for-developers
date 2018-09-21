@@ -46,7 +46,6 @@ export const fetchDeck = id => {
 export const fetchCards = ({ deck, collection }) => {
   const config = { headers: { Authorization: cookie.get("token") } };
   const params = queryString.stringify({ deck, collection });
-  console.log(params);
   return axios.get(`/api/cards?${params}`, config);
 };
 

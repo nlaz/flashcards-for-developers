@@ -157,8 +157,8 @@ class Collections extends Component {
             <h1 className="m-0">{collection.name}</h1>
             {collection.description && <p className="m-0">{collection.description}</p>}
             <Link
-              className="btn btn-dark font-weight-medium text-uppercase px-4 py-2 mt-2"
-              style={{ borderRadius: "999px", fontSize: ".75em" }}
+              className="btn btn-dark font-weight-medium text-uppercase mt-2"
+              style={{ borderRadius: "999px", fontSize: ".75em", padding: "5px 25px" }}
               to={`/collections/${collection.id}/review`}
             >
               Study Now

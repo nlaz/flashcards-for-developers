@@ -401,6 +401,8 @@ class Review extends Component {
     const pageStart = this.getPageStart();
     const isStageFinished = this.isStageFinished();
 
+    // console.log("CARDS", this.state.cards);
+    console.log("CURRENT CARD", currentCard);
     return (
       <div>
         <div className="container container--narrow py-5">
@@ -435,9 +437,12 @@ class Review extends Component {
                         {this.isImageSelect(deck) ? (
                           <img className="img-fluid px-3 mx-auto" alt="" src={currentCard.front} />
                         ) : (
-                          <div className="flashcard-body border rounded px-3 py-5 w-100 h-100">
+                          <div className="flashcard-body border rounded px-3 py-2 w-100 h-100">
+                            {this.isCollectionPage() && (
+                              <small style={{ opacity: 0.85 }}>{currentCard.deck.name}</small>
+                            )}
                             <div
-                              className="markdown-body text-left d-flex align-items-center justify-content-center flex-column"
+                              className="markdown-body text-left d-flex align-items-center justify-content-center flex-column my-2"
                               dangerouslySetInnerHTML={{
                                 __html: this.getCardHTML(currentCard),
                               }}

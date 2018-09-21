@@ -16,7 +16,7 @@ module.exports.getCards = async (req, res, next) => {
       const collection = await Collection.findOne({ _id: collectionId }).select("+decks");
       cards = await Card.find({ deck: { $in: collection.decks } })
         .limit(100)
-        .populate("decks");
+        .populate("deck");
     } else if (deckId) {
       cards = await Card.find({ deck: deckId });
     }
