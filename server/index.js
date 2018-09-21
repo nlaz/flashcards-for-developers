@@ -2,7 +2,6 @@ const express = require("express");
 const morgan = require("morgan");
 const cookieParser = require("cookie-parser");
 const bodyParser = require("body-parser");
-// const sslRedirect = require("heroku-ssl-redirect");
 const forceDomain = require("forcedomain");
 
 const routes = require("./routes");
