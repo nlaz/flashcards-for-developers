@@ -374,7 +374,7 @@ class Review extends Component {
   };
 
   getDeckType = () => (this.isSelfGraded() ? "Self graded" : "Multiple choice");
-  getCurrentCard = () => this.state.cards[this.state.index];
+  getCurrentCard = () => this.state.cards[this.state.index] || {};
   getCategoryUrl = id => `/categories/${id}`;
   getOptionHTML = option => marked(this.state.isReversed ? option.front : option.back || option);
   getCardHTML = card => marked(this.state.isReversed ? card.back : card.front);
@@ -436,6 +436,9 @@ class Review extends Component {
     const pageEnd = this.getPageEnd();
     const pageStart = this.getPageStart();
     const isStageFinished = this.isStageFinished();
+    const isImageSelect = (currentCard.deck || {}).type
+      ? this.isImageSelect(currentCard.deck)
+      : this.isImageSelect(deck);
 
     return (
       <div>
@@ -468,8 +471,26 @@ class Review extends Component {
                     <div className="row w-100 mx-0">
                       <ReviewType type={this.getDeckType()} />
                       <div className="col-12 col-lg-6 d-flex align-items-center px-1 pb-2">
-                        {this.isImageSelect(deck) ? (
-                          <img className="img-fluid px-3 mx-auto" alt="" src={currentCard.front} />
+                        {isImageSelect ? (
+                          <div className="flashcard-body d-flex flex-column border rounded px-3 py-2 w-100 h-100">
+                            {this.isCollectionPage() && (
+                              <small style={{ opacity: 0.85 }}>{currentCard.deck.name}</small>
+                            )}
+                            <img
+                              className="img-fluid my-2 px-3 mx-auto"
+                              alt=""
+                              src={currentCard.front}
+                            />
+                            {this.state.isRevealed && (
+                              <div
+                                className="markdown-body text-left d-flex align-items-center justify-content-center flex-column mt-3 pt-3"
+                                style={{ borderTop: "1px solid #f5f5f5" }}
+                                dangerouslySetInnerHTML={{
+                                  __html: marked(currentCard.back),
+                                }}
+                              />
+                            )}
+                          </div>
                         ) : (
                           <div className="flashcard-body border rounded px-3 py-2 w-100 h-100">
                             {this.isCollectionPage() && (

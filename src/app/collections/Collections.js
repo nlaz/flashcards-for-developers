@@ -160,6 +160,7 @@ class Collections extends Component {
               <Link
                 className="btn btn-dark font-weight-medium text-uppercase d-block d-sm-inline-block mt-2"
                 style={{ borderRadius: "999px", fontSize: ".75em", padding: "5px 25px" }}
+                onClick={() => analytics.logUserAction("Clicked 'Study now' button")}
                 to={`/collections/${collection.id}/review`}
               >
                 Study Now
