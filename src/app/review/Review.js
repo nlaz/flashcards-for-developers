@@ -71,7 +71,11 @@ class Review extends Component {
 
   componentDidMount() {
     const { params } = this.props.match;
-    if (params.deckId) {
+
+    if (this.isCollectionPage()) {
+      this.fetchCollection(params.collectionId);
+      this.fetchMixedCards(params.collectionId);
+    } else {
       this.fetchDeck(params.deckId);
       this.fetchDeckProgress(params.deckId);
     }
@@ -161,10 +165,9 @@ class Review extends Component {
 
     const isCorrect = answer === SELF_GRADE_CORRECT;
     const card = this.getCurrentCard();
-    const { deck } = this.state;
 
     analytics.logReviewEvent(card.id);
-    this.setStudyProgress(card.id, deck.id, isCorrect);
+    this.setStudyProgress(card, isCorrect);
 
     this.setState({ correctness: [...this.state.correctness, isCorrect] });
 
@@ -180,11 +183,10 @@ class Review extends Component {
 
   handleMultipleChoiceAnswer = answer => {
     const card = this.getCurrentCard();
-    const { deck } = this.state;
     const isCorrect = this.isCorrectAnswer(answer, card);
     this.setState({ selected: answer });
 
-    this.setStudyProgress(card.id, deck.id, isCorrect);
+    this.setStudyProgress(card, isCorrect);
 
     if (isCorrect) {
       this.setState({ correctness: [...this.state.correctness, isCorrect] });
@@ -240,18 +242,36 @@ class Review extends Component {
     );
   };
 
+  fetchCollection = collectionId => {
+    api
+      .fetchCollection(collectionId)
+      .then(({ data }) => {
+        this.setState({ deck: { ...data, type: "Self graded" }, isDeckLoading: false });
+      })
+      .catch(error => this.setState({ isError: true, isDeckLoading: false }));
+  };
+
   fetchCards = deck => {
+    api
+      .fetchCards({ deck: deck.id })
+      .then(this.handleCardsResponse)
+      .catch(error => this.setState({ isError: true, isCardsLoading: false }));
+  };
+
+  fetchMixedCards = collectionId => {
+    api
+      .fetchCards({ collection: collectionId })
+      .then(this.handleCardsResponse)
+      .catch(error => this.setState({ isError: true, isCardsLoading: false }));
+  };
+
+  handleCardsResponse = ({ data }) => {
     const { index } = this.state;
-    api.fetchCards(deck.id).then(
-      ({ data }) => {
-        const isSRS = localStorage.getSRSPref();
-        const filteredCards = isSRS ? this.filterExpiredCards(data) : data;
-        const cards = chance.shuffle(filteredCards);
-        const options = this.getOptions(index, cards);
-        this.setState({ cards, options, index: 0, isCardsLoading: false });
-      },
-      error => this.setState({ isError: true, isCardsLoading: false }),
-    );
+    const isSRS = localStorage.getSRSPref();
+    const filteredCards = isSRS ? this.filterExpiredCards(data) : data;
+    const cards = chance.shuffle(filteredCards);
+    const options = this.getOptions(index, cards);
+    this.setState({ cards, options, index: 0, isCardsLoading: false });
   };
 
   fetchDeckProgress = deckId => {
@@ -266,17 +286,17 @@ class Review extends Component {
     }
   };
 
-  setStudyProgress = (cardId, deckId, isCorrect) => {
-    const cardObj = this.state.cardProgress.find(el => el.card === cardId) || {};
+  setStudyProgress = (card, isCorrect) => {
+    const cardObj = this.state.cardProgress.find(el => el.card === card.id) || {};
     const { reviewedAt, leitnerBox } = studyProgress.calcUpdatedLevel(cardObj, isCorrect);
 
     if (isAuthenticated()) {
       api
-        .addCardProgress(deckId, cardId, leitnerBox, reviewedAt)
+        .addCardProgress(card.deck, card.id, leitnerBox, reviewedAt)
         .then(({ data }) => this.setState({ cardProgress: data.cards }))
         .catch(this.handleError);
     } else {
-      const deckProgress = localStorage.addCardProgress(cardId, deckId, leitnerBox, reviewedAt);
+      const deckProgress = localStorage.addCardProgress(card.deck, card.id, leitnerBox, reviewedAt);
       this.setState({ cardProgress: deckProgress.cards });
     }
   };
@@ -328,6 +348,7 @@ class Review extends Component {
   getPageEnd = () =>
     Math.min(Math.floor((this.state.page + 1) * this.state.pageSize), this.state.cards.length);
 
+  isCollectionPage = () => this.props.match.path === "/collections/:collectionId/review";
   isReversible = deck => (deck || this.state.deck).type === "Reversible select";
   isMultiple = deck => (deck || this.state.deck).type === "Multiple select";
   isSelfGraded = deck => (deck || this.state.deck).type === "Self graded";
@@ -476,7 +497,6 @@ class Review extends Component {
                     <ReviewResults
                       index={this.state.index}
                       cards={this.state.cards}
-                      location={this.props.location}
                       numCorrect={this.state.numCorrect}
                       numIncorrect={this.state.numIncorrect}
                       cardProgress={this.state.cardProgress}

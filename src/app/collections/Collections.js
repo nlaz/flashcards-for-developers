@@ -159,7 +159,7 @@ class Collections extends Component {
             <Link
               className="btn btn-dark font-weight-medium text-uppercase px-4 py-2 mt-2"
               style={{ borderRadius: "999px", fontSize: ".75em" }}
-              to="/decks/now"
+              to={`/collections/${collection.id}/review`}
             >
               Study Now
             </Link>
