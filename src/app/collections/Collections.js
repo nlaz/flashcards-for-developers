@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import { Link } from "react-router-dom";
 
 import config from "../../config";
 import isAuthenticated from "../utils/isAuthenticated";
@@ -152,9 +153,16 @@ class Collections extends Component {
     return (
       <div className="container container--full px-4 my-5">
         <div className="d-flex flex-column-reverse flex-lg-row justify-content-between align-items-lg-end">
-          <div className="m-0 my-3">
+          <div className="mb-2">
             <h1 className="m-0">{collection.name}</h1>
             {collection.description && <p className="m-0">{collection.description}</p>}
+            <Link
+              className="btn btn-dark font-weight-medium text-uppercase px-4 py-2 mt-2"
+              style={{ borderRadius: "999px", fontSize: ".75em" }}
+              to="/decks/now"
+            >
+              Study Now
+            </Link>
           </div>
           <div
             className="bg-light rounded p-3 mb-2 border border-secondary d-flex align-items-center"
