@@ -156,13 +156,15 @@ class Collections extends Component {
           <div className="mb-2">
             <h1 className="m-0">{collection.name}</h1>
             {collection.description && <p className="m-0">{collection.description}</p>}
-            <Link
-              className="btn btn-dark font-weight-medium text-uppercase mt-2"
-              style={{ borderRadius: "999px", fontSize: ".75em", padding: "5px 25px" }}
-              to={`/collections/${collection.id}/review`}
-            >
-              Study Now
-            </Link>
+            {this.isSavedDecksPage() && (
+              <Link
+                className="btn btn-dark font-weight-medium text-uppercase mt-2"
+                style={{ borderRadius: "999px", fontSize: ".75em", padding: "5px 25px" }}
+                to={`/collections/${collection.id}/review`}
+              >
+                Study Now
+              </Link>
+            )}
           </div>
           <div
             className="bg-light rounded p-3 mb-2 border border-secondary d-flex align-items-center"
@@ -171,6 +173,7 @@ class Collections extends Component {
             <SkillProgress decks={decks} studyProgress={studyProgress} />
           </div>
         </div>
+        <hr className="m-0" style={{ opacity: 0.6 }} />
         {decks.length > 0 ? (
           <div className="row pt-4" style={{ minHeight: "40vh" }}>
             {decks.map(deck => (

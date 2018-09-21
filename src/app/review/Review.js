@@ -154,9 +154,16 @@ class Review extends Component {
   };
 
   onSRSToggle = value => {
-    const { deck } = this.state;
     analytics.logToggleFamiliarCards(value);
-    this.setState({ isCardsLoading: true }, () => this.fetchCards(deck));
+    this.setState({ isCardsLoading: true }, () => {
+      if (this.isCollectionPage()) {
+        const { collectionId } = this.props.match.params;
+        this.fetchMixedCards(collectionId);
+      } else {
+        const { deckId } = this.props.match.params;
+        this.fetchCards(deckId);
+      }
+    });
   };
 
   handleSelfGradedAnswer = answer => {
@@ -245,7 +252,7 @@ class Review extends Component {
 
   fetchCollection = collectionId => {
     if (this.isSavedCollection()) {
-      this.setState({ deck: { name: "Saved deck", type: "Self graded" }, isDeckLoading: false });
+      this.setState({ deck: { name: "Saved decks", type: "Self graded" }, isDeckLoading: false });
     } else {
       api
         .fetchCollection(collectionId)
@@ -324,7 +331,7 @@ class Review extends Component {
         .then(({ data }) => this.setState({ cardProgress: data.cards }))
         .catch(this.handleError);
     } else {
-      const deckProgress = localStorage.addCardProgress(card.deck, card.id, leitnerBox, reviewedAt);
+      const deckProgress = localStorage.addCardProgress(deckId, card.id, leitnerBox, reviewedAt);
       this.setState({ cardProgress: deckProgress.cards });
     }
   };
@@ -433,7 +440,7 @@ class Review extends Component {
     return (
       <div>
         <div className="container container--narrow py-5">
-          <ReviewHeader deck={deck} className="mb-5" />
+          <ReviewHeader deck={deck} className="mt-3 mb-2" />
           <div className="flashcard-container row mt-4 px-3">
             <div className="d-flex justify-content-between w-100 m-2">
               <StudyToggle onChange={this.onSRSToggle} />
@@ -518,7 +525,10 @@ class Review extends Component {
                         ))}
                         {this.isSelfGraded() &&
                           !this.state.isRevealed && (
-                            <button className="btn border rounded" onClick={this.onToggleReveal}>
+                            <button
+                              className="btn btn-reset border rounded"
+                              onClick={this.onToggleReveal}
+                            >
                               Press space to show answer
                             </button>
                           )}
