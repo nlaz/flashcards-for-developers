@@ -100,7 +100,7 @@ class Decks extends Component {
     api
       .fetchCollections()
       .then(({ data }) => {
-        const savedCollection = { name: "Saved Decks", id: "saved" };
+        const savedCollection = { name: "Saved decks", id: "saved" };
         const collections = this.state.savedDecks.length > 0 ? [savedCollection, ...data] : data;
         this.setState({ collections });
       })

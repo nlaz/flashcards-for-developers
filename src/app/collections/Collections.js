@@ -70,7 +70,7 @@ class Collections extends Component {
       api.fetchSavedDecks().then(({ data }) => {
         this.setState({
           savedDecks: data,
-          collection: { name: "Saved Decks" },
+          collection: { name: "Saved decks", id: "saved" },
           decks: this.sortDecks(data),
           isLoading: false,
         });
@@ -81,7 +81,7 @@ class Collections extends Component {
         api.fetchDecksById(savedDecks).then(({ data }) => {
           this.setState({
             savedDecks: data,
-            collection: { name: "Saved Decks" },
+            collection: { name: "Saved decks", id: "saved" },
             decks: this.sortDecks(data),
             isLoading: false,
           });
@@ -172,7 +172,7 @@ class Collections extends Component {
           </div>
         </div>
         {decks.length > 0 ? (
-          <div className="row pt-4">
+          <div className="row pt-4" style={{ minHeight: "40vh" }}>
             {decks.map(deck => (
               <DeckItem
                 deck={deck}

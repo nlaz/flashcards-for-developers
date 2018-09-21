@@ -244,12 +244,16 @@ class Review extends Component {
   };
 
   fetchCollection = collectionId => {
-    api
-      .fetchCollection(collectionId)
-      .then(({ data }) => {
-        this.setState({ deck: { ...data, type: "Self graded" }, isDeckLoading: false });
-      })
-      .catch(error => this.setState({ isError: true, isDeckLoading: false }));
+    if (this.isSavedCollection()) {
+      this.setState({ deck: { name: "Saved deck", type: "Self graded" }, isDeckLoading: false });
+    } else {
+      api
+        .fetchCollection(collectionId)
+        .then(({ data }) => {
+          this.setState({ deck: { ...data, type: "Self graded" }, isDeckLoading: false });
+        })
+        .catch(error => this.setState({ isError: true, isDeckLoading: false }));
+    }
   };
 
   fetchCards = deck => {
@@ -260,8 +264,14 @@ class Review extends Component {
   };
 
   fetchMixedCards = collectionId => {
+    // Edge case: fetching a set of mixed cards from a set of saved decks.
+    const params =
+      !isAuthenticated() && this.isSavedCollection()
+        ? { deckIds: localStorage.getSavedDecks() }
+        : { collection: collectionId };
+
     api
-      .fetchCards({ collection: collectionId })
+      .fetchCards(params)
       .then(this.handleCardsResponse)
       .catch(error => this.setState({ isError: true, isCardsLoading: false }));
   };
@@ -304,12 +314,13 @@ class Review extends Component {
   };
 
   setStudyProgress = (card, isCorrect) => {
+    const deckId = card.deck.id || card.deck;
     const cardObj = this.state.cardProgress.find(el => el.card === card.id) || {};
     const { reviewedAt, leitnerBox } = studyProgress.calcUpdatedLevel(cardObj, isCorrect);
 
     if (isAuthenticated()) {
       api
-        .addCardProgress(card.deck.id, card.id, leitnerBox, reviewedAt)
+        .addCardProgress(deckId, card.id, leitnerBox, reviewedAt)
         .then(({ data }) => this.setState({ cardProgress: data.cards }))
         .catch(this.handleError);
     } else {
@@ -365,6 +376,7 @@ class Review extends Component {
   getPageEnd = () =>
     Math.min(Math.floor((this.state.page + 1) * this.state.pageSize), this.state.cards.length);
 
+  isSavedCollection = () => this.props.match.params.collectionId === "saved";
   isCollectionPage = () => this.props.match.path === "/collections/:collectionId/review";
   isReversible = deck => (deck || this.state.deck).type === "Reversible select";
   isMultiple = deck => (deck || this.state.deck).type === "Multiple select";
