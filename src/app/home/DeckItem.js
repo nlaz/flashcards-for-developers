@@ -1,22 +1,19 @@
 import React from "react";
 import cx from "classnames";
-import { Link, withRouter } from "react-router-dom";
+import { Link } from "react-router-dom";
 
 import * as utils from "../utils/studyProgress";
 import ProgressBar from "../../components/ProgressBar";
 import Octicon from "../../components/Octicon";
 
-const DeckItem = ({ deck, deckProgress, location, isSaved, onToggleSave }) => {
+const DeckItem = ({ deck, deckProgress, isSaved, onToggleSave }) => {
   const progress = utils.calcStudyProgress(deck, deckProgress);
   const proficiency = utils.calcStudyProficiency(deckProgress);
 
   return (
     <div className="deck-item col-12 col-sm-6 col-md-4 col-lg-3 d-flex">
       <Link
-        to={{
-          search: location.search,
-          pathname: `/decks/${deck.id}`,
-        }}
+        to={`/decks/${deck.id}`}
         className={cx(
           "border rounded d-flex flex-column justify-content-between text-dark mb-3 p-4 w-100 position-relative",
           deck.new ? "border-dark" : "border-dark",
@@ -54,4 +51,8 @@ const DeckItem = ({ deck, deckProgress, location, isSaved, onToggleSave }) => {
   );
 };
 
-export default withRouter(DeckItem);
+DeckItem.defaultProps = {
+  deck: {},
+};
+
+export default DeckItem;

@@ -71,7 +71,12 @@ class Review extends Component {
 
   componentDidMount() {
     const { params } = this.props.match;
-    if (params.deckId) {
+
+    if (this.isCollectionPage()) {
+      this.fetchCollection(params.collectionId);
+      this.fetchMixedCards(params.collectionId);
+      this.fetchStudyProgress();
+    } else {
       this.fetchDeck(params.deckId);
       this.fetchDeckProgress(params.deckId);
     }
@@ -149,9 +154,16 @@ class Review extends Component {
   };
 
   onSRSToggle = value => {
-    const { deck } = this.state;
     analytics.logToggleFamiliarCards(value);
-    this.setState({ isCardsLoading: true }, () => this.fetchCards(deck));
+    this.setState({ isCardsLoading: true }, () => {
+      if (this.isCollectionPage()) {
+        const { collectionId } = this.props.match.params;
+        this.fetchMixedCards(collectionId);
+      } else {
+        const { deckId } = this.props.match.params;
+        this.fetchCards(deckId);
+      }
+    });
   };
 
   handleSelfGradedAnswer = answer => {
@@ -161,10 +173,9 @@ class Review extends Component {
 
     const isCorrect = answer === SELF_GRADE_CORRECT;
     const card = this.getCurrentCard();
-    const { deck } = this.state;
 
     analytics.logReviewEvent(card.id);
-    this.setStudyProgress(card.id, deck.id, isCorrect);
+    this.setStudyProgress(card, isCorrect);
 
     this.setState({ correctness: [...this.state.correctness, isCorrect] });
 
@@ -180,11 +191,10 @@ class Review extends Component {
 
   handleMultipleChoiceAnswer = answer => {
     const card = this.getCurrentCard();
-    const { deck } = this.state;
     const isCorrect = this.isCorrectAnswer(answer, card);
     this.setState({ selected: answer });
 
-    this.setStudyProgress(card.id, deck.id, isCorrect);
+    this.setStudyProgress(card, isCorrect);
 
     if (isCorrect) {
       this.setState({ correctness: [...this.state.correctness, isCorrect] });
@@ -240,18 +250,46 @@ class Review extends Component {
     );
   };
 
+  fetchCollection = collectionId => {
+    if (this.isSavedCollection()) {
+      this.setState({ deck: { name: "Saved decks", type: "Self graded" }, isDeckLoading: false });
+    } else {
+      api
+        .fetchCollection(collectionId)
+        .then(({ data }) => {
+          this.setState({ deck: { ...data, type: "Self graded" }, isDeckLoading: false });
+        })
+        .catch(error => this.setState({ isError: true, isDeckLoading: false }));
+    }
+  };
+
   fetchCards = deck => {
+    api
+      .fetchCards({ deck: deck.id })
+      .then(this.handleCardsResponse)
+      .catch(error => this.setState({ isError: true, isCardsLoading: false }));
+  };
+
+  fetchMixedCards = collectionId => {
+    // Edge case: fetching a set of mixed cards from a set of saved decks.
+    const params =
+      !isAuthenticated() && this.isSavedCollection()
+        ? { deckIds: localStorage.getSavedDecks() }
+        : { collection: collectionId };
+
+    api
+      .fetchCards(params)
+      .then(this.handleCardsResponse)
+      .catch(error => this.setState({ isError: true, isCardsLoading: false }));
+  };
+
+  handleCardsResponse = ({ data }) => {
     const { index } = this.state;
-    api.fetchCards(deck.id).then(
-      ({ data }) => {
-        const isSRS = localStorage.getSRSPref();
-        const filteredCards = isSRS ? this.filterExpiredCards(data) : data;
-        const cards = chance.shuffle(filteredCards);
-        const options = this.getOptions(index, cards);
-        this.setState({ cards, options, index: 0, isCardsLoading: false });
-      },
-      error => this.setState({ isError: true, isCardsLoading: false }),
-    );
+    const isSRS = localStorage.getSRSPref();
+    const filteredCards = isSRS ? this.filterExpiredCards(data) : data;
+    const cards = chance.shuffle(filteredCards);
+    const options = this.getOptions(index, cards);
+    this.setState({ cards, options, index: 0, isCardsLoading: false });
   };
 
   fetchDeckProgress = deckId => {
@@ -261,22 +299,39 @@ class Review extends Component {
         .then(({ data }) => this.setState({ cardProgress: data.cards || [] }))
         .catch(this.handleError);
     } else {
-      const deckProgress = localStorage.getDeckProgressObject(deckId);
+      const deckProgress = localStorage.getDeckProgressObject(deckId) || {};
       this.setState({ cardProgress: deckProgress.cards || [] });
     }
   };
 
-  setStudyProgress = (cardId, deckId, isCorrect) => {
-    const cardObj = this.state.cardProgress.find(el => el.card === cardId) || {};
+  fetchStudyProgress = () => {
+    if (isAuthenticated()) {
+      api
+        .fetchStudyProgress()
+        .then(({ data }) => {
+          const cardProgress = data.reduce((acc, el) => [...acc, ...el.cards], []);
+          this.setState({ cardProgress });
+        })
+        .catch(this.handleError);
+    } else {
+      const studyProgress = localStorage.getStudyProgress();
+      const cardProgress = studyProgress.reduce((acc, el) => [...acc, ...el.cards], []);
+      this.setState({ cardProgress });
+    }
+  };
+
+  setStudyProgress = (card, isCorrect) => {
+    const deckId = card.deck.id || card.deck;
+    const cardObj = this.state.cardProgress.find(el => el.card === card.id) || {};
     const { reviewedAt, leitnerBox } = studyProgress.calcUpdatedLevel(cardObj, isCorrect);
 
     if (isAuthenticated()) {
       api
-        .addCardProgress(deckId, cardId, leitnerBox, reviewedAt)
+        .addCardProgress(deckId, card.id, leitnerBox, reviewedAt)
         .then(({ data }) => this.setState({ cardProgress: data.cards }))
         .catch(this.handleError);
     } else {
-      const deckProgress = localStorage.addCardProgress(cardId, deckId, leitnerBox, reviewedAt);
+      const deckProgress = localStorage.addCardProgress(deckId, card.id, leitnerBox, reviewedAt);
       this.setState({ cardProgress: deckProgress.cards });
     }
   };
@@ -319,7 +374,7 @@ class Review extends Component {
   };
 
   getDeckType = () => (this.isSelfGraded() ? "Self graded" : "Multiple choice");
-  getCurrentCard = () => this.state.cards[this.state.index];
+  getCurrentCard = () => this.state.cards[this.state.index] || {};
   getCategoryUrl = id => `/categories/${id}`;
   getOptionHTML = option => marked(this.state.isReversed ? option.front : option.back || option);
   getCardHTML = card => marked(this.state.isReversed ? card.back : card.front);
@@ -328,6 +383,8 @@ class Review extends Component {
   getPageEnd = () =>
     Math.min(Math.floor((this.state.page + 1) * this.state.pageSize), this.state.cards.length);
 
+  isSavedCollection = () => this.props.match.params.collectionId === "saved";
+  isCollectionPage = () => this.props.match.path === "/collections/:collectionId/review";
   isReversible = deck => (deck || this.state.deck).type === "Reversible select";
   isMultiple = deck => (deck || this.state.deck).type === "Multiple select";
   isSelfGraded = deck => (deck || this.state.deck).type === "Self graded";
@@ -379,11 +436,14 @@ class Review extends Component {
     const pageEnd = this.getPageEnd();
     const pageStart = this.getPageStart();
     const isStageFinished = this.isStageFinished();
+    const isImageSelect = (currentCard.deck || {}).type
+      ? this.isImageSelect(currentCard.deck)
+      : this.isImageSelect(deck);
 
     return (
       <div>
         <div className="container container--narrow py-5">
-          <ReviewHeader deck={deck} className="mb-5" />
+          <ReviewHeader deck={deck} className="mt-3 mb-2" />
           <div className="flashcard-container row mt-4 px-3">
             <div className="d-flex justify-content-between w-100 m-2">
               <StudyToggle onChange={this.onSRSToggle} />
@@ -411,12 +471,33 @@ class Review extends Component {
                     <div className="row w-100 mx-0">
                       <ReviewType type={this.getDeckType()} />
                       <div className="col-12 col-lg-6 d-flex align-items-center px-1 pb-2">
-                        {this.isImageSelect(deck) ? (
-                          <img className="img-fluid px-3 mx-auto" alt="" src={currentCard.front} />
+                        {isImageSelect ? (
+                          <div className="flashcard-body d-flex flex-column border rounded px-3 py-2 w-100 h-100">
+                            {this.isCollectionPage() && (
+                              <small style={{ opacity: 0.85 }}>{currentCard.deck.name}</small>
+                            )}
+                            <img
+                              className="img-fluid my-2 px-3 mx-auto"
+                              alt=""
+                              src={currentCard.front}
+                            />
+                            {this.state.isRevealed && (
+                              <div
+                                className="markdown-body text-left d-flex align-items-center justify-content-center flex-column mt-3 pt-3"
+                                style={{ borderTop: "1px solid #f5f5f5" }}
+                                dangerouslySetInnerHTML={{
+                                  __html: marked(currentCard.back),
+                                }}
+                              />
+                            )}
+                          </div>
                         ) : (
-                          <div className="flashcard-body border rounded px-3 py-5 w-100 h-100">
+                          <div className="flashcard-body border rounded px-3 py-2 w-100 h-100">
+                            {this.isCollectionPage() && (
+                              <small style={{ opacity: 0.85 }}>{currentCard.deck.name}</small>
+                            )}
                             <div
-                              className="markdown-body text-left d-flex align-items-center justify-content-center flex-column"
+                              className="markdown-body text-left d-flex align-items-center justify-content-center flex-column my-2"
                               dangerouslySetInnerHTML={{
                                 __html: this.getCardHTML(currentCard),
                               }}
@@ -465,7 +546,10 @@ class Review extends Component {
                         ))}
                         {this.isSelfGraded() &&
                           !this.state.isRevealed && (
-                            <button className="btn border rounded" onClick={this.onToggleReveal}>
+                            <button
+                              className="btn btn-reset border rounded"
+                              onClick={this.onToggleReveal}
+                            >
                               Press space to show answer
                             </button>
                           )}
@@ -476,7 +560,6 @@ class Review extends Component {
                     <ReviewResults
                       index={this.state.index}
                       cards={this.state.cards}
-                      location={this.props.location}
                       numCorrect={this.state.numCorrect}
                       numIncorrect={this.state.numIncorrect}
                       cardProgress={this.state.cardProgress}
