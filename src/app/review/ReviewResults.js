@@ -1,8 +1,9 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import { ResponsiveContainer, Cell, PieChart, Pie, Tooltip, Legend, Label } from "recharts";
-
+import isAuthenticated from "../utils/isAuthenticated";
 import * as leitner from "../../spaced/leitner";
+import LoginPrompt from "./LoginPrompt";
 
 const ReviewResults = ({
   index,
@@ -11,7 +12,7 @@ const ReviewResults = ({
   numIncorrect,
   cardProgress,
   onKeepGoing,
-  onGoBack,
+  onGoBack
 }) => {
   const progressData = [
     { name: "Practiced", value: index || 1 },
@@ -20,14 +21,19 @@ const ReviewResults = ({
 
   const progress = Math.round((100 * index) / cards.length) || 100;
   const isCompleted = index > cards.length - 1;
-
+  const authenticated = isAuthenticated();
   const daysUntilDeckProgressIsExpired =
     cardProgress.reduce((avg, cardObj) => {
       return leitner.getDaysUntilExpired(cardObj.leitnerBox, cardObj.reviewedA) + avg;
     }, 0) / cardProgress.length;
 
-  return (
+    return (
     <div className="w-100">
+      {!authenticated ? (
+        <LoginPrompt/>
+      ): (
+        <div></div>
+      )}
       {!isCompleted ? (
         <h3 className="text-center">
           Nice work!{" "}

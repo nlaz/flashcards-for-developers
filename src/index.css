@@ -334,6 +334,13 @@ a[disabled] {
   width: 100%;
   padding: 0.5rem 1rem;
 }
+.loginPrompt{
+  top: -1%;
+  left: -0.5%;
+  width: 101%;
+  background-color: #e4efff;
+  color: #1B3E72;
+}
 
 @media (min-width: 576px) {
   .loginModal {
