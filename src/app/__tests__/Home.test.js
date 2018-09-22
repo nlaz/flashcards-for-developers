@@ -3,6 +3,7 @@ import { shallow } from "enzyme";
 import Home from "../home/Home";
 
 jest.mock("../apiActions", () => ({
+  searchCollections: () => Promise.resolve({ data: [] }),
   fetchCollections: () => Promise.resolve({ data: [] }),
   fetchStudyProgress: () => Promise.resolve({ data: [] }),
   fetchSavedDecks: () => Promise.resolve({ data: [] }),

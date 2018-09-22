@@ -51,4 +51,8 @@ const DeckItem = ({ deck, deckProgress, isSaved, onToggleSave }) => {
   );
 };
 
+DeckItem.defaultProps = {
+  deck: {},
+};
+
 export default DeckItem;

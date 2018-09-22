@@ -299,7 +299,7 @@ class Review extends Component {
         .then(({ data }) => this.setState({ cardProgress: data.cards || [] }))
         .catch(this.handleError);
     } else {
-      const deckProgress = localStorage.getDeckProgressObject(deckId);
+      const deckProgress = localStorage.getDeckProgressObject(deckId) || {};
       this.setState({ cardProgress: deckProgress.cards || [] });
     }
   };
