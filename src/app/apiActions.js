@@ -49,23 +49,23 @@ export const fetchCards = ({ deck, collection, deckIds }) => {
   return axios.get(`/api/cards?${params}`, config);
 };
 
-export const fetchSavedDecks = () => {
+export const fetchPinnedDecks = () => {
   const config = { headers: { Authorization: cookie.get("token") } };
-  return axios.get("/users/saved_decks", config);
+  return axios.get("/users/pinned_decks", config);
 };
 
-export const removeSavedDeck = deckId => {
+export const removePinnedDeck = deckId => {
   const config = { headers: { Authorization: cookie.get("token") } };
-  return axios.delete("/users/saved_decks", { ...config, data: { deck: deckId } });
+  return axios.delete("/users/pinned_decks", { ...config, data: { deck: deckId } });
 };
 
-export const addSavedDecks = deckIds => {
+export const addPinnedDecks = deckIds => {
   const config = { headers: { Authorization: cookie.get("token") } };
-  return axios.put("/users/saved_decks", { decks: [...deckIds] }, config);
+  return axios.put("/users/pinned_decks", { decks: [...deckIds] }, config);
 };
 
-export const toggleSavedDeck = (deckId, isSaved) => {
-  return isSaved ? removeSavedDeck(deckId) : addSavedDecks([deckId]);
+export const togglePinnedDeck = (deckId, isPinned) => {
+  return isPinned ? removePinnedDeck(deckId) : addPinnedDecks([deckId]);
 };
 
 export const fetchStudySessions = () => {

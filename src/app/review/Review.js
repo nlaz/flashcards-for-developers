@@ -251,8 +251,8 @@ class Review extends Component {
   };
 
   fetchCollection = collectionId => {
-    if (this.isSavedCollection()) {
-      this.setState({ deck: { name: "Saved decks", type: "Self graded" }, isDeckLoading: false });
+    if (this.isPinnedCollection()) {
+      this.setState({ deck: { name: "Pinned decks", type: "Self graded" }, isDeckLoading: false });
     } else {
       api
         .fetchCollection(collectionId)
@@ -271,10 +271,10 @@ class Review extends Component {
   };
 
   fetchMixedCards = collectionId => {
-    // Edge case: fetching a set of mixed cards from a set of saved decks.
+    // Edge case: fetching a set of mixed cards from a set of pinned decks.
     const params =
-      !isAuthenticated() && this.isSavedCollection()
-        ? { deckIds: localStorage.getSavedDecks() }
+      !isAuthenticated() && this.isPinnedCollection()
+        ? { deckIds: localStorage.getPinnedDecks() }
         : { collection: collectionId };
 
     api
@@ -383,7 +383,7 @@ class Review extends Component {
   getPageEnd = () =>
     Math.min(Math.floor((this.state.page + 1) * this.state.pageSize), this.state.cards.length);
 
-  isSavedCollection = () => this.props.match.params.collectionId === "saved";
+  isPinnedCollection = () => this.props.match.params.collectionId === "pinned";
   isCollectionPage = () => this.props.match.path === "/collections/:collectionId/review";
   isReversible = deck => (deck || this.state.deck).type === "Reversible select";
   isMultiple = deck => (deck || this.state.deck).type === "Multiple select";

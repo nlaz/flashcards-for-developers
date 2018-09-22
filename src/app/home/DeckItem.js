@@ -6,9 +6,10 @@ import * as utils from "../utils/studyProgress";
 import ProgressBar from "../../components/ProgressBar";
 import Octicon from "../../components/Octicon";
 
-const DeckItem = ({ deck, deckProgress, isSaved, onToggleSave }) => {
+const DeckItem = ({ deck, deckProgress, isPinned, onTogglePin }) => {
   const progress = utils.calcStudyProgress(deck, deckProgress);
   const proficiency = utils.calcStudyProficiency(deckProgress);
+  const label = isPinned ? "Pinned" : "Pin";
 
   return (
     <div className="deck-item col-12 col-sm-6 col-md-4 col-lg-3 d-flex">
@@ -28,14 +29,14 @@ const DeckItem = ({ deck, deckProgress, isSaved, onToggleSave }) => {
           <ProgressBar className="mb-2" progress={progress} proficiency={proficiency} />
           {deck.name}
           <button
-            className={cx("save badge position-absolute align-items-center p-1 text-uppercase", {
-              "save-active bg-dark text-white": isSaved,
+            className={cx("pin-btn badge position-absolute align-items-center p-1 text-uppercase", {
+              "pin-btn-active bg-dark text-white": isPinned,
             })}
             style={{ bottom: "16px", left: "18px" }}
-            onClick={e => onToggleSave(e, deck)}
+            onClick={e => onTogglePin(e, deck)}
           >
-            <Octicon name={isSaved ? "check" : "plus"} className="d-flex align-items-center" />
-            {isSaved ? "Saved" : "Save"}
+            <Octicon name={isPinned ? "check" : "pin"} className="d-flex align-items-center" />
+            {label}
           </button>
           {deck.new && (
             <div
