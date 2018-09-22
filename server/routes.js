@@ -1,5 +1,6 @@
 const express = require("express");
 
+const getUser = require("./middleware/getUser");
 const isAuthenticated = require("./middleware/isAuthenticated");
 const UsersController = require("./controllers/UsersController");
 const CardsController = require("./controllers/CardsController");
@@ -18,7 +19,7 @@ router.get("/api/decks/:deckId", DecksController.getDeck);
 router.get("/api/collections", CollectionsController.getCollections);
 router.get("/api/collections/:collectionId", CollectionsController.getCollection);
 
-router.get("/api/cards", CardsController.getCards);
+router.get("/api/cards", getUser, CardsController.getCards);
 
 router.post("/auth/github/login", UsersController.getGithubUser);
 router.post("/auth/github/register", UsersController.createGithubUser);

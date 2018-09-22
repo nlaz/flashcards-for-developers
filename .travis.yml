@@ -1,9 +1,10 @@
 language: node_js
-  node_js:
-    - 6
-  cache:
-    directories:
-      - node_modules
-  script:
-    - npm run build
-    - npm test
+node_js:
+  - node
+cache:
+  directories:
+  - node_modules
+services: mongodb
+script:
+  - npm run build
+  - npm test

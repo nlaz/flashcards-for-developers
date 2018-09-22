@@ -12,7 +12,9 @@ const GITHUB_PARAMS = qs.stringify({
 });
 const GITHUB_OAUTH_URL = `https://github.com/login/oauth/authorize?${GITHUB_PARAMS}`;
 
-Modal.setAppElement("#root");
+if (process.env.NODE_ENV !== "test") {
+  Modal.setAppElement("#root");
+}
 
 const LoginModal = ({ isOpen, onClose }) => (
   <Modal isOpen={isOpen} className="loginModal" overlayClassName="loginModal-overlay">

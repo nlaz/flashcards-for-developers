@@ -7,7 +7,6 @@ import * as leitner from "../../spaced/leitner";
 const ReviewResults = ({
   index,
   cards,
-  location,
   numCorrect,
   numIncorrect,
   cardProgress,
@@ -119,7 +118,7 @@ const ReviewResults = ({
             </button>
           </div>
         ) : (
-          <Link to={{ pathname: "/", search: location.search }} className="btn btn-dark">
+          <Link to="/" className="btn btn-dark">
             Go back home
           </Link>
         )}

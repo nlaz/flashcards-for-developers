@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import { Link } from "react-router-dom";
 
 import config from "../../config";
 import isAuthenticated from "../utils/isAuthenticated";
@@ -69,7 +70,7 @@ class Collections extends Component {
       api.fetchSavedDecks().then(({ data }) => {
         this.setState({
           savedDecks: data,
-          collection: { name: "Saved Decks" },
+          collection: { name: "Saved decks", id: "saved" },
           decks: this.sortDecks(data),
           isLoading: false,
         });
@@ -80,7 +81,7 @@ class Collections extends Component {
         api.fetchDecksById(savedDecks).then(({ data }) => {
           this.setState({
             savedDecks: data,
-            collection: { name: "Saved Decks" },
+            collection: { name: "Saved decks", id: "saved" },
             decks: this.sortDecks(data),
             isLoading: false,
           });
@@ -152,9 +153,19 @@ class Collections extends Component {
     return (
       <div className="container container--full px-4 my-5">
         <div className="d-flex flex-column-reverse flex-lg-row justify-content-between align-items-lg-end">
-          <div className="m-0 my-3">
+          <div className="mb-2 mt-3">
             <h1 className="m-0">{collection.name}</h1>
             {collection.description && <p className="m-0">{collection.description}</p>}
+            {this.isSavedDecksPage() && (
+              <Link
+                className="btn btn-dark font-weight-medium text-uppercase d-block d-sm-inline-block mt-2"
+                style={{ borderRadius: "999px", fontSize: ".75em", padding: "5px 25px" }}
+                onClick={() => analytics.logUserAction("Clicked 'Study now' button")}
+                to={`/collections/${collection.id}/review`}
+              >
+                Study Now
+              </Link>
+            )}
           </div>
           <div
             className="bg-light rounded p-3 mb-2 border border-secondary d-flex align-items-center"
@@ -163,8 +174,9 @@ class Collections extends Component {
             <SkillProgress decks={decks} studyProgress={studyProgress} />
           </div>
         </div>
+        <hr className="m-0" style={{ opacity: 0.6 }} />
         {decks.length > 0 ? (
-          <div className="row pt-4">
+          <div className="row pt-4" style={{ minHeight: "40vh" }}>
             {decks.map(deck => (
               <DeckItem
                 deck={deck}

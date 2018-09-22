@@ -8,7 +8,9 @@ import Octicon from "../../components/Octicon";
 import * as analytics from "../../components/GoogleAnalytics";
 import * as localStorage from "../utils/localStorage";
 
-Modal.setAppElement("#root");
+if (process.env.NODE_ENV !== "test") {
+  Modal.setAppElement("#root");
+}
 
 const ERRORS = { REQUIRED: "Required", INVALID: "Invalid" };
 
