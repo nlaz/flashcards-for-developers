@@ -1,5 +1,5 @@
 {
-  "short_name": "Flashcards for Developers",
+  "short_name": "Flashcards",
   "name": "Flashcards for Developers",
   "icons": [
     {
@@ -19,7 +19,7 @@
     }
   ],
   "start_url": ".",
-  "display": "browser",
+  "display": "standalone",
   "theme_color": "#000000",
   "background_color": "#ffffff"
 }
