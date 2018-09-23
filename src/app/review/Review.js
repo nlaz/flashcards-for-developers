@@ -442,9 +442,17 @@ class Review extends Component {
 
     return (
       <div>
-        <div className="container container--narrow py-5">
-          <ReviewHeader deck={deck} className="mt-3 mb-2" />
-          <div className="flashcard-container row mt-4 px-3">
+        <div
+          className="review-header py-4"
+          style={{ background: "#f9f9f9", borderBottom: "1px solid #e8e8e8" }}
+        >
+          <div className="container container--narrow">
+            <ReviewHeader deck={deck} className="review-header mt-3 mb-2" />
+          </div>
+        </div>
+
+        <div className="container container--narrow py-4">
+          <div className="flashcard-container row px-3">
             <div className="d-flex justify-content-between w-100 m-2">
               <StudyToggle onChange={this.onSRSToggle} />
               <StudyProgress

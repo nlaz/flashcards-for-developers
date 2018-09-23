@@ -265,14 +265,6 @@ a[disabled] {
   }
 }
 
-.collection-container {
-  background: #f9f9f9;
-  border: 1px solid #e8e8e8;
-  border-radius: 2px;
-  margin-right: 0;
-  margin-left: 0;
-}
-
 .collection-item {
   height: 200px;
 }
@@ -302,11 +294,6 @@ a[disabled] {
 @media (min-width: 992px) {
   .collection-item {
     height: 200px;
-  }
-
-  .collection-container {
-    margin-right: -40px;
-    margin-left: -40px;
   }
 }
 
@@ -390,5 +377,19 @@ a[disabled] {
   }
   .loginModal-button {
     width: auto;
+  }
+}
+
+.pinned-row .deck-item {
+  max-height: 150px;
+}
+
+.review-header .deck-description {
+  font-size: 0.9em;
+}
+
+@media (min-width: 576px) {
+  .review-header .deck-description {
+    font-size: 1em;
   }
 }

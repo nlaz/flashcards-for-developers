@@ -100,10 +100,7 @@ class Decks extends Component {
     api
       .fetchCollections()
       .then(({ data }) => {
-        const pinnedCollection = { name: "Pinned decks", id: "pinned", emoji: "⚡️" };
-        const pinnedDecks = this.state.pinnedDecks || [];
-        const collections = pinnedDecks.length > 0 ? [pinnedCollection, ...data] : data;
-        this.setState({ collections });
+        this.setState({ collections: data });
       })
       .catch(this.handleError);
   };
@@ -125,7 +122,15 @@ class Decks extends Component {
   getDeckProgress = id => this.state.studyProgress.find(el => el.deck === id);
 
   render() {
-    const { featuredRow, trendingRow, newestRow, collections, isLoading, isError } = this.state;
+    const {
+      featuredRow,
+      trendingRow,
+      newestRow,
+      collections,
+      pinnedDecks,
+      isLoading,
+      isError,
+    } = this.state;
 
     if (isLoading) {
       return (
@@ -155,32 +160,64 @@ class Decks extends Component {
     }
 
     return (
-      <div className="my-5">
-        <div className="container container--full px-4 my-5">
-          <div className="d-flex flex-column flex-lg-row justify-content-between align-items-lg-center">
-            <div className="mb-3">
-              <h1 className="m-0">Flashcards for Developers</h1>
-              <p className="m-0">A curated list of flashcards to boost your professional skills</p>
-            </div>
-            <div
-              className="bg-light rounded p-3 mb-2 border border-secondary d-flex align-items-center"
-              style={{ minWidth: "260px", minHeight: "90px" }}
-            >
-              <HabitTracker />
+      <div className="">
+        <div
+          className="review-header py-4"
+          style={{ background: "#f9f9f9", borderBottom: "1px solid #e8e8e8" }}
+        >
+          <div className="container container--full px-4 my-2">
+            <div className="d-flex flex-column flex-lg-row justify-content-between align-items-lg-center">
+              <div className="home-header py-2">
+                <h1 className="m-0">Flashcards for Developers</h1>
+                <p className="m-0">
+                  A curated list of flashcards to boost your professional skills
+                </p>
+              </div>
+              <div
+                className="bg-light rounded p-2 border border-secondary d-flex align-items-center"
+                style={{ minWidth: "260px", minHeight: "90px" }}
+              >
+                <HabitTracker />
+              </div>
             </div>
           </div>
+
+          {pinnedDecks &&
+            pinnedDecks.length > 0 && (
+              <div className="container container--full px-4 mt-4">
+                <div className="pinned-row">
+                  <div className="d-flex justify-content-between align-items-end mb-2 mx-1">
+                    <h6 className="text-uppercase m-0">MY PINNED DECKS</h6>
+                    <Link className="text-dark text-underline" to="/collections/pinned">
+                      See all
+                    </Link>
+                  </div>
+                  <div className="row">
+                    {pinnedDecks.slice(0, 4).map(item => (
+                      <DeckItem
+                        key={item.id}
+                        deck={item}
+                        isPinned={this.isPinned(item.id)}
+                        deckProgress={this.getDeckProgress(item.id)}
+                        onTogglePin={this.onTogglePin}
+                      />
+                    ))}
+                  </div>
+                </div>
+              </div>
+            )}
         </div>
 
         {collections && (
           <div className="container container--full px-0 px-lg-4 mx-0 mx-lg-auto">
-            <div className="collection-container py-4 px-4 px-lg-5 mt-3">
+            <div className="mt-5">
               <div className="d-flex justify-content-between align-items-end mb-2 mx-1">
-                <h6 className="text-uppercase m-0">Collections</h6>
+                <h6 className="text-uppercase m-0">Popular Collections</h6>
                 <Link className="text-dark text-underline" to="/collections">
                   See all
                 </Link>
               </div>
-              <div className="row">
+              <div className="row px-4 pt-3">
                 {collections.slice(0, 4).map(item => (
                   <CollectionItem key={item.id} collection={item} />
                 ))}
@@ -195,7 +232,7 @@ class Decks extends Component {
               <div className="my-4 mt-5">
                 <div className="d-flex justify-content-between align-items-end mb-2 mx-1">
                   <h6 className="text-uppercase m-0">
-                    Featured
+                    Featured Decks
                     <i className="fa fa-bullhorn ml-1" />
                   </h6>
                 </div>
