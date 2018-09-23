@@ -44,7 +44,7 @@ class Collections extends Component {
     this.pinDeck(deck, isPinned);
   };
 
-  sortDecks = decks => [...decks].sort((a, b) => b.new - a.new);
+  sortDecks = (decks = []) => [...decks].sort((a, b) => b.new - a.new);
 
   fetchCollection = id => {
     api.fetchCollection(id).then(
