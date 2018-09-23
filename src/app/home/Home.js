@@ -100,7 +100,7 @@ class Decks extends Component {
     api
       .fetchCollections()
       .then(({ data }) => {
-        const pinnedCollection = { name: "Pinned decks", id: "pinned" };
+        const pinnedCollection = { name: "Pinned decks", id: "pinned", emoji: "⚡️" };
         const pinnedDecks = this.state.pinnedDecks || [];
         const collections = pinnedDecks.length > 0 ? [pinnedCollection, ...data] : data;
         this.setState({ collections });
