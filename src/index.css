@@ -143,18 +143,18 @@ a[disabled] {
   font-size: 40px;
 }
 
-.deck-item .save svg {
+.deck-item .pin-btn svg {
   width: 10px;
   height: 10px;
   margin-right: 2px;
   fill: #999999;
 }
 
-.deck-item:hover .save {
+.deck-item:hover .pin-btn {
   display: flex;
 }
 
-.deck-item .save {
+.deck-item .pin-btn {
   display: none;
   cursor: pointer;
   border: 1px solid #eeeeee;
@@ -162,15 +162,15 @@ a[disabled] {
 }
 
 @media (max-width: 992px) {
-  .deck-item .save {
+  .deck-item .pin-btn {
     display: flex;
   }
 }
-.deck-item .save-active svg {
+.deck-item .pin-btn-active svg {
   fill: white;
 }
 
-.deck-item .save:hover {
+.deck-item .pin-btn:hover {
   background: #eeeeee;
 }
 

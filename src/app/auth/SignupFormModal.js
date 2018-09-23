@@ -64,7 +64,7 @@ class SignupFormModal extends Component {
           const token = response.headers.authorization.split(" ")[1];
           cookie.set("token", token);
           cookie.set("user", response.data);
-          this.syncSavedDecks();
+          this.syncPinnedDecks();
           this.syncStudySessions();
           this.syncStudyProgress();
           this.props.onClose();
@@ -73,10 +73,10 @@ class SignupFormModal extends Component {
     }
   };
 
-  syncSavedDecks = () => {
-    const savedDecks = localStorage.getSavedDecks();
-    if (savedDecks.length > 0) {
-      api.addSavedDecks(savedDecks).catch(this.handleError);
+  syncPinnedDecks = () => {
+    const pinnedDecks = localStorage.getPinnedDecks();
+    if (pinnedDecks.length > 0) {
+      api.addPinnedDecks(pinnedDecks).catch(this.handleError);
     }
   };
 
