@@ -6,6 +6,8 @@ const CollectionSchema = new mongoose.Schema(
     description: String,
     airtableId: { type: String, index: true },
     decks: { type: [{ type: mongoose.Schema.Types.ObjectId, ref: "Deck" }], select: false },
+    emoji: String,
+    color: String,
   },
   {
     timestamps: true,

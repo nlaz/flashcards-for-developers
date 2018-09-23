@@ -16,6 +16,8 @@ const getCollectionFromRecord = record => ({
   name: record.get("Name"),
   description: record.get("Description"),
   airtableDecks: record.get("Decks"),
+  emoji: record.get("Emoji"),
+  color: record.get("Color"),
 });
 
 // Fetches 'Collections' records from Airtable

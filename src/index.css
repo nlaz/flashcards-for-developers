@@ -274,16 +274,34 @@ a[disabled] {
 }
 
 .collection-item {
-  height: 100px;
+  height: 200px;
 }
-.collection-item a {
-  background: #40464d;
+.collection-item .item-link {
   border: 1px solid #e8e8e8;
+  justify-content: center;
+  align-items: center;
+}
+.collection-item .item-link:hover {
+  text-decoration: none;
+}
+.collection-item .text-secondary {
+  color: #9b9b9b;
+  line-height: 1.25em;
+  font-size: 0.85em;
+}
+.collection-item .collection-image {
+  background: #f1f1f1;
+  width: 60px;
+  height: 60px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 999px;
 }
 
 @media (min-width: 992px) {
   .collection-item {
-    height: 175px;
+    height: 200px;
   }
 
   .collection-container {
