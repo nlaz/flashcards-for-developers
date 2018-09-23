@@ -6,7 +6,7 @@ jest.mock("../apiActions", () => ({
   fetchCollection: () => Promise.resolve({ data: [] }),
   fetchCollections: () => Promise.resolve({ data: [] }),
   fetchStudyProgress: () => Promise.resolve({ data: [] }),
-  fetchSavedDecks: () => Promise.resolve({ data: [] }),
+  fetchPinnedDecks: () => Promise.resolve({ data: [] }),
 }));
 
 it("renders without crashing", () => {

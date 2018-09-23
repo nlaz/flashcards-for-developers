@@ -74,7 +74,7 @@ module.exports.createGithubUser = async (req, res, next) => {
   }
 };
 
-module.exports.getSavedDecks = async (req, res, next) => {
+module.exports.getPinnedDecks = async (req, res, next) => {
   try {
     const user = await User.findOne({ _id: req.user })
       .select("+saved_decks")
@@ -86,9 +86,9 @@ module.exports.getSavedDecks = async (req, res, next) => {
   }
 };
 
-module.exports.addSavedDecks = async (req, res, next) => {
+module.exports.addPinnedDecks = async (req, res, next) => {
   try {
-    await Joi.validate(req.body, userSchemas.addSavedDecks);
+    await Joi.validate(req.body, userSchemas.addPinnedDecks);
 
     const { decks } = req.body;
 
@@ -106,9 +106,9 @@ module.exports.addSavedDecks = async (req, res, next) => {
   }
 };
 
-module.exports.removeSavedDeck = async (req, res, next) => {
+module.exports.removePinnedDeck = async (req, res, next) => {
   try {
-    await Joi.validate(req.body, userSchemas.removeSavedDeck);
+    await Joi.validate(req.body, userSchemas.removePinnedDeck);
 
     const { deck } = req.body;
 

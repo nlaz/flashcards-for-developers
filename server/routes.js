@@ -24,9 +24,9 @@ router.get("/api/cards", getUser, CardsController.getCards);
 router.post("/auth/github/login", UsersController.getGithubUser);
 router.post("/auth/github/register", UsersController.createGithubUser);
 
-router.get("/users/saved_decks", isAuthenticated, UsersController.getSavedDecks);
-router.put("/users/saved_decks", isAuthenticated, UsersController.addSavedDecks);
-router.delete("/users/saved_decks", isAuthenticated, UsersController.removeSavedDeck);
+router.get("/users/pinned_decks", isAuthenticated, UsersController.getPinnedDecks);
+router.put("/users/pinned_decks", isAuthenticated, UsersController.addPinnedDecks);
+router.delete("/users/pinned_decks", isAuthenticated, UsersController.removePinnedDeck);
 
 router.get("/users/study_sessions", isAuthenticated, UsersController.getStudySessions);
 router.put("/users/study_sessions", isAuthenticated, UsersController.addStudySessions);

@@ -95,10 +95,10 @@ export function logGithubInterest() {
   });
 }
 
-export function logSaveDeckAction(deckName, isSaved) {
+export function logPinDeckAction(deckName, isPinned) {
   ReactGA.event({
     category: "User",
-    action: !isSaved ? "Saved a deck" : "Unsaved a deck",
+    action: !isPinned ? "Pinned a deck" : "Unpinned a deck",
     label: deckName,
   });
 }

@@ -18,30 +18,30 @@ class Collections extends Component {
     decks: [],
     isLoading: false,
     isError: false,
-    savedDecks: [],
+    pinnedDecks: [],
     studyProgress: [],
   };
 
   componentWillMount() {
     const { params } = this.props.match;
 
-    if (this.isSavedDecksPage()) {
-      this.fetchSavedDecksCollection();
+    if (this.isPinnedDecksPage()) {
+      this.fetchPinnedDecksCollection();
     } else {
-      this.fetchSavedDecks();
+      this.fetchPinnedDecks();
       this.fetchCollection(params.collectionId);
     }
 
     this.fetchStudyProgress();
   }
 
-  onToggleSave = (event, deck) => {
+  onTogglePin = (event, deck) => {
     event.preventDefault();
-    const isSaved = this.isSaved(deck.id);
+    const isPinned = this.isPinned(deck.id);
 
-    analytics.logSaveDeckAction(deck.name, isSaved);
+    analytics.logPinDeckAction(deck.name, isPinned);
 
-    this.saveDeck(deck, isSaved);
+    this.pinDeck(deck, isPinned);
   };
 
   sortDecks = decks => [...decks].sort((a, b) => b.new - a.new);
@@ -55,33 +55,33 @@ class Collections extends Component {
     );
   };
 
-  fetchSavedDecks = () => {
+  fetchPinnedDecks = () => {
     if (isAuthenticated()) {
-      api.fetchSavedDecks().then(({ data }) => {
-        this.setState({ savedDecks: data });
+      api.fetchPinnedDecks().then(({ data }) => {
+        this.setState({ pinnedDecks: data });
       });
     } else {
-      this.setState({ savedDecks: localStorage.getSavedDecks() });
+      this.setState({ pinnedDecks: localStorage.getPinnedDecks() });
     }
   };
 
-  fetchSavedDecksCollection = () => {
+  fetchPinnedDecksCollection = () => {
     if (isAuthenticated()) {
-      api.fetchSavedDecks().then(({ data }) => {
+      api.fetchPinnedDecks().then(({ data }) => {
         this.setState({
-          savedDecks: data,
-          collection: { name: "Saved decks", id: "saved" },
+          pinnedDecks: data,
+          collection: { name: "Pinned decks", id: "pinned" },
           decks: this.sortDecks(data),
           isLoading: false,
         });
       });
     } else {
-      const savedDecks = localStorage.getSavedDecks();
-      if (savedDecks.length > 0) {
-        api.fetchDecksById(savedDecks).then(({ data }) => {
+      const pinnedDecks = localStorage.getPinnedDecks();
+      if (pinnedDecks.length > 0) {
+        api.fetchDecksById(pinnedDecks).then(({ data }) => {
           this.setState({
-            savedDecks: data,
-            collection: { name: "Saved decks", id: "saved" },
+            pinnedDecks: data,
+            collection: { name: "Pinned decks", id: "pinned" },
             decks: this.sortDecks(data),
             isLoading: false,
           });
@@ -101,22 +101,22 @@ class Collections extends Component {
     }
   };
 
-  saveDeck = (deck, isSaved) => {
+  pinDeck = (deck, isPinned) => {
     const { decks } = this.state;
     if (isAuthenticated()) {
       api
-        .toggleSavedDeck(deck.id, isSaved)
+        .togglePinnedDeck(deck.id, isPinned)
         .then(({ data }) =>
-          this.setState({ savedDecks: data, decks: this.isSavedDecksPage() ? data : decks }),
+          this.setState({ pinnedDecks: data, decks: this.isPinnedDecksPage() ? data : decks }),
         )
         .catch(this.handleError);
     } else {
-      this.setState({ savedDecks: localStorage.toggleSavedDeck(deck.id, isSaved) });
+      this.setState({ pinnedDecks: localStorage.togglePinnedDeck(deck.id, isPinned) });
     }
   };
 
-  isSaved = id => this.state.savedDecks.find(el => el.id === id || el === id);
-  isSavedDecksPage = () => this.props.match.params.collectionId === "saved";
+  isPinned = id => this.state.pinnedDecks.find(el => el.id === id || el === id);
+  isPinnedDecksPage = () => this.props.match.params.collectionId === "pinned";
   getDeckProgress = id => this.state.studyProgress.find(el => el.deck === id);
 
   render() {
@@ -156,7 +156,7 @@ class Collections extends Component {
           <div className="mb-2 mt-3">
             <h1 className="m-0">{collection.name}</h1>
             {collection.description && <p className="m-0">{collection.description}</p>}
-            {this.isSavedDecksPage() && (
+            {this.isPinnedDecksPage() && (
               <Link
                 className="btn btn-dark font-weight-medium text-uppercase d-block d-sm-inline-block mt-2"
                 style={{ borderRadius: "999px", fontSize: ".75em", padding: "5px 25px" }}
@@ -183,8 +183,8 @@ class Collections extends Component {
                 deckProgress={this.getDeckProgress(deck.id)}
                 key={deck.id}
                 location={location}
-                isSaved={this.isSaved(deck.id)}
-                onToggleSave={this.onToggleSave}
+                isPinned={this.isPinned(deck.id)}
+                onTogglePin={this.onTogglePin}
               />
             ))}
           </div>

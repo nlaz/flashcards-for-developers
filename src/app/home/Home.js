@@ -17,7 +17,7 @@ class Decks extends Component {
     newestRow: {},
     trendingRow: {},
     featuredRow: {},
-    savedDecks: [],
+    pinnedDecks: [],
     studyProgress: [],
     collections: [],
     isLoading: false,
@@ -27,7 +27,7 @@ class Decks extends Component {
   componentWillMount() {
     document.title = "Flashcards for Developers";
 
-    this.fetchSavedDecks();
+    this.fetchPinnedDecks();
 
     this.fetchFeaturedCollection();
     this.fetchTrendingCollection();
@@ -37,16 +37,16 @@ class Decks extends Component {
     this.fetchCollections();
   }
 
-  onToggleSave = (event, deck) => {
+  onTogglePin = (event, deck) => {
     event.preventDefault();
-    const isSaved = this.isSaved(deck.id);
+    const isPinned = this.isPinned(deck.id);
 
-    analytics.logSaveDeckAction(deck.name, isSaved);
+    analytics.logPinDeckAction(deck.name, isPinned);
 
-    this.saveDeck(deck, isSaved);
+    this.pinDeck(deck, isPinned);
   };
 
-  sortDecks = decks => [...decks].sort((a, b) => b.new - a.new);
+  sortDecks = (decks = []) => [...decks].sort((a, b) => b.new - a.new);
 
   fetchDecks = collection => {
     api.fetchDecks(collection.id).then(
@@ -57,13 +57,13 @@ class Decks extends Component {
     );
   };
 
-  fetchSavedDecks = () => {
+  fetchPinnedDecks = () => {
     if (isAuthenticated()) {
-      api.fetchSavedDecks().then(({ data }) => {
-        this.setState({ savedDecks: data });
+      api.fetchPinnedDecks().then(({ data }) => {
+        this.setState({ pinnedDecks: data });
       });
     } else {
-      this.setState({ savedDecks: localStorage.getSavedDecks() });
+      this.setState({ pinnedDecks: localStorage.getPinnedDecks() });
     }
   };
 
@@ -100,28 +100,28 @@ class Decks extends Component {
     api
       .fetchCollections()
       .then(({ data }) => {
-        const savedCollection = { name: "Saved decks", id: "saved" };
-        const savedDecks = this.state.savedDecks || [];
-        const collections = savedDecks.length > 0 ? [savedCollection, ...data] : data;
+        const pinnedCollection = { name: "Pinned decks", id: "pinned" };
+        const pinnedDecks = this.state.pinnedDecks || [];
+        const collections = pinnedDecks.length > 0 ? [pinnedCollection, ...data] : data;
         this.setState({ collections });
       })
       .catch(this.handleError);
   };
 
-  saveDeck = (deck, isSaved) => {
+  pinDeck = (deck, isPinned) => {
     if (isAuthenticated()) {
       api
-        .toggleSavedDeck(deck.id, isSaved)
-        .then(response => this.setState({ savedDecks: response.data }))
+        .togglePinnedDeck(deck.id, isPinned)
+        .then(response => this.setState({ pinnedDecks: response.data }))
         .catch(this.handleError);
     } else {
-      this.setState({ savedDecks: localStorage.toggleSavedDeck(deck.id, isSaved) });
+      this.setState({ pinnedDecks: localStorage.togglePinnedDeck(deck.id, isPinned) });
     }
   };
 
   handleError = error => console.error(error);
 
-  isSaved = id => this.state.savedDecks.find(el => el.id === id || el === id);
+  isPinned = id => this.state.pinnedDecks.find(el => el.id === id || el === id);
   getDeckProgress = id => this.state.studyProgress.find(el => el.deck === id);
 
   render() {
@@ -205,9 +205,9 @@ class Decks extends Component {
                       <DeckItem
                         deck={deck}
                         key={deck.id}
-                        isSaved={this.isSaved(deck.id)}
+                        isPinned={this.isPinned(deck.id)}
                         deckProgress={this.getDeckProgress(deck.id)}
-                        onToggleSave={this.onToggleSave}
+                        onTogglePin={this.onTogglePin}
                       />
                     ))}
                   </div>
@@ -233,9 +233,9 @@ class Decks extends Component {
                       <DeckItem
                         deck={deck}
                         key={deck.id}
-                        isSaved={this.isSaved(deck.id)}
+                        isPinned={this.isPinned(deck.id)}
                         deckProgress={this.getDeckProgress(deck.id)}
-                        onToggleSave={this.onToggleSave}
+                        onTogglePin={this.onTogglePin}
                       />
                     ))}
                   </div>
@@ -261,9 +261,9 @@ class Decks extends Component {
                       <DeckItem
                         deck={deck}
                         key={deck.id}
-                        isSaved={this.isSaved(deck.id)}
+                        isPinned={this.isPinned(deck.id)}
                         deckProgress={this.getDeckProgress(deck.id)}
-                        onToggleSave={this.onToggleSave}
+                        onTogglePin={this.onTogglePin}
                       />
                     ))}
                   </div>

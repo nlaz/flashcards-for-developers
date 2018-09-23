@@ -14,8 +14,8 @@ const title = "Ridiculously helpful collection of flashcards for developers ";
 const LogoutTooltip = () => (
   <div className="tooltip-content">
     <div className="tooltip-item">
-      <Link className="text-secondary" to="/collections/saved">
-        My Saved Decks
+      <Link className="text-secondary" to="/collections/pinned">
+        My Pinned Decks
       </Link>
     </div>
     <div className="tooltip-item">

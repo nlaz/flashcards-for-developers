@@ -11,12 +11,12 @@ module.exports = {
     avatar_url: Joi.string(),
     github_id: Joi.number().required(),
   },
-  addSavedDecks: {
+  addPinnedDecks: {
     decks: Joi.array()
       .items(Joi.objectId())
       .required(),
   },
-  removeSavedDeck: {
+  removePinnedDeck: {
     deck: Joi.objectId().required(),
   },
   addStudySessions: {

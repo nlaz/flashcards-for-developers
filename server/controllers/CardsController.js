@@ -14,7 +14,7 @@ module.exports.getCards = async (req, res, next) => {
 
     await Joi.validate(req.query, cardSchemas.getCardsQuery);
 
-    if (collectionId === "saved") {
+    if (collectionId === "pinned") {
       const user = await User.findOne({ _id: req.user }).select("+saved_decks");
       cards = await Card.find({ deck: { $in: user.saved_decks } }).populate("deck");
     } else if (collectionId) {
