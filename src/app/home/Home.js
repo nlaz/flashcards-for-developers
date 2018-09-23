@@ -11,6 +11,7 @@ import CollectionItem from "../collections/CollectionItem";
 import HabitTracker from "./HabitTracker";
 import FeedbackForm from "./FeedbackForm";
 import DeckItem from "./DeckItem";
+import LoginModal from "../auth/LoginModal";
 
 class Decks extends Component {
   state = {
@@ -20,6 +21,7 @@ class Decks extends Component {
     pinnedDecks: [],
     studyProgress: [],
     collections: [],
+    showModal: false,
     isLoading: false,
     isError: false,
   };
@@ -39,11 +41,21 @@ class Decks extends Component {
 
   onTogglePin = (event, deck) => {
     event.preventDefault();
-    const isPinned = this.isPinned(deck.id);
+    if (!isAuthenticated()) {
+      this.setState({ showModal: true });
+    } else {
+      const isPinned = this.isPinned(deck.id);
+      analytics.logPinDeckAction(deck.name, isPinned);
 
-    analytics.logPinDeckAction(deck.name, isPinned);
+      this.pinDeck(deck, isPinned);
+    }
+  };
 
-    this.pinDeck(deck, isPinned);
+  onOpenModal = () => this.setState({ showModal: true });
+
+  onCloseModal = () => {
+    analytics.logLoginAction("User exited login modal");
+    this.setState({ showModal: false });
   };
 
   sortDecks = (decks = []) => [...decks].sort((a, b) => b.new - a.new);
@@ -62,8 +74,6 @@ class Decks extends Component {
       api.fetchPinnedDecks().then(({ data }) => {
         this.setState({ pinnedDecks: data });
       });
-    } else {
-      this.setState({ pinnedDecks: localStorage.getPinnedDecks() });
     }
   };
 
@@ -111,14 +121,12 @@ class Decks extends Component {
         .togglePinnedDeck(deck.id, isPinned)
         .then(response => this.setState({ pinnedDecks: response.data }))
         .catch(this.handleError);
-    } else {
-      this.setState({ pinnedDecks: localStorage.togglePinnedDeck(deck.id, isPinned) });
     }
   };
 
   handleError = error => console.error(error);
 
-  isPinned = id => this.state.pinnedDecks.find(el => el.id === id || el === id);
+  isPinned = id => this.state.pinnedDecks.find(el => el.id === id);
   getDeckProgress = id => this.state.studyProgress.find(el => el.deck === id);
 
   render() {
@@ -160,7 +168,8 @@ class Decks extends Component {
     }
 
     return (
-      <div className="">
+      <div>
+        <LoginModal isOpen={this.state.showModal} onClose={this.onCloseModal} />
         <div
           className="review-header py-4"
           style={{ background: "#f9f9f9", borderBottom: "1px solid #e8e8e8" }}
@@ -182,7 +191,8 @@ class Decks extends Component {
             </div>
           </div>
 
-          {pinnedDecks &&
+          {isAuthenticated() &&
+            pinnedDecks &&
             pinnedDecks.length > 0 && (
               <div className="container container--full px-4 mt-4">
                 <div className="pinned-row">
