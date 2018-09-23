@@ -17,20 +17,20 @@ class LoginPrompt extends Component {
     return (
       <div>
         <LoginModal isOpen={this.state.showModal} onClose={this.onCloseModal} />
-        <div className="loginPrompt py-2 text-center font-weight-medium">
+        <div className="loginPrompt text-center py-1">
           <span role="img" aria-label="Save!">
             💾
           </span>
-            {" "}SIGN IN TO SAVE YOUR PROGRESS {" "}
-            <button
-              className="btn btn-sm btn-darkblue btn-outline-dark px-2 py-1"
-              onClick={() => {
-                analytics.logLoginAction("User clicked 'Login' button from 'Review Results'");
-                this.onOpenModal();
-              }}
-            >
+          <span className="ml-1 mr-2">SIGN IN TO SAVE YOUR PROGRESS</span>
+          <button
+            className="btn btn-sm btn-darkblue d-flex"
+            onClick={() => {
+              analytics.logLoginAction("User clicked 'Login' button from 'Review Results'");
+              this.onOpenModal();
+            }}
+          >
             <small className="font-weight-medium">LOG IN</small>
-            </button>
+          </button>
         </div>
       </div>
     );

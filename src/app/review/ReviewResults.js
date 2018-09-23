@@ -12,7 +12,7 @@ const ReviewResults = ({
   numIncorrect,
   cardProgress,
   onKeepGoing,
-  onGoBack
+  onGoBack,
 }) => {
   const progressData = [
     { name: "Practiced", value: index || 1 },
@@ -27,13 +27,9 @@ const ReviewResults = ({
       return leitner.getDaysUntilExpired(cardObj.leitnerBox, cardObj.reviewedA) + avg;
     }, 0) / cardProgress.length;
 
-    return (
+  return (
     <div className="w-100">
-      {!authenticated ? (
-        <LoginPrompt/>
-      ): (
-        <div></div>
-      )}
+      {!authenticated && <LoginPrompt />}
       {!isCompleted ? (
         <h3 className="text-center">
           Nice work!{" "}
