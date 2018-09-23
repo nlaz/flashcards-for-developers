@@ -352,6 +352,36 @@ a[disabled] {
   width: 100%;
   padding: 0.5rem 1rem;
 }
+.loginPrompt {
+  top: 0;
+  right: 0;
+  left: 0;
+  background-color: #e4efff;
+  border-top-left-radius: 3px;
+  border-top-right-radius: 3px;
+  position: absolute;
+  color: #1b3e72;
+  font-size: 12px;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.1);
+}
+.btn-darkblue {
+  border-color: #1b3e72;
+  color: #1b3e72;
+  background: transparent;
+}
+.btn-darkblue:hover {
+  border-color: #1b3e72;
+  color: #ffffff;
+  background: #1b3e72;
+}
+
+.loginPrompt .btn-darkblue {
+  padding: 3px 10px;
+}
 
 @media (min-width: 576px) {
   .loginModal {
