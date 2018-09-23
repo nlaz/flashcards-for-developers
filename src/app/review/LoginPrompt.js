@@ -17,19 +17,19 @@ class LoginPrompt extends Component {
     return (
       <div>
         <LoginModal isOpen={this.state.showModal} onClose={this.onCloseModal} />
-        <div className="loginPrompt py-2 position-absolute text-center">
+        <div className="loginPrompt py-2 text-center font-weight-medium">
           <span role="img" aria-label="Save!">
             💾
-          </span> 
+          </span>
             {" "}SIGN IN TO SAVE YOUR PROGRESS {" "}
             <button
-              className="btn btn-sm btn-outline-dark px-3 py-2"
+              className="btn btn-sm btn-darkblue btn-outline-dark px-2 py-1"
               onClick={() => {
                 analytics.logLoginAction("User clicked 'Login' button from 'Review Results'");
                 this.onOpenModal();
               }}
             >
-            <small className="font-weight-bold">LOG IN</small>
+            <small className="font-weight-medium">LOG IN</small>
             </button>
         </div>
       </div>

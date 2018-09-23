@@ -336,9 +336,15 @@ a[disabled] {
 }
 .loginPrompt{
   top: -1%;
-  left: -0.5%;
-  width: 101%;
+  left: -0.2%;
+  width: 100.4%;
   background-color: #e4efff;
+  border-radius: .25rem!important;
+  position: absolute;
+  color: #1B3E72;
+}
+.btn-darkblue{
+  border-color: #1B3E72;
   color: #1B3E72;
 }
 
@@ -349,5 +355,12 @@ a[disabled] {
   }
   .loginModal-button {
     width: auto;
+  }
+}
+
+@media (max-width: 350px) {
+  .loginPrompt{
+    position: relative!important;
+    margin-top: -15%;
   }
 }
