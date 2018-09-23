@@ -379,3 +379,7 @@ a[disabled] {
     width: auto;
   }
 }
+
+.pinned-row .deck-item {
+  max-height: 150px;
+}

@@ -16,7 +16,7 @@ const DeckItem = ({ deck, deckProgress, isPinned, onTogglePin }) => {
       <Link
         to={`/decks/${deck.id}`}
         className={cx(
-          "border rounded d-flex flex-column justify-content-between text-dark mb-3 p-4 w-100 position-relative",
+          "border bg-white rounded d-flex flex-column justify-content-between text-dark mb-3 p-4 w-100 position-relative",
           deck.new ? "border-dark" : "border-dark",
         )}
         disabled={!deck.cards}

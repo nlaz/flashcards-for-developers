@@ -100,10 +100,7 @@ class Decks extends Component {
     api
       .fetchCollections()
       .then(({ data }) => {
-        const pinnedCollection = { name: "Pinned decks", id: "pinned", emoji: "⚡️" };
-        const pinnedDecks = this.state.pinnedDecks || [];
-        const collections = pinnedDecks.length > 0 ? [pinnedCollection, ...data] : data;
-        this.setState({ collections });
+        this.setState({ collections: data });
       })
       .catch(this.handleError);
   };
@@ -125,7 +122,15 @@ class Decks extends Component {
   getDeckProgress = id => this.state.studyProgress.find(el => el.deck === id);
 
   render() {
-    const { featuredRow, trendingRow, newestRow, collections, isLoading, isError } = this.state;
+    const {
+      featuredRow,
+      trendingRow,
+      newestRow,
+      collections,
+      pinnedDecks,
+      isLoading,
+      isError,
+    } = this.state;
 
     if (isLoading) {
       return (
@@ -157,12 +162,12 @@ class Decks extends Component {
     return (
       <div className="">
         <div
-          className="review-header"
+          className="review-header py-4"
           style={{ background: "#f9f9f9", borderBottom: "1px solid #e8e8e8" }}
         >
-          <div className="container container--full px-4 py-5">
+          <div className="container container--full px-4 my-2">
             <div className="d-flex flex-column flex-lg-row justify-content-between align-items-lg-center">
-              <div className="home-header">
+              <div className="home-header py-2">
                 <h1 className="m-0">Flashcards for Developers</h1>
                 <p className="m-0">
                   A curated list of flashcards to boost your professional skills
@@ -176,6 +181,30 @@ class Decks extends Component {
               </div>
             </div>
           </div>
+
+          {pinnedDecks.length > 0 && (
+            <div className="container container--full px-4 mt-4">
+              <div className="pinned-row">
+                <div className="d-flex justify-content-between align-items-end mb-2 mx-1">
+                  <h6 className="text-uppercase m-0">MY PINNED DECKS</h6>
+                  <Link className="text-dark text-underline" to="/collections/pinned">
+                    See all
+                  </Link>
+                </div>
+                <div className="row">
+                  {pinnedDecks.slice(0, 4).map(item => (
+                    <DeckItem
+                      key={item.id}
+                      deck={item}
+                      isPinned={this.isPinned(item.id)}
+                      deckProgress={this.getDeckProgress(item.id)}
+                      onTogglePin={this.onTogglePin}
+                    />
+                  ))}
+                </div>
+              </div>
+            </div>
+          )}
         </div>
 
         {collections && (
