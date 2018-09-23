@@ -47,11 +47,12 @@ class Decks extends Component {
       const isPinned = this.isPinned(deck.id);
       analytics.logPinDeckAction(deck.name, isPinned);
 
-      this.pinDeck(deck, isPinned);
+      api
+        .togglePinnedDeck(deck.id, isPinned)
+        .then(response => this.setState({ pinnedDecks: response.data }))
+        .catch(this.handleError);
     }
   };
-
-  onOpenModal = () => this.setState({ showModal: true });
 
   onCloseModal = () => {
     analytics.logLoginAction("User exited login modal");
@@ -113,15 +114,6 @@ class Decks extends Component {
         this.setState({ collections: data });
       })
       .catch(this.handleError);
-  };
-
-  pinDeck = (deck, isPinned) => {
-    if (isAuthenticated()) {
-      api
-        .togglePinnedDeck(deck.id, isPinned)
-        .then(response => this.setState({ pinnedDecks: response.data }))
-        .catch(this.handleError);
-    }
   };
 
   handleError = error => console.error(error);
