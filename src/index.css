@@ -383,3 +383,13 @@ a[disabled] {
 .pinned-row .deck-item {
   max-height: 150px;
 }
+
+.review-header .deck-description {
+  font-size: 0.9em;
+}
+
+@media (min-width: 576px) {
+  .review-header .deck-description {
+    font-size: 1em;
+  }
+}
