@@ -1,6 +1,7 @@
 import React from "react";
 import marked from "marked";
 import cx from "classnames";
+import { withRouter } from "react-router-dom";
 
 import Octicon from "../../components/Octicon";
 import isAuthenticated from "../utils/isAuthenticated";
@@ -45,6 +46,7 @@ class ReviewHeader extends React.Component {
   };
 
   isPinned = id => this.state.pinnedDecks.find(el => el.id === id);
+  isCollectionPage = () => this.props.match.path === "/collections/:collectionId/review";
 
   render() {
     const { deck, className } = this.props;
@@ -74,18 +76,20 @@ class ReviewHeader extends React.Component {
             </a>
           </div>
         )}
-        <button
-          onClick={this.onTogglePin}
-          className={cx("pin-btn btn btn-sm d-flex align-items-center px-3 py-2", {
-            "bg-dark text-white": isPinned,
-          })}
-        >
-          <Octicon name={isPinned ? "check" : "pin"} className="d-flex mr-2" />
-          <small className="font-weight-bold mr-1">{isPinned ? "PINNED" : "PIN"}</small>
-        </button>
+        {!this.isCollectionPage() && (
+          <button
+            onClick={this.onTogglePin}
+            className={cx("pin-btn btn btn-sm d-flex align-items-center px-3 py-2", {
+              "bg-dark text-white": isPinned,
+            })}
+          >
+            <Octicon name={isPinned ? "check" : "pin"} className="d-flex mr-2" />
+            <small className="font-weight-bold mr-1">{isPinned ? "PINNED" : "PIN"}</small>
+          </button>
+        )}
       </div>
     );
   }
 }
 
-export default ReviewHeader;
+export default withRouter(ReviewHeader);
