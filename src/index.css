@@ -387,6 +387,17 @@ a[disabled] {
 .review-header .deck-description {
   font-size: 0.9em;
 }
+.review-header .pin-btn {
+  background: white;
+  border: 1px solid #e8e8e8;
+}
+
+.review-header .pin-btn:hover {
+  border-color: black;
+}
+.review-header .pin-btn.text-white {
+  fill: white;
+}
 
 @media (min-width: 576px) {
   .review-header .deck-description {

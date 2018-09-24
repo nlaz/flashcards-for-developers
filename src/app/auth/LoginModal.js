@@ -25,7 +25,7 @@ const LoginModal = ({ isOpen, onClose }) => (
       <div className="text-center mx-auto">
         <h5 className="mb-1">Login to Flashcards for Developers</h5>
         <p className="text-secondary font-weight-light">
-          Sign in to save your progress and keep your favorite decks across devices.
+          Sign in to save your progress and track your favorite decks across devices.
         </p>
       </div>
       <div className="d-flex justify-content-center mt-4">
