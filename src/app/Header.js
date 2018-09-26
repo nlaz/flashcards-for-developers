@@ -63,13 +63,13 @@ class Header extends Component {
         <div className="container container--full d-flex justify-content-between align-items-center py-2 w-100">
           <div>
             {!isHomePage && (
-              <div
-                onClick={() => this.props.history.goBack()}
+              <Link
+                to="/"
                 className="d-flex align-items-center font-weight-medium text-dark p-2 btn btn-reset"
               >
                 <Octicon name="chevron-left" className="d-flex mr-1" />
                 <span className="d-none d-sm-inline">Flashcards for Developers</span>
-              </div>
+              </Link>
             )}
           </div>
           <ul className="p-0 m-0">
