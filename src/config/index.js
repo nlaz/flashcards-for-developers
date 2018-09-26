@@ -8,4 +8,5 @@ export default {
   buyMeACoffeeDonateUrl: process.env.REACT_APP_DONATE_URL || "",
   githubOAuthClientId: process.env.REACT_APP_GITHUB_OAUTH_CLIENT_ID || "",
   githubOAuthRedirectURI: process.env.REACT_APP_GITHUB_OAUTH_REDIRECT_URI || "",
+  mixpanelAnalyticsKey: process.env.MIXPANEL_ANALYTICS_KEY || "",
 };

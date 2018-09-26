@@ -7,6 +7,7 @@ class CollectionsHome extends React.Component {
   state = { collections: [] };
 
   componentDidMount() {
+    this.context.mixpanel.track('Collections Page.');
     this.fetchCollections();
   }
 

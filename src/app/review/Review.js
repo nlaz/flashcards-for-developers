@@ -71,7 +71,7 @@ class Review extends Component {
 
   componentDidMount() {
     const { params } = this.props.match;
-
+    this.context.mixpanel.track('Review Page.');
     if (this.isCollectionPage()) {
       this.fetchCollection(params.collectionId);
       this.fetchMixedCards(params.collectionId);
