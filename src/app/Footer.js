@@ -1,7 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
 
-import config from "../config";
 import * as analytics from "../components/GoogleAnalytics";
 
 const Footer = () => (
@@ -16,14 +15,9 @@ const Footer = () => (
       <ul className="col-md-4 list-inline mb-0 text-center text-md-right">
         <li className="list-inline-item">
           <small>
-            <a
-              href={config.buyMeACoffeeDonateUrl}
-              target="_blank"
-              className="text-secondary"
-              rel="noopener noreferrer"
-            >
-              Support Us
-            </a>
+            <Link className="text-secondary" to="/pages/about">
+              About
+            </Link>
           </small>
         </li>
         <li className="list-inline-item">
@@ -63,7 +57,9 @@ const Footer = () => (
         </li>
         <li className="list-inline-item">
           <small>
-            <a href="mailto:hello@flashcardsfordevelopers.com">Contact</a>
+            <a className="text-secondary" href="mailto:hello@flashcardsfordevelopers.com">
+              Contact
+            </a>
           </small>
         </li>
       </ul>
