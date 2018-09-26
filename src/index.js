@@ -13,10 +13,10 @@ import "./index.css";
 
 mixpanel.init(config.mixpanelAnalyticsKey);
 
-ReactDOM.render(    
-    <MixpanelProvider mixpanel={mixpanel}>
-        <App/>
-    </MixpanelProvider>,
-    document.getElementById("root")
+ReactDOM.render(
+  <MixpanelProvider mixpanel={mixpanel}>
+    <App />
+  </MixpanelProvider>,
+  document.getElementById("root"),
 );
 unregister();

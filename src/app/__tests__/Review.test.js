@@ -3,6 +3,7 @@ import { shallow } from "enzyme";
 import Review from "../review/Review";
 
 it("renders without crashing", () => {
-  const wrapper = shallow(<Review />);
+  const context = { mixpanel: { track: () => {} } };
+  const wrapper = shallow(<Review />, { context });
   expect(wrapper).toHaveLength(1);
 });

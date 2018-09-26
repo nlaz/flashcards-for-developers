@@ -1,4 +1,4 @@
-export default {
+const configs = {
   airtableReportUrl: process.env.REACT_APP_AIRTABLE_REPORT_URL || "",
   airtableFeedbackUrl: process.env.REACT_APP_AIRTABLE_FEEDBACK_URL || "",
   airtableSuggestionsUrl: process.env.REACT_APP_AIRTABLE_SUGGESTIONS_URL || "",
@@ -10,3 +10,5 @@ export default {
   githubOAuthClientId: process.env.REACT_APP_GITHUB_OAUTH_CLIENT_ID || "",
   githubOAuthRedirectURI: process.env.REACT_APP_GITHUB_OAUTH_REDIRECT_URI || "",
 };
+
+export default configs;
