@@ -1,5 +1,6 @@
 const express = require("express");
 
+const getUser = require("./middleware/getUser");
 const isAuthenticated = require("./middleware/isAuthenticated");
 const UsersController = require("./controllers/UsersController");
 const CardsController = require("./controllers/CardsController");
@@ -18,20 +19,21 @@ router.get("/api/decks/:deckId", DecksController.getDeck);
 router.get("/api/collections", CollectionsController.getCollections);
 router.get("/api/collections/:collectionId", CollectionsController.getCollection);
 
-router.get("/api/cards", CardsController.getCards);
+router.get("/api/cards", getUser, CardsController.getCards);
 
 router.post("/auth/github/login", UsersController.getGithubUser);
 router.post("/auth/github/register", UsersController.createGithubUser);
 
-router.get("/users/saved_decks", isAuthenticated, UsersController.getSavedDecks);
-router.put("/users/saved_decks", isAuthenticated, UsersController.addSavedDeck);
-router.delete("/users/saved_decks", isAuthenticated, UsersController.removeSavedDeck);
+router.get("/users/pinned_decks", isAuthenticated, UsersController.getPinnedDecks);
+router.put("/users/pinned_decks", isAuthenticated, UsersController.addPinnedDecks);
+router.delete("/users/pinned_decks", isAuthenticated, UsersController.removePinnedDeck);
 
 router.get("/users/study_sessions", isAuthenticated, UsersController.getStudySessions);
-router.put("/users/study_sessions", isAuthenticated, UsersController.addStudySession);
+router.put("/users/study_sessions", isAuthenticated, UsersController.addStudySessions);
 
-router.get("/study_progress", isAuthenticated, ProgressController.getProgress);
+router.get("/study_progress", isAuthenticated, ProgressController.getStudyProgress);
+router.put("/study_progress", isAuthenticated, ProgressController.addStudyProgress);
 router.get("/study_progress/:deckId", isAuthenticated, ProgressController.getDeckProgress);
-router.put("/study_progress/:deckId/:cardId", isAuthenticated, ProgressController.addProgress);
+router.put("/study_progress/:deckId/:cardId", isAuthenticated, ProgressController.addCardProgress);
 
 module.exports = router;

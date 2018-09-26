@@ -12,7 +12,9 @@ const GITHUB_PARAMS = qs.stringify({
 });
 const GITHUB_OAUTH_URL = `https://github.com/login/oauth/authorize?${GITHUB_PARAMS}`;
 
-Modal.setAppElement("#root");
+if (process.env.NODE_ENV !== "test") {
+  Modal.setAppElement("#root");
+}
 
 const LoginModal = ({ isOpen, onClose }) => (
   <Modal isOpen={isOpen} className="loginModal" overlayClassName="loginModal-overlay">
@@ -23,7 +25,7 @@ const LoginModal = ({ isOpen, onClose }) => (
       <div className="text-center mx-auto">
         <h5 className="mb-1">Login to Flashcards for Developers</h5>
         <p className="text-secondary font-weight-light">
-          Sign in to save your progress and keep your favorite decks across devices.
+          Sign in to save your progress and track your favorite decks across devices.
         </p>
       </div>
       <div className="d-flex justify-content-center mt-4">

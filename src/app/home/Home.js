@@ -11,15 +11,17 @@ import CollectionItem from "../collections/CollectionItem";
 import HabitTracker from "./HabitTracker";
 import FeedbackForm from "./FeedbackForm";
 import DeckItem from "./DeckItem";
+import LoginModal from "../auth/LoginModal";
 
 class Decks extends Component {
   state = {
     newestRow: {},
     trendingRow: {},
     featuredRow: {},
-    savedDecks: [],
+    pinnedDecks: [],
     studyProgress: [],
     collections: [],
+    showModal: false,
     isLoading: false,
     isError: false,
   };
@@ -27,7 +29,7 @@ class Decks extends Component {
   componentWillMount() {
     document.title = "Flashcards for Developers";
 
-    this.fetchSavedDecks();
+    this.fetchPinnedDecks();
 
     this.fetchFeaturedCollection();
     this.fetchTrendingCollection();
@@ -37,16 +39,27 @@ class Decks extends Component {
     this.fetchCollections();
   }
 
-  onToggleSave = (event, deck) => {
+  onTogglePin = (event, deck) => {
     event.preventDefault();
-    const isSaved = this.isSaved(deck.id);
+    if (!isAuthenticated()) {
+      this.setState({ showModal: true });
+    } else {
+      const isPinned = this.isPinned(deck.id);
+      analytics.logPinDeckAction(deck.name, isPinned);
 
-    analytics.logSaveDeckAction(deck.name, isSaved);
-
-    this.saveDeck(deck, isSaved);
+      api
+        .togglePinnedDeck(deck.id, isPinned)
+        .then(response => this.setState({ pinnedDecks: response.data }))
+        .catch(this.handleError);
+    }
   };
 
-  sortDecks = decks => [...decks].sort((a, b) => b.new - a.new);
+  onCloseModal = () => {
+    analytics.logLoginAction("User exited login modal");
+    this.setState({ showModal: false });
+  };
+
+  sortDecks = (decks = []) => [...decks].sort((a, b) => b.new - a.new);
 
   fetchDecks = collection => {
     api.fetchDecks(collection.id).then(
@@ -57,13 +70,11 @@ class Decks extends Component {
     );
   };
 
-  fetchSavedDecks = () => {
+  fetchPinnedDecks = () => {
     if (isAuthenticated()) {
-      api.fetchSavedDecks().then(({ data }) => {
-        this.setState({ savedDecks: data });
+      api.fetchPinnedDecks().then(({ data }) => {
+        this.setState({ pinnedDecks: data });
       });
-    } else {
-      this.setState({ savedDecks: localStorage.getSavedDecks() });
     }
   };
 
@@ -100,31 +111,26 @@ class Decks extends Component {
     api
       .fetchCollections()
       .then(({ data }) => {
-        const savedCollection = { name: "Saved Decks", id: "saved" };
-        const collections = this.state.savedDecks.length > 0 ? [savedCollection, ...data] : data;
-        this.setState({ collections });
+        this.setState({ collections: data });
       })
       .catch(this.handleError);
   };
 
-  saveDeck = (deck, isSaved) => {
-    if (isAuthenticated()) {
-      api
-        .toggleSavedDeck(deck.id, isSaved)
-        .then(response => this.setState({ savedDecks: response.data }))
-        .catch(this.handleError);
-    } else {
-      this.setState({ savedDecks: localStorage.toggleSavedDeck(deck.id, isSaved) });
-    }
-  };
-
   handleError = error => console.error(error);
 
-  isSaved = id => this.state.savedDecks.find(el => el.id === id || el === id);
+  isPinned = id => this.state.pinnedDecks.find(el => el.id === id);
   getDeckProgress = id => this.state.studyProgress.find(el => el.deck === id);
 
   render() {
-    const { featuredRow, trendingRow, newestRow, collections, isLoading, isError } = this.state;
+    const {
+      featuredRow,
+      trendingRow,
+      newestRow,
+      collections,
+      pinnedDecks,
+      isLoading,
+      isError,
+    } = this.state;
 
     if (isLoading) {
       return (
@@ -154,32 +160,66 @@ class Decks extends Component {
     }
 
     return (
-      <div className="my-5">
-        <div className="container container--full px-4 my-5">
-          <div className="d-flex flex-column flex-lg-row justify-content-between align-items-lg-center">
-            <div className="mb-3">
-              <h1 className="m-0">Flashcards for Developers</h1>
-              <p className="m-0">A curated list of flashcards to boost your professional skills</p>
-            </div>
-            <div
-              className="bg-light rounded p-3 mb-2 border border-secondary d-flex align-items-center"
-              style={{ minWidth: "260px", minHeight: "90px" }}
-            >
-              <HabitTracker />
+      <div>
+        <LoginModal isOpen={this.state.showModal} onClose={this.onCloseModal} />
+        <div
+          className="review-header py-4"
+          style={{ background: "#f9f9f9", borderBottom: "1px solid #e8e8e8" }}
+        >
+          <div className="container container--full px-4 my-2">
+            <div className="d-flex flex-column flex-lg-row justify-content-between align-items-lg-center">
+              <div className="home-header py-2">
+                <h1 className="m-0">Flashcards for Developers</h1>
+                <p className="m-0">
+                  A curated list of flashcards to boost your professional skills
+                </p>
+              </div>
+              <div
+                className="bg-light rounded p-2 border border-secondary d-flex align-items-center"
+                style={{ minWidth: "260px", minHeight: "90px" }}
+              >
+                <HabitTracker />
+              </div>
             </div>
           </div>
+
+          {isAuthenticated() &&
+            pinnedDecks &&
+            pinnedDecks.length > 0 && (
+              <div className="container container--full px-4 mt-4">
+                <div className="pinned-row">
+                  <div className="d-flex justify-content-between align-items-end mb-2 mx-1">
+                    <h6 className="text-uppercase m-0">MY PINNED DECKS</h6>
+                    <Link className="text-dark text-underline" to="/collections/pinned">
+                      See all
+                    </Link>
+                  </div>
+                  <div className="row">
+                    {pinnedDecks.slice(0, 4).map(item => (
+                      <DeckItem
+                        key={item.id}
+                        deck={item}
+                        isPinned={this.isPinned(item.id)}
+                        deckProgress={this.getDeckProgress(item.id)}
+                        onTogglePin={this.onTogglePin}
+                      />
+                    ))}
+                  </div>
+                </div>
+              </div>
+            )}
         </div>
 
         {collections && (
           <div className="container container--full px-0 px-lg-4 mx-0 mx-lg-auto">
-            <div className="collection-container py-4 px-4 px-lg-5 mt-3">
+            <div className="mt-5">
               <div className="d-flex justify-content-between align-items-end mb-2 mx-1">
-                <h6 className="text-uppercase m-0">Collections</h6>
+                <h6 className="text-uppercase m-0">Popular Collections</h6>
                 <Link className="text-dark text-underline" to="/collections">
                   See all
                 </Link>
               </div>
-              <div className="row">
+              <div className="row px-4 pt-3">
                 {collections.slice(0, 4).map(item => (
                   <CollectionItem key={item.id} collection={item} />
                 ))}
@@ -194,7 +234,7 @@ class Decks extends Component {
               <div className="my-4 mt-5">
                 <div className="d-flex justify-content-between align-items-end mb-2 mx-1">
                   <h6 className="text-uppercase m-0">
-                    Featured
+                    Featured Decks
                     <i className="fa fa-bullhorn ml-1" />
                   </h6>
                 </div>
@@ -204,9 +244,9 @@ class Decks extends Component {
                       <DeckItem
                         deck={deck}
                         key={deck.id}
-                        isSaved={this.isSaved(deck.id)}
+                        isPinned={this.isPinned(deck.id)}
                         deckProgress={this.getDeckProgress(deck.id)}
-                        onToggleSave={this.onToggleSave}
+                        onTogglePin={this.onTogglePin}
                       />
                     ))}
                   </div>
@@ -232,9 +272,9 @@ class Decks extends Component {
                       <DeckItem
                         deck={deck}
                         key={deck.id}
-                        isSaved={this.isSaved(deck.id)}
+                        isPinned={this.isPinned(deck.id)}
                         deckProgress={this.getDeckProgress(deck.id)}
-                        onToggleSave={this.onToggleSave}
+                        onTogglePin={this.onTogglePin}
                       />
                     ))}
                   </div>
@@ -260,9 +300,9 @@ class Decks extends Component {
                       <DeckItem
                         deck={deck}
                         key={deck.id}
-                        isSaved={this.isSaved(deck.id)}
+                        isPinned={this.isPinned(deck.id)}
                         deckProgress={this.getDeckProgress(deck.id)}
-                        onToggleSave={this.onToggleSave}
+                        onTogglePin={this.onTogglePin}
                       />
                     ))}
                   </div>

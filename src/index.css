@@ -143,18 +143,18 @@ a[disabled] {
   font-size: 40px;
 }
 
-.deck-item .save svg {
+.deck-item .pin-btn svg {
   width: 10px;
   height: 10px;
   margin-right: 2px;
   fill: #999999;
 }
 
-.deck-item:hover .save {
+.deck-item:hover .pin-btn {
   display: flex;
 }
 
-.deck-item .save {
+.deck-item .pin-btn {
   display: none;
   cursor: pointer;
   border: 1px solid #eeeeee;
@@ -162,15 +162,15 @@ a[disabled] {
 }
 
 @media (max-width: 992px) {
-  .deck-item .save {
+  .deck-item .pin-btn {
     display: flex;
   }
 }
-.deck-item .save-active svg {
+.deck-item .pin-btn-active svg {
   fill: white;
 }
 
-.deck-item .save:hover {
+.deck-item .pin-btn:hover {
   background: #eeeeee;
 }
 
@@ -265,30 +265,35 @@ a[disabled] {
   }
 }
 
-.collection-container {
-  background: #f9f9f9;
-  border: 1px solid #e8e8e8;
-  border-radius: 2px;
-  margin-right: 0;
-  margin-left: 0;
-}
-
 .collection-item {
-  height: 100px;
+  height: 200px;
 }
-.collection-item a {
-  background: #40464d;
+.collection-item .item-link {
   border: 1px solid #e8e8e8;
+  justify-content: center;
+  align-items: center;
+}
+.collection-item .item-link:hover {
+  text-decoration: none;
+}
+.collection-item .text-secondary {
+  color: #9b9b9b;
+  line-height: 1.25em;
+  font-size: 0.85em;
+}
+.collection-item .collection-image {
+  background: #f1f1f1;
+  width: 60px;
+  height: 60px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 999px;
 }
 
 @media (min-width: 992px) {
   .collection-item {
-    height: 175px;
-  }
-
-  .collection-container {
-    margin-right: -40px;
-    margin-left: -40px;
+    height: 200px;
   }
 }
 
@@ -334,6 +339,36 @@ a[disabled] {
   width: 100%;
   padding: 0.5rem 1rem;
 }
+.loginPrompt {
+  top: 0;
+  right: 0;
+  left: 0;
+  background-color: #e4efff;
+  border-top-left-radius: 3px;
+  border-top-right-radius: 3px;
+  position: absolute;
+  color: #1b3e72;
+  font-size: 12px;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.1);
+}
+.btn-darkblue {
+  border-color: #1b3e72;
+  color: #1b3e72;
+  background: transparent;
+}
+.btn-darkblue:hover {
+  border-color: #1b3e72;
+  color: #ffffff;
+  background: #1b3e72;
+}
+
+.loginPrompt .btn-darkblue {
+  padding: 3px 10px;
+}
 
 @media (min-width: 576px) {
   .loginModal {
@@ -342,5 +377,30 @@ a[disabled] {
   }
   .loginModal-button {
     width: auto;
+  }
+}
+
+.pinned-row .deck-item {
+  max-height: 150px;
+}
+
+.review-header .deck-description {
+  font-size: 0.9em;
+}
+.review-header .pin-btn {
+  background: white;
+  border: 1px solid #e8e8e8;
+}
+
+.review-header .pin-btn:hover {
+  border-color: black;
+}
+.review-header .pin-btn.text-white {
+  fill: white;
+}
+
+@media (min-width: 576px) {
+  .review-header .deck-description {
+    font-size: 1em;
   }
 }

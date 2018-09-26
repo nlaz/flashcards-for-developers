@@ -14,8 +14,8 @@ const title = "Ridiculously helpful collection of flashcards for developers ";
 const LogoutTooltip = () => (
   <div className="tooltip-content">
     <div className="tooltip-item">
-      <Link className="text-secondary" to="/collections/saved">
-        My Saved Decks
+      <Link className="text-secondary" to="/collections/pinned">
+        My Pinned Decks
       </Link>
     </div>
     <div className="tooltip-item">
@@ -45,10 +45,7 @@ const PlaceholderImage = () => (
 class Header extends Component {
   state = { showModal: false };
 
-  onOpenModal = () => {
-    analytics.logLoginAction("User opened login modal");
-    this.setState({ showModal: true });
-  };
+  onOpenModal = () => this.setState({ showModal: true });
 
   onCloseModal = () => {
     analytics.logLoginAction("User exited login modal");
@@ -66,13 +63,13 @@ class Header extends Component {
         <div className="container container--full d-flex justify-content-between align-items-center py-2 w-100">
           <div>
             {!isHomePage && (
-              <Link
-                to={{ pathname: "/", search: this.props.location.search }}
-                className="d-flex align-items-center font-weight-medium text-dark p-2"
+              <div
+                onClick={() => this.props.history.goBack()}
+                className="d-flex align-items-center font-weight-medium text-dark p-2 btn btn-reset"
               >
                 <Octicon name="chevron-left" className="d-flex mr-1" />
                 <span className="d-none d-sm-inline">Flashcards for Developers</span>
-              </Link>
+              </div>
             )}
           </div>
           <ul className="p-0 m-0">
@@ -98,8 +95,8 @@ class Header extends Component {
                 <i className="fab fa-twitter" />
               </TwitterShareButton>
             </li>
-            <li className="header-login list-inline-item ml-2">
-              {authenticated ? (
+            {authenticated ? (
+              <li className="header-login list-inline-item ml-2">
                 <Tooltip
                   placement="bottomRight"
                   trigger={["click"]}
@@ -118,15 +115,33 @@ class Header extends Component {
                     )}
                   </div>
                 </Tooltip>
-              ) : (
-                <button
-                  className="btn btn-sm btn-outline-dark d-flex px-3 py-2"
-                  onClick={this.onOpenModal}
-                >
-                  <small className="font-weight-bold">LOGIN</small>
-                </button>
-              )}
-            </li>
+              </li>
+            ) : (
+              [
+                <li className="list-inline-item ml-2" key={1}>
+                  <button
+                    className="btn btn-sm btn-outline-dark d-flex px-3 py-2"
+                    onClick={() => {
+                      analytics.logLoginAction("User clicked 'Login' button");
+                      this.onOpenModal();
+                    }}
+                  >
+                    <small className="font-weight-bold">LOG IN</small>
+                  </button>
+                </li>,
+                <li className="list-inline-item ml-1" key={2}>
+                  <button
+                    className="btn btn-sm btn-dark d-flex px-3 py-2"
+                    onClick={() => {
+                      analytics.logLoginAction("User clicked 'Signup' button");
+                      this.onOpenModal();
+                    }}
+                  >
+                    <small className="font-weight-bold">SIGN UP</small>
+                  </button>
+                </li>,
+              ]
+            )}
           </ul>
         </div>
       </div>

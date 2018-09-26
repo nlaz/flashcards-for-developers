@@ -1,7 +1,7 @@
 import moment from "moment";
 
 const SESSIONS_KEY = "sessions";
-const SAVED_DECKS_KEY = "savedDecks";
+const PINNED_DECKS_KEY = "savedDecks";
 const STUDY_PROGRESS_KEY = "studyProgress";
 const PREFS_USE_SRS_KEY = "prefsUseSRS";
 const DEFAULT_SRS_PREF = true;
@@ -31,23 +31,23 @@ export const addStudySession = date => {
   localStorage.setItem(SESSIONS_KEY, JSON.stringify(sessions));
 };
 
-/* Saved decks localStorage helpers */
-export const setSavedDecks = decks => {
-  localStorage.setItem(SAVED_DECKS_KEY, JSON.stringify(decks));
+/* Pinned decks localStorage helpers */
+export const setPinnedDecks = decks => {
+  localStorage.setItem(PINNED_DECKS_KEY, JSON.stringify(decks));
 };
 
-export const getSavedDecks = () => {
-  return JSON.parse(localStorage.getItem(SAVED_DECKS_KEY)) || [];
+export const getPinnedDecks = () => {
+  return JSON.parse(localStorage.getItem(PINNED_DECKS_KEY)) || [];
 };
 
-export const toggleSavedDeck = (deckId, isSaved) => {
-  const decks = getSavedDecks();
+export const togglePinnedDeck = (deckId, isPinned) => {
+  const decks = getPinnedDecks();
 
-  const newDecks = isSaved ? decks.filter(el => el !== deckId) : [...decks, deckId];
+  const newDecks = isPinned ? decks.filter(el => el !== deckId) : [...decks, deckId];
 
-  setSavedDecks(newDecks);
+  setPinnedDecks(newDecks);
 
-  return getSavedDecks();
+  return getPinnedDecks();
 };
 
 /**
@@ -85,7 +85,7 @@ export const setDeckProgressObject = (deckId, value) => {
   setStudyProgress([...filtered, value]);
 };
 
-export const addStudyProgress = (cardId, deckId, leitnerBox, reviewedAt) => {
+export const addCardProgress = (deckId, cardId, leitnerBox, reviewedAt) => {
   const deckProgressObj = getDeckProgressObject(deckId);
   const filtered = (deckProgressObj.cards || []).filter(el => el.card !== cardId);
   const newDeck = {
