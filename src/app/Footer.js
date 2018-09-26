@@ -63,14 +63,7 @@ const Footer = () => (
         </li>
         <li className="list-inline-item">
           <small>
-            <a
-              href={config.airtableFeedbackUrl}
-              target="_blank"
-              className="text-secondary"
-              rel="noopener noreferrer"
-            >
-              Contact
-            </a>
+            <a href="mailto:hello@flashcardsfordevelopers.com">Contact</a>
           </small>
         </li>
       </ul>

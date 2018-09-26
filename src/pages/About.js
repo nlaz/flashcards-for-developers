@@ -16,15 +16,16 @@ const About = () => (
   <div>
     <div className="container container--narrow py-5">
       <div className="mb-5 py-4">
+        <h5 className="font-weight-bold text-uppercase">Flashcards for Developers</h5>
         <p className="text-dark font-weight-medium">
-          Flashcards for Developers is a learning tool for developers. It is a place for those who
-          want to learn better, upgrade their expertise, and keep those skills sharp.
+          Flashcards for Developers is a learning tool for developers by developers. It is a place
+          for those who want to learn better, grow their expertise, and keep those skills sharp.
         </p>
         <a href="mailto:hello@flashcardsfordevelopers.com">Have a question? Drop us a line.</a>
       </div>
 
       <div className="my-5 pb-2">
-        <h6 className="font-weight-bold text-uppercase">SUPPLEMENT YOUR LEARNING</h6>
+        <h6 className="font-weight-bold text-uppercase">Supplement your learning</h6>
         <p className="text-dark">
           Flashcards for Developers is built around the idea that memory fades. Flashcards are
           perfect for testing your recall and strengthening the signal in your brain. The flashcards
@@ -127,16 +128,15 @@ const About = () => (
               className="text-white font-weight-light mb-4"
               style={{ opacity: 0.85, maxWidth: "500px" }}
             >
-              We met 6+ years ago in school and built a{" "}
+              We are passionate developers and love learning new things together. We want to hear
+              from you.{" "}
               <a
                 className="text-white text-underline"
-                target="_blank"
-                rel="noopener noreferrer"
-                href="https://hacktx.com/"
+                href="mailto:hello@flashcardsfordevelopers.com"
               >
-                hackathon community
+                Drop us a line or just say hi
               </a>{" "}
-              together. We are passionate developers and love learning new things.
+              👋.
             </div>
           </div>
           <div className="col-lg-4 py-3">
