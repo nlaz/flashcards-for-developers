@@ -1,5 +1,5 @@
 import React from "react";
-
+import PropTypes from 'prop-types';
 import * as api from "../apiActions";
 import CollectionItem from "./CollectionItem";
 
@@ -34,4 +34,8 @@ class CollectionsHome extends React.Component {
     );
   }
 }
+
+CollectionsHome.contextTypes = {
+  mixpanel: PropTypes.object.isRequired
+};
 export default CollectionsHome;

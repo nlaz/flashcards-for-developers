@@ -21,7 +21,6 @@ class SignupFormModal extends Component {
   };
 
   componentDidMount() {
-    this.context.mixpanel.track('SignUp Form Modal.');
     this.setState({ profile: { ...this.props.profile } });
   }
 

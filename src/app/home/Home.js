@@ -7,6 +7,7 @@ import * as api from "../apiActions";
 import * as analytics from "../../components/GoogleAnalytics";
 import * as localStorage from "../utils/localStorage";
 
+import PropTypes from 'prop-types';
 import CollectionItem from "../collections/CollectionItem";
 import HabitTracker from "./HabitTracker";
 import FeedbackForm from "./FeedbackForm";
@@ -28,7 +29,7 @@ class Decks extends Component {
 
   componentWillMount() {
     document.title = "Flashcards for Developers";
-
+    this.context.mixpanel.track('Home page.');
     this.fetchPinnedDecks();
 
     this.fetchFeaturedCollection();
@@ -333,4 +334,7 @@ class Decks extends Component {
   }
 }
 
+Decks.contextTypes = {
+  mixpanel: PropTypes.object.isRequired
+};
 export default Decks;
