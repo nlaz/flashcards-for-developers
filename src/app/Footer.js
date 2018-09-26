@@ -11,7 +11,7 @@ const Footer = () => (
         © Flashcards For Developers 2018
       </small>
       <small className="col-md-4 text-secondary text-center">
-        <strong>1901</strong> cards studied <strong>69,001</strong> times
+        <strong>1901</strong> cards studied <strong>70,607</strong> times
       </small>
       <ul className="col-md-4 list-inline mb-0 text-center text-md-right">
         <li className="list-inline-item">

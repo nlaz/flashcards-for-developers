@@ -24,21 +24,31 @@ const About = () => (
         <a href="mailto:hello@flashcardsfordevelopers.com">Have a question? Drop us a line.</a>
       </div>
 
-      <div className="my-5 pb-2">
+      <div className="my-3 pb-2">
         <h6 className="font-weight-bold text-uppercase">Supplement your learning</h6>
         <p className="text-dark">
-          Flashcards for Developers is built around the idea that memory fades. Flashcards are
-          perfect for testing your recall and strengthening the signal in your brain. The flashcards
-          helps you practice at the best time so you spend less effort to learn what you want.
+          Flashcards are bite-sized concepts you can study anywhere. They are designed so you can
+          fit them in anywhere to fill time. You can easily study them at the grocery store, on the
+          bus, or in killing time at home. They are designed so you quickly improve your
+          understanding of programming concepts.
         </p>
       </div>
 
-      <div className="my-5 pb-2">
+      <div className="my-3 pb-2">
         <h6 className="font-weight-bold text-uppercase">Use it or lose it</h6>
         <p className="text-dark">
-          Flashcards for Developers is built around the idea that memory fades. Flashcards are
-          perfect for testing your recall and strengthening the signal in your brain. The flashcards
-          helps you practice at the best time so you spend less effort to learn what you want.
+          Remember your Big-O notation from college? What is an AVL tree? Some things are easy to
+          forget when you don't practice them. Flashcards are a great way to discover and close
+          those gaps in your knowledge.
+        </p>
+      </div>
+
+      <div className="my-3 pb-2">
+        <h6 className="font-weight-bold text-uppercase">Study Smarter, Not Longer</h6>
+        <p className="text-dark">
+          Flashcards for Developers uses a straight-forward scheduling system to reduce the amount
+          of studying you do over time. This technique, called spaced repetition, can reduce the
+          amount of studying you do by half. Using our system, you will learn more with less effort.
         </p>
       </div>
 
@@ -58,10 +68,11 @@ const About = () => (
             Spaced repetition
           </h6>
           <p className="text-dark">
-            Flashcards for Developers is built around the idea that memory fades. Flashcards are
-            perfect for testing your recall and strengthening the signal in your brain. The
-            flashcards helps you practice at the best time so you spend less effort to learn what
-            you want.
+            Spaced repetition is a learning technique that schedules increasing periods of time
+            between each review of some material. This method takes advantage of a psychological
+            phenomenon, called the spacing effect. This phenomenon simply states that people learn
+            more effectively when studying is spread out over time. The result? Spend less time the
+            things you know and more time with the things you don’t.
           </p>
         </div>
         <div className="d-flex align-items-center">
@@ -144,7 +155,7 @@ const About = () => (
             <div>
               <span className="h2 font-weight-light">
                 <strong>1901</strong> cards studied <br />
-                <strong>69,001</strong> times*
+                <strong>70,607</strong> times*
               </span>
             </div>
             <div className="mt-3">
