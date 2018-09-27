@@ -37,7 +37,7 @@
     "react-jss": "^8.5.1",
     "react-modal": "^3.5.1",
     "react-router-dom": "^4.3.1",
-    "react-scripts": "1.1.4",
+    "react-scripts": "2.0.0",
     "react-share": "^2.2.0",
     "react-test-renderer": "^16.5.1",
     "recharts": "^1.0.0-beta.10",
