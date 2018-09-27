@@ -7,6 +7,7 @@ jest.mock("../apiActions", () => ({
 }));
 
 it("renders without crashing", () => {
-  const wrapper = shallow(<CollectionsHome />);
+  const context = { mixpanel: { track: () => {} } };
+  const wrapper = shallow(<CollectionsHome />, { context });
   expect(wrapper).toHaveLength(1);
 });
