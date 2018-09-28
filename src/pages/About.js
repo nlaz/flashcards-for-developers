@@ -9,9 +9,6 @@ const Avatar = ({ src, alt }) => (
   />
 );
 
-const nickImage = "https://pbs.twimg.com/profile_images/981557025782996993/6jfhJE0N_400x400.jpg";
-const nikoImage = "https://pbs.twimg.com/profile_images/781131028631085056/XpNjOI5O_400x400.jpg";
-
 const About = () => (
   <div>
     <div className="container container--narrow py-5">
@@ -108,7 +105,7 @@ const About = () => (
                 rel="noopener noreferrer"
                 target="_blank"
               >
-                <Avatar src={nikoImage} alt="Niko's profile" />
+                <Avatar src={require("./niko.jpg")} alt="Niko's profile" />
                 <div className="d-flex flex-column align-items-start ml-2">
                   <div>
                     <span>Niko Lazaris</span>
@@ -124,7 +121,7 @@ const About = () => (
                 rel="noopener noreferrer"
                 target="_blank"
               >
-                <Avatar src={nickImage} alt="Nick's profile" />
+                <Avatar src={require("./nick.jpg")} alt="Nick's profile" />
                 <div className="d-flex flex-column align-items-start ml-2">
                   <div>
                     <span>Nick Engmann</span>
