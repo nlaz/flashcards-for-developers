@@ -51,7 +51,7 @@
     "web": "react-scripts start",
     "build": "react-scripts build",
     "server": "NODE_ENV=development nodemon --watch server --exec 'node server/index'",
-    "deploy": "yarn build && NODE_ENV=production node server/index",
+    "deploy": "NODE_ENV=production yarn build && NODE_ENV=production node server/index",
     "test": "react-scripts test --env=jsdom",
     "test:server": "node scripts/run_server_tests.js",
     "heroku-postbuild": "yarn build"

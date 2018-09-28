@@ -1,5 +1,6 @@
 import React from "react";
 import Tooltip from "rc-tooltip";
+import { Link } from "react-router-dom";
 
 import * as localStorage from "../utils/localStorage";
 import Toggle from "../../components/Toggle";
@@ -22,7 +23,12 @@ class StudyToggle extends React.Component {
     const { isChecked } = this.state;
 
     const tooltip = (
-      <span>Hide cards you've seen recently so you only study your weakest cards.</span>
+      <span>
+        Hide cards you've seen recently so you only study your weakest cards.
+        <Link className="text-white text-underline ml-1" to="/pages/about">
+          Learn more.
+        </Link>
+      </span>
     );
 
     return (
