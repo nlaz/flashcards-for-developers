@@ -61,16 +61,26 @@ class Header extends Component {
       <div className="header">
         <LoginModal isOpen={this.state.showModal} onClose={this.onCloseModal} />
         <div className="container container--full d-flex justify-content-between align-items-center py-2 w-100">
-          <div>
+          <div className="d-flex align-items-center">
             {!isHomePage && (
               <Link
                 to="/"
-                className="d-flex align-items-center font-weight-medium text-dark p-2 btn btn-reset"
+                className="d-flex align-items-center font-weight-medium text-dark p-2 btn btn-reset mr-2"
               >
                 <Octicon name="chevron-left" className="d-flex mr-1" />
                 <span className="d-none d-sm-inline">Flashcards for Developers</span>
               </Link>
             )}
+
+            <div>
+              <Link
+                to="/pages/membership"
+                onClick={() => analytics.logMembershipAction("User clicked 'Upgrade' button")}
+                className="btn btn-sm btn-outline-gray"
+              >
+                Upgrade
+              </Link>
+            </div>
           </div>
           <ul className="p-0 m-0">
             <li className="list-inline-item">

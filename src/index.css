@@ -366,6 +366,21 @@ a[disabled] {
   background: #1b3e72;
 }
 
+.btn-outline-gray {
+  border: 1px solid #d9d9d9;
+  color: #757575;
+}
+.btn-outline-gray:hover {
+  color: rgba(0, 0, 0, 0.64);
+  border-color: rgba(0, 0, 0, 0.5);
+}
+
+.header .btn-outline-gray {
+  padding: 8px 14px;
+  font-size: 14px;
+  line-height: 1em;
+}
+
 .loginPrompt .btn-darkblue {
   padding: 3px 10px;
 }

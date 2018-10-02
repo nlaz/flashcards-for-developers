@@ -131,6 +131,13 @@ export function logLoginAction(action) {
   });
 }
 
+export function logMembershipAction(action) {
+  ReactGA.event({
+    category: "User Membership",
+    action: action,
+  });
+}
+
 class GoogleAnalytics extends Component {
   componentWillMount() {
     const searchParams = queryString.parse(this.props.location.search);
