@@ -7,7 +7,4 @@ const CardProgressSchema = new mongoose.Schema({
   leitnerBox: { type: Number },
 });
 
-module.exports = {
-  Schema: CardProgressSchema,
-  Model: mongoose.model("CardProgress", CardProgressSchema),
-};
+module.exports = mongoose.model("CardProgress", CardProgressSchema);

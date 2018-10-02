@@ -6,7 +6,4 @@ const DeckProgressSchema = new mongoose.Schema({
   cards: [{ type: mongoose.Schema.Types.ObjectId, ref: "CardProgress" }],
 });
 
-module.exports = {
-  Schema: DeckProgressSchema,
-  Model: mongoose.model("DeckProgress", DeckProgressSchema),
-};
+module.exports = mongoose.model("DeckProgress", DeckProgressSchema);

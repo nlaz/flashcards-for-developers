@@ -1,7 +1,8 @@
 const Joi = require("joi");
 
-const DeckProgress = require("../models/DeckProgress").Model;
-const CardProgress = require("../models/CardProgress").Model;
+const DeckProgress = require("../models/DeckProgress");
+const CardProgress = require("../models/CardProgress");
+const ReviewEvent = require("../models/ReviewEvent");
 
 const progressSchemas = require("./validation/progress");
 
@@ -92,6 +93,9 @@ module.exports.addCardProgress = async (req, res, next) => {
       { $addToSet: { cards: cardProgress } },
       { new: true, upsert: true },
     ).populate("cards");
+
+    // Log review event
+    await ReviewEvent.create({ user: user, card: cardId });
 
     res.send(deckProgress);
   } catch (error) {
