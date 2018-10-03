@@ -7,7 +7,7 @@ import * as api from "../apiActions";
 import * as analytics from "../../components/GoogleAnalytics";
 import * as localStorage from "../utils/localStorage";
 
-import PropTypes from 'prop-types';
+import PropTypes from "prop-types";
 import CollectionItem from "../collections/CollectionItem";
 import HabitTracker from "./HabitTracker";
 import FeedbackForm from "./FeedbackForm";
@@ -29,7 +29,7 @@ class Decks extends Component {
 
   componentWillMount() {
     document.title = "Flashcards for Developers";
-    this.context.mixpanel.track('Home page.');
+    this.context.mixpanel.track("Home page.");
     this.fetchPinnedDecks();
 
     this.fetchFeaturedCollection();
@@ -212,7 +212,7 @@ class Decks extends Component {
         </div>
 
         {collections && (
-          <div className="container container--full px-0 px-lg-4 mx-0 mx-lg-auto">
+          <div className="container container--full">
             <div className="mt-5">
               <div className="d-flex justify-content-between align-items-end mb-2 mx-1">
                 <h6 className="text-uppercase m-0">Popular Collections</h6>
@@ -220,10 +220,12 @@ class Decks extends Component {
                   See all
                 </Link>
               </div>
-              <div className="row px-4 pt-3">
-                {collections.slice(0, 4).map(item => (
-                  <CollectionItem key={item.id} collection={item} />
-                ))}
+              <div className="px-0 px-lg-4 mx-0 mx-lg-auto">
+                <div className="row pt-1">
+                  {collections.slice(0, 4).map(item => (
+                    <CollectionItem key={item.id} collection={item} />
+                  ))}
+                </div>
               </div>
             </div>
           </div>
@@ -232,12 +234,9 @@ class Decks extends Component {
         <div className="container container--full px-4">
           {featuredRow &&
             Object.keys(featuredRow).length > 0 && (
-              <div className="my-4 mt-5">
+              <div className="mt-5">
                 <div className="d-flex justify-content-between align-items-end mb-2 mx-1">
-                  <h6 className="text-uppercase m-0">
-                    Featured Decks
-                    <i className="fa fa-bullhorn ml-1" />
-                  </h6>
+                  <h6 className="text-uppercase m-0">Featured Decks</h6>
                 </div>
                 {featuredRow.decks.length > 0 && (
                   <div className="row">
@@ -259,10 +258,7 @@ class Decks extends Component {
             Object.keys(trendingRow).length > 0 && (
               <div className="my-4">
                 <div className="d-flex justify-content-between align-items-end mb-2 mx-1">
-                  <h6 className="text-uppercase m-0">
-                    {trendingRow.name}
-                    <i className="fa fa-fire ml-1" />
-                  </h6>
+                  <h6 className="text-uppercase m-0">{trendingRow.name}</h6>
                   <Link className="text-dark text-underline" to={`/collections/${trendingRow.id}`}>
                     See all
                   </Link>
@@ -287,10 +283,7 @@ class Decks extends Component {
             Object.keys(newestRow).length > 0 && (
               <div className="my-4">
                 <div className="d-flex justify-content-between align-items-end mb-2 mx-1">
-                  <h6 className="text-uppercase m-0">
-                    {newestRow.name}
-                    <i className="far fa-clock ml-1" />
-                  </h6>
+                  <h6 className="text-uppercase m-0">{newestRow.name}</h6>
                   <Link className="text-dark text-underline" to={`/collections/${newestRow.id}`}>
                     See all
                   </Link>
@@ -335,6 +328,6 @@ class Decks extends Component {
 }
 
 Decks.contextTypes = {
-  mixpanel: PropTypes.object.isRequired
+  mixpanel: PropTypes.object.isRequired,
 };
 export default Decks;
