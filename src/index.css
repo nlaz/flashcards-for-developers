@@ -429,6 +429,9 @@ a[disabled] {
 .bg-darkLight {
   background: #cacaca;
 }
+.bg-grayLight {
+  background: #f9f9f9;
+}
 
 .rounded-huge-top {
   border-radius: 8px 8px 0 0;
@@ -438,6 +441,25 @@ a[disabled] {
   border-radius: 0 0 8px 8px;
 }
 .text-large {
-  font-size: 40px;
+  font-size: 45px;
   font-weight: bold;
+  line-height: 1.15em;
+}
+
+.table-row {
+  position: relative;
+}
+
+.table-row::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  border-radius: 6px;
+}
+.table-row:hover::after {
+  background: rgba(0, 0, 0, 0.05);
+  z-index: 0;
 }
