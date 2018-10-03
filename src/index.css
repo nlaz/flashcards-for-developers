@@ -419,3 +419,25 @@ a[disabled] {
     font-size: 1em;
   }
 }
+
+.bg-blueLight {
+  background: #e7f2ff;
+}
+.bg-yellowLight {
+  background: #fff4d1;
+}
+.bg-darkLight {
+  background: #cacaca;
+}
+
+.rounded-huge-top {
+  border-radius: 8px 8px 0 0;
+}
+
+.rounded-huge-bottom {
+  border-radius: 0 0 8px 8px;
+}
+.text-large {
+  font-size: 40px;
+  font-weight: bold;
+}
