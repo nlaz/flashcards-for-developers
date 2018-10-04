@@ -1,15 +1,15 @@
 import React, { Component } from "react";
 import cx from "classnames";
 import marked from "marked";
-import Chance from "chance";
 import moment from "moment";
-import PropTypes from 'prop-types';
+import PropTypes from "prop-types";
 import config from "../../config";
 import isAuthenticated from "../utils/isAuthenticated";
 import * as leitner from "../../spaced/leitner";
 import * as api from "../apiActions";
 import * as localStorage from "../utils/localStorage";
 import * as studyProgress from "../utils/studyProgress";
+import * as chance from "../utils/chance";
 import * as analytics from "../../components/GoogleAnalytics";
 
 import DeckFeedback from "./DeckFeedback";
@@ -20,12 +20,10 @@ import ReviewResults from "./ReviewResults";
 
 import "./Review.css";
 
-const chance = new Chance();
-const PAGE_SIZE = 8;
 const SELF_GRADE_CORRECT = "I was right";
 const SELF_GRADE_INCORRECT = "I was wrong";
 
-const getRandomPageSize = () => chance.integer({ min: PAGE_SIZE - 2, max: PAGE_SIZE + 1 });
+const getRandomPageSize = () => chance.integer({ min: 6, max: 8 });
 
 const ReviewType = ({ type }) => (
   <div
@@ -71,7 +69,7 @@ class Review extends Component {
 
   componentDidMount() {
     const { params } = this.props.match;
-    this.context.mixpanel.track('Review Page.');
+    this.context.mixpanel.track("Review Page.");
     if (this.isCollectionPage()) {
       this.fetchCollection(params.collectionId);
       this.fetchMixedCards(params.collectionId);
@@ -173,7 +171,7 @@ class Review extends Component {
 
     const isCorrect = answer === SELF_GRADE_CORRECT;
     const card = this.getCurrentCard();
-    this.context.mixpanel.track('Reviews Card.');
+    this.context.mixpanel.track("Reviews Card.");
     analytics.logReviewEvent(card.id);
     this.setStudyProgress(card, isCorrect);
 
@@ -198,7 +196,7 @@ class Review extends Component {
 
     if (isCorrect) {
       this.setState({ correctness: [...this.state.correctness, isCorrect] });
-      this.context.mixpanel.track('Reviews Card.');
+      this.context.mixpanel.track("Reviews Card.");
       analytics.logReviewEvent(card.id);
       this.timeout = setTimeout(() => this.handleCorrectAnswer(), 300);
     } else {
@@ -234,10 +232,10 @@ class Review extends Component {
 
   logReviewEvent = index => {
     if (this.isDeckCompleted(index)) {
-      this.context.mixpanel.track('Complete Event Log.');
+      this.context.mixpanel.track("Complete Event Log.");
       analytics.logCompletedEvent(this.state.deck.id);
     } else {
-      this.context.mixpanel.track('Finish Deck.');
+      this.context.mixpanel.track("Finish Deck.");
       analytics.logFinishedEvent(this.state.deck.id);
     }
   };
@@ -366,13 +364,10 @@ class Review extends Component {
     } else if (this.isMultiple()) {
       return [...new Set(cards.map(el => el.back))].map((el, i) => ({ id: i, back: el }));
     } else {
-      const random = chance.unique(chance.natural, Math.min(3, cards.length), {
-        min: 0,
-        max: cards.length - 1,
-      });
-      const uniqOptions = [...new Set([...random, index])];
-      const opts = chance.shuffle(uniqOptions);
-      return opts.map(el => cards[el]);
+      const numOptions = Math.min(3, cards.length);
+      const shuffledCards = chance.shuffle(cards).slice(0, numOptions);
+      const uniqueCards = [...new Set([...shuffledCards, cards[index]])];
+      return chance.shuffle(uniqueCards);
     }
   };
 
@@ -606,6 +601,6 @@ Review.defaultProps = {
 };
 
 Review.contextTypes = {
-  mixpanel: PropTypes.object.isRequired
+  mixpanel: PropTypes.object.isRequired,
 };
 export default Review;

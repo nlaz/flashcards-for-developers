@@ -82,11 +82,11 @@ const About = () => (
         </div>
         <p className="text-dark text-center font-italic mt-3" style={{ opacity: 0.8 }}>
           This technique is has been written about in depth by{" "}
-          <a className="text-dark text-underline" href="">
+          <a className="text-dark text-underline" href="https://sivers.org/srs">
             Derek Sivers
           </a>{" "}
           and{" "}
-          <a className="text-dark text-underline" href="">
+          <a className="text-dark text-underline" href="http://augmentingcognition.com/ltm.html">
             Michael Nielsen
           </a>
           .
