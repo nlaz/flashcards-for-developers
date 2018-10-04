@@ -433,10 +433,12 @@ a[disabled] {
   background: #f9f9f9;
 }
 
+.rounded-huge {
+  border-radius: 8px;
+}
 .rounded-huge-top {
   border-radius: 8px 8px 0 0;
 }
-
 .rounded-huge-bottom {
   border-radius: 0 0 8px 8px;
 }

@@ -65,14 +65,14 @@ class Header extends Component {
             {!isHomePage && (
               <Link
                 to="/"
-                className="d-flex align-items-center font-weight-medium text-dark p-2 btn btn-reset mr-2"
+                className="d-flex align-items-center font-weight-medium text-dark p-2 btn btn-reset"
               >
                 <Octicon name="chevron-left" className="d-flex mr-1" />
                 <span className="d-none d-sm-inline">Flashcards for Developers</span>
               </Link>
             )}
 
-            <div>
+            <div className="ml-2">
               <Link
                 to="/pages/membership"
                 onClick={() =>

@@ -1,9 +1,32 @@
 import React from "react";
 import { Link } from "react-router-dom";
+import cx from "classnames";
 
 import * as analytics from "../components/GoogleAnalytics";
 
 const CheckMark = () => <i className="fas fa-check fa-lg" />;
+
+const ContactLink = () => (
+  <a
+    href="mailto:hello@flashcardsfordevelopers.com"
+    className="text-underline font-weight-medium text-white"
+    style={{ fontSize: "1.25em" }}
+    onClick={() => analytics.logMembershipAction("Clicked Organizations tier on membership page")}
+  >
+    Contact us
+  </a>
+);
+
+const GetStartedLink = () => (
+  <Link
+    to="/pages/membership"
+    className="text-underline font-weight-medium"
+    onClick={() => analytics.logMembershipAction("Clicked Member tier on membership page")}
+    style={{ fontSize: "1.25em" }}
+  >
+    Get started
+  </Link>
+);
 
 const TableTop = () => (
   <div className="row mb-2">
@@ -19,7 +42,7 @@ const TableTop = () => (
           <div className="text-center text-uppercase font-weight-medium">Member</div>
         </div>
         <div className="col-4">
-          <div className="text-center text-uppercase font-weight-medium">Organizations</div>
+          <div className="text-center text-uppercase font-weight-medium">Teams</div>
         </div>
       </div>
     </div>
@@ -119,30 +142,12 @@ const TableFooter = () => (
         </div>
         <div className="col-4">
           <div className="pt-5 pb-5 px-2 px bg-blueLight rounded-huge-bottom text-center">
-            <Link
-              to="/pages/membership"
-              className="text-underline font-weight-medium"
-              onClick={() =>
-                analytics.logMembershipAction("Clicked Member tier on membership page")
-              }
-              style={{ fontSize: "1.25em" }}
-            >
-              Get started
-            </Link>
+            <GetStartedLink />
           </div>
         </div>
         <div className="col-4">
           <div className="pt-5 pb-5 px-2 bg-dark text-white rounded-huge-bottom text-center">
-            <a
-              href="mailto:hello@flashcardsfordevelopers.com"
-              className="text-underline font-weight-medium text-white"
-              style={{ fontSize: "1.25em" }}
-              onClick={() =>
-                analytics.logMembershipAction("Clicked Organizations tier on membership page")
-              }
-            >
-              Contact
-            </a>
+            <ContactLink />
           </div>
         </div>
       </div>
@@ -150,12 +155,28 @@ const TableFooter = () => (
   </div>
 );
 
+const Tier = ({ className, sublabel, price, priceSublabel, features, link }) => (
+  <div className={cx("rounded-huge mb-3 p-3", className)}>
+    <div className="text-uppercase font-weight-medium small">{sublabel}</div>
+    <div className="d-flex align-items-center my-2">
+      <div className="text-large">{price}</div>
+      <small className="text-muted ml-2">{priceSublabel}</small>
+    </div>
+    <div className="my-3">{link}</div>
+    <div>
+      {features.map(el => (
+        <div className="font-weight-medium">{el}</div>
+      ))}
+    </div>
+  </div>
+);
+
 const Membership = () => (
   <div className="container container--full py-5">
-    <div className="px-5 row">
+    <div className="px-md-5 row">
       <div className="col-12">
         <h1 className="font-weight-bold m-0" style={{ fontSize: "40px" }}>
-          LEARN SMARTER, NOT LONGER
+          LEARN SMARTER, NOT HARDER
         </h1>
         <p
           className="text-muted font-weight-light"
@@ -167,23 +188,62 @@ const Membership = () => (
       </div>
     </div>
 
-    <div className="px-5 mt-5">
+    <div className="px-md-5 mt-5 d-none d-md-block">
       <TableTop />
       <TableHeader tier1="$0" tier2="$5" tier3="✨" />
       <TableLabel label="Usage" />
       <TableRow label="Decks" tier1="Unlimited" tier2="Unlimited" tier3="Unlimited" />
-      <TableRow label="Flashcards" tier1="120" tier2="1200" tier3="Increased" />
+      <TableRow label="Review history" tier1="3 months" tier2="Unlimited" tier3="Unlimited" />
       <TableRow
         label="Scheduled practice"
         tier1={<CheckMark />}
         tier2={<CheckMark />}
         tier3={<CheckMark />}
       />
-      <TableLabel label="Essentials" />
-      <TableRow label="Review history" tier1="3 months" tier2="Unlimited" tier3="Unlimited" />
       <TableRow label="Pinned decks" tier1="10" tier2="100" tier3="Increased" />
-      <TableRow label="Private decks" tier1="-" tier2="10" tier3="100" />
+      <TableRow label="Private decks" tier1="-" tier2={<CheckMark />} tier3={<CheckMark />} />
+      <TableRow label="Premium content" tier1="-" tier2={<CheckMark />} tier3={<CheckMark />} />
       <TableFooter />
+    </div>
+
+    <div className="mt-5 d-md-none">
+      <Tier
+        className="bg-grayLight"
+        sublabel="Free"
+        price="$0"
+        priceSublabel="per month"
+        features={[
+          "Unlimited decks",
+          "3 months review history",
+          "Scheduled practice",
+          "10 pinned decks",
+        ]}
+      />
+      <Tier
+        className="bg-blueLight"
+        sublabel="Member"
+        price="$5"
+        priceSublabel="per month"
+        link={<GetStartedLink />}
+        features={[
+          "Unlimited decks",
+          "Unlimited review history",
+          "Private decks",
+          "Premium content",
+        ]}
+      />
+      <Tier
+        className="bg-dark text-white"
+        sublabel="Teams"
+        price="✨"
+        link={<ContactLink />}
+        features={[
+          "Unlimited decks",
+          "Unlimited review history",
+          "Private decks",
+          "Premium content",
+        ]}
+      />
     </div>
 
     <div className="row my-5">
@@ -195,22 +255,14 @@ const Membership = () => (
           Questions? <a href="mailto:hello@flashcardsfordevelopers.com">Contact us</a>
         </div>
       </div>
-      <div className="col-4 mb-3">
+      <div className="col-sm-4 mb-3">
         <h5>What is a deck?</h5>
         <p>
           A deck is a collection of related flashcards. They often represent a single subject that
           you can study. For example, you could study our Big-O notation deck.
         </p>
       </div>
-      <div className="col-4 mb-3">
-        <h5>What is the flashcard limit?</h5>
-        <p>
-          While we don't limit the number of decks you can create, we do limit the number of
-          flashcards you can create. On the Free plan, we limit the total flashcards you can create.
-          You can increase these limits by upgrading to our Member plan.
-        </p>
-      </div>
-      <div className="col-4 mb-3">
+      <div className="col-sm-4 mb-3">
         <h5>What is scheduled practice?</h5>
         <p>
           Flashcards are scheduled at increasing intervals to improve your ability to recall and
@@ -218,7 +270,7 @@ const Membership = () => (
           to study effectively.
         </p>
       </div>
-      <div className="col-4 mb-3">
+      <div className="col-sm-4 mb-3">
         <h5>What is review history?</h5>
         <p>
           Your review history is a snapshot of your study activity. You can view a living history of
@@ -226,14 +278,14 @@ const Membership = () => (
           for our Member plan.
         </p>
       </div>
-      <div className="col-4 mb-3">
+      <div className="col-sm-4 mb-3">
         <h5>What are pinned decks?</h5>
         <p>
           Pinned decks are favorite decks you want to keep studying. They are easier to find and can
           be studied all at once.
         </p>
       </div>
-      <div className="col-4 mb-3">
+      <div className="col-sm-4 mb-3">
         <h5>What are private decks?</h5>
         <p>
           Private decks are collections of personal flashcards that are not visible to other users.
