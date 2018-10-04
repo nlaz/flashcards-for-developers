@@ -11,6 +11,7 @@
     "axios": "^0.18.0",
     "body-parser": "^1.18.3",
     "classnames": "^2.2.6",
+    "compression": "^1.7.3",
     "cookie-parser": "^1.4.3",
     "express": "^4.16.3",
     "forcedomain": "^1.0.0",
