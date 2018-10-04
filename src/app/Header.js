@@ -75,7 +75,9 @@ class Header extends Component {
             <div>
               <Link
                 to="/pages/membership"
-                onClick={() => analytics.logMembershipAction("User clicked 'Upgrade' button")}
+                onClick={() =>
+                  analytics.logMembershipAction("User clicked 'Upgrade' button in header")
+                }
                 className="btn btn-sm btn-outline-gray"
               >
                 Upgrade

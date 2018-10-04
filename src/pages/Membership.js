@@ -1,6 +1,8 @@
 import React from "react";
 import { Link } from "react-router-dom";
 
+import * as analytics from "../components/GoogleAnalytics";
+
 const CheckMark = () => <i className="fas fa-check fa-lg" />;
 
 const TableTop = () => (
@@ -14,7 +16,7 @@ const TableTop = () => (
           <div className="text-center text-uppercase font-weight-medium">Free</div>
         </div>
         <div className="col-4">
-          <div className="text-center text-uppercase font-weight-medium">Plus</div>
+          <div className="text-center text-uppercase font-weight-medium">Member</div>
         </div>
         <div className="col-4">
           <div className="text-center text-uppercase font-weight-medium">Organizations</div>
@@ -120,9 +122,12 @@ const TableFooter = () => (
             <Link
               to="/pages/membership"
               className="text-underline font-weight-medium"
+              onClick={() =>
+                analytics.logMembershipAction("Clicked Member tier on membership page")
+              }
               style={{ fontSize: "1.25em" }}
             >
-              Upgrade
+              Get started
             </Link>
           </div>
         </div>
@@ -132,6 +137,9 @@ const TableFooter = () => (
               href="mailto:hello@flashcardsfordevelopers.com"
               className="text-underline font-weight-medium text-white"
               style={{ fontSize: "1.25em" }}
+              onClick={() =>
+                analytics.logMembershipAction("Clicked Organizations tier on membership page")
+              }
             >
               Contact
             </a>
@@ -164,7 +172,7 @@ const Membership = () => (
       <TableHeader tier1="$0" tier2="$5" tier3="✨" />
       <TableLabel label="Usage" />
       <TableRow label="Decks" tier1="Unlimited" tier2="Unlimited" tier3="Unlimited" />
-      <TableRow label="Cards per deck" tier1="120" tier2="1000" tier3="Increased" />
+      <TableRow label="Flashcards" tier1="120" tier2="1200" tier3="Increased" />
       <TableRow
         label="Scheduled practice"
         tier1={<CheckMark />}
@@ -195,8 +203,12 @@ const Membership = () => (
         </p>
       </div>
       <div className="col-4 mb-3">
-        <h5>What is the per-deck limit?</h5>
-        <p>Decks</p>
+        <h5>What is the flashcard limit?</h5>
+        <p>
+          While we don't limit the number of decks you can create, we do limit the number of
+          flashcards you can create. On the Free plan, we limit the total flashcards you can create.
+          You can increase these limits by upgrading to our Member plan.
+        </p>
       </div>
       <div className="col-4 mb-3">
         <h5>What is scheduled practice?</h5>
@@ -209,15 +221,16 @@ const Membership = () => (
       <div className="col-4 mb-3">
         <h5>What is review history?</h5>
         <p>
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur eget lectus nec ex
-          hendrerit vulputate vel vel urna.
+          Your review history is a snapshot of your study activity. You can view a living history of
+          your study habits. We provide a limited history for free plans, with extended histories
+          for our Member plan.
         </p>
       </div>
       <div className="col-4 mb-3">
         <h5>What are pinned decks?</h5>
         <p>
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur eget lectus nec ex
-          hendrerit vulputate vel vel urna.
+          Pinned decks are favorite decks you want to keep studying. They are easier to find and can
+          be studied all at once.
         </p>
       </div>
       <div className="col-4 mb-3">
