@@ -72,17 +72,19 @@ class Header extends Component {
               </Link>
             )}
 
-            <div className="ml-2">
-              <Link
-                to="/pages/membership"
-                onClick={() =>
-                  analytics.logMembershipAction("User clicked 'Upgrade' button in header")
-                }
-                className="btn btn-sm btn-outline-gray"
-              >
-                Upgrade
-              </Link>
-            </div>
+            {isAuthenticated() && (
+              <div className="ml-2 d-none d-sm-block">
+                <Link
+                  to="/pages/membership"
+                  onClick={() =>
+                    analytics.logMembershipAction("User clicked 'Upgrade' button in header")
+                  }
+                  className="btn btn-sm btn-outline-gray"
+                >
+                  Upgrade
+                </Link>
+              </div>
+            )}
           </div>
           <ul className="p-0 m-0">
             <li className="list-inline-item">
