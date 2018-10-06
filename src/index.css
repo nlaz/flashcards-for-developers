@@ -366,6 +366,21 @@ a[disabled] {
   background: #1b3e72;
 }
 
+.btn-outline-gray {
+  border: 1px solid #d9d9d9;
+  color: #757575;
+}
+.btn-outline-gray:hover {
+  color: rgba(0, 0, 0, 0.64);
+  border-color: rgba(0, 0, 0, 0.5);
+}
+
+.header .btn-outline-gray {
+  padding: 8px 14px;
+  font-size: 14px;
+  line-height: 1em;
+}
+
 .loginPrompt .btn-darkblue {
   padding: 3px 10px;
 }
@@ -403,4 +418,50 @@ a[disabled] {
   .review-header .deck-description {
     font-size: 1em;
   }
+}
+
+.bg-blueLight {
+  background: #e7f2ff;
+}
+.bg-yellowLight {
+  background: #fff4d1;
+}
+.bg-darkLight {
+  background: #cacaca;
+}
+.bg-grayLight {
+  background: #f9f9f9;
+}
+
+.rounded-huge {
+  border-radius: 8px;
+}
+.rounded-huge-top {
+  border-radius: 8px 8px 0 0;
+}
+.rounded-huge-bottom {
+  border-radius: 0 0 8px 8px;
+}
+.text-large {
+  font-size: 45px;
+  font-weight: bold;
+  line-height: 1.15em;
+}
+
+.table-row {
+  position: relative;
+}
+
+.table-row::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  border-radius: 6px;
+}
+.table-row:hover::after {
+  background: rgba(0, 0, 0, 0.05);
+  z-index: 0;
 }

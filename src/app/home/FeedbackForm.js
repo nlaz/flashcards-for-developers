@@ -25,22 +25,6 @@ const FeedbackForm = () => (
           Subscribe!
         </a>
       </div>
-      <div className="mt-3">
-        <small>
-          <a
-            className="text-secondary text-underline"
-            href={config.buyMeACoffeeDonateUrl}
-            onClick={() => analytics.logDonateEvent1()}
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            ...or buy us a coffee.{" "}
-          </a>
-          <span role="img" aria-label="Heart emoji">
-            ❤️
-          </span>
-        </small>
-      </div>
     </div>
   </div>
 );
