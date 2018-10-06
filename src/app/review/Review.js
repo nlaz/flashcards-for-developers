@@ -245,7 +245,7 @@ class Review extends Component {
       ({ data }) => {
         // TODO: Set the name on the server-side
         document.title = data.name ? `${data.name} Flashcards` : "Flashcards for Developers";
-        this.setState({ deck: data, isDeckLoading: false }, () => this.fetchCards(data));
+        this.setState({ deck: data, isDeckLoading: false }, () => this.fetchCards(data.id));
       },
       error => this.setState({ isError: true, isDeckLoading: false }),
     );
@@ -264,9 +264,9 @@ class Review extends Component {
     }
   };
 
-  fetchCards = deck => {
+  fetchCards = deckId => {
     api
-      .fetchCards({ deck: deck.id })
+      .fetchCards({ deck: deckId })
       .then(this.handleCardsResponse)
       .catch(error => this.setState({ isError: true, isCardsLoading: false }));
   };
