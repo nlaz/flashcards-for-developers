@@ -79,7 +79,7 @@ const ReviewResults = ({
           </ResponsiveContainer>
           <span
             className="text-center font-weight-medium position-absolute"
-            style={{ right: 0, left: 0, top: "135px" }}
+            style={{ right: 0, left: 0, top: "135px", zIndex: -1 }}
           >
             Progress
           </span>
