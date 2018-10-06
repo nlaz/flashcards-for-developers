@@ -79,7 +79,7 @@ const ReviewResults = ({
           </ResponsiveContainer>
           <span
             className="text-center font-weight-medium position-absolute"
-            style={{ right: 0, left: 0, top: "135px" }}
+            style={{ right: 0, left: 0, top: "135px", zIndex: -1 }}
           >
             Progress
           </span>
@@ -109,22 +109,22 @@ const ReviewResults = ({
           </table>
         </div>
       </div>
-      <div className="progress-review-buttons d-flex justify-content-center">
-        {!isCompleted ? (
-          <div>
-            <button className="btn btn-outline-dark mr-2 mb-2" onClick={onGoBack}>
-              Go back
-            </button>
-            <button className="btn btn-dark mb-2" onClick={onKeepGoing}>
-              Press space to continue
-            </button>
-          </div>
-        ) : (
+      {!isCompleted ? (
+        <div className="d-flex flex-wrap justify-content-center">
+          <button className="btn btn-outline-dark mr-2 mb-2" onClick={onGoBack}>
+            Go back
+          </button>
+          <button className="btn btn-dark mb-2" onClick={onKeepGoing}>
+            Press space to continue
+          </button>
+        </div>
+      ) : (
+        <div className="text-center">
           <Link to="/" className="btn btn-dark">
             Go back home
           </Link>
-        )}
-      </div>
+        </div>
+      )}
     </div>
   );
 };
