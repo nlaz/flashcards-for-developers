@@ -253,7 +253,14 @@ class Review extends Component {
 
   fetchCollection = collectionId => {
     if (this.isPinnedCollection()) {
-      this.setState({ deck: { name: "Pinned decks", type: "Self graded" }, isDeckLoading: false });
+      this.setState({
+        deck: {
+          name: "My Pinned Decks",
+          type: "Self graded",
+          description: "A collection of my all-time favorite decks that I want to learn.",
+        },
+        isDeckLoading: false,
+      });
     } else {
       api
         .fetchCollection(collectionId)

@@ -70,7 +70,11 @@ class Collections extends Component {
       api.fetchPinnedDecks().then(({ data }) => {
         this.setState({
           pinnedDecks: data,
-          collection: { name: "Pinned decks", id: "pinned" },
+          collection: {
+            name: "My Pinned Decks",
+            id: "pinned",
+            description: "A collection of my all-time favorite decks that I want to learn.",
+          },
           decks: this.sortDecks(data),
           isLoading: false,
         });
@@ -81,7 +85,11 @@ class Collections extends Component {
         api.fetchDecksById(pinnedDecks).then(({ data }) => {
           this.setState({
             pinnedDecks: data,
-            collection: { name: "Pinned decks", id: "pinned" },
+            collection: {
+              name: "My Pinned Decks",
+              id: "pinned",
+              description: "A collection of my all-time favorite decks that I want to learn.",
+            },
             decks: this.sortDecks(data),
             isLoading: false,
           });
