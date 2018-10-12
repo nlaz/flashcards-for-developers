@@ -38,12 +38,18 @@
     "build": "react-scripts build",
     "server": "NODE_ENV=development nodemon --watch server --exec 'node server/index'",
     "deploy:local": "yarn build && NODE_ENV=production node server/index",
-	"predeploy": "npm run build",
-   "deploy": "gh-pages -d build",
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d build",
     "test": "react-scripts test --env=jsdom"
   },
   "devDependencies": {
     "eslint-plugin-prettier": "^2.6.2",
     "prettier": "^1.14.2"
-  }
+  },
+  "browserslist": [
+    ">0.2%",
+    "not dead",
+    "not ie <= 11",
+    "not op_mini all"
+  ]
 }

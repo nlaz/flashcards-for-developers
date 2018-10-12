@@ -9,13 +9,39 @@ import GoogleAnalytics from "../components/GoogleAnalytics";
 import Footer from "../components/Footer";
 import Header from "../components/Header";
 
+const RedirectHeader = () => (
+  <div
+    style={{
+      background: "#fff6d9",
+      boxShadow: "0 1px 1px 0 rgba(0, 0, 0, .05)",
+      border: "1px solid #f9edca",
+    }}
+  >
+    <div className="container d-flex flex-column flex-sm-row justify-content-center align-items-center p-2">
+      <div>
+        <span role="img" aria-label="emoji">
+          🎉
+        </span>{" "}
+        <span className="m-0 font-weight-medium">We have a new version of our site.</span>
+      </div>
+      <a
+        href="https://www.flashcardsfordevelopers.com"
+        className="text-underline font-weight-medium ml-2"
+      >
+        Take me to it.
+      </a>
+    </div>
+  </div>
+);
+
 class App extends Component {
   render() {
     return (
-      <div className="App d-flex flex-column justify-content-between text-left">
-        <Header />
-        <div style={{ flexGrow: 1 }}>
-          <HashRouter>
+      <HashRouter>
+        <div className="App d-flex flex-column justify-content-between text-left">
+          <RedirectHeader />
+          <Header />
+          <div style={{ flexGrow: 1 }}>
             <div>
               <Route path="/" component={GoogleAnalytics} />
               <Switch>
@@ -27,10 +53,10 @@ class App extends Component {
                 <Route exact path="*" component={NotFound} />
               </Switch>
             </div>
-          </HashRouter>
+          </div>
+          <Footer />
         </div>
-        <Footer />
-      </div>
+      </HashRouter>
     );
   }
 }

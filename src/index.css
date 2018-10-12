@@ -155,11 +155,11 @@ a[disabled] {
   float: right;
 }
 
-.feedback-form .text-underline {
+.text-underline {
   text-decoration: underline;
 }
 
-.feedback-form .text-underline:hover {
+.text-underline:hover {
   text-decoration: none;
 }
 
@@ -177,11 +177,11 @@ a[disabled] {
 }
 
 .progress-current {
-  width: 14px!important;
-  height: 14px!important;
+  width: 14px !important;
+  height: 14px !important;
 }
 
-.progress-index{
+.progress-index {
   width: 10px;
   height: 10px;
 }
@@ -191,11 +191,11 @@ a[disabled] {
     margin-top: 50px;
   }
   .habit-tracker {
-    display: block!important;
+    display: block !important;
     text-align: center;
   }
   .habit-tracker_calender {
-    display: -webkit-inline-box!important;
+    display: -webkit-inline-box !important;
     width: 160px;
   }
 }
