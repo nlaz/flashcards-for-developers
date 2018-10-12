@@ -59,12 +59,14 @@ class HabitTracker extends Component {
   };
 
   getCurrentStreak = dates => {
-    const sortedDates = dates.sort((a, b) => moment(a).isBefore(moment(b)));
-    const consecutiveDates = sortedDates.reduce((acc, date) => {
-      const prevDate = acc.length > 0 ? acc[0] : moment().startOf("day");
-      return moment(prevDate).diff(moment(date), "hours") <= 24 ? [date, ...acc] : acc;
-    }, []);
-    return consecutiveDates.length;
+    let count = 0;
+    dates.forEach((date, index) => {
+      const today = moment();
+      const prevDate = index > 0 ? dates[index - 1] : today.format();
+      const hoursBetween = moment(prevDate).diff(moment(date), "hours");
+      count = hoursBetween <= 24 ? count + 1 : count;
+    });
+    return count;
   };
 
   render() {
