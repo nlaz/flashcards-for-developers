@@ -61,8 +61,8 @@ class HabitTracker extends Component {
   getCurrentStreak = dates => {
     const sortedDates = dates.sort((a, b) => moment(a).isBefore(moment(b)));
     const consecutiveDates = sortedDates.reduce((acc, date) => {
-      const prevDate = acc.length > 0 ? acc[0] : moment();
-      return moment(prevDate).diff(moment(date), "days") < 1 ? [date, ...acc] : acc;
+      const prevDate = acc.length > 0 ? acc[0] : moment().startOf("day");
+      return moment(prevDate).diff(moment(date), "hours") <= 24 ? [date, ...acc] : acc;
     }, []);
     return consecutiveDates.length;
   };
@@ -92,7 +92,7 @@ class HabitTracker extends Component {
           >
             Past Week
           </p>
-          <p className="text-dark m-0" style={{ fontSize: "14px" }}>
+          <p className="text-dark font-weight-medium m-0" style={{ fontSize: "14px" }}>
             Your current streak is {streak}
             <i style={{ color: "#ffc104" }} className="fas fa-fire ml-1" />.
           </p>
