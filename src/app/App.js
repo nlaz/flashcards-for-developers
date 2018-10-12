@@ -5,7 +5,7 @@ import Decks from "./decks/Decks";
 import Review from "./review/Review";
 import Collections from "./collections/Collections";
 import NotFound from "../components/NotFound";
-import GoogleAnalytics from "../components/GoogleAnalytics";
+import GoogleAnalytics, { logUserRedirect } from "../components/GoogleAnalytics";
 import Footer from "../components/Footer";
 import Header from "../components/Header";
 
@@ -26,6 +26,7 @@ const RedirectHeader = () => (
       </div>
       <a
         href="https://www.flashcardsfordevelopers.com"
+        onClick={() => logUserRedirect}
         className="text-underline font-weight-medium ml-2"
       >
         Take me to it.

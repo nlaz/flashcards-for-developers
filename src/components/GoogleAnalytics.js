@@ -116,6 +116,13 @@ export function logToggleFamiliarCards(isChecked) {
   });
 }
 
+export function logUserRedirect() {
+  ReactGA.event({
+    category: "User",
+    action: "Redirected to new site.",
+  });
+}
+
 class GoogleAnalytics extends Component {
   componentWillMount() {
     const searchParams = queryString.parse(this.props.location.search);
