@@ -4,7 +4,10 @@ import config from "../../config";
 import * as analytics from "../../components/GoogleAnalytics";
 
 const FeedbackForm = () => (
-  <div className="feedback-form border border-secondary rounded rounded p-4 text-center bg-light">
+  <div
+    className="feedback-form border rounded rounded p-4 text-center mb-4"
+    style={{ borderColor: "#e8e8e8" }}
+  >
     <div className="mx-auto" style={{ maxWidth: "500px" }}>
       <span>
         Stay tuned! Subscribe for news about new decks, features, and other announcements.{" "}

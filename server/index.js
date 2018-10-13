@@ -3,6 +3,7 @@ const morgan = require("morgan");
 const cookieParser = require("cookie-parser");
 const bodyParser = require("body-parser");
 const forceDomain = require("forcedomain");
+const compression = require("compression");
 
 const routes = require("./routes");
 const paths = require("../config/paths");
@@ -12,6 +13,7 @@ require("../database/index")();
 
 const app = express();
 
+app.use(compression());
 app.use(morgan("tiny"));
 app.use(cookieParser());
 app.use(bodyParser.json());
