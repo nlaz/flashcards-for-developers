@@ -10,6 +10,8 @@ const config = require("../../config/index");
 
 const GITHUB_OAUTH_ROUTE = "https://github.com/login/oauth/access_token";
 const GITHUB_USER_ROUTE = "https://api.github.com/user";
+const MAILCHIMP_ROUTE = "https://us17.api.mailchimp.com";
+const MEMBERSHIP_LIST = "6aa2bb18b4";
 
 module.exports.getGithubUser = async (req, res, next) => {
   try {
@@ -69,6 +71,24 @@ module.exports.createGithubUser = async (req, res, next) => {
 
     res.set("Authorization", `Bearer ${token}`);
     res.send(user);
+  } catch (error) {
+    next(error);
+  }
+};
+
+module.exports.subscribeUser = async (req, res, next) => {
+  try {
+    const { email } = req.body;
+    const route = `${MAILCHIMP_ROUTE}/3.0/lists/${MEMBERSHIP_LIST}/members/`;
+    const auth = { username: "mailchimp", password: config.mailchimpApiKey };
+    const query = { email_address: email, status: "subscribed" };
+
+    await Joi.validate(req.body, userSchemas.subscribeUser);
+
+    // Subscribe user to membership list
+    await axios.post(route, query, { auth });
+
+    res.send({ message: "Success!" });
   } catch (error) {
     next(error);
   }

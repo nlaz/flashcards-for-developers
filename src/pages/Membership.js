@@ -4,6 +4,7 @@ import cx from "classnames";
 import cookie from "js-cookie";
 
 import * as analytics from "../components/GoogleAnalytics";
+import * as api from "../app/apiActions";
 import isAuthenticated from "../app/utils/isAuthenticated";
 import Octicon from "../components/Octicon";
 
@@ -136,40 +137,49 @@ const Tier = ({ className, sublabel, price, priceSublabel, features, link }) => 
     </div>
     <div className="my-3">{link}</div>
     <div>
-      {features.map(el => (
-        <div className="font-weight-medium">{el}</div>
+      {features.map((el, index) => (
+        <div className="font-weight-medium" key={index}>
+          {el}
+        </div>
       ))}
     </div>
   </div>
 );
 
-const ComingSoonModal = ({ isOpen, onClose, user }) => (
+const ComingSoonModal = ({ isOpen, onClose, onSubmit, user }) => (
   <Modal isOpen={isOpen} className="comingSoonModal" overlayClassName="comingSoonModal-overlay">
     <button className="loginModal-close btn btn-reset p-2" onClick={onClose}>
       <Octicon name="x" />
     </button>
     <div className="py-5 px-4 my-2 mx-auto" style={{ maxWidth: "400px" }}>
-      <div className="text-center mx-auto">
-        <h5 className="mb-1">
-          <span role="img" aria-label="emoji">
-            🎉
-          </span>{" "}
-          Memberships coming soon!
-        </h5>
-        <p className="text-secondary font-weight-light">
-          Leave your email here. We will let you know when memberships are live.
-        </p>
-      </div>
+      <form onSubmit={onSubmit}>
+        <div className="text-center mx-auto">
+          <h5 className="mb-1">
+            <span role="img" aria-label="emoji">
+              🎉
+            </span>{" "}
+            Memberships coming soon!
+          </h5>
+          <p className="text-secondary font-weight-light">
+            Leave your email here. We will let you know when memberships are live.
+          </p>
+        </div>
 
-      <div className="input-group">
-        <input className="form-control" placeholder="Enter your email..." value={user.email} />
-        <button
-          className="btn btn-dark"
-          style={{ borderTopLeftRadius: 0, borderBottomLeftRadius: 0 }}
-        >
-          <small>GET NOTIFIED</small>
-        </button>
-      </div>
+        <div className="input-group">
+          <input
+            className="form-control"
+            placeholder="Enter your email..."
+            defaultValue={user.email}
+          />
+          <button
+            className="btn btn-dark"
+            style={{ borderTopLeftRadius: 0, borderBottomLeftRadius: 0 }}
+            type="submit"
+          >
+            <small>GET NOTIFIED</small>
+          </button>
+        </div>
+      </form>
     </div>
   </Modal>
 );
@@ -177,10 +187,30 @@ const ComingSoonModal = ({ isOpen, onClose, user }) => (
 class Membership extends React.Component {
   state = { showModal: false };
 
-  onOpenModal = () => this.setState({ showModal: true });
+  onOpenModal = () => {
+    analytics.logMembershipAction("Click 'Upgrade' button");
+    this.setState({ showModal: true });
+  };
 
   onCloseModal = () => {
+    analytics.logMembershipAction("Closed 'Upgrade' modal");
     this.setState({ showModal: false });
+  };
+
+  onSubmitModal = event => {
+    event.preventDefault();
+    const { value } = event.target.querySelector("input");
+
+    api
+      .subscribeUser(value)
+      .then(response => {
+        analytics.logMembershipAction("Submitted 'Upgrade' email");
+        this.setState({ showModal: false });
+      })
+      .catch(error => {
+        analytics.logMembershipAction("Error on subscription");
+        this.setState({ showModal: false });
+      });
   };
 
   render() {
@@ -189,7 +219,12 @@ class Membership extends React.Component {
 
     return (
       <div className="container container--full py-5">
-        <ComingSoonModal isOpen={this.state.showModal} onClose={this.onCloseModal} user={user} />
+        <ComingSoonModal
+          isOpen={this.state.showModal}
+          onClose={this.onCloseModal}
+          onSubmit={this.onSubmitModal}
+          user={user}
+        />
         <div className="px-md-5 row">
           <div className="col-12">
             <h1 className="font-weight-bold m-0" style={{ fontSize: "40px" }}>

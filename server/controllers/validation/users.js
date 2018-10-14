@@ -11,6 +11,11 @@ module.exports = {
     avatar_url: Joi.string(),
     github_id: Joi.number().required(),
   },
+  subscribeUser: {
+    email: Joi.string()
+      .email()
+      .required(),
+  },
   addPinnedDecks: {
     decks: Joi.array()
       .items(Joi.objectId())
