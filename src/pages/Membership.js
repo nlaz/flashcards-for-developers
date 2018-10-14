@@ -146,46 +146,61 @@ const Tier = ({ className, sublabel, price, priceSublabel, features, link }) => 
   </div>
 );
 
-const ComingSoonModal = ({ isOpen, onClose, onSubmit, user }) => (
+const ComingSoonModal = ({ isOpen, isSubmitted, onClose, onSubmit, user }) => (
   <Modal isOpen={isOpen} className="comingSoonModal" overlayClassName="comingSoonModal-overlay">
     <button className="loginModal-close btn btn-reset p-2" onClick={onClose}>
       <Octicon name="x" />
     </button>
-    <div className="py-5 px-4 my-2 mx-auto" style={{ maxWidth: "400px" }}>
-      <form onSubmit={onSubmit}>
+    <div className="py-5 px-4 my-2 mx-auto" style={{ maxWidth: "430px" }}>
+      {!isSubmitted ? (
+        <form onSubmit={onSubmit}>
+          <div className="text-center mx-auto">
+            <h5 className="mb-1">
+              <span role="img" aria-label="emoji">
+                🎉
+              </span>{" "}
+              Memberships coming soon!
+            </h5>
+            <p className="text-secondary font-weight-light">
+              Leave your email here. We will let you know when memberships are live.
+            </p>
+          </div>
+
+          <div className="input-group">
+            <input
+              className="form-control"
+              placeholder="Enter your email..."
+              defaultValue={user.email}
+            />
+            <button
+              className="btn btn-dark"
+              style={{ borderTopLeftRadius: 0, borderBottomLeftRadius: 0 }}
+              type="submit"
+            >
+              <small>GET NOTIFIED</small>
+            </button>
+          </div>
+        </form>
+      ) : (
         <div className="text-center mx-auto">
           <h5 className="mb-1">
             <span role="img" aria-label="emoji">
-              🎉
+              ✅
             </span>{" "}
-            Memberships coming soon!
+            Thanks for subscribing!
           </h5>
           <p className="text-secondary font-weight-light">
-            Leave your email here. We will let you know when memberships are live.
+            We will email you shortly when memberships are ready for showtime. If you have any
+            questions, <a href="mailto:hello@flashcardsfordevelopers.com">contact us</a>.
           </p>
         </div>
-
-        <div className="input-group">
-          <input
-            className="form-control"
-            placeholder="Enter your email..."
-            defaultValue={user.email}
-          />
-          <button
-            className="btn btn-dark"
-            style={{ borderTopLeftRadius: 0, borderBottomLeftRadius: 0 }}
-            type="submit"
-          >
-            <small>GET NOTIFIED</small>
-          </button>
-        </div>
-      </form>
+      )}
     </div>
   </Modal>
 );
 
 class Membership extends React.Component {
-  state = { showModal: false };
+  state = { showModal: false, isSubmitted: false };
 
   onOpenModal = () => {
     analytics.logMembershipAction("Click 'Upgrade' button");
@@ -193,7 +208,9 @@ class Membership extends React.Component {
   };
 
   onCloseModal = () => {
-    analytics.logMembershipAction("Closed 'Upgrade' modal");
+    if (!this.state.isSubmitted) {
+      analytics.logMembershipAction("Closed 'Upgrade' modal");
+    }
     this.setState({ showModal: false });
   };
 
@@ -205,7 +222,7 @@ class Membership extends React.Component {
       .subscribeUser(value)
       .then(response => {
         analytics.logMembershipAction("Submitted 'Upgrade' email");
-        this.setState({ showModal: false });
+        this.setState({ isSubmitted: true });
       })
       .catch(error => {
         analytics.logMembershipAction("Error on subscription");
@@ -221,6 +238,7 @@ class Membership extends React.Component {
       <div className="container container--full py-5">
         <ComingSoonModal
           isOpen={this.state.showModal}
+          isSubmitted={this.state.isSubmitted}
           onClose={this.onCloseModal}
           onSubmit={this.onSubmitModal}
           user={user}
