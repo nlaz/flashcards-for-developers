@@ -8,7 +8,7 @@ const CollectionItem = ({ collection }) => (
       to={`/collections/${collection.id}`}
     >
       <div className="collection-image mb-2" style={{ background: collection.color }}>
-        <span style={{ width: "16px" }}>{collection.emoji}</span>
+        <span style={{ width: "22px" }}>{collection.emoji}</span>
       </div>
       <h6 className="font-weight-medium text-dark m-1">{collection.name}</h6>
       <span className="text-secondary">{collection.description}</span>
