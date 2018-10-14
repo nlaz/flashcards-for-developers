@@ -61,7 +61,7 @@ class Header extends Component {
       <div className="header">
         <LoginModal isOpen={this.state.showModal} onClose={this.onCloseModal} />
         <div className="container container--full d-flex justify-content-between align-items-center py-2 w-100">
-          <div>
+          <div className="d-flex align-items-center">
             {!isHomePage && (
               <Link
                 to="/"
@@ -70,6 +70,20 @@ class Header extends Component {
                 <Octicon name="chevron-left" className="d-flex mr-1" />
                 <span className="d-none d-sm-inline">Flashcards for Developers</span>
               </Link>
+            )}
+
+            {isAuthenticated() && (
+              <div className="ml-2 d-none d-sm-block">
+                <Link
+                  to="/pages/membership"
+                  onClick={() =>
+                    analytics.logMembershipAction("User clicked 'Upgrade' button in header")
+                  }
+                  className="btn btn-sm btn-outline-gray"
+                >
+                  Upgrade
+                </Link>
+              </div>
             )}
           </div>
           <ul className="p-0 m-0">

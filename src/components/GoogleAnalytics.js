@@ -74,20 +74,6 @@ export function logFeedbackEvent() {
   });
 }
 
-export function logDonateEvent1() {
-  ReactGA.event({
-    category: "User",
-    action: "Clicked on 'Donate' button in Feedback form",
-  });
-}
-
-export function logDonateEvent2() {
-  ReactGA.event({
-    category: "User",
-    action: "Clicked on 'Donate' button in Footer",
-  });
-}
-
 export function logGithubInterest() {
   ReactGA.event({
     category: "User",
@@ -127,6 +113,13 @@ export function logUserAction(action) {
 export function logLoginAction(action) {
   ReactGA.event({
     category: "User Login",
+    action: action,
+  });
+}
+
+export function logMembershipAction(action) {
+  ReactGA.event({
+    category: "User Membership",
     action: action,
   });
 }

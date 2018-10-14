@@ -50,9 +50,8 @@ const About = () => (
       </div>
 
       <div
-        className="mb-5 py-5"
+        className="mb-5 py-5 bg-blueLight"
         style={{
-          background: "#e7f2ff",
           marginRight: "-40px",
           marginLeft: "-40px",
           paddingRight: "40px",
