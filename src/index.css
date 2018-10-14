@@ -220,6 +220,11 @@ a[disabled] {
   height: 40px;
 }
 
+.profile-image {
+  width: 140px;
+  height: 140px;
+}
+
 #header-logout {
   background: white;
   text-transform: uppercase;
@@ -290,6 +295,10 @@ a[disabled] {
   .collection-item {
     height: 200px;
   }
+}
+
+.rc-tooltip {
+  opacity: 1;
 }
 
 .rc-tooltip-content .tooltip-item {
@@ -411,6 +420,15 @@ a[disabled] {
 }
 .review-header .pin-btn.text-white {
   fill: white;
+}
+
+.btn-white {
+  background: white;
+  border: 1px solid #e8e8e8;
+}
+
+.btn-white:hover {
+  border-color: black;
 }
 
 @media (min-width: 576px) {

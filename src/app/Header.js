@@ -11,8 +11,13 @@ import LoginModal from "./auth/LoginModal";
 
 const title = "Ridiculously helpful collection of flashcards for developers ";
 
-const LogoutTooltip = () => (
+const LogoutTooltip = ({ user }) => (
   <div className="tooltip-content">
+    <div className="tooltip-item">
+      <Link className="text-secondary" to={`/${user.id}`}>
+        My Profile
+      </Link>
+    </div>
     <div className="tooltip-item">
       <Link className="text-secondary" to="/collections/pinned">
         My Pinned Decks
@@ -114,7 +119,7 @@ class Header extends Component {
                 <Tooltip
                   placement="bottomRight"
                   trigger={["click"]}
-                  overlay={<LogoutTooltip />}
+                  overlay={<LogoutTooltip user={user} />}
                   id="header-logout"
                 >
                   <div>

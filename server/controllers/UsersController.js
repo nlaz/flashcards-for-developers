@@ -106,6 +106,19 @@ module.exports.getPinnedDecks = async (req, res, next) => {
   }
 };
 
+module.exports.getUserPinnedDecks = async (req, res, next) => {
+  try {
+    const { userId } = req.params;
+    const user = await User.findOne({ _id: userId })
+      .select("+saved_decks")
+      .populate("saved_decks");
+
+    res.send(user.saved_decks);
+  } catch (error) {
+    next(error);
+  }
+};
+
 module.exports.addPinnedDecks = async (req, res, next) => {
   try {
     await Joi.validate(req.body, userSchemas.addPinnedDecks);

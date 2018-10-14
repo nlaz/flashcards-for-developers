@@ -8,6 +8,7 @@ import CollectionsHome from "./collections/CollectionsHome";
 import Collections from "./collections/Collections";
 import Logout from "./auth/Logout";
 import AuthRedirect from "./auth/AuthRedirect";
+import Profile from "./profile/Profile";
 import Footer from "./Footer";
 import Header from "./Header";
 
@@ -25,6 +26,7 @@ class App extends Component {
               <Route path="/" component={GoogleAnalytics} />
               <Switch>
                 <Route exact path="/" component={Home} />
+                <Route exact path="/:userId" component={Profile} />
                 <Route path="/pages" component={Pages} />
                 <Route path="/logout" component={Logout} />
                 <Route path="/auth/github" component={AuthRedirect} />

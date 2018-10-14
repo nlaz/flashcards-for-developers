@@ -31,7 +31,7 @@ const TableTop = () => (
           <div className="text-center text-uppercase font-weight-medium">Free</div>
         </div>
         <div className="col-6">
-          <div className="text-center text-uppercase font-weight-medium">Member</div>
+          <div className="text-center text-uppercase font-weight-medium">Pro</div>
         </div>
       </div>
     </div>
@@ -159,10 +159,10 @@ const ComingSoonModal = ({ isOpen, isSubmitted, onClose, onSubmit, user }) => (
               <span role="img" aria-label="emoji">
                 🎉
               </span>{" "}
-              Memberships coming soon!
+              Pro memberships coming soon!
             </h5>
             <p className="text-secondary font-weight-light">
-              Leave your email here. We will let you know when memberships are live.
+              Leave your email here. We will let you know when pro memberships are live.
             </p>
           </div>
 
@@ -190,7 +190,7 @@ const ComingSoonModal = ({ isOpen, isSubmitted, onClose, onSubmit, user }) => (
             Thanks for subscribing!
           </h5>
           <p className="text-secondary font-weight-light">
-            We will email you shortly when memberships are ready for showtime. If you have any
+            We will email you shortly when pro memberships are ready for showtime. If you have any
             questions, <a href="mailto:hello@flashcardsfordevelopers.com">contact us</a>.
           </p>
         </div>
@@ -295,7 +295,7 @@ class Membership extends React.Component {
           />
           <Tier
             className="bg-blueLight"
-            sublabel="Member"
+            sublabel="Pro"
             price="$5"
             priceSublabel="per month"
             link={<UpgradeLink onOpenModal={this.onOpenModal} />}
