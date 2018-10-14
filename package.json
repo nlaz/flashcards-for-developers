@@ -9,6 +9,7 @@
   "dependencies": {
     "airtable": "^0.5.6",
     "axios": "^0.18.0",
+    "babel-polyfill": "^6.26.0",
     "body-parser": "^1.18.3",
     "classnames": "^2.2.6",
     "compression": "^1.7.3",
