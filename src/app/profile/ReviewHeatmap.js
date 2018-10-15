@@ -107,11 +107,23 @@ class ReviewHeatmap extends Component {
     }
 
     const count = reviews[date.format("YYYY-MM-DD")] || 0;
-    const buckets = [stats.q1, stats.median, stats.q3, stats.high];
-    const result = buckets.reduce((acc, val, index) => {
-      return count >= val ? index + 1 : acc;
-    }, 0);
-    return result;
+    return this.getBucket(count, stats);
+  };
+
+  getBucket = (count, stats) => {
+    if (count === 0) {
+      return 0;
+    } else if (count <= stats.q1) {
+      return 1;
+    } else if (count <= stats.median) {
+      return 2;
+    } else if (count <= stats.q3) {
+      return 3;
+    } else if (count <= stats.high) {
+      return 4;
+    } else {
+      return 0;
+    }
   };
 
   render() {

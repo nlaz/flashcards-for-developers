@@ -26,7 +26,6 @@ class App extends Component {
               <Route path="/" component={GoogleAnalytics} />
               <Switch>
                 <Route exact path="/" component={Home} />
-                <Route exact path="/:userId" component={Profile} />
                 <Route path="/pages" component={Pages} />
                 <Route path="/logout" component={Logout} />
                 <Route path="/auth/github" component={AuthRedirect} />
@@ -35,6 +34,7 @@ class App extends Component {
                 <Route exact path="/collections" component={CollectionsHome} />
                 <Route exact path="/collections/:collectionId" component={Collections} />
                 <Route exact path="/collections/:collectionId/review" component={Review} />
+                <Route exact path="/:userId" component={Profile} />
                 <Route exact path="*" component={NotFound} />
               </Switch>
             </div>
