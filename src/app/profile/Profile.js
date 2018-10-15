@@ -5,6 +5,7 @@ import cookie from "js-cookie";
 import isAuthenticated from "../utils/isAuthenticated";
 import SkillProgress from "../home/SkillProgress";
 import DeckItem from "../home/DeckItem";
+import ReviewHeatmap from "./ReviewHeatmap";
 import * as api from "../apiActions";
 
 class Profile extends Component {
@@ -31,7 +32,7 @@ class Profile extends Component {
       <div>
         <div style={{ background: "#fde0d9" }}>
           <div
-            className="container d-flex justify-content-between align-items-center"
+            className="container container--full d-flex justify-content-between align-items-center"
             style={{ height: "200px" }}
           >
             <div className="d-flex align-items-center">
@@ -44,7 +45,7 @@ class Profile extends Component {
               </div>
             </div>
             <div
-              className="bg-white rounded px-3 py-2 mb-2 border border-muted d-flex align-items-center"
+              className="bg-white rounded px-3 py-2 mb-2 border border-dark d-flex align-items-center"
               style={{ minWidth: "260px", minHeight: "90px" }}
             >
               <SkillProgress decks={decks} studyProgress={studyProgress} />
@@ -76,6 +77,33 @@ class Profile extends Component {
               </div>
             </div>
           )}
+
+        <div className="container container--full">
+          <div className="d-flex justify-content-between align-items-end mb-2 mx-1">
+            <h6 className="text-uppercase m-0">Activity</h6>
+          </div>
+          <ReviewHeatmap />
+        </div>
+
+        <div className="container container--full py-4 mt-5">
+          <div className="d-flex justify-content-between align-items-end mb-2 mx-1">
+            <h6 className="text-uppercase m-0">MY DECKS</h6>
+            <Link className="text-dark text-underline" to="/collections/pinned">
+              See all
+            </Link>
+          </div>
+          <div className="row">
+            {pinnedDecks.slice(0, 8).map(item => (
+              <DeckItem
+                key={item.id}
+                deck={item}
+                isPinned={this.isPinned(item.id)}
+                deckProgress={[]}
+                onTogglePin={this.onTogglePin}
+              />
+            ))}
+          </div>
+        </div>
       </div>
     );
   }

@@ -485,3 +485,39 @@ a[disabled] {
   background: rgba(0, 0, 0, 0.05);
   z-index: 0;
 }
+
+.grid-item {
+  width: 13px;
+  height: 13px;
+  margin: 1px;
+  border-radius: 2px;
+}
+
+.grid-label-y {
+  font-size: 10px;
+  height: 12px;
+  margin: 1px;
+}
+.grid-label-x {
+  font-size: 10px;
+  width: 13px;
+  height: 13px;
+  margin: 1px;
+  margin-bottom: 5px;
+}
+
+.grid-item-0 {
+  background: #ebedf0;
+}
+.grid-item-1 {
+  background: rgba(28, 116, 243, 0.25);
+}
+.grid-item-2 {
+  background: rgba(28, 116, 243, 0.45);
+}
+.grid-item-3 {
+  background: rgba(28, 116, 243, 0.75);
+}
+.grid-item-4 {
+  background: rgba(28, 116, 243, 1);
+}
