@@ -124,7 +124,6 @@ module.exports.getUserPinnedDecks = async (req, res, next) => {
 module.exports.getUserReviews = async (req, res, next) => {
   try {
     const { userId } = req.params;
-    // const reviews = await ReviewEvent.find({ user: userId });
     const reviews = await ReviewEvent.aggregate([
       { $match: { user: mongoose.Types.ObjectId(userId) } },
       { $project: { yearMonthDay: { $dateToString: { format: "%Y-%m-%d", date: "$createdAt" } } } },
