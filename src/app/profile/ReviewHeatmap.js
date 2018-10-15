@@ -1,27 +1,30 @@
 import React, { Component } from "react";
-import { Link } from "react-router-dom";
+import { withRouter } from "react-router-dom";
 import moment from "moment";
+import cx from "classnames";
 
-const NUM_WEEKS = 52;
+import * as api from "../apiActions";
+
+const NUM_WEEKS = 54;
 const NUM_DAYS = 7;
-const NUM_DAYS_IN_YEAR = NUM_WEEKS * NUM_DAYS;
-const MILLISECONDS_IN_A_DAY = 1000 * 60 * 60 * 24;
+const NUM_DAYS_IN_YEAR = 366;
+const oneYearAgo = moment().subtract(NUM_DAYS_IN_YEAR, "days");
 
 const columns = [...Array(NUM_WEEKS)];
 const rows = [...Array(NUM_DAYS)];
 
 const GridItem = ({ activity }) => {
-  return <div className={`grid-item grid-item-${activity}`} style={{}} />;
+  return <div className={cx("grid-item", { [`grid-item-${activity}`]: activity !== undefined })} />;
 };
 
 const YAxis = () => (
   <div className="d-flex flex-column text-muted mr-1">
     <div className="grid-label-x" />
     {rows.map((_, key) => (
-      <span className="grid-label-y">
+      <span className="grid-label-y" key={key}>
         {key % 2 === 1 &&
           moment()
-            .subtract(key, "days")
+            .day(key)
             .format("ddd")}
       </span>
     ))}
@@ -31,7 +34,7 @@ const YAxis = () => (
 const XAxis = () => (
   <div className="d-flex flex-row-reverse text-muted mr-1">
     {columns.map((_, key) => (
-      <span className="grid-label-x">
+      <span className="grid-label-x" key={key}>
         {key % 4 === 2 &&
           moment()
             .subtract(key, "weeks")
@@ -41,14 +44,81 @@ const XAxis = () => (
   </div>
 );
 
+function getBoxValues(data) {
+  var boxValues = {};
+  boxValues.low = Math.min.apply(Math, data);
+  boxValues.q1 = getPercentile(data, 25);
+  boxValues.median = getPercentile(data, 50);
+  boxValues.q3 = getPercentile(data, 75);
+  boxValues.high = Math.max.apply(Math, data);
+  return boxValues;
+}
+
+function getPercentile(data, percentile) {
+  data.sort();
+  var index = (percentile / 100) * data.length;
+  var result;
+
+  if (Math.floor(index) === index) {
+    result = (data[index - 1] + data[index]) / 2;
+  } else {
+    result = data[Math.floor(index)];
+  }
+  return result;
+}
+
 class ReviewHeatmap extends Component {
-  getActivity = ({ row, col }) => Math.floor(Math.random() * 5);
+  state = { reviews: {}, stats: {} };
+
+  componentDidMount() {
+    const { userId } = this.props.match.params;
+    api
+      .fetchUserReviews(userId)
+      .then(({ data }) =>
+        this.setState({
+          reviews: this.formatResponse(data),
+          stats: this.getReviewStats(data),
+        }),
+      )
+      .catch(error => console.log(error));
+  }
+
+  formatResponse = data => {
+    return data.reduce((obj, item) => {
+      obj[item["_id"]] = item.count;
+      return obj;
+    }, {});
+  };
+
+  getReviewStats = data => {
+    const counts = data.map(el => el.count);
+    return getBoxValues(counts);
+  };
+
+  getActivity = (row, col) => {
+    const { reviews, stats = {} } = this.state;
+    const rowIndex = row + col * NUM_DAYS;
+    const gridOffset = oneYearAgo.day();
+    const daysSinceToday = NUM_DAYS_IN_YEAR - rowIndex + gridOffset;
+    const date = moment().subtract(daysSinceToday, "days");
+
+    if (date.isAfter(moment()) || date.isSameOrBefore(oneYearAgo)) {
+      return;
+    }
+
+    const count = reviews[date.format("YYYY-MM-DD")] || 0;
+    const buckets = [stats.q1, stats.median, stats.q3, stats.high];
+    const result = buckets.reduce((acc, val, index) => {
+      return count >= val ? index + 1 : acc;
+    }, 0);
+    return result;
+  };
 
   render() {
     return (
       <div className="border rounded" style={{ borderColor: "#e8e8e8", padding: "25px 35px" }}>
-        <div className="d-flex justify-content-between mt-2">
-          <div className="d-flex align-items-center mb-2">
+        <div className="d-flex flex-column-reverse flex-lg-row justify-content-between mt-2">
+          <div className="d-none d-lg-flex align-items-center justify-content-center mb-2">
             <div className="d-flex flex-column text-muted">
               <small className="font-weight-medium">Current Streak</small>
               <small className="font-weight-medium">Longest Streak</small>
@@ -98,4 +168,4 @@ class ReviewHeatmap extends Component {
   }
 }
 
-export default ReviewHeatmap;
+export default withRouter(ReviewHeatmap);

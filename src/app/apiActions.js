@@ -58,6 +58,10 @@ export const fetchUserPinnedDecks = userId => {
   return axios.get(`/users/${userId}/pinned_decks`);
 };
 
+export const fetchUserReviews = userId => {
+  return axios.get(`/users/${userId}/reviews`);
+};
+
 export const removePinnedDeck = deckId => {
   const config = { headers: { Authorization: cookie.get("token") } };
   return axios.delete("/users/pinned_decks", { ...config, data: { deck: deckId } });

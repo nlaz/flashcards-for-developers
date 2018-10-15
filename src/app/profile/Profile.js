@@ -27,7 +27,6 @@ class Profile extends Component {
     const decks = [];
     const studyProgress = [];
 
-    console.log(this.state.pinnedDecks);
     return (
       <div>
         <div style={{ background: "#fde0d9" }}>
@@ -85,12 +84,9 @@ class Profile extends Component {
           <ReviewHeatmap />
         </div>
 
-        <div className="container container--full py-4 mt-5">
+        <div className="container container--full py-4 mt-3">
           <div className="d-flex justify-content-between align-items-end mb-2 mx-1">
-            <h6 className="text-uppercase m-0">MY DECKS</h6>
-            <Link className="text-dark text-underline" to="/collections/pinned">
-              See all
-            </Link>
+            <h6 className="text-uppercase m-0">RECENT STUDIED</h6>
           </div>
           <div className="row">
             {pinnedDecks.slice(0, 8).map(item => (

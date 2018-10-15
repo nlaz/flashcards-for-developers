@@ -2,9 +2,11 @@ const Joi = require("joi");
 const axios = require("axios");
 const moment = require("moment");
 const jwt = require("jsonwebtoken");
+const mongoose = require("mongoose");
 const queryString = require("query-string");
 
 const User = require("../models/User");
+const ReviewEvent = require("../models/ReviewEvent");
 const userSchemas = require("./validation/users");
 const config = require("../../config/index");
 
@@ -114,6 +116,22 @@ module.exports.getUserPinnedDecks = async (req, res, next) => {
       .populate("saved_decks");
 
     res.send(user.saved_decks);
+  } catch (error) {
+    next(error);
+  }
+};
+
+module.exports.getUserReviews = async (req, res, next) => {
+  try {
+    const { userId } = req.params;
+    // const reviews = await ReviewEvent.find({ user: userId });
+    const reviews = await ReviewEvent.aggregate([
+      { $match: { user: mongoose.Types.ObjectId(userId) } },
+      { $project: { yearMonthDay: { $dateToString: { format: "%Y-%m-%d", date: "$createdAt" } } } },
+      { $group: { _id: "$yearMonthDay", count: { $sum: 1 } } },
+    ]);
+
+    res.send(reviews);
   } catch (error) {
     next(error);
   }

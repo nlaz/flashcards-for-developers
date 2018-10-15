@@ -486,13 +486,6 @@ a[disabled] {
   z-index: 0;
 }
 
-.grid-item {
-  width: 13px;
-  height: 13px;
-  margin: 1px;
-  border-radius: 2px;
-}
-
 .grid-label-y {
   font-size: 10px;
   height: 12px;
@@ -505,7 +498,12 @@ a[disabled] {
   margin: 1px;
   margin-bottom: 5px;
 }
-
+.grid-item {
+  width: 13px;
+  height: 13px;
+  margin: 1px;
+  border-radius: 2px;
+}
 .grid-item-0 {
   background: #ebedf0;
 }

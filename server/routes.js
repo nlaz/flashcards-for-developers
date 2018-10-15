@@ -32,6 +32,7 @@ router.post("/users/subscriptions", isAuthenticated, UsersController.subscribeUs
 
 router.get("/users/study_sessions", isAuthenticated, UsersController.getStudySessions);
 router.put("/users/study_sessions", isAuthenticated, UsersController.addStudySessions);
+router.get("/users/:userId/reviews", UsersController.getUserReviews);
 
 router.get("/study_progress", isAuthenticated, ProgressController.getStudyProgress);
 router.put("/study_progress", isAuthenticated, ProgressController.addStudyProgress);
