@@ -44,8 +44,8 @@ class Profile extends Component {
               </div>
             </div>
             <div
-              className="bg-white rounded px-3 py-2 mb-2 border border-dark d-flex align-items-center"
-              style={{ minWidth: "260px", minHeight: "90px" }}
+              className="bg-white rounded px-3 py-2 mb-2 d-flex align-items-center"
+              style={{ minWidth: "260px", minHeight: "90px", border: "1px solid #d3d3d3" }}
             >
               <SkillProgress decks={decks} studyProgress={studyProgress} />
             </div>
@@ -86,7 +86,7 @@ class Profile extends Component {
 
         <div className="container container--full py-4 mt-3">
           <div className="d-flex justify-content-between align-items-end mb-2 mx-1">
-            <h6 className="text-uppercase m-0">RECENT STUDIED</h6>
+            <h6 className="text-uppercase m-0">RECENT DECKS</h6>
           </div>
           <div className="row">
             {pinnedDecks.slice(0, 8).map(item => (

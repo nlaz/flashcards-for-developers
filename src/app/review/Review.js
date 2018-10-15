@@ -491,8 +491,8 @@ class Review extends Component {
                             )}
                             <img
                               className="img-fluid my-2 px-3 mx-auto"
-                              alt=""
                               src={currentCard.front}
+                              alt=""
                             />
                             {this.state.isRevealed && (
                               <div

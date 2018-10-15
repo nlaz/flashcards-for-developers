@@ -424,7 +424,8 @@ a[disabled] {
 
 .btn-white {
   background: white;
-  border: 1px solid #e8e8e8;
+  background: linear-gradient(-180deg, #fafbfc, #eff3f6 90%);
+  border: 1px solid #d3d3d3;
 }
 
 .btn-white:hover {
