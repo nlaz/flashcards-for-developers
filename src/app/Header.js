@@ -3,8 +3,9 @@ import { Link, withRouter } from "react-router-dom";
 import { FacebookShareButton, TwitterShareButton } from "react-share";
 import cookie from "js-cookie";
 import Tooltip from "rc-tooltip";
-
+import SearchBar from "../components/SearchBar";
 import * as analytics from "../components/GoogleAnalytics";
+import * as api from "./apiActions";
 import isAuthenticated from "./utils/isAuthenticated";
 import Octicon from "../components/Octicon";
 import LoginModal from "./auth/LoginModal";
@@ -43,7 +44,15 @@ const PlaceholderImage = () => (
 );
 
 class Header extends Component {
-  state = { showModal: false };
+  state = { 
+    showModal: false,
+    content: [],
+    isLoading: true,
+  };
+
+  componentWillMount() {
+    this.fetchContent()
+  }
 
   onOpenModal = () => this.setState({ showModal: true });
 
@@ -52,10 +61,21 @@ class Header extends Component {
     this.setState({ showModal: false });
   };
 
+
+  fetchContent = () => {
+    api.fetchContent().then(
+      ({ data }) => {
+        this.setState({ content: data, isLoading: false });
+      }
+    );
+  };
+
   render() {
     const authenticated = isAuthenticated();
     const user = authenticated ? JSON.parse(cookie.get("user")) : {};
     const isHomePage = this.props.location.pathname === "/";
+
+    const { isLoading } = this.state;
 
     return (
       <div className="header">
@@ -71,7 +91,10 @@ class Header extends Component {
                 <span className="d-none d-sm-inline">Flashcards for Developers</span>
               </Link>
             )}
-
+            {!isLoading && (            
+              <SearchBar
+                content={this.state.content}/>
+            )}
             {isAuthenticated() && (
               <div className="ml-2 d-none d-sm-block">
                 <Link

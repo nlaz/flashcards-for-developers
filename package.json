@@ -31,6 +31,7 @@
     "query-string": "^6.2.0",
     "rc-tooltip": "^3.7.2",
     "react": "^16.4.1",
+    "react-bootstrap-typeahead": "^3.2.4",
     "react-dom": "^16.4.1",
     "react-ga": "^2.5.3",
     "react-mixpanel": "^0.0.11",

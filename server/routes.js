@@ -12,6 +12,8 @@ const router = express.Router();
 
 router.get("/hello", (req, res) => res.send({ message: "Hello world!" }));
 
+router.get("/api/search", CollectionsController.getCollections);
+
 router.get("/api/decks", DecksController.getDecks);
 
 router.get("/api/decks/:deckId", DecksController.getDeck);
