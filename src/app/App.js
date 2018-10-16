@@ -33,6 +33,7 @@ class App extends Component {
                 <Route path="/auth/github" component={AuthRedirect} />
                 <Route path="/decks/new" component={DecksNew} />
                 <Route exact path="/decks/:deckId" component={Review} />
+                <Route exact path="/decks/:deckId/cards" component={Review} />
                 <Route exact path="/collections" component={CollectionsHome} />
                 <Route exact path="/collections/:collectionId" component={Collections} />
                 <Route exact path="/collections/:collectionId/review" component={Review} />

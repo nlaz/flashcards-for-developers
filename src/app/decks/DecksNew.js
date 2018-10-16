@@ -23,7 +23,7 @@ class DecksNew extends Component {
     const { name, description, deck, isRedirect } = this.state;
 
     if (isRedirect && Object.keys(deck).length > 0) {
-      return <Redirect to={`/decks/${deck.id}`} />;
+      return <Redirect to={`/decks/${deck.id}/cards`} />;
     }
 
     return (

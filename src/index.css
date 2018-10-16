@@ -459,3 +459,18 @@ a[disabled] {
 textarea {
   resize: none;
 }
+
+.cards-section code,
+.cards-section ul,
+.cards-section p {
+  margin-bottom: 10px;
+  line-height: 1.25em;
+  font-size: 0.9em;
+}
+
+.cards-section ul {
+  padding-left: 10px;
+}
+.cards-section .card-row:hover {
+  background: #f9f9f9;
+}

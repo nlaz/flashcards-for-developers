@@ -12,6 +12,7 @@ import * as studyProgress from "../utils/studyProgress";
 import * as chance from "../utils/chance";
 import * as analytics from "../../components/GoogleAnalytics";
 
+import CardsSection from "./CardsSection";
 import DeckFeedback from "./DeckFeedback";
 import ReviewHeader from "./ReviewHeader";
 import StudyProgress from "./StudyProgress";
@@ -22,6 +23,10 @@ import "./Review.css";
 
 const SELF_GRADE_CORRECT = "I was right";
 const SELF_GRADE_INCORRECT = "I was wrong";
+const TABS = {
+  STUDY: "study",
+  CARDS: "cards",
+};
 
 const getRandomPageSize = () => chance.integer({ min: 6, max: 8 });
 
@@ -68,7 +73,7 @@ class Review extends Component {
     deck: {},
     cards: [],
     correctness: [],
-    activeTab: "Study",
+    activeTab: TABS.STUDY,
     options: [],
     index: 0,
     isWrong: false,
@@ -95,6 +100,9 @@ class Review extends Component {
     } else {
       this.fetchDeck(params.deckId);
       this.fetchDeckProgress(params.deckId);
+    }
+    if (this.props.match.path === "/decks/:deckId/cards") {
+      this.setState({ activeTab: TABS.CARDS });
     }
     window.addEventListener("keyup", e => this.onKeyUp(e));
     window.addEventListener("keydown", e => this.onKeyDown(e));
@@ -475,158 +483,168 @@ class Review extends Component {
             <ReviewHeader deck={deck} className="review-header mt-3 mb-2" />
 
             <div className="d-flex mt-3">
-              <Tab onClick={() => this.onTabSelect("Study")} active={activeTab === "Study"}>
+              <Tab onClick={() => this.onTabSelect(TABS.STUDY)} active={activeTab === TABS.STUDY}>
                 Study
               </Tab>
-              <Tab onClick={() => this.onTabSelect("Cards")} active={activeTab === "Cards"}>
+              <Tab onClick={() => this.onTabSelect(TABS.CARDS)} active={activeTab === TABS.CARDS}>
                 Cards ({this.state.cards.length})
               </Tab>
             </div>
           </div>
         </div>
 
-        <div className="container container--narrow py-4">
-          <div className="flashcard-container row px-3">
-            <div className="d-flex justify-content-between w-100 m-2">
-              <StudyToggle onChange={this.onSRSToggle} />
-              <StudyProgress
-                index={index}
-                items={this.state.cards}
-                pageSize={this.state.pageSize}
-                pageEnd={pageEnd}
-                pageStart={pageStart}
-                isFinished={isStageFinished}
-                correctness={this.state.correctness}
-              />
-            </div>
-            <div
-              className={cx(
-                "wrapper col-12 border border-dark rounded mb-4 py-5 d-flex align-items-stretch",
-                {
-                  shake: this.state.isWrong,
-                },
-              )}
-            >
-              {!isCardsLoading && (
-                <div className="row w-100 mx-0">
-                  {!isStageFinished ? (
-                    <div className="row w-100 mx-0">
-                      <ReviewType type={this.getDeckType()} />
-                      <div className="col-12 col-lg-6 d-flex align-items-center px-1 pb-2">
-                        {isImageSelect ? (
-                          <div className="flashcard-body d-flex flex-column border rounded px-3 py-2 w-100 h-100">
-                            {this.isCollectionPage() && (
-                              <small style={{ opacity: 0.85 }}>{currentCard.deck.name}</small>
-                            )}
-                            <img
-                              className="img-fluid my-2 px-3 mx-auto"
-                              alt=""
-                              src={currentCard.front}
-                            />
-                            {this.state.isRevealed && (
-                              <div
-                                className="markdown-body text-left d-flex align-items-center justify-content-center flex-column mt-3 pt-3"
-                                style={{ borderTop: "1px solid #f5f5f5" }}
-                                dangerouslySetInnerHTML={{
-                                  __html: marked(currentCard.back),
-                                }}
-                              />
-                            )}
-                          </div>
-                        ) : (
-                          <div className="flashcard-body border rounded px-3 py-2 w-100 h-100">
-                            {this.isCollectionPage() && (
-                              <small style={{ opacity: 0.85 }}>{currentCard.deck.name}</small>
-                            )}
-                            <div
-                              className="markdown-body text-left d-flex align-items-center justify-content-center flex-column my-2"
-                              dangerouslySetInnerHTML={{
-                                __html: this.getCardHTML(currentCard),
-                              }}
-                            />
-                            {this.state.isRevealed && (
-                              <div
-                                className="markdown-body text-left d-flex align-items-center justify-content-center flex-column mt-3 pt-3"
-                                style={{ borderTop: "1px solid #f5f5f5" }}
-                                dangerouslySetInnerHTML={{
-                                  __html: marked(currentCard.back),
-                                }}
-                              />
-                            )}
-                          </div>
-                        )}
-                      </div>
-                      <div className="col-12 col-lg-6 d-flex flex-column align-items-stretch px-1 pb-1">
-                        {options.map((option, key) => (
-                          <div
-                            key={option.id || option}
-                            onClick={() => this.onSelectAnswer(option)}
-                            className={cx(
-                              "flashcard-option border rounded d-flex align-items-start p-3 w-100",
-                              {
-                                "flashcard-option--disabled":
-                                  this.isSelfGraded() && !this.state.isRevealed,
-                                "border-success text-success":
-                                  this.isSelected(option) &&
-                                  this.isCorrectAnswer(option, currentCard),
-                                "border-danger text-danger":
-                                  this.isSelected(option) &&
-                                  !this.isCorrectAnswer(option, currentCard),
-                              },
-                            )}
-                          >
-                            <div className="border rounded mr-3 px-2" style={{ fontSize: ".9em" }}>
-                              {key + 1}
-                            </div>
-                            <div
-                              className="markdown-body text-left bg-white w-100"
-                              dangerouslySetInnerHTML={{
-                                __html: this.getOptionHTML(option),
-                              }}
-                            />
-                          </div>
-                        ))}
-                        {this.isSelfGraded() &&
-                          !this.state.isRevealed && (
-                            <button
-                              className="btn btn-reset border rounded"
-                              onClick={this.onToggleReveal}
-                            >
-                              Press space to show answer
-                            </button>
-                          )}
-                      </div>
-                      <ReportLink content="Report a problem" />
-                    </div>
-                  ) : (
-                    <ReviewResults
-                      index={this.state.index}
-                      cards={this.state.cards}
-                      numCorrect={this.state.numCorrect}
-                      numIncorrect={this.state.numIncorrect}
-                      cardProgress={this.state.cardProgress}
-                      onKeepGoing={this.onKeepGoing}
-                      onGoBack={this.onGoBack}
-                    />
-                  )}
-                </div>
-              )}
-              {isCardsLoading && (
-                <div className="text-center w-100">
-                  <h6 className="text-center text-secondary">
-                    <i className="fas fa-spinner fa-spin mr-1" />
-                    Loading cards...
-                  </h6>
-                </div>
-              )}
-            </div>
-            {!isCardsLoading && (
-              <div className="w-100">
-                <DeckFeedback deck={deck} isCompleted={this.isDeckCompleted()} />
+        {activeTab === TABS.STUDY && (
+          <div className="container container--narrow py-4">
+            <div className="flashcard-container row px-3">
+              <div className="d-flex justify-content-between w-100 m-2">
+                <StudyToggle onChange={this.onSRSToggle} />
+                <StudyProgress
+                  index={index}
+                  items={this.state.cards}
+                  pageSize={this.state.pageSize}
+                  pageEnd={pageEnd}
+                  pageStart={pageStart}
+                  isFinished={isStageFinished}
+                  correctness={this.state.correctness}
+                />
               </div>
-            )}
+              <div
+                className={cx(
+                  "wrapper col-12 border border-dark rounded mb-4 py-5 d-flex align-items-stretch",
+                  {
+                    shake: this.state.isWrong,
+                  },
+                )}
+              >
+                {!isCardsLoading && (
+                  <div className="row w-100 mx-0">
+                    {!isStageFinished ? (
+                      <div className="row w-100 mx-0">
+                        <ReviewType type={this.getDeckType()} />
+                        <div className="col-12 col-lg-6 d-flex align-items-center px-1 pb-2">
+                          {isImageSelect ? (
+                            <div className="flashcard-body d-flex flex-column border rounded px-3 py-2 w-100 h-100">
+                              {this.isCollectionPage() && (
+                                <small style={{ opacity: 0.85 }}>{currentCard.deck.name}</small>
+                              )}
+                              <img
+                                className="img-fluid my-2 px-3 mx-auto"
+                                alt=""
+                                src={currentCard.front}
+                              />
+                              {this.state.isRevealed && (
+                                <div
+                                  className="markdown-body text-left d-flex align-items-center justify-content-center flex-column mt-3 pt-3"
+                                  style={{ borderTop: "1px solid #f5f5f5" }}
+                                  dangerouslySetInnerHTML={{
+                                    __html: marked(currentCard.back),
+                                  }}
+                                />
+                              )}
+                            </div>
+                          ) : (
+                            <div className="flashcard-body border rounded px-3 py-2 w-100 h-100">
+                              {this.isCollectionPage() && (
+                                <small style={{ opacity: 0.85 }}>{currentCard.deck.name}</small>
+                              )}
+                              <div
+                                className="markdown-body text-left d-flex align-items-center justify-content-center flex-column my-2"
+                                dangerouslySetInnerHTML={{
+                                  __html: this.getCardHTML(currentCard),
+                                }}
+                              />
+                              {this.state.isRevealed && (
+                                <div
+                                  className="markdown-body text-left d-flex align-items-center justify-content-center flex-column mt-3 pt-3"
+                                  style={{ borderTop: "1px solid #f5f5f5" }}
+                                  dangerouslySetInnerHTML={{
+                                    __html: marked(currentCard.back),
+                                  }}
+                                />
+                              )}
+                            </div>
+                          )}
+                        </div>
+                        <div className="col-12 col-lg-6 d-flex flex-column align-items-stretch px-1 pb-1">
+                          {options.map((option, key) => (
+                            <div
+                              key={option.id || option}
+                              onClick={() => this.onSelectAnswer(option)}
+                              className={cx(
+                                "flashcard-option border rounded d-flex align-items-start p-3 w-100",
+                                {
+                                  "flashcard-option--disabled":
+                                    this.isSelfGraded() && !this.state.isRevealed,
+                                  "border-success text-success":
+                                    this.isSelected(option) &&
+                                    this.isCorrectAnswer(option, currentCard),
+                                  "border-danger text-danger":
+                                    this.isSelected(option) &&
+                                    !this.isCorrectAnswer(option, currentCard),
+                                },
+                              )}
+                            >
+                              <div
+                                className="border rounded mr-3 px-2"
+                                style={{ fontSize: ".9em" }}
+                              >
+                                {key + 1}
+                              </div>
+                              <div
+                                className="markdown-body text-left bg-white w-100"
+                                dangerouslySetInnerHTML={{
+                                  __html: this.getOptionHTML(option),
+                                }}
+                              />
+                            </div>
+                          ))}
+                          {this.isSelfGraded() &&
+                            !this.state.isRevealed && (
+                              <button
+                                className="btn btn-reset border rounded"
+                                onClick={this.onToggleReveal}
+                              >
+                                Press space to show answer
+                              </button>
+                            )}
+                        </div>
+                        <ReportLink content="Report a problem" />
+                      </div>
+                    ) : (
+                      <ReviewResults
+                        index={this.state.index}
+                        cards={this.state.cards}
+                        numCorrect={this.state.numCorrect}
+                        numIncorrect={this.state.numIncorrect}
+                        cardProgress={this.state.cardProgress}
+                        onKeepGoing={this.onKeepGoing}
+                        onGoBack={this.onGoBack}
+                      />
+                    )}
+                  </div>
+                )}
+                {isCardsLoading && (
+                  <div className="text-center w-100">
+                    <h6 className="text-center text-secondary">
+                      <i className="fas fa-spinner fa-spin mr-1" />
+                      Loading cards...
+                    </h6>
+                  </div>
+                )}
+              </div>
+              {!isCardsLoading && (
+                <div className="w-100">
+                  <DeckFeedback deck={deck} isCompleted={this.isDeckCompleted()} />
+                </div>
+              )}
+            </div>
           </div>
-        </div>
+        )}
+        {activeTab === TABS.CARDS && (
+          <div className="container container--narrow py-4">
+            <CardsSection cards={this.state.cards} />
+          </div>
+        )}
       </div>
     );
   }
