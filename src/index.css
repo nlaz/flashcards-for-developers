@@ -455,3 +455,7 @@ a[disabled] {
   background: rgba(0, 0, 0, 0.05);
   z-index: 0;
 }
+
+textarea {
+  resize: none;
+}
