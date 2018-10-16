@@ -237,27 +237,15 @@ a[disabled] {
   text-overflow: ellipsis;
 }
 
-.share-button {
-  color: #dddddd;
-  transition: all 0.2s ease-in-out;
+.add-button {
+  color: #999999;
+  fill: #999999;
+  transition: all 0.1s ease-in-out;
 }
 
-.share-button:hover {
+.add-button:hover {
   color: #363a40;
-  animation: jump 0.3s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
-  transform: translate3d(0, 0, 0);
-}
-
-@keyframes jump {
-  25% {
-    transform: translate3d(0, -4px, 0);
-  }
-  50% {
-    transform: translate3d(0, 0px, 0);
-  }
-  75% {
-    transform: translate3d(0, -2px, 0);
-  }
+  fill: #363a40;
 }
 
 .collection-item {
