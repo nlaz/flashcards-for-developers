@@ -46,11 +46,29 @@ const ReportLink = ({ content }) => (
   </a>
 );
 
+const Tab = ({ active, className, children, onClick }) => (
+  <div
+    onClick={onClick}
+    className={cx("text-uppercase py-2 px-3", { "border-primary": active })}
+    style={{ borderBottom: active ? "2px solid blue" : "none", cursor: "pointer" }}
+  >
+    <span
+      className={cx("small font-weight-medium", {
+        "text-primary": active,
+        "text-muted": !active,
+      })}
+    >
+      {children}
+    </span>
+  </div>
+);
+
 class Review extends Component {
   state = {
     deck: {},
     cards: [],
     correctness: [],
+    activeTab: "Study",
     options: [],
     index: 0,
     isWrong: false,
@@ -87,6 +105,8 @@ class Review extends Component {
     window.removeEventListener("keydown", e => this.onKeyDown(e));
     clearTimeout(this.timeout);
   }
+
+  onTabSelect = value => this.setState({ activeTab: value });
 
   onKeyUp = e => {
     e.preventDefault();
@@ -411,7 +431,7 @@ class Review extends Component {
     option.id ? this.state.selected.id === option.id : this.state.selected === option;
 
   render() {
-    const { deck, options, index, isDeckLoading, isCardsLoading, isError } = this.state;
+    const { deck, options, index, activeTab, isDeckLoading, isCardsLoading, isError } = this.state;
 
     if (isDeckLoading) {
       return (
@@ -448,11 +468,20 @@ class Review extends Component {
     return (
       <div>
         <div
-          className="review-header py-4"
+          className="review-header pt-4"
           style={{ background: "#f9f9f9", borderBottom: "1px solid #e8e8e8" }}
         >
           <div className="container container--narrow">
             <ReviewHeader deck={deck} className="review-header mt-3 mb-2" />
+
+            <div className="d-flex mt-3">
+              <Tab onClick={() => this.onTabSelect("Study")} active={activeTab === "Study"}>
+                Study
+              </Tab>
+              <Tab onClick={() => this.onTabSelect("Cards")} active={activeTab === "Cards"}>
+                Cards ({this.state.cards.length})
+              </Tab>
+            </div>
           </div>
         </div>
 

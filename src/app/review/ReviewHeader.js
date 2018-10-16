@@ -54,7 +54,14 @@ class ReviewHeader extends React.Component {
     return (
       <div className={className}>
         <LoginModal isOpen={this.state.showModal} onClose={this.onCloseModal} />
-        <h1 className="m-0">{deck.name}</h1>
+        <div className="d-flex align-items-center">
+          <h1 className="m-0">{deck.name}</h1>
+          {deck.status === "private" && (
+            <small className="text-capitalize text-muted ml-2 rounded border px-1">
+              {deck.status}
+            </small>
+          )}
+        </div>
         {deck.description && (
           <div
             className="deck-description"
@@ -64,7 +71,7 @@ class ReviewHeader extends React.Component {
           />
         )}
         {deck.source && (
-          <div className="mb-3 d-flex align-items-center">
+          <div className="mb-3 d-flex align-items-center mt-1">
             <Octicon name="link" className="d-flex mr-1" />
             <a
               className="truncate"
