@@ -28,6 +28,19 @@ module.exports.getDecks = async (req, res, next) => {
   }
 };
 
+module.exports.createDeck = async (req, res, next) => {
+  try {
+    const { name, description } = req.body;
+    await Joi.validate(req.body, deckSchemas.createDeck);
+
+    const deck = await Deck.create({ name, description, author: req.user, status: "private" });
+
+    res.send(deck);
+  } catch (error) {
+    next(error);
+  }
+};
+
 module.exports.getDeck = async (req, res, next) => {
   try {
     await Joi.validate(req.params, deckSchemas.getDeckParams);

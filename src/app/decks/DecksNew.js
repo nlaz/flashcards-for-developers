@@ -1,14 +1,30 @@
 import React, { Component } from "react";
+import { Redirect } from "react-router-dom";
 
+import * as api from "../apiActions";
 import Octicon from "../../components/Octicon";
 
 class DecksNew extends Component {
-  state = { name: "", description: "", source: "" };
+  state = { name: "", description: "", deck: {}, isRedirect: false };
 
   onChange = e => this.setState({ [e.target.name]: e.target.value });
 
+  onSubmit = e => {
+    e.preventDefault();
+    const { name, description } = this.state;
+
+    api
+      .createDeck({ name, description })
+      .then(response => this.setState({ isRedirect: true, deck: response.data }))
+      .catch(error => console.log(error));
+  };
+
   render() {
-    const { name, description, source } = this.state;
+    const { name, description, deck, isRedirect } = this.state;
+
+    if (isRedirect && Object.keys(deck).length > 0) {
+      return <Redirect to={`/decks/${deck.id}`} />;
+    }
 
     return (
       <div>
@@ -19,12 +35,12 @@ class DecksNew extends Component {
                 <h1 className="m-0">Create a new deck</h1>
 
                 <p className="deck-description p-0">
-                  A deck is a collection of related flashcards, typically covers a single topic.
+                  A deck is a collection of related flashcards, typically covering a single topic.
                 </p>
                 <hr />
               </div>
               <form onSubmit={this.onSubmit}>
-                <div class="form-group mb-4">
+                <div className="form-group mb-4">
                   <label className="small font-weight-bold mb-1">Enter a deck name</label>
                   <input
                     type="text"
@@ -35,7 +51,7 @@ class DecksNew extends Component {
                     value={name}
                   />
                 </div>
-                <div class="form-group mb-4">
+                <div className="form-group mb-4">
                   <label className="small font-weight-bold mb-1">
                     Enter a deck description <span className="text-muted">(optional)</span>
                   </label>
