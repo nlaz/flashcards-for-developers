@@ -150,8 +150,8 @@ const About = () => (
             <h6 className="text-uppercase font-weight-medium mb-3">Stats</h6>
             <div>
               <span className="h2 font-weight-light">
-                <strong>1901</strong> cards studied <br />
-                <strong>70,607</strong> times*
+                <strong>2058</strong> cards studied <br />
+                <strong>77,058</strong> times*
               </span>
             </div>
             <div className="mt-3">

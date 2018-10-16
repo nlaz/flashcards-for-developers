@@ -13,6 +13,7 @@ import Header from "./Header";
 
 import NotFound from "../components/NotFound";
 import GoogleAnalytics from "../components/GoogleAnalytics";
+import ScrollToTop from "../components/ScrollToTop";
 
 class App extends Component {
   render() {
@@ -23,12 +24,12 @@ class App extends Component {
           <div style={{ flexGrow: 1 }}>
             <div>
               <Route path="/" component={GoogleAnalytics} />
+              <Route path="/" component={ScrollToTop} />
               <Switch>
                 <Route exact path="/" component={Home} />
                 <Route path="/pages" component={Pages} />
                 <Route path="/logout" component={Logout} />
                 <Route path="/auth/github" component={AuthRedirect} />
-                <Route path="/pages" component={Pages} />
                 <Route exact path="/decks/:deckId" component={Review} />
                 <Route exact path="/collections" component={CollectionsHome} />
                 <Route exact path="/collections/:collectionId" component={Collections} />
