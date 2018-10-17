@@ -28,10 +28,15 @@ const TableTop = () => (
     <div className="col-8">
       <div className="row">
         <div className="col-6">
-          <div className="text-center text-uppercase font-weight-medium">Free</div>
+          <div className="text-center text-uppercase font-weight-medium">Basic</div>
         </div>
         <div className="col-6">
-          <div className="text-center text-uppercase font-weight-medium">Member</div>
+          <div className="text-center text-uppercase font-weight-medium pr-2">
+            <span role="img" aria-label="emoji">
+              🎉
+            </span>{" "}
+            Pro
+          </div>
         </div>
       </div>
     </div>
@@ -159,10 +164,10 @@ const ComingSoonModal = ({ isOpen, isSubmitted, onClose, onSubmit, user }) => (
               <span role="img" aria-label="emoji">
                 🎉
               </span>{" "}
-              Memberships coming soon!
+              Pro memberships coming soon!
             </h5>
             <p className="text-secondary font-weight-light">
-              Leave your email here. We will let you know when memberships are live.
+              Leave your email here. We will let you know when pro memberships are live.
             </p>
           </div>
 
@@ -253,14 +258,14 @@ class Membership extends React.Component {
               style={{ fontSize: "24px", maxWidth: "600px", lineHeight: "1.2em" }}
             >
               Be part of the new way of learning. Become a member of Flashcards for Developers for
-              <span className="font-weight-medium"> $5/month</span>.
+              <span className="font-weight-medium"> $6/month</span>.
             </p>
           </div>
         </div>
 
         <div className="px-md-5 mt-5 d-none d-md-block">
           <TableTop />
-          <TableHeader tier1="$0" tier2="$5" tier3="✨" />
+          <TableHeader tier1="$0" tier2="$6" tier3="✨" />
           <TableLabel label="Usage" />
           <TableRow
             label="Spaced repetition"
@@ -288,15 +293,15 @@ class Membership extends React.Component {
         <div className="mt-5 d-md-none">
           <Tier
             className="bg-grayLight"
-            sublabel="Free"
+            sublabel="Basic"
             price="$0"
             priceSublabel="per month"
             features={["Spaced repetition", "3 months review history", "10 pinned decks"]}
           />
           <Tier
             className="bg-blueLight"
-            sublabel="Member"
-            price="$5"
+            sublabel="Pro Member"
+            price="$6"
             priceSublabel="per month"
             link={<UpgradeLink onOpenModal={this.onOpenModal} />}
             features={[
@@ -337,7 +342,7 @@ class Membership extends React.Component {
             <p>
               Your review history is a snapshot of your study activity. You can view a living
               history of your study habits. We provide a limited history for free plans, with
-              extended histories for our Member plan.
+              extended histories for our Pro plan.
             </p>
           </div>
           <div className="col-sm-4 mb-3">
@@ -350,8 +355,8 @@ class Membership extends React.Component {
           <div className="col-sm-4 mb-3">
             <h5>What are premium decks?</h5>
             <p>
-              Premium decks are collections of pre-made flashcards that are only visible to members.
-              These decks contain higher quality custom-made concepts.
+              Premium decks are collections of pre-made flashcards that are only visible to Pro
+              members. These decks contain higher quality custom-made concepts.
             </p>
           </div>
         </div>
