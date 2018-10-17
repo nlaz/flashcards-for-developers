@@ -3,6 +3,7 @@ const axios = require("axios");
 const moment = require("moment");
 const jwt = require("jsonwebtoken");
 const queryString = require("query-string");
+const Stripe = require("stripe");
 
 const User = require("../models/User");
 const userSchemas = require("./validation/users");
@@ -12,6 +13,8 @@ const GITHUB_OAUTH_ROUTE = "https://github.com/login/oauth/access_token";
 const GITHUB_USER_ROUTE = "https://api.github.com/user";
 const MAILCHIMP_ROUTE = "https://us17.api.mailchimp.com";
 const MEMBERSHIP_LIST = "6aa2bb18b4";
+
+const stripe = Stripe(config.stripePrivateKey);
 
 module.exports.getGithubUser = async (req, res, next) => {
   try {
@@ -89,6 +92,17 @@ module.exports.subscribeUser = async (req, res, next) => {
     await axios.post(route, query, { auth });
 
     res.send({ message: "Success!" });
+  } catch (error) {
+    next(error);
+  }
+};
+
+module.exports.postStripeCharge = async (req, res, next) => {
+  try {
+    const response = await stripe.charges.create(req.body);
+
+    console.log("✅", response);
+    res.send({ success: response });
   } catch (error) {
     next(error);
   }

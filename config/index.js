@@ -15,4 +15,5 @@ module.exports = {
   airtableApiKey: process.env.REACT_APP_AIRTABLE_API_KEY || "",
   airtableApiId: process.env.REACT_APP_AIRTABLE_API_ID || "",
   hostname: process.env.HOSTNAME || "",
+  stripePrivateKey: process.env.STRIPE_PRIVATE_KEY || "",
 };
