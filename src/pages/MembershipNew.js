@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import { Link, withRouter } from "react-router-dom";
 import { Elements } from "react-stripe-elements";
+import cookie from "js-cookie";
 
 import CheckoutForm from "./CheckoutForm";
 import Octicon from "../components/Octicon";
@@ -8,11 +9,16 @@ import Octicon from "../components/Octicon";
 const STATUS = { SUCCESS: "✅", ERROR: "❌" };
 
 class MembershipNew extends Component {
-  state = { status: STATUS.SUCCESS };
+  state = { status: undefined };
 
-  handleSuccess = () => this.setState({ status: STATUS.SUCCESS });
+  handleSuccess = response => {
+    const { user } = response.data;
+    this.setState({ status: STATUS.SUCCESS });
+    cookie.set("user", user);
+  };
 
   handleError = () => this.setState({ status: STATUS.ERROR });
+
   render() {
     const { status } = this.state;
 

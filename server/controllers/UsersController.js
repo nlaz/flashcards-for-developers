@@ -107,12 +107,18 @@ module.exports.postStripeCharge = async (req, res, next) => {
       source: source,
     });
 
-    const response = await stripe.subscriptions.create({
+    await stripe.subscriptions.create({
       customer: customer.id,
       plan: "monthly_pro",
     });
 
-    res.send({ success: response });
+    // Add customer Id to user model
+    const newUser = await User.findOneAndUpdate(
+      { _id: req.user },
+      { $set: { customerId: customer.id, user_plan: "pro_monthly" } },
+    );
+
+    res.send({ message: "Success!", user: newUser });
   } catch (error) {
     next(error);
   }
