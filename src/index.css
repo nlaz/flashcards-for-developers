@@ -467,3 +467,12 @@ a[disabled] {
   background: rgba(0, 0, 0, 0.05);
   z-index: 0;
 }
+
+.homepage-header {
+  color: white;
+  background: #2a2f35;
+}
+
+.homepage-header .text-shadow {
+  text-shadow: 0 0.5px 1px rgba(0, 0, 0, 0.15);
+}
