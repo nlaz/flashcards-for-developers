@@ -476,3 +476,8 @@ a[disabled] {
 .homepage-header .text-shadow {
   text-shadow: 0 0.5px 1px rgba(0, 0, 0, 0.15);
 }
+
+.btn-upgrade {
+  padding: 5px 50px;
+  background: linear-gradient(0, #343a40, #485159);
+}

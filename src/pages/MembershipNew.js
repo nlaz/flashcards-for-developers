@@ -1,11 +1,64 @@
 import React, { Component } from "react";
+import { Link, withRouter } from "react-router-dom";
 import { Elements } from "react-stripe-elements";
 
 import CheckoutForm from "./CheckoutForm";
 import Octicon from "../components/Octicon";
 
+const STATUS = { SUCCESS: "✅", ERROR: "❌" };
+
 class MembershipNew extends Component {
+  state = { status: STATUS.SUCCESS };
+
+  handleSuccess = () => this.setState({ status: STATUS.SUCCESS });
+
+  handleError = () => this.setState({ status: STATUS.ERROR });
   render() {
+    const { status } = this.state;
+
+    if (status === STATUS.SUCCESS) {
+      return (
+        <div className="bg-light d-flex flex-column" style={{ minHeight: "90vh" }}>
+          <div className="container container--narrow py-5">
+            <div className="row">
+              <div className="col-md-6 offset-md-3 col-lg-8 offset-lg-2">
+                <div
+                  className="bg-white border rounded"
+                  style={{ boxShadow: "0 1px 2px rgba(0,0,0, .05)" }}
+                >
+                  <div
+                    className="p-3 rounded-top text-center"
+                    style={{ background: "antiquewhite" }}
+                  >
+                    <span style={{ fontSize: "90px" }} role="img" aria-label="emoji">
+                      🏅
+                    </span>
+                  </div>
+                  <div className="py-5 px-4 mb-4 mx-auto" style={{ maxWidth: "430px" }}>
+                    <div className="text-center mx-auto">
+                      <h1 className="mr-2">
+                        <span role="img" aria-label="emoji" className="mr-2">
+                          ✅
+                        </span>
+                        Success!
+                      </h1>
+                      <p className="description font-weight-normal">
+                        Thank you for becoming a Pro member. Enjoy unlimited access to all the
+                        flashcards and topics you love.
+                      </p>
+                      <Link className="btn btn-dark" to="/">
+                        <small className="d-flex">Start studying</small>
+                      </Link>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      );
+    }
+
     return (
       <div className="container container--narrow py-5">
         <div className="row">
@@ -24,7 +77,7 @@ class MembershipNew extends Component {
               </p>
             </div>
             <Elements>
-              <CheckoutForm />
+              <CheckoutForm onSuccess={this.handleSuccess} onError={this.handleError} />
             </Elements>
           </div>
         </div>
@@ -33,4 +86,4 @@ class MembershipNew extends Component {
   }
 }
 
-export default MembershipNew;
+export default withRouter(MembershipNew);

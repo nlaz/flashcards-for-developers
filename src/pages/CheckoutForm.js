@@ -4,17 +4,20 @@ import {
   CardNumberElement,
   CardExpiryElement,
   CardCVCElement,
-  PostalCodeElement,
 } from "react-stripe-elements";
 
 import * as api from "../app/apiActions";
 
 class CheckoutForm extends Component {
+  state = { isLoading: false };
+
   onSubmit = e => {
     e.preventDefault();
-    if (this.props.stripe) {
+    this.setState({ isLoading: true });
+    if (this.props.stripe && !this.state.isLoading) {
       this.props.stripe.createToken().then(payload => this.onToken(payload.token));
     } else {
+      this.setState({ isLoading: false });
       console.log("Stripe.js hasn't loaded yet.");
     }
   };
@@ -27,11 +30,13 @@ class CheckoutForm extends Component {
         currency: "USD",
         source: token.id,
       })
-      .then(this.handleSuccess)
-      .catch(this.handleError);
+      .then(this.props.onSuccess)
+      .catch(this.props.onError);
   };
 
   render() {
+    const { isLoading } = this.state;
+
     return (
       <form onSubmit={this.onSubmit} className="pb-4">
         <div className="d-flex justify-content-between">
@@ -51,12 +56,9 @@ class CheckoutForm extends Component {
           <label className="small font-weight-bold mb-1">Security code</label>
           <CardCVCElement className="form-control py-2" />
         </div>
-        <div className="form-group mb-4">
-          <label className="small font-weight-bold mb-1">Postal code</label>
-          <PostalCodeElement className="form-control py-2" />
-        </div>
         <hr />
         <button className="btn btn-primary btn-sm font-weight-medium py-2 w-100" type="submit">
+          {isLoading && <i className="fas fa-spinner fa-spin mr-1" />}
           Purchase Pro
         </button>
         <div className="mt-2 text-center">

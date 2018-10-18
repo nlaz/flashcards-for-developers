@@ -2,6 +2,7 @@ import React from "react";
 import Modal from "react-modal";
 import cx from "classnames";
 import cookie from "js-cookie";
+import { Link } from "react-router-dom";
 
 import * as analytics from "../components/GoogleAnalytics";
 import * as api from "../app/apiActions";
@@ -11,13 +12,9 @@ import Octicon from "../components/Octicon";
 const CheckMark = () => <i className="fas fa-check fa-lg" />;
 
 const UpgradeLink = ({ onOpenModal }) => (
-  <button
-    className="btn btn-dark font-weight-medium"
-    onClick={onOpenModal}
-    style={{ fontSize: "1.25em", borderRadius: "999px", padding: "5px 50px" }}
-  >
+  <Link className="btn btn-dark btn-upgrade" to="/pages/membership/new">
     Upgrade
-  </button>
+  </Link>
 );
 
 const TableTop = () => (
