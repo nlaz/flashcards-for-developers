@@ -99,7 +99,22 @@ module.exports.subscribeUser = async (req, res, next) => {
 
 module.exports.postStripeCharge = async (req, res, next) => {
   try {
-    const response = await stripe.charges.create(req.body);
+    const { description, amount, source, currency } = req.body;
+
+    const user = await User.findOne({ _id: req.user });
+    const customer = await stripe.customers.create({
+      email: user.email,
+      source: source,
+      plan: "prod_Do2o0S7OWNcPhs",
+    });
+
+    const response = await stripe.subscriptions.create({
+      customer: customer.id,
+      plan: "prod_Do2o0S7OWNcPhs",
+      // description,
+      // amount,
+      // currency,
+    });
 
     console.log("✅", response);
     res.send({ success: response });
