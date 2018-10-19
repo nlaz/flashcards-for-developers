@@ -38,6 +38,14 @@ const DeckItem = ({ deck, deckProgress, isPinned, onTogglePin }) => {
             <Octicon name={isPinned ? "check" : "pin"} className="d-flex align-items-center" />
             {label}
           </button>
+          {deck.pro && (
+            <div
+              className="badge badge-danger ml-2 position-absolute p-1 text-uppercase"
+              style={{ bottom: "16px", right: "60px" }}
+            >
+              Pro
+            </div>
+          )}
           {deck.new && (
             <div
               className="badge badge-primary ml-2 position-absolute p-1 text-uppercase"
