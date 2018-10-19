@@ -5,6 +5,8 @@ import moment from "moment";
 import PropTypes from "prop-types";
 import config from "../../config";
 import isAuthenticated from "../utils/isAuthenticated";
+import UpgradeModal from "../auth/UpgradeModal";
+import isProMember from "../utils/isProMember";
 import * as leitner from "../../spaced/leitner";
 import * as api from "../apiActions";
 import * as localStorage from "../utils/localStorage";
@@ -441,12 +443,14 @@ class Review extends Component {
     const pageEnd = this.getPageEnd();
     const pageStart = this.getPageStart();
     const isStageFinished = this.isStageFinished();
+    const showUpgradeModal = deck && deck.pro && !isProMember();
     const isImageSelect = (currentCard.deck || {}).type
       ? this.isImageSelect(currentCard.deck)
       : this.isImageSelect(deck);
 
     return (
       <div>
+        <UpgradeModal isOpen={showUpgradeModal} title="Unlock this deck with Flashcards Pro" />
         <div
           className="review-header py-4"
           style={{ background: "#f9f9f9", borderBottom: "1px solid #e8e8e8" }}

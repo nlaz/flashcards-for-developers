@@ -38,8 +38,19 @@ class DeckItem extends Component {
     this.setState({ showLoginModal: false });
   };
 
+  onClick = e => {
+    if (this.props.deck.pro && isAuthenticated() && !isProMember()) {
+      e.preventDefault();
+      this.onOpenUpgradeModal(e);
+    } else if (this.props.deck.pro && isProMember()) {
+      analytics.logProAction("User successfully clicked a 'Pro' level deck button");
+    } else if (this.props.deck.pro && !isAuthenticated()) {
+      e.preventDefault();
+      this.onOpenLoginModal(e);
+    }
+  };
+
   render() {
-    const authenticated = isAuthenticated();
     const progress = utils.calcStudyProgress(this.props.deck, this.props.deckProgress);
     const proficiency = utils.calcStudyProficiency(this.props.deckProgress);
     const label = this.props.isPinned ? "Pinned" : "Pin";
@@ -50,6 +61,7 @@ class DeckItem extends Component {
         <LoginModal isOpen={this.state.showLoginModal} onClose={this.onCloseLoginModal} />
 
         <Link
+          onClick={this.onClick}
           to={`/decks/${this.props.deck.id}`}
           className={cx(
             "border bg-white rounded d-flex flex-column justify-content-between text-dark mb-3 p-4 w-100 position-relative",
@@ -60,17 +72,6 @@ class DeckItem extends Component {
             fontSize: "14px",
             opacity: this.props.deck.cards ? 1 : 0.25,
           }}
-          onClick={e =>
-            this.props.deck.pro && authenticated && !isProMember()
-              ? this.onOpenUpgradeModal(e)
-              : this.props.deck.pro && isProMember()
-                ? analytics.logProAction("User successfully clicked a 'Pro' level deck button")
-                : this.props.deck.pro && !authenticated
-                  ? this.onOpenLoginModal(e)
-                  : !this.props.deck.pro
-                    ? ""
-                    : ""
-          }
         >
           <div>
             <ProgressBar className="mb-2" progress={progress} proficiency={proficiency} />

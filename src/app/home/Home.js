@@ -173,7 +173,7 @@ class Decks extends Component {
                 </p>
               </div>
               <div
-                className="bg-light text-dark rounded p-2 border border-secondary d-flex align-items-center"
+                className="bg-white text-dark rounded p-2 border border-secondary d-flex align-items-center"
                 style={{ minWidth: "260px", minHeight: "90px" }}
               >
                 <HabitTracker />

@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Link, withRouter } from "react-router-dom";
+import { withRouter } from "react-router-dom";
 import { Elements } from "react-stripe-elements";
 import cookie from "js-cookie";
 
@@ -32,12 +32,9 @@ class MembershipNew extends Component {
                   className="bg-white border rounded"
                   style={{ boxShadow: "0 1px 2px rgba(0,0,0, .05)" }}
                 >
-                  <div
-                    className="p-3 rounded-top text-center"
-                    style={{ background: "antiquewhite" }}
-                  >
+                  <div className="p-3 rounded-top text-center" style={{ background: "#2a2f35" }}>
                     <span style={{ fontSize: "90px" }} role="img" aria-label="emoji">
-                      🏅
+                      🎉
                     </span>
                   </div>
                   <div className="py-5 px-4 mb-4 mx-auto" style={{ maxWidth: "430px" }}>
@@ -52,9 +49,9 @@ class MembershipNew extends Component {
                         Thank you for becoming a Pro member. Enjoy unlimited access to all the
                         flashcards and topics you love.
                       </p>
-                      <Link className="btn btn-dark" to="/">
-                        <small className="d-flex">Start studying</small>
-                      </Link>
+                      <a className="btn btn-dark" href="/">
+                        Start studying
+                      </a>
                     </div>
                   </div>
                 </div>

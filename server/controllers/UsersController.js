@@ -116,6 +116,7 @@ module.exports.postStripeCharge = async (req, res, next) => {
     const newUser = await User.findOneAndUpdate(
       { _id: req.user },
       { $set: { customerId: customer.id, user_plan: "pro_monthly" } },
+      { new: true },
     );
 
     res.send({ message: "Success!", user: newUser });

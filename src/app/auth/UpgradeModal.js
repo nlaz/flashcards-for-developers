@@ -24,6 +24,8 @@ class UpgradeModal extends Component {
   };
 
   render() {
+    const title = this.props.title || "Unlock more content with Flashcards Pro";
+
     return (
       <Modal
         isOpen={this.props.isOpen}
@@ -40,10 +42,10 @@ class UpgradeModal extends Component {
         </div>
         <div className="py-5 px-4 mb-4 mx-auto" style={{ maxWidth: "430px" }}>
           <div className="text-center mx-auto">
-            <h5 className="mb-1">Unlock more content with Flashcards Pro</h5>
+            <h5 className="mb-1">{title}</h5>
             <p className="text-secondary font-weight-light">
-              Upgrade to a Pro account to get access to Pro level material, create private decks,
-              and much more!
+              Upgrade to a Pro account to get access to more material, create private decks, and
+              much more!
             </p>
           </div>
           <div className="d-flex justify-content-center mt-4">

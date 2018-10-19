@@ -1,13 +1,9 @@
 import React from "react";
-import Modal from "react-modal";
-import cx from "classnames";
-import cookie from "js-cookie";
 import { Link } from "react-router-dom";
 
 import * as analytics from "../components/GoogleAnalytics";
 import * as api from "../app/apiActions";
 import isAuthenticated from "../app/utils/isAuthenticated";
-import Octicon from "../components/Octicon";
 import LoginModal from "../app/auth/LoginModal";
 
 const CheckMark = ({ hidden }) => (
@@ -15,12 +11,6 @@ const CheckMark = ({ hidden }) => (
     className="fas fa-check fa-lg text-success mr-2"
     style={{ visibility: hidden ? "hidden" : "visible" }}
   />
-);
-
-const UpgradeLink = ({ onOpenModal }) => (
-  <Link className="btn btn-dark btn-upgrade" to="/pages/membership/new">
-    Upgrade
-  </Link>
 );
 
 class Membership extends React.Component {
@@ -56,7 +46,6 @@ class Membership extends React.Component {
 
   render() {
     const authenticated = isAuthenticated();
-    const user = authenticated ? JSON.parse(cookie.get("user")) : {};
 
     return (
       <div className="bg-light">
