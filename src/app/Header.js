@@ -9,7 +9,7 @@ import isAuthenticated from "./utils/isAuthenticated";
 import Octicon from "../components/Octicon";
 import LoginModal from "./auth/LoginModal";
 
-const title = "Ridiculously helpful collection of flashcards for developers ";
+const title = "Ridiculously helpful collection of #FlashcardsForDevelopers ";
 
 const LogoutTooltip = () => (
   <div className="tooltip-content">
