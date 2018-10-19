@@ -69,7 +69,7 @@ class MembershipNew extends Component {
       <div className="container container--narrow py-5">
         <div className="row">
           <div className="col-lg-8 offset-lg-2">
-            <div className="mb-5 border rounded p-3 text-center">
+            <div className="mb-4 border rounded p-3 text-center">
               <div
                 className="d-flex justify-content-center align-items-center"
                 style={{ fontSize: "1.15em" }}

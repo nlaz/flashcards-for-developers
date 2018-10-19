@@ -9,16 +9,15 @@ import {
 import * as api from "../app/apiActions";
 
 class CheckoutForm extends Component {
-  state = { isLoading: false };
+  state = { isLoading: false, errors: { form: "", cardNumber: "", cardExpiry: "", cardCvc: "" } };
 
   onSubmit = e => {
     e.preventDefault();
-    this.setState({ isLoading: true });
-    if (this.props.stripe && !this.state.isLoading) {
-      this.props.stripe.createToken().then(payload => this.onToken(payload.token));
+
+    if (this.props.stripe) {
+      this.createStripeToken();
     } else {
-      this.setState({ isLoading: false });
-      console.log("Stripe.js hasn't loaded yet.");
+      return console.log("Stripe.js hasn't loaded yet.");
     }
   };
 
@@ -31,30 +30,82 @@ class CheckoutForm extends Component {
         source: token.id,
       })
       .then(this.props.onSuccess)
-      .catch(this.props.onError);
+      .catch(this.handleError);
+  };
+
+  onChange = field => {
+    const { errors } = this.state;
+    this.setState({ errors: { ...errors, [field.elementType]: (field.error || {}).message } });
+  };
+
+  createStripeToken = () => {
+    if (!this.state.isLoading) {
+      this.setState({ isLoading: true });
+
+      this.props.stripe
+        .createToken()
+        .then(payload => this.onToken(payload.token))
+        .catch(this.handleError);
+    }
+  };
+
+  handleSuccess = response => {
+    this.setState({ isLoading: false, errors: { forms: "" } });
+    this.props.onSuccess(response);
+  };
+
+  handleError = error => {
+    this.setState({ errors: { ...this.state.errors, form: error.message }, isLoading: false });
   };
 
   render() {
-    const { isLoading } = this.state;
+    const { errors, isLoading } = this.state;
 
     return (
       <form onSubmit={this.onSubmit} className="pb-4">
-        <div className="d-flex justify-content-between">
+        {errors.form && (
+          <div className="alert alert-danger">
+            We cannot complete the transaction.{" "}
+            <a
+              className="alert-link font-weight-normal text-underline"
+              href="mailto:hello@flashcardsfordevelopers.com"
+            >
+              Contact us
+            </a>
+            .
+          </div>
+        )}
+        <div className="d-flex justify-content-between mt-3">
           <span>Pro Subscription</span>
           <span>$6</span>
         </div>
         <hr className="mb-4 mt-0" style={{ borderStyle: "dotted" }} />
-        <div className="form-group mb-2">
-          <label className="small font-weight-bold mb-1">Card number</label>
-          <CardNumberElement className="form-control py-2" />
+        <div className="form-group mb-2" style={{ opacity: isLoading ? 0.6 : 1 }}>
+          <div className="d-flex justify-content-between align-items-center">
+            <label className="small font-weight-bold mb-1">Card number</label>
+            {errors.cardNumber && (
+              <small className="text-danger ml-2 mb-1 shake--error">{errors.cardNumber}</small>
+            )}
+          </div>
+          <CardNumberElement onChange={this.onChange} className="form-control py-2" />
         </div>
-        <div className="form-group mb-2">
-          <label className="small font-weight-bold mb-1">Expiration date</label>
-          <CardExpiryElement className="form-control py-2" />
+        <div className="form-group mb-2" style={{ opacity: isLoading ? 0.6 : 1 }}>
+          <div className="d-flex justify-content-between align-items-center">
+            <label className="small font-weight-bold mb-1">Expiration date</label>
+            {errors.cardExpiry && (
+              <small className="text-danger ml-2 mb-1 shake--error">{errors.cardExpiry}</small>
+            )}
+          </div>
+          <CardExpiryElement onChange={this.onChange} className="form-control py-2" />
         </div>
-        <div className="form-group mb-2">
-          <label className="small font-weight-bold mb-1">Security code</label>
-          <CardCVCElement className="form-control py-2" />
+        <div className="form-group mb-2" style={{ opacity: isLoading ? 0.6 : 1 }}>
+          <div className="d-flex justify-content-between align-items-center">
+            <label className="small font-weight-bold mb-1">Security code</label>
+            {errors.cardCvc && (
+              <small className="text-danger ml-2 mb-1 shake--error">{errors.cardCvc}</small>
+            )}
+          </div>
+          <CardCVCElement onChange={this.onChange} className="form-control py-2" />
         </div>
         <hr />
         <button className="btn btn-primary btn-sm font-weight-medium py-2 w-100" type="submit">

@@ -87,6 +87,13 @@ class Header extends Component {
                   </Link>
                 </div>
               )}
+            {!authenticated &&
+              isHomePage &&
+              !isProMember() && (
+                <Link className="d-flex align-items-center btn-member" to="/pages/membership">
+                  Become a member
+                </Link>
+              )}
           </div>
           <ul className="p-0 m-0">
             <li className="list-inline-item">
@@ -122,7 +129,7 @@ class Header extends Component {
                   <div className="position-relative">
                     {user.avatar_url ? (
                       <img
-                        className="header-image rounded rounded-circle"
+                        className="header-image rounded rounded-circle bg-light"
                         src={user.avatar_url}
                         alt="User profile"
                       />
@@ -136,7 +143,7 @@ class Header extends Component {
                         className="position-absolute"
                         style={{ bottom: "-5px", right: "-5px" }}
                       >
-                        🏅
+                        🌟
                       </span>
                     )}
                   </div>
