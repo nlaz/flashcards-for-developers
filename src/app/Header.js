@@ -136,7 +136,7 @@ class Header extends Component {
                         className="position-absolute"
                         style={{ bottom: "-5px", right: "-5px" }}
                       >
-                        ⭐️
+                        🏅
                       </span>
                     )}
                   </div>
