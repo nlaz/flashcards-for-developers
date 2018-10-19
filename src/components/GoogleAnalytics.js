@@ -119,7 +119,7 @@ export function logLoginAction(action) {
 
 export function logProAction(action) {
   ReactGA.event({
-    category: "User Login",
+    category: "User Pro",
     action: action,
   });
 }
