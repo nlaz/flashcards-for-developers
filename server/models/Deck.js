@@ -14,6 +14,7 @@ const DeckSchema = new mongoose.Schema(
     upvotes: Number,
     downvotes: Number,
     new: Boolean,
+    pro: Boolean,
   },
   {
     timestamps: true,

@@ -467,3 +467,38 @@ a[disabled] {
   background: rgba(0, 0, 0, 0.05);
   z-index: 0;
 }
+
+.homepage-header {
+  color: white;
+  background: #2a2f35;
+}
+
+.homepage-header .text-shadow {
+  text-shadow: 0 0.5px 1px rgba(0, 0, 0, 0.15);
+}
+
+.bg-shadow {
+  box-shadow: 0 1px 2px 1px rgba(0, 0, 0, 0.05);
+}
+
+.header .btn-member {
+  color: rgba(0, 0, 0, 0.54);
+  font-size: 13px;
+  transition: 0.1s all ease-in-out;
+}
+.header .btn-member:hover {
+  color: rgba(0, 0, 0, 0.84);
+  text-decoration: none;
+}
+.text-success {
+  color: #70b254 !important;
+}
+.text-faded {
+  opacity: 0.4;
+}
+
+.text-tier {
+  font-weight: 500;
+  font-size: 1em;
+  line-height: 2.5em;
+}

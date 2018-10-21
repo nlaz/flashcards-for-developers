@@ -107,3 +107,9 @@ export const addCardProgress = (deckId, cardId, leitnerBox, reviewedAt) => {
 
   return axios.put(`/study_progress/${deckId}/${cardId}`, params, config);
 };
+
+export const submitPayment = ({ description, amount, source, currency }) => {
+  const config = { headers: { Authorization: cookie.get("token") } };
+
+  return axios.post("/users/payments", { description, amount, source, currency }, config);
+};

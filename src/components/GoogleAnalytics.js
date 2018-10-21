@@ -117,6 +117,13 @@ export function logLoginAction(action) {
   });
 }
 
+export function logProAction(action) {
+  ReactGA.event({
+    category: "User Pro",
+    action: action,
+  });
+}
+
 export function logMembershipAction(action) {
   ReactGA.event({
     category: "User Membership",

@@ -3,6 +3,7 @@ const axios = require("axios");
 const moment = require("moment");
 const jwt = require("jsonwebtoken");
 const queryString = require("query-string");
+const Stripe = require("stripe");
 
 const User = require("../models/User");
 const userSchemas = require("./validation/users");
@@ -12,6 +13,8 @@ const GITHUB_OAUTH_ROUTE = "https://github.com/login/oauth/access_token";
 const GITHUB_USER_ROUTE = "https://api.github.com/user";
 const MAILCHIMP_ROUTE = "https://us17.api.mailchimp.com";
 const MEMBERSHIP_LIST = "6aa2bb18b4";
+
+const stripe = Stripe(config.stripePrivateKey);
 
 module.exports.getGithubUser = async (req, res, next) => {
   try {
@@ -89,6 +92,34 @@ module.exports.subscribeUser = async (req, res, next) => {
     await axios.post(route, query, { auth });
 
     res.send({ message: "Success!" });
+  } catch (error) {
+    next(error);
+  }
+};
+
+module.exports.postStripeCharge = async (req, res, next) => {
+  try {
+    const { source } = req.body;
+
+    const user = await User.findOne({ _id: req.user });
+    const customer = await stripe.customers.create({
+      email: user.email,
+      source: source,
+    });
+
+    await stripe.subscriptions.create({
+      customer: customer.id,
+      plan: "monthly_pro",
+    });
+
+    // Add customer Id to user model
+    const newUser = await User.findOneAndUpdate(
+      { _id: req.user },
+      { $set: { customerId: customer.id, user_plan: "pro_monthly" } },
+      { new: true },
+    );
+
+    res.send({ message: "Success!", user: newUser });
   } catch (error) {
     next(error);
   }

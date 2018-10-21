@@ -5,6 +5,7 @@ import About from "./About";
 import PrivacyPolicy from "./PrivacyPolicy";
 import TermsOfService from "./TermsOfService";
 import Membership from "./Membership";
+import MembershipNew from "./MembershipNew";
 import NotFound from "../components/NotFound";
 
 import "./Pages.css";
@@ -20,7 +21,8 @@ const Pages = () => (
       <Route path="/pages/about" component={About} />
       <Route path="/pages/privacy-policy" component={PrivacyPolicy} />
       <Route path="/pages/terms-of-service" component={TermsOfService} />
-      <Route path="/pages/membership" component={Membership} />
+      <Route exact path="/pages/membership" component={Membership} />
+      <Route exact path="/pages/membership/new" component={MembershipNew} />
       <Route exact path="*" component={NotFound} />
     </Switch>
   </div>

@@ -6,6 +6,7 @@ import Tooltip from "rc-tooltip";
 
 import * as analytics from "../components/GoogleAnalytics";
 import isAuthenticated from "./utils/isAuthenticated";
+import isProMember from "./utils/isProMember";
 import Octicon from "../components/Octicon";
 import LoginModal from "./auth/LoginModal";
 
@@ -72,19 +73,27 @@ class Header extends Component {
               </Link>
             )}
 
-            {isAuthenticated() && (
-              <div className="ml-2 d-none d-sm-block">
-                <Link
-                  to="/pages/membership"
-                  onClick={() =>
-                    analytics.logMembershipAction("User clicked 'Upgrade' button in header")
-                  }
-                  className="btn btn-sm btn-outline-gray"
-                >
-                  Upgrade
+            {authenticated &&
+              !isProMember() && (
+                <div className="ml-2 d-none d-sm-block">
+                  <Link
+                    to="/pages/membership"
+                    onClick={() =>
+                      analytics.logMembershipAction("User clicked 'Upgrade' button in header")
+                    }
+                    className="btn btn-sm btn-outline-gray"
+                  >
+                    Upgrade
+                  </Link>
+                </div>
+              )}
+            {!authenticated &&
+              isHomePage &&
+              !isProMember() && (
+                <Link className="d-flex align-items-center btn-member" to="/pages/membership">
+                  Become a member
                 </Link>
-              </div>
-            )}
+              )}
           </div>
           <ul className="p-0 m-0">
             <li className="list-inline-item">
@@ -117,15 +126,25 @@ class Header extends Component {
                   overlay={<LogoutTooltip />}
                   id="header-logout"
                 >
-                  <div>
+                  <div className="position-relative">
                     {user.avatar_url ? (
                       <img
-                        className="header-image rounded rounded-circle"
+                        className="header-image rounded rounded-circle bg-light"
                         src={user.avatar_url}
                         alt="User profile"
                       />
                     ) : (
                       <PlaceholderImage />
+                    )}
+                    {isProMember() && (
+                      <span
+                        role="img"
+                        aria-label="emoji"
+                        className="position-absolute"
+                        style={{ bottom: "-5px", right: "-5px" }}
+                      >
+                        🌟
+                      </span>
                     )}
                   </div>
                 </Tooltip>
