@@ -28,6 +28,7 @@ router.get("/users/pinned_decks", isAuthenticated, UsersController.getPinnedDeck
 router.put("/users/pinned_decks", isAuthenticated, UsersController.addPinnedDecks);
 router.delete("/users/pinned_decks", isAuthenticated, UsersController.removePinnedDeck);
 router.post("/users/subscriptions", isAuthenticated, UsersController.subscribeUser);
+router.post("/users/payments", isAuthenticated, UsersController.postStripeCharge);
 
 router.get("/users/study_sessions", isAuthenticated, UsersController.getStudySessions);
 router.put("/users/study_sessions", isAuthenticated, UsersController.addStudySessions);

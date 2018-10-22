@@ -163,20 +163,17 @@ class Decks extends Component {
     return (
       <div>
         <LoginModal isOpen={this.state.showModal} onClose={this.onCloseModal} />
-        <div
-          className="review-header py-4"
-          style={{ background: "#f9f9f9", borderBottom: "1px solid #e8e8e8" }}
-        >
+        <div className="homepage-header review-header py-4">
           <div className="container container--full px-4 my-2">
             <div className="d-flex flex-column flex-lg-row justify-content-between align-items-lg-center">
-              <div className="home-header py-2">
+              <div className="text-shadow home-header py-2">
                 <h1 className="m-0">Flashcards for Developers</h1>
                 <p className="m-0">
                   A curated list of flashcards to boost your professional skills
                 </p>
               </div>
               <div
-                className="bg-light rounded p-2 border border-secondary d-flex align-items-center"
+                className="bg-white text-dark rounded p-2 border border-secondary d-flex align-items-center"
                 style={{ minWidth: "260px", minHeight: "90px" }}
               >
                 <HabitTracker />
@@ -189,9 +186,9 @@ class Decks extends Component {
             pinnedDecks.length > 0 && (
               <div className="container container--full px-4 mt-4">
                 <div className="pinned-row">
-                  <div className="d-flex justify-content-between align-items-end mb-2 mx-1">
+                  <div className="text-shadow d-flex justify-content-between align-items-end mb-2 mx-1">
                     <h6 className="text-uppercase m-0">MY PINNED DECKS</h6>
-                    <Link className="text-dark text-underline" to="/collections/pinned">
+                    <Link className="text-white text-underline" to="/collections/pinned">
                       See all
                     </Link>
                   </div>
