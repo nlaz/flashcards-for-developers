@@ -8,6 +8,7 @@ import TermsOfService from "./TermsOfService";
 import Membership from "./Membership";
 import MembershipNew from "./MembershipNew";
 import NotFound from "../components/NotFound";
+import isAuthenticated from "../app/utils/isAuthenticated";
 
 import "./Pages.css";
 
@@ -15,13 +16,17 @@ const CHAT_APP_ID = "uhq7cari";
 
 class Pages extends Component {
   componentDidMount() {
-    const user = JSON.parse(cookie.get("user"));
+    const user = isAuthenticated() ? JSON.parse(cookie.get("user")) : {};
     window.Intercom("boot", {
       app_id: CHAT_APP_ID,
       name: user.name,
       email: user.email,
       user_plan: user.user_plan,
     });
+  }
+
+  componentWillUnmount() {
+    window.Intercom("shutdown");
   }
 
   render() {
