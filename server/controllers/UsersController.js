@@ -13,6 +13,7 @@ const GITHUB_OAUTH_ROUTE = "https://github.com/login/oauth/access_token";
 const GITHUB_USER_ROUTE = "https://api.github.com/user";
 const MAILCHIMP_ROUTE = "https://us17.api.mailchimp.com";
 const MEMBERSHIP_LIST = "6aa2bb18b4";
+const SUBSCRIPTION_PLAN = "monthly_pro";
 
 const stripe = Stripe(config.stripePrivateKey);
 
@@ -109,13 +110,13 @@ module.exports.postStripeCharge = async (req, res, next) => {
 
     await stripe.subscriptions.create({
       customer: customer.id,
-      plan: "monthly_pro",
+      plan: SUBSCRIPTION_PLAN,
     });
 
     // Add customer Id to user model
     const newUser = await User.findOneAndUpdate(
       { _id: req.user },
-      { $set: { customerId: customer.id, user_plan: "pro_monthly" } },
+      { $set: { customerId: customer.id, user_plan: SUBSCRIPTION_PLAN } },
       { new: true },
     );
 

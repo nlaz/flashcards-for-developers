@@ -44,19 +44,6 @@ const Footer = () => (
         </li>
         <li className="list-inline-item">
           <small>
-            <a
-              href="https://github.com/nlaz/flashcards-for-developers"
-              onClick={() => analytics.logGithubInterest()}
-              target="_blank"
-              className="text-secondary"
-              rel="noopener noreferrer"
-            >
-              GitHub
-            </a>
-          </small>
-        </li>
-        <li className="list-inline-item">
-          <small>
             <a className="text-secondary" href="mailto:hello@flashcardsfordevelopers.com">
               Contact
             </a>
