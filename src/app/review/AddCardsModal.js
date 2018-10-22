@@ -4,8 +4,17 @@ import Modal from "react-modal";
 import Octicon from "../../components/Octicon";
 import * as api from "../../app/apiActions";
 
+const CountBadge = ({ count }) =>
+  count > 0 ? (
+    <div className="badge badge-dark position-absolute m-3" style={{ top: 0, right: 0 }}>
+      + {count}
+    </div>
+  ) : (
+    false
+  );
+
 class AddCardsModal extends Component {
-  state = { front: "", back: "", toggleOption: false };
+  state = { front: "", back: "", toggleOption: false, addedCount: 0 };
 
   onToggle = e => this.setState({ toggleOption: !this.state.toggleOption });
 
@@ -13,11 +22,21 @@ class AddCardsModal extends Component {
 
   onSubmit = e => {
     e.preventDefault();
+    const { deck } = this.props;
     const { front, back } = this.state;
     api
-      .createCard({ front, back })
-      .then(response => console.log(response))
+      .createCard({ front, back, deck: deck.id })
+      .then(this.handleSuccess)
       .catch(error => console.error(error));
+  };
+
+  handleSuccess = response => {
+    if (this.state.toggleOption) {
+      this.setState({ front: "", back: "", addedCount: this.state.addedCount + 1 });
+    } else {
+      this.setState({ front: "", back: "" });
+      this.props.onClose();
+    }
   };
 
   render() {
@@ -36,7 +55,8 @@ class AddCardsModal extends Component {
         <hr className="m-0" />
 
         <form onSubmit={this.onSubmit}>
-          <div className="p-3">
+          <div className="p-3 position-relative">
+            <CountBadge count={this.state.addedCount} />
             <div className="form-group mb-2">
               <label className="small font-weight-bold mb-1">Front</label>
               <textarea
@@ -71,7 +91,7 @@ class AddCardsModal extends Component {
                 checked={toggleOption}
                 className="mr-1 mb-1"
               />
-              <span className="small text-muted">Save and add another card</span>
+              <span className="small text-muted">Submit and add another card</span>
             </div>
             <div>
               <button onClick={onClose} className="btn btn-sm btn-secondary mr-2">

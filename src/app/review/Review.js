@@ -106,13 +106,9 @@ class Review extends Component {
     if (this.props.match.path === "/decks/:deckId/cards") {
       this.setState({ activeTab: TABS.CARDS });
     }
-    window.addEventListener("keyup", e => this.onKeyUp(e));
-    window.addEventListener("keydown", e => this.onKeyDown(e));
   }
 
   componentWillUnmount() {
-    window.removeEventListener("keyup", e => this.onKeyUp(e));
-    window.removeEventListener("keydown", e => this.onKeyDown(e));
     clearTimeout(this.timeout);
   }
 
@@ -646,7 +642,7 @@ class Review extends Component {
         )}
         {activeTab === TABS.CARDS && (
           <div className="container container--narrow py-4">
-            <CardsSection cards={this.state.cards} />
+            <CardsSection deck={this.state.deck} cards={this.state.cards} />
           </div>
         )}
       </div>

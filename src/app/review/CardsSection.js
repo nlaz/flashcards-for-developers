@@ -15,7 +15,11 @@ class CardsSection extends Component {
     const { cards } = this.props;
     return (
       <div className="my-2">
-        <AddCardsModal isOpen={this.state.showModal} onClose={this.onCloseModal} />
+        <AddCardsModal
+          deck={this.props.deck}
+          isOpen={this.state.showModal}
+          onClose={this.onCloseModal}
+        />
         <div className="text-right">
           <button onClick={this.onOpenModal} className="btn btn-success btn-sm text-white">
             + Add Card

@@ -31,3 +31,16 @@ module.exports.getCards = async (req, res, next) => {
     next(error);
   }
 };
+
+module.exports.createCard = async (req, res, next) => {
+  try {
+    const { front, back, deck } = req.body;
+    await Joi.validate(req.body, cardSchemas.createCard);
+
+    const card = await Card.create({ deck, back, front });
+
+    res.send(card);
+  } catch (error) {
+    next(error);
+  }
+};
