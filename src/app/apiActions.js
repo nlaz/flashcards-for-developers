@@ -38,6 +38,11 @@ export const fetchDecksById = deckIds => {
   return axios.get(`/api/decks${params}`, config);
 };
 
+export const createCard = ({ front, back }) => {
+  const config = { headers: { Authorization: cookie.get("token") } };
+  return axios.post("/api/cards", { front, back }, config);
+};
+
 export const createDeck = ({ name, description }) => {
   const config = { headers: { Authorization: cookie.get("token") } };
   return axios.post("/api/decks", { name, description }, config);

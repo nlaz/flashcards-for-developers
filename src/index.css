@@ -484,7 +484,7 @@ textarea {
   text-shadow: 0 0.5px 1px rgba(0, 0, 0, 0.15);
 }
 
-.bg-shadow {
+.box-shadow {
   box-shadow: 0 1px 2px 1px rgba(0, 0, 0, 0.05);
 }
 
@@ -508,4 +508,18 @@ textarea {
   font-weight: 500;
   font-size: 1em;
   line-height: 2.5em;
+}
+
+.btn-success {
+  background-color: #28a745;
+  background-image: linear-gradient(-180deg, #34d058, #28a745 90%);
+}
+.btn-secondary {
+  color: #24292e;
+  background-color: #eff3f6;
+  background-image: linear-gradient(-180deg, #fafbfc, #eff3f6 90%);
+  border: 1px solid rgba(27, 31, 35, 0.2);
+}
+.btn-secondary:hover {
+  color: #24292e;
 }

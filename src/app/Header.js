@@ -98,8 +98,8 @@ class Header extends Component {
                 <Octicon
                   className="d-flex align-items-center p-2 add-button"
                   name="plus"
-                  width={20}
-                  height={20}
+                  width={18}
+                  height={18}
                 />
               </Link>
             </li>

@@ -33,7 +33,6 @@ class DecksNew extends Component {
             <div className="col-lg-8 offset-lg-2">
               <div className="mb-4">
                 <h1 className="m-0">Create a new deck</h1>
-
                 <p className="deck-description p-0">
                   A deck is a collection of related flashcards, typically covering a single topic.
                 </p>

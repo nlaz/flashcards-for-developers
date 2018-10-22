@@ -108,7 +108,7 @@ class Membership extends React.Component {
         <div className="container container--full">
           <div className="row mt-5">
             <div className="col-md-6 col-lg-4 offset-lg-2 my-3">
-              <div className="bg-white rounded p-5 border border-muted bg-shadow">
+              <div className="bg-white rounded p-5 border border-muted box-shadow">
                 <div className="text-center mb-4">
                   <span
                     className="border border-muted text-muted rounded px-4 py-2 font-weight-medium"
@@ -144,7 +144,7 @@ class Membership extends React.Component {
 
             <div className="col-md-6 col-lg-4 my-3">
               <div
-                className="bg-blueLight rounded p-5 bg-shadow"
+                className="bg-blueLight rounded p-5 box-shadow"
                 style={{ border: "1px solid #c0ddff" }}
               >
                 <div className="text-center mb-4">
@@ -192,7 +192,7 @@ class Membership extends React.Component {
                 </h1>
               </div>
               <div className="col-12">
-                <div className="bg-white rounded border bg-shadow py-3 px-5 mt-3">
+                <div className="bg-white rounded border box-shadow py-3 px-5 mt-3">
                   <div className="d-flex flex-column flex-sm-row justify-content-between align-items-center">
                     <div className="d-flex align-items-center">
                       <div className="text-dark font-weight-bold" style={{ fontSize: "3em" }}>
