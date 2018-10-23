@@ -13,7 +13,7 @@ const GITHUB_OAUTH_ROUTE = "https://github.com/login/oauth/access_token";
 const GITHUB_USER_ROUTE = "https://api.github.com/user";
 const MAILCHIMP_ROUTE = "https://us17.api.mailchimp.com";
 const MEMBERSHIP_LIST = "6aa2bb18b4";
-const SUBSCRIPTION_PLAN = "monthly_pro";
+const SUBSCRIPTION_PLAN = "pro_monthly";
 
 const stripe = Stripe(config.stripePrivateKey);
 

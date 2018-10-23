@@ -35,7 +35,10 @@ module.exports.getCards = async (req, res, next) => {
 module.exports.createCard = async (req, res, next) => {
   try {
     const { front, back, deck } = req.body;
+    const user = await User.findOne({ _id: req.user });
+
     await Joi.validate(req.body, cardSchemas.createCard);
+    await Joi.validate(user.user_plan, cardSchemas.proUser);
 
     const card = await Card.create({ deck, back, front, author: req.user });
 

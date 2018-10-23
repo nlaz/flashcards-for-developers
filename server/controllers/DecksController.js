@@ -2,6 +2,7 @@ const Joi = require("joi");
 
 const Deck = require("../models/Deck");
 const Card = require("../models/Card");
+const User = require("../models/User");
 const Collection = require("../models/Collection");
 const deckSchemas = require("./validation/decks");
 
@@ -32,7 +33,10 @@ module.exports.getDecks = async (req, res, next) => {
 module.exports.createDeck = async (req, res, next) => {
   try {
     const { name, description } = req.body;
+    const user = await User.findOne({ _id: req.user });
+
     await Joi.validate(req.body, deckSchemas.createDeck);
+    await Joi.validate(user.user_plan, deckSchemas.proUser);
 
     const deck = await Deck.create({ name, description, author: req.user, status: "private" });
 
@@ -48,7 +52,11 @@ module.exports.getDeck = async (req, res, next) => {
 
     const { deckId } = req.params;
 
-    const deck = await Deck.findOne({ _id: deckId });
+    let deck = await Deck.findOne({ _id: deckId, status: "public" });
+
+    if (!deck) {
+      deck = await Deck.findOne({ _id: deckId, author: req.user, status: "private" });
+    }
 
     res.send(deck);
   } catch (error) {

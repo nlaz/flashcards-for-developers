@@ -15,4 +15,7 @@ module.exports = {
   deleteCard: {
     cardId: Joi.objectId().required(),
   },
+  proUser: Joi.string()
+    .valid("pro_monthly")
+    .required(),
 };

@@ -52,9 +52,9 @@ const ReportLink = ({ content }) => (
     target="_blank"
     rel="noopener noreferrer"
     className="btn btn-reset position-absolute d-flex align-items-center"
-    style={{ right: 0, bottom: 0, fill: "#cdcdcd", color: "#cdcdcd" }}
+    style={{ right: 0, bottom: 0 }}
   >
-    <small>{content}</small>
+    <small className="text-muted">{content}</small>
   </a>
 );
 
@@ -440,7 +440,7 @@ class Review extends Component {
   isDeckOwner = () => {
     const { deck } = this.state;
     const user = isAuthenticated() ? JSON.parse(cookie.get("user")) : {};
-    return deck.author === user.id;
+    return isAuthenticated() && deck.author === user.id;
   };
   isCorrectAnswer = (option, card) => {
     if (this.isSelfGraded()) {
@@ -486,7 +486,7 @@ class Review extends Component {
     const pageEnd = this.getPageEnd();
     const pageStart = this.getPageStart();
     const isStageFinished = this.isStageFinished();
-    const showUpgradeModal = deck && deck.pro && !isProMember();
+    const showUpgradeModal = Boolean(deck) && deck.pro && !isProMember();
     const isImageSelect = (currentCard.deck || {}).type
       ? this.isImageSelect(currentCard.deck)
       : this.isImageSelect(deck);
@@ -499,7 +499,7 @@ class Review extends Component {
           style={{ background: "#f9f9f9", borderBottom: "1px solid #e8e8e8" }}
         >
           <div className="container container--narrow">
-            <ReviewHeader deck={deck} className="review-header mt-3 mb-2" />
+            {Boolean(deck) && <ReviewHeader deck={deck} className="review-header mt-3 mb-2" />}
 
             <div className="d-flex mt-3">
               <Tab onClick={() => this.onTabSelect(TABS.STUDY)} active={activeTab === TABS.STUDY}>

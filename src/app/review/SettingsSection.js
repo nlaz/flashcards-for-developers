@@ -45,7 +45,7 @@ class SettingsSection extends Component {
           onCancel={this.onCloseModal}
           onConfirm={this.onDelete}
         />
-        <form onSubmit={this.onSubmit} className="border rounded p-3 mb-3">
+        <form onSubmit={this.onSubmit} className="border rounded py-4 px-3 mb-3">
           <h2 className="m-0" style={{ fontSize: "1.25em" }}>
             Settings
           </h2>
@@ -87,7 +87,10 @@ class SettingsSection extends Component {
               </small>
             </div>
           </div>
-          <button className="btn btn-outline-primary btn-sm font-weight-medium px-2" type="submit">
+          <button
+            className="btn btn-outline-primary btn-sm font-weight-medium px-2 mt-2"
+            type="submit"
+          >
             Update this deck
           </button>
         </form>
