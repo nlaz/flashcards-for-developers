@@ -52,7 +52,11 @@ module.exports.getDeck = async (req, res, next) => {
 
     const { deckId } = req.params;
 
-    const deck = await Deck.findOne({ _id: deckId });
+    let deck = await Deck.findOne({ _id: deckId, status: "public" });
+
+    if (!deck) {
+      deck = await Deck.findOne({ _id: deckId, author: req.user, status: "private" });
+    }
 
     res.send(deck);
   } catch (error) {

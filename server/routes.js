@@ -14,7 +14,7 @@ router.get("/hello", (req, res) => res.send({ message: "Hello world!" }));
 
 router.get("/api/decks", DecksController.getDecks);
 router.post("/api/decks", isAuthenticated, DecksController.createDeck);
-router.get("/api/decks/:deckId", DecksController.getDeck);
+router.get("/api/decks/:deckId", getUser, DecksController.getDeck);
 router.put("/api/decks/:deckId", isAuthenticated, DecksController.updateDeck);
 router.delete("/api/decks/:deckId", isAuthenticated, DecksController.deleteDeck);
 
