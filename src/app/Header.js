@@ -98,73 +98,73 @@ class Header extends Component {
               )}
           </div>
           <ul className="d-flex align-items-center p-0 m-0">
-            <li className="list-inline-item">
-              <Link to="/decks/new">
-                <Octicon
-                  className="d-flex align-items-center p-2 add-button"
-                  name="plus"
-                  width={18}
-                  height={18}
-                />
-              </Link>
-            </li>
-            {authenticated ? (
-              <li className="header-login list-inline-item ml-1">
-                <Tooltip
-                  placement="bottomRight"
-                  trigger={["click"]}
-                  overlay={<LogoutTooltip user={user} />}
-                  id="header-logout"
-                >
-                  <div className="position-relative">
-                    {user.avatar_url ? (
-                      <img
-                        className="header-image rounded rounded-circle bg-light"
-                        src={user.avatar_url}
-                        alt="User profile"
+            {authenticated
+              ? [
+                  <li className="list-inline-item">
+                    <Link to="/decks/new">
+                      <Octicon
+                        className="d-flex align-items-center p-2 add-button"
+                        name="plus"
+                        width={18}
+                        height={18}
                       />
-                    ) : (
-                      <PlaceholderImage />
-                    )}
-                    {isProMember() && (
-                      <span
-                        role="img"
-                        aria-label="emoji"
-                        className="position-absolute"
-                        style={{ bottom: "-5px", right: "-5px" }}
-                      >
-                        🌟
-                      </span>
-                    )}
-                  </div>
-                </Tooltip>
-              </li>
-            ) : (
-              [
-                <li className="list-inline-item ml-2" key={1}>
-                  <button
-                    className="btn btn-sm btn-outline-dark d-flex px-3 py-2"
-                    onClick={() => {
-                      analytics.logLoginAction("User clicked 'Login' button");
-                      this.onOpenModal();
-                    }}
-                  >
-                    <small className="font-weight-bold">LOG IN</small>
-                  </button>
-                </li>,
-                <li className="list-inline-item ml-1" key={2}>
-                  <button
-                    className="btn btn-sm btn-dark d-flex px-3 py-2"
-                    onClick={() => {
-                      analytics.logLoginAction("User clicked 'Signup' button");
-                      this.onOpenModal();
-                    }}
-                  >
-                    <small className="font-weight-bold">SIGN UP</small>
-                  </button>
-                </li>,
-              ]
-            )}
+                    </Link>
+                  </li>,
+                  <li className="header-login list-inline-item ml-1">
+                    <Tooltip
+                      placement="bottomRight"
+                      trigger={["click"]}
+                      overlay={<LogoutTooltip user={user} />}
+                      id="header-logout"
+                    >
+                      <div className="position-relative">
+                        {user.avatar_url ? (
+                          <img
+                            className="header-image rounded rounded-circle bg-light"
+                            src={user.avatar_url}
+                            alt="User profile"
+                          />
+                        ) : (
+                          <PlaceholderImage />
+                        )}
+                        {isProMember() && (
+                          <span
+                            role="img"
+                            aria-label="emoji"
+                            className="position-absolute"
+                            style={{ bottom: "-5px", right: "-5px" }}
+                          >
+                            🌟
+                          </span>
+                        )}
+                      </div>
+                    </Tooltip>
+                  </li>,
+                ]
+              : [
+                  <li className="list-inline-item ml-2" key={1}>
+                    <button
+                      className="btn btn-sm btn-outline-dark d-flex px-3 py-2"
+                      onClick={() => {
+                        analytics.logLoginAction("User clicked 'Login' button");
+                        this.onOpenModal();
+                      }}
+                    >
+                      <small className="font-weight-bold">LOG IN</small>
+                    </button>
+                  </li>,
+                  <li className="list-inline-item ml-1" key={2}>
+                    <button
+                      className="btn btn-sm btn-dark d-flex px-3 py-2"
+                      onClick={() => {
+                        analytics.logLoginAction("User clicked 'Signup' button");
+                        this.onOpenModal();
+                      }}
+                    >
+                      <small className="font-weight-bold">SIGN UP</small>
+                    </button>
+                  </li>,
+                ]}
           </ul>
         </div>
       </div>

@@ -101,12 +101,11 @@ class DeckItem extends Component {
                   <div className="text-uppercase p-1">Private</div>
                 </div>
               )}
-              {this.props.deck.new &&
-                true && (
-                  <div className="badge badge-primary ml-1 p-0">
-                    <div className="text-uppercase p-1">New</div>
-                  </div>
-                )}
+              {this.props.deck.new && (
+                <div className="badge badge-primary ml-1 p-0">
+                  <div className="text-uppercase p-1">New</div>
+                </div>
+              )}
               {this.props.deck.pro && (
                 <div className="badge badge-warning ml-1 d-flex align-items-center p-0">
                   <Octicon
