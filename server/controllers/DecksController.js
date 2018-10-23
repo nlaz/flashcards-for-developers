@@ -1,6 +1,7 @@
 const Joi = require("joi");
 
 const Deck = require("../models/Deck");
+const Card = require("../models/Card");
 const Collection = require("../models/Collection");
 const deckSchemas = require("./validation/decks");
 
@@ -69,6 +70,21 @@ module.exports.updateDeck = async (req, res, next) => {
     );
 
     res.send(deck);
+  } catch (error) {
+    next(error);
+  }
+};
+
+module.exports.deleteDeck = async (req, res, next) => {
+  try {
+    const { deckId } = req.params;
+    await Joi.validate(req.params, deckSchemas.deleteDeck);
+
+    await Deck.deleteOne({ _id: deckId, author: req.user });
+
+    await Card.deleteMany({ deck: deckId, author: req.user });
+
+    res.send({ message: "Success! Deck removed." });
   } catch (error) {
     next(error);
   }

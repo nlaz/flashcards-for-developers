@@ -292,6 +292,10 @@ a[disabled] {
   padding-top: 6px;
 }
 
+.modal--narrow {
+  max-width: 450px !important;
+}
+
 .comingSoonModal,
 .loginModal {
   left: 0;

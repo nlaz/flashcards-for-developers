@@ -48,6 +48,11 @@ export const deleteCard = cardId => {
   return axios.delete(`/api/cards/${cardId}`, config);
 };
 
+export const deleteDeck = deckId => {
+  const config = { headers: { Authorization: cookie.get("token") } };
+  return axios.delete(`/api/decks/${deckId}`, config);
+};
+
 export const createDeck = ({ name, description }) => {
   const config = { headers: { Authorization: cookie.get("token") } };
   return axios.post("/api/decks", { name, description }, config);

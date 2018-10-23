@@ -16,6 +16,7 @@ router.get("/api/decks", DecksController.getDecks);
 router.post("/api/decks", isAuthenticated, DecksController.createDeck);
 router.get("/api/decks/:deckId", DecksController.getDeck);
 router.put("/api/decks/:deckId", isAuthenticated, DecksController.updateDeck);
+router.delete("/api/decks/:deckId", isAuthenticated, DecksController.deleteDeck);
 
 router.get("/api/collections", CollectionsController.getCollections);
 router.get("/api/collections/:collectionId", CollectionsController.getCollection);

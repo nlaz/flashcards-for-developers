@@ -1,10 +1,15 @@
 import React, { Component } from "react";
 
-import Octicon from "../../components/Octicon";
 import * as api from "../../app/apiActions";
+import Octicon from "../../components/Octicon";
+import DeleteModal from "./DeleteModal";
 
 class SettingsSection extends Component {
-  state = { name: this.props.deck.name, description: this.props.deck.description };
+  state = {
+    name: this.props.deck.name,
+    description: this.props.deck.description,
+    showModal: false,
+  };
 
   onChange = e => this.setState({ [e.target.name]: e.target.value });
 
@@ -18,11 +23,28 @@ class SettingsSection extends Component {
       .catch(error => console.error(error));
   };
 
+  onOpenModal = () => this.setState({ showModal: true });
+
+  onCloseModal = () => this.setState({ showModal: false });
+
+  onDelete = () => {
+    const { deck } = this.props;
+    api
+      .deleteDeck(deck.id)
+      .then(response => this.props.onDeleteDeck(response.data))
+      .catch(error => console.error(error));
+  };
+
   render() {
     const { name, description } = this.state;
 
     return (
       <div className="py-2">
+        <DeleteModal
+          isOpen={this.state.showModal}
+          onCancel={this.onCloseModal}
+          onConfirm={this.onDelete}
+        />
         <form onSubmit={this.onSubmit} className="border rounded p-3 mb-3">
           <h2 className="m-0" style={{ fontSize: "1.25em" }}>
             Settings
@@ -76,7 +98,9 @@ class SettingsSection extends Component {
               Deleting a deck will permanently remove all of its cards.
             </span>
           </div>
-          <button className="btn btn-sm btn-outline-danger px-2">Delete this deck</button>
+          <button onClick={this.onOpenModal} className="btn btn-sm btn-outline-danger px-2">
+            Delete this deck
+          </button>
         </div>
       </div>
     );

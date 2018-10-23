@@ -18,4 +18,7 @@ module.exports = {
     name: Joi.string().required(),
     description: Joi.string().allow(""),
   },
+  deleteDeck: {
+    deckId: Joi.objectId().required(),
+  },
 };

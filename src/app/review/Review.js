@@ -366,6 +366,7 @@ class Review extends Component {
   };
 
   onUpdateDeck = deck => this.setState({ deck: deck });
+  onDeleteDeck = () => this.props.history.push("/");
 
   setStudyProgress = (card, isCorrect) => {
     const deckId = card.deck.id || card.deck;
@@ -676,7 +677,11 @@ class Review extends Component {
           this.isDeckOwner() &&
           !this.state.isDeckLoading && (
             <div className="container container--narrow py-4">
-              <SettingsSection deck={this.state.deck} onUpdateDeck={this.onUpdateDeck} />
+              <SettingsSection
+                deck={this.state.deck}
+                onUpdateDeck={this.onUpdateDeck}
+                onDeleteDeck={this.onDeleteDeck}
+              />
             </div>
           )}
       </div>
