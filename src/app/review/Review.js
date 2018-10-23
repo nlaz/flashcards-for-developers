@@ -15,6 +15,7 @@ import * as chance from "../utils/chance";
 import * as analytics from "../../components/GoogleAnalytics";
 
 import CardsSection from "./CardsSection";
+import SettingsSection from "./SettingsSection";
 import DeckFeedback from "./DeckFeedback";
 import ReviewHeader from "./ReviewHeader";
 import StudyProgress from "./StudyProgress";
@@ -28,6 +29,7 @@ const SELF_GRADE_INCORRECT = "I was wrong";
 const TABS = {
   STUDY: "study",
   CARDS: "cards",
+  SETTINGS: "settings",
 };
 
 const getRandomPageSize = () => chance.integer({ min: 6, max: 8 });
@@ -103,8 +105,8 @@ class Review extends Component {
       this.fetchDeck(params.deckId);
       this.fetchDeckProgress(params.deckId);
     }
-    if (this.props.match.path === "/decks/:deckId/cards") {
-      this.setState({ activeTab: TABS.CARDS });
+    if (params.tabName && params.tabName.length > 0) {
+      this.setState({ activeTab: params.tabName });
     }
   }
 
@@ -112,7 +114,9 @@ class Review extends Component {
     clearTimeout(this.timeout);
   }
 
-  onTabSelect = value => this.setState({ activeTab: value });
+  onTabSelect = value => {
+    this.props.this.setState({ activeTab: value });
+  };
 
   onKeyUp = e => {
     e.preventDefault();
@@ -270,7 +274,9 @@ class Review extends Component {
     api.fetchDeck(deckId).then(
       ({ data }) => {
         // TODO: Set the name on the server-side
-        document.title = data.name ? `${data.name} Flashcards` : "Flashcards for Developers";
+        document.title = data.name
+          ? `${data.name} | Flashcards for Developers`
+          : "Flashcards for Developers";
         this.setState({ deck: data, isDeckLoading: false }, () => this.fetchCards(data.id));
       },
       error => this.setState({ isError: true, isDeckLoading: false }),
@@ -489,6 +495,12 @@ class Review extends Component {
               <Tab onClick={() => this.onTabSelect(TABS.CARDS)} active={activeTab === TABS.CARDS}>
                 Cards ({this.state.cards.length})
               </Tab>
+              <Tab
+                onClick={() => this.onTabSelect(TABS.SETTINGS)}
+                active={activeTab === TABS.SETTINGS}
+              >
+                Settings
+              </Tab>
             </div>
           </div>
         </div>
@@ -644,6 +656,12 @@ class Review extends Component {
           !this.state.isCardsLoading && (
             <div className="container container--narrow py-4">
               <CardsSection deck={this.state.deck} cards={this.state.cards} />
+            </div>
+          )}
+        {activeTab === TABS.SETTINGS &&
+          !this.state.isDeckLoading && (
+            <div className="container container--narrow py-4">
+              <SettingsSection deck={this.state.deck} />
             </div>
           )}
       </div>

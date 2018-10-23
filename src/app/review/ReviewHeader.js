@@ -86,7 +86,8 @@ class ReviewHeader extends React.Component {
         {!this.isCollectionPage() && (
           <button
             onClick={this.onTogglePin}
-            className={cx("pin-btn btn btn-sm d-flex align-items-center px-3 py-2 mt-2", {
+            className={cx("btn btn-sm d-flex align-items-center mt-2 px-2", {
+              "btn-secondary": !isPinned,
               "bg-dark text-white": isPinned,
             })}
           >
