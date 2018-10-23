@@ -14,7 +14,7 @@ class MyDecksHome extends Component {
   componentDidMount() {
     const { userId } = this.props.match.params;
     const user = isAuthenticated() ? JSON.parse(cookie.get("user")) : {};
-    if (user.id !== userId) {
+    if (user && user.id !== userId) {
       this.setState({ isRedirect: true });
     } else {
       this.fetchDecksForUser(userId);
@@ -34,13 +34,14 @@ class MyDecksHome extends Component {
     api
       .fetchStudyProgress()
       .then(response => this.setState({ studyProgress: response.data }))
-      .catch(this.handleError);
+      .catch(error => console.error(error));
   };
 
   fetchPinnedDecks = () => {
-    api.fetchPinnedDecks().then(({ data }) => {
-      this.setState({ pinnedDecks: data });
-    });
+    api
+      .fetchPinnedDecks()
+      .then(({ data }) => this.setState({ pinnedDecks: data }))
+      .catch(error => console.error(error));
   };
 
   onTogglePin = (event, deck) => {
@@ -51,7 +52,7 @@ class MyDecksHome extends Component {
     api
       .togglePinnedDeck(deck.id, isPinned)
       .then(response => this.setState({ pinnedDecks: response.data }))
-      .catch(this.handleError);
+      .catch(error => console.error(error));
   };
 
   isPinned = id => this.state.pinnedDecks.find(el => el.id === id);
