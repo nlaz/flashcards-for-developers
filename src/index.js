@@ -8,6 +8,7 @@ import mixpanel from "mixpanel-browser";
 import MixpanelProvider from "react-mixpanel";
 import { StripeProvider } from "react-stripe-elements";
 
+import "primer-product/build/build.css";
 import "primer-markdown/build/build.css";
 import "rc-tooltip/assets/bootstrap.css";
 

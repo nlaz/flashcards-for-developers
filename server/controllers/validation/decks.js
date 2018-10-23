@@ -6,8 +6,19 @@ module.exports = {
     collection: Joi.objectId(),
     ids: Joi.string(),
   },
+  createDeck: {
+    name: Joi.string().required(),
+    description: Joi.string().allow(""),
+  },
   getDeckParams: {
     deckId: Joi.objectId().required(),
   },
   getDecksIds: Joi.array().items(Joi.objectId()),
+  updateDeck: {
+    name: Joi.string().required(),
+    description: Joi.string().allow(""),
+  },
+  deleteDeck: {
+    deckId: Joi.objectId().required(),
+  },
 };

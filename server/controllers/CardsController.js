@@ -31,3 +31,29 @@ module.exports.getCards = async (req, res, next) => {
     next(error);
   }
 };
+
+module.exports.createCard = async (req, res, next) => {
+  try {
+    const { front, back, deck } = req.body;
+    await Joi.validate(req.body, cardSchemas.createCard);
+
+    const card = await Card.create({ deck, back, front, author: req.user });
+
+    res.send(card);
+  } catch (error) {
+    next(error);
+  }
+};
+
+module.exports.deleteCard = async (req, res, next) => {
+  try {
+    const { cardId } = req.params;
+    await Joi.validate(req.params, cardSchemas.deleteCard);
+
+    await Card.deleteOne({ _id: cardId, author: req.user });
+
+    res.send({ message: "Success! Card removed." });
+  } catch (error) {
+    next(error);
+  }
+};

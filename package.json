@@ -28,6 +28,7 @@
     "octicons": "^8.1.0",
     "pluralize": "^7.0.0",
     "primer-markdown": "^3.7.7",
+    "primer-product": "^5.6.7",
     "query-string": "^6.2.0",
     "rc-tooltip": "^3.7.2",
     "react": "^16.4.1",

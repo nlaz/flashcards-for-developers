@@ -96,6 +96,11 @@ class DeckItem extends Component {
               className="position-absolute d-flex align-items-center"
               style={{ bottom: "16px", right: "18px" }}
             >
+              {this.props.deck.status === "private" && (
+                <div className="text-muted small ml-1 p-0">
+                  <div className="text-uppercase p-1">Private</div>
+                </div>
+              )}
               {this.props.deck.new && (
                 <div className="badge badge-primary ml-1 p-0">
                   <div className="text-uppercase p-1">New</div>
