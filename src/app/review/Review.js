@@ -52,9 +52,9 @@ const ReportLink = ({ content }) => (
     target="_blank"
     rel="noopener noreferrer"
     className="btn btn-reset position-absolute d-flex align-items-center"
-    style={{ right: 0, bottom: 0, fill: "#cdcdcd", color: "#cdcdcd" }}
+    style={{ right: 0, bottom: 0 }}
   >
-    <small>{content}</small>
+    <small className="text-muted">{content}</small>
   </a>
 );
 
@@ -440,7 +440,7 @@ class Review extends Component {
   isDeckOwner = () => {
     const { deck } = this.state;
     const user = isAuthenticated() ? JSON.parse(cookie.get("user")) : {};
-    return deck.author === user.id;
+    return isAuthenticated() && deck.author === user.id;
   };
   isCorrectAnswer = (option, card) => {
     if (this.isSelfGraded()) {

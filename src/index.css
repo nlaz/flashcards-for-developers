@@ -191,13 +191,13 @@ a[disabled] {
 }
 
 .progress-current {
-  width: 14px !important;
-  height: 14px !important;
+  width: 13px !important;
+  height: 13px !important;
 }
 
 .progress-index {
-  width: 10px;
-  height: 10px;
+  width: 9px;
+  height: 9px;
 }
 
 @media (max-width: 480px) {
