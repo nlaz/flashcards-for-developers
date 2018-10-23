@@ -89,3 +89,13 @@ module.exports.deleteDeck = async (req, res, next) => {
     next(error);
   }
 };
+
+module.exports.getDecksForUser = async (req, res, next) => {
+  try {
+    const decks = await Deck.find({ author: req.user });
+
+    res.send(decks);
+  } catch (error) {
+    next(error);
+  }
+};

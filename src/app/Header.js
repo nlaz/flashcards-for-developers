@@ -9,8 +9,13 @@ import isProMember from "./utils/isProMember";
 import Octicon from "../components/Octicon";
 import LoginModal from "./auth/LoginModal";
 
-const LogoutTooltip = () => (
+const LogoutTooltip = ({ user }) => (
   <div className="tooltip-content">
+    <div className="tooltip-item">
+      <Link className="text-secondary" to={`/${user.id}/decks`}>
+        My Decks
+      </Link>
+    </div>
     <div className="tooltip-item">
       <Link className="text-secondary" to="/collections/pinned">
         My Pinned Decks
@@ -108,7 +113,7 @@ class Header extends Component {
                 <Tooltip
                   placement="bottomRight"
                   trigger={["click"]}
-                  overlay={<LogoutTooltip />}
+                  overlay={<LogoutTooltip user={user} />}
                   id="header-logout"
                 >
                   <div className="position-relative">

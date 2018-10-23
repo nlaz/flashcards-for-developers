@@ -32,6 +32,11 @@ export const fetchDecks = collectionId => {
   return axios.get(`/api/decks${params}`, config);
 };
 
+export const fetchDecksForUser = () => {
+  const config = { headers: { Authorization: cookie.get("token") } };
+  return axios.get("/users/decks", config);
+};
+
 export const fetchDecksById = deckIds => {
   const config = { headers: { Authorization: cookie.get("token") } };
   const params = deckIds.length > 0 ? `?${queryString.stringify({ ids: deckIds.join(",") })}` : "";
