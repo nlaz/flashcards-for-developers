@@ -3,10 +3,13 @@ import cx from "classnames";
 import marked from "marked";
 import moment from "moment";
 import PropTypes from "prop-types";
+import cookie from "js-cookie";
+
 import config from "../../config";
 import isAuthenticated from "../utils/isAuthenticated";
 import UpgradeModal from "../auth/UpgradeModal";
 import isProMember from "../utils/isProMember";
+
 import * as leitner from "../../spaced/leitner";
 import * as api from "../apiActions";
 import * as localStorage from "../utils/localStorage";
@@ -115,7 +118,9 @@ class Review extends Component {
   }
 
   onTabSelect = value => {
-    this.props.this.setState({ activeTab: value });
+    const { deckId } = this.props.match.params;
+    this.props.history.push(`/decks/${deckId}/${value}`);
+    this.setState({ activeTab: value });
   };
 
   onKeyUp = e => {
@@ -429,6 +434,12 @@ class Review extends Component {
   isStageFinished = index =>
     (index || this.state.index) >= Math.min(this.getPageEnd(), this.state.cards.length);
   isDeckCompleted = index => (index || this.state.index) > this.state.cards.length - 1;
+  isDeckOwner = () => {
+    const { deck } = this.state;
+    const user = isAuthenticated() ? JSON.parse(cookie.get("user")) : {};
+    console.log("isDeckOwner", user, deck);
+    return deck.author === user.id;
+  };
   isCorrectAnswer = (option, card) => {
     if (this.isSelfGraded()) {
       return option === SELF_GRADE_CORRECT;
@@ -445,6 +456,7 @@ class Review extends Component {
   render() {
     const { deck, options, index, activeTab, isDeckLoading, isCardsLoading, isError } = this.state;
 
+    console.log(this.props);
     if (isDeckLoading) {
       return (
         <div className="container container--narrow px-0">
@@ -495,12 +507,14 @@ class Review extends Component {
               <Tab onClick={() => this.onTabSelect(TABS.CARDS)} active={activeTab === TABS.CARDS}>
                 Cards ({this.state.cards.length})
               </Tab>
-              <Tab
-                onClick={() => this.onTabSelect(TABS.SETTINGS)}
-                active={activeTab === TABS.SETTINGS}
-              >
-                Settings
-              </Tab>
+              {this.isDeckOwner() && (
+                <Tab
+                  onClick={() => this.onTabSelect(TABS.SETTINGS)}
+                  active={activeTab === TABS.SETTINGS}
+                >
+                  Settings
+                </Tab>
+              )}
             </div>
           </div>
         </div>
@@ -659,6 +673,7 @@ class Review extends Component {
             </div>
           )}
         {activeTab === TABS.SETTINGS &&
+          this.isDeckOwner() &&
           !this.state.isDeckLoading && (
             <div className="container container--narrow py-4">
               <SettingsSection deck={this.state.deck} />

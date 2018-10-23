@@ -43,13 +43,13 @@ class CardsSection extends Component {
       .catch(error => console.log(error));
   };
 
-  isOwner = card => {
-    const user = isAuthenticated() ? JSON.parse(cookie.get("user")) : {};
-    return card.author === user.id;
-  };
-
   render() {
     const { cards } = this.state;
+    const { deck } = this.props;
+
+    const user = isAuthenticated() ? JSON.parse(cookie.get("user")) : {};
+    const isOwner = deck.author === user.id;
+
     return (
       <div className="my-2">
         <AddCardsModal
@@ -90,10 +90,7 @@ class CardsSection extends Component {
                       this.tooltip = c;
                     }}
                     overlay={
-                      <CardTooltip
-                        isOwner={this.isOwner(card)}
-                        onDelete={() => this.onDeleteCard(card.id)}
-                      />
+                      <CardTooltip isOwner={isOwner} onDelete={() => this.onDeleteCard(card.id)} />
                     }
                     id="tooltip-white"
                   >

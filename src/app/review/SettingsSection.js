@@ -10,13 +10,14 @@ class SettingsSection extends Component {
 
   render() {
     const { name, description } = this.state;
+
     return (
       <div className="py-2">
         <form onSubmit={this.onSubmit} className="border rounded p-3 mb-3">
           <h2 className="m-0" style={{ fontSize: "1.25em" }}>
             Settings
           </h2>
-          <p className="text-muted p-0">Update information and settings for this deck.</p>
+          <p className="text-muted small p-0">Update information and settings for this deck.</p>
           <div className="form-group mb-4">
             <label className="small font-weight-bold mb-1">Title</label>
             <input
