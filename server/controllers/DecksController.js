@@ -54,3 +54,22 @@ module.exports.getDeck = async (req, res, next) => {
     next(error);
   }
 };
+
+module.exports.updateDeck = async (req, res, next) => {
+  try {
+    const { name, description } = req.body;
+    const { deckId } = req.params;
+
+    await Joi.validate(req.body, deckSchemas.updateDeck);
+
+    const deck = await Deck.findOneAndUpdate(
+      { _id: deckId, author: req.user },
+      { $set: { name, description } },
+      { new: true },
+    );
+
+    res.send(deck);
+  } catch (error) {
+    next(error);
+  }
+};

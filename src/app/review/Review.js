@@ -365,6 +365,8 @@ class Review extends Component {
     }
   };
 
+  onUpdateDeck = deck => this.setState({ deck: deck });
+
   setStudyProgress = (card, isCorrect) => {
     const deckId = card.deck.id || card.deck;
     const cardObj = this.state.cardProgress.find(el => el.card === card.id) || {};
@@ -437,7 +439,6 @@ class Review extends Component {
   isDeckOwner = () => {
     const { deck } = this.state;
     const user = isAuthenticated() ? JSON.parse(cookie.get("user")) : {};
-    console.log("isDeckOwner", user, deck);
     return deck.author === user.id;
   };
   isCorrectAnswer = (option, card) => {
@@ -456,7 +457,6 @@ class Review extends Component {
   render() {
     const { deck, options, index, activeTab, isDeckLoading, isCardsLoading, isError } = this.state;
 
-    console.log(this.props);
     if (isDeckLoading) {
       return (
         <div className="container container--narrow px-0">
@@ -676,7 +676,7 @@ class Review extends Component {
           this.isDeckOwner() &&
           !this.state.isDeckLoading && (
             <div className="container container--narrow py-4">
-              <SettingsSection deck={this.state.deck} />
+              <SettingsSection deck={this.state.deck} onUpdateDeck={this.onUpdateDeck} />
             </div>
           )}
       </div>

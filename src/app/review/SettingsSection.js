@@ -1,11 +1,21 @@
 import React, { Component } from "react";
+
 import Octicon from "../../components/Octicon";
+import * as api from "../../app/apiActions";
 
 class SettingsSection extends Component {
   state = { name: this.props.deck.name, description: this.props.deck.description };
 
+  onChange = e => this.setState({ [e.target.name]: e.target.value });
+
   onSubmit = e => {
     e.preventDefault();
+    const { deck } = this.props;
+    const { name, description } = this.state;
+    api
+      .updateDeck({ deckId: deck.id, name, description })
+      .then(response => this.props.onUpdateDeck(response.data))
+      .catch(error => console.error(error));
   };
 
   render() {

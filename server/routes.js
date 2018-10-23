@@ -15,6 +15,7 @@ router.get("/hello", (req, res) => res.send({ message: "Hello world!" }));
 router.get("/api/decks", DecksController.getDecks);
 router.post("/api/decks", isAuthenticated, DecksController.createDeck);
 router.get("/api/decks/:deckId", DecksController.getDeck);
+router.put("/api/decks/:deckId", isAuthenticated, DecksController.updateDeck);
 
 router.get("/api/collections", CollectionsController.getCollections);
 router.get("/api/collections/:collectionId", CollectionsController.getCollection);

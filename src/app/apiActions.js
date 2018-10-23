@@ -58,6 +58,11 @@ export const fetchDeck = id => {
   return axios.get(`/api/decks/${id}`, config);
 };
 
+export const updateDeck = ({ deckId, name, description }) => {
+  const config = { headers: { Authorization: cookie.get("token") } };
+  return axios.put(`/api/decks/${deckId}`, { name, description }, config);
+};
+
 export const fetchCards = ({ deck, collection, deckIds }) => {
   const config = { headers: { Authorization: cookie.get("token") } };
   const params = queryString.stringify({ deck, collection, deckIds });
