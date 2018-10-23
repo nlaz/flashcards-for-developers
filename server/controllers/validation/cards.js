@@ -10,7 +10,7 @@ module.exports = {
   createCard: {
     deck: Joi.objectId().required(),
     front: Joi.string(),
-    back: Joi.string(),
+    back: Joi.string().allow(""),
   },
   deleteCard: {
     cardId: Joi.objectId().required(),
