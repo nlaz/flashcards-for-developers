@@ -12,4 +12,7 @@ module.exports = {
     front: Joi.string(),
     back: Joi.string(),
   },
+  deleteCard: {
+    cardId: Joi.objectId().required(),
+  },
 };

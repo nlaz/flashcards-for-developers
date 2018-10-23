@@ -33,8 +33,10 @@ class AddCardsModal extends Component {
   handleSuccess = response => {
     if (this.state.toggleOption) {
       this.setState({ front: "", back: "", addedCount: this.state.addedCount + 1 });
+      this.props.onAddCard(response.data);
     } else {
       this.setState({ front: "", back: "" });
+      this.props.onAddCard(response.data);
       this.props.onClose();
     }
   };

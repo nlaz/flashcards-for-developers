@@ -21,6 +21,7 @@ router.get("/api/collections/:collectionId", CollectionsController.getCollection
 
 router.get("/api/cards", getUser, CardsController.getCards);
 router.post("/api/cards", isAuthenticated, CardsController.createCard);
+router.delete("/api/cards/:cardId", isAuthenticated, CardsController.deleteCard);
 
 router.post("/auth/github/login", UsersController.getGithubUser);
 router.post("/auth/github/register", UsersController.createGithubUser);

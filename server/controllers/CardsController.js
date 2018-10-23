@@ -37,9 +37,24 @@ module.exports.createCard = async (req, res, next) => {
     const { front, back, deck } = req.body;
     await Joi.validate(req.body, cardSchemas.createCard);
 
-    const card = await Card.create({ deck, back, front });
+    const card = await Card.create({ deck, back, front, author: req.user });
 
     res.send(card);
+  } catch (error) {
+    next(error);
+  }
+};
+
+module.exports.deleteCard = async (req, res, next) => {
+  try {
+    const { cardId } = req.params;
+    await Joi.validate(req.params, cardSchemas.deleteCard);
+
+    console.log(cardId, req.user);
+    const card = await Card.deleteOne({ _id: cardId, author: req.user });
+
+    console.log("✅", card);
+    res.send({ message: "Success! Card removed.", card: card });
   } catch (error) {
     next(error);
   }

@@ -1,24 +1,62 @@
 import React, { Component } from "react";
 import marked from "marked";
+import cookie from "js-cookie";
+import Tooltip from "rc-tooltip";
 
 import Octicon from "../../components/Octicon";
 import AddCardsModal from "./AddCardsModal";
+import * as api from "../../app/apiActions";
+import isAuthenticated from "../../app/utils/isAuthenticated";
+import config from "../../config";
+
+const CardTooltip = ({ isOwner, onDelete }) => (
+  <div style={{ maxWidth: "100px" }}>
+    {isOwner && (
+      <button onClick={onDelete} className="text-left btn btn-reset btn-sm w-100">
+        Delete Card
+      </button>
+    )}
+    <a
+      href={config.airtableReportUrl}
+      target="_blank"
+      rel="noopener noreferrer"
+      className="text-left text-black btn btn-sm btn-reset w-100"
+    >
+      Report Card
+    </a>
+  </div>
+);
 
 class CardsSection extends Component {
-  state = { showModal: false };
+  state = { showModal: false, cards: this.props.cards };
 
   onOpenModal = () => this.setState({ showModal: true });
 
   onCloseModal = () => this.setState({ showModal: false });
 
+  onAddCard = card => this.setState({ cards: [...this.state.cards, card] });
+
+  onDeleteCard = cardId => {
+    api
+      .deleteCard(cardId)
+      .then(response => this.setState({ cards: this.state.cards.filter(el => el.id !== cardId) }))
+      .catch(error => console.log(error));
+  };
+
+  isOwner = card => {
+    const user = isAuthenticated() ? JSON.parse(cookie.get("user")) : {};
+    return card.author === user.id;
+  };
+
   render() {
-    const { cards } = this.props;
+    const { cards } = this.state;
     return (
       <div className="my-2">
         <AddCardsModal
           deck={this.props.deck}
           isOpen={this.state.showModal}
           onClose={this.onCloseModal}
+          onAddCard={this.onAddCard}
         />
         <div className="text-right">
           <button onClick={this.onOpenModal} className="btn btn-success btn-sm text-white">
@@ -45,7 +83,24 @@ class CardsSection extends Component {
                   </div>
                 </div>
                 <div className="ml-2">
-                  <Octicon name="kebab-horizontal" />
+                  <Tooltip
+                    placement="bottomRight"
+                    trigger={["click"]}
+                    ref={c => {
+                      this.tooltip = c;
+                    }}
+                    overlay={
+                      <CardTooltip
+                        isOwner={this.isOwner(card)}
+                        onDelete={() => this.onDeleteCard(card.id)}
+                      />
+                    }
+                    id="tooltip-white"
+                  >
+                    <button className="btn btn-sm btn-reset">
+                      <Octicon name="kebab-horizontal" className="d-flex" />
+                    </button>
+                  </Tooltip>
                 </div>
               </div>
             ))}

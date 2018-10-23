@@ -206,6 +206,9 @@ a[disabled] {
   }
 }
 
+.rc-tooltip {
+  opacity: 1;
+}
 .rc-tooltip-content {
   max-width: 175px;
 }
@@ -221,12 +224,16 @@ a[disabled] {
 }
 
 #header-logout {
-  background: white;
+  font-weight: 500;
   text-transform: uppercase;
+  color: #e8e8e8;
+}
+
+#tooltip-white,
+#header-logout {
+  background: white;
   border-radius: 3px;
   padding: 8px 12px;
-  font-weight: 500;
-  color: #e8e8e8;
   border: 1px solid #e8e8e8;
   box-shadow: none;
 }
@@ -436,6 +443,9 @@ a[disabled] {
   font-size: 45px;
   font-weight: bold;
   line-height: 1.15em;
+}
+.text-black {
+  color: black;
 }
 
 .table-row {

@@ -640,11 +640,12 @@ class Review extends Component {
             </div>
           </div>
         )}
-        {activeTab === TABS.CARDS && (
-          <div className="container container--narrow py-4">
-            <CardsSection deck={this.state.deck} cards={this.state.cards} />
-          </div>
-        )}
+        {activeTab === TABS.CARDS &&
+          !this.state.isCardsLoading && (
+            <div className="container container--narrow py-4">
+              <CardsSection deck={this.state.deck} cards={this.state.cards} />
+            </div>
+          )}
       </div>
     );
   }
