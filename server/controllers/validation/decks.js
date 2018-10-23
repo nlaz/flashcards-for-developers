@@ -21,4 +21,7 @@ module.exports = {
   deleteDeck: {
     deckId: Joi.objectId().required(),
   },
+  proUser: Joi.string()
+    .valid("pro_monthly")
+    .required(),
 };

@@ -100,7 +100,7 @@ class Header extends Component {
           <ul className="d-flex align-items-center p-0 m-0">
             {authenticated
               ? [
-                  <li className="list-inline-item">
+                  <li className="list-inline-item position-relative" key={0}>
                     <Link to="/decks/new">
                       <Octicon
                         className="d-flex align-items-center p-2 add-button"
@@ -110,7 +110,7 @@ class Header extends Component {
                       />
                     </Link>
                   </li>,
-                  <li className="header-login list-inline-item ml-1">
+                  <li className="header-login list-inline-item ml-1" key={1}>
                     <Tooltip
                       placement="bottomRight"
                       trigger={["click"]}

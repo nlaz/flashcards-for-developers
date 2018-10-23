@@ -2,6 +2,7 @@ const Joi = require("joi");
 
 const Deck = require("../models/Deck");
 const Card = require("../models/Card");
+const User = require("../models/User");
 const Collection = require("../models/Collection");
 const deckSchemas = require("./validation/decks");
 
@@ -32,7 +33,10 @@ module.exports.getDecks = async (req, res, next) => {
 module.exports.createDeck = async (req, res, next) => {
   try {
     const { name, description } = req.body;
+    const user = await User.findOne({ _id: req.user });
+
     await Joi.validate(req.body, deckSchemas.createDeck);
+    await Joi.validate(user.user_plan, deckSchemas.proUser);
 
     const deck = await Deck.create({ name, description, author: req.user, status: "private" });
 

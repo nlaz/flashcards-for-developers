@@ -3,6 +3,7 @@ import { Redirect } from "react-router-dom";
 
 import * as api from "../apiActions";
 import Octicon from "../../components/Octicon";
+import isProMember from "../utils/isProMember";
 
 class DecksNew extends Component {
   state = { name: "", description: "", deck: {}, isRedirect: false };
@@ -13,10 +14,12 @@ class DecksNew extends Component {
     e.preventDefault();
     const { name, description } = this.state;
 
-    api
-      .createDeck({ name, description })
-      .then(response => this.setState({ isRedirect: true, deck: response.data }))
-      .catch(error => console.log(error));
+    if (isProMember()) {
+      api
+        .createDeck({ name, description })
+        .then(response => this.setState({ isRedirect: true, deck: response.data }))
+        .catch(error => console.log(error));
+    }
   };
 
   render() {
@@ -28,6 +31,15 @@ class DecksNew extends Component {
 
     return (
       <div>
+        {!isProMember() && (
+          <div className="alert alert-info text-center rounded-0">
+            <div className="container container--full px-4">
+              <i className="fas fa-lock mr-2" />
+              Upgrade your account to create your own decks.
+            </div>
+          </div>
+        )}
+
         <div className="container container--narrow py-5">
           <div className="row">
             <div className="col-lg-8 offset-lg-2">
@@ -76,7 +88,11 @@ class DecksNew extends Component {
                     </small>
                   </div>
                 </div>
-                <button className="btn btn-dark btn-sm font-weight-medium py-2 w-100" type="submit">
+                <button
+                  className="btn btn-dark btn-sm font-weight-medium py-2 w-100"
+                  type="submit"
+                  disabled={!isProMember()}
+                >
                   Create Deck
                 </button>
               </form>
