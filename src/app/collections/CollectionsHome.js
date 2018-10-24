@@ -1,5 +1,5 @@
 import React from "react";
-import PropTypes from 'prop-types';
+import PropTypes from "prop-types";
 import * as api from "../apiActions";
 import CollectionItem from "./CollectionItem";
 
@@ -7,14 +7,15 @@ class CollectionsHome extends React.Component {
   state = { collections: [] };
 
   componentDidMount() {
-    this.context.mixpanel.track('Collections Page.');
+    this.context.mixpanel.track("Collections Page.");
     this.fetchCollections();
   }
 
+  sortCollections = (collections = []) => [...collections].sort((a, b) => a.order - b.order);
   fetchCollections = () => {
     api
       .fetchCollections()
-      .then(response => this.setState({ collections: response.data }))
+      .then(({ data }) => this.setState({ collections: this.sortCollections(data) }))
       .catch(this.handleError);
   };
 
@@ -36,6 +37,6 @@ class CollectionsHome extends React.Component {
 }
 
 CollectionsHome.contextTypes = {
-  mixpanel: PropTypes.object.isRequired
+  mixpanel: PropTypes.object.isRequired,
 };
 export default CollectionsHome;

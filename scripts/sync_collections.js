@@ -11,23 +11,24 @@ require("../database/index")();
 
 mongoose.set("useFindAndModify", false);
 
-const getCollectionFromRecord = record => ({
+const getCollectionFromRecord = (record, index) => ({
   airtableId: record.id,
   name: record.get("Name"),
   description: record.get("Description"),
   airtableDecks: record.get("Decks"),
   emoji: record.get("Emoji"),
   color: record.get("Color"),
+  order: index,
 });
 
 // Fetches 'Collections' records from Airtable
 const fetchCollections = async () => {
   const results = [];
   await base("Categories")
-    .select()
+    .select({ view: "viwREgUwFiF0UnRRI" })
     .eachPage((records, fetchNextPage) => {
-      records.forEach(record => {
-        results.push(getCollectionFromRecord(record));
+      records.forEach((record, index) => {
+        results.push(getCollectionFromRecord(record, index));
       });
       fetchNextPage();
     });

@@ -8,7 +8,7 @@ const Footer = () => (
     <div className="container container--full d-flex align-items-center justify-content-between p-4">
       <div className="text-secondary d-flex flex-column">
         <small className="font-weight-medium">Flashcards For Developers © 2018</small>
-        <small>2058 cards studied 77,058 times</small>
+        <small>2332 cards studied 80,045 times</small>
       </div>
 
       <ul className="list-inline mb-0 text-center text-md-right">

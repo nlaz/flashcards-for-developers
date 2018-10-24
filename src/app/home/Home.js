@@ -1,7 +1,6 @@
 import React, { Component } from "react";
 import { Link } from "react-router-dom";
 
-import config from "../../config";
 import isAuthenticated from "../utils/isAuthenticated";
 import * as api from "../apiActions";
 import * as analytics from "../../components/GoogleAnalytics";
@@ -108,12 +107,12 @@ class Decks extends Component {
       .then(({ data }) => this.setState({ newestRow: data.pop() }));
   };
 
+  sortCollections = (collections = []) => [...collections].sort((a, b) => a.order - b.order);
+
   fetchCollections = () => {
     api
       .fetchCollections()
-      .then(({ data }) => {
-        this.setState({ collections: data });
-      })
+      .then(({ data }) => this.setState({ collections: this.sortCollections(data) }))
       .catch(this.handleError);
   };
 
@@ -209,7 +208,7 @@ class Decks extends Component {
         </div>
 
         {collections && (
-          <div className="container container--full">
+          <div className="container container--full px-4">
             <div className="mt-5">
               <div className="d-flex justify-content-between align-items-end mb-2 mx-1">
                 <h6 className="text-uppercase m-0">Popular Collections</h6>
@@ -217,7 +216,7 @@ class Decks extends Component {
                   See all
                 </Link>
               </div>
-              <div className="px-0 px-lg-4 mx-0 mx-lg-auto">
+              <div className="px-0  mx-0 mx-lg-auto">
                 <div className="row pt-1">
                   {collections.slice(0, 4).map(item => (
                     <CollectionItem key={item.id} collection={item} />
@@ -301,20 +300,8 @@ class Decks extends Component {
               </div>
             )}
 
-          <div className="row d-flex justify-content-center mt-2 mb-5">
-            <a
-              className="d-flex align-items-center btn btn-outline-dark px-3"
-              href={config.airtableSuggestionsUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              style={{ borderRadius: "999px" }}
-            >
-              <i className="fa fa-plus mr-2" />
-              <span>Suggest a deck</span>
-            </a>
-          </div>
           <div className="row">
-            <div className="col-md-10 offset-md-1 col-lg-8 offset-lg-2 mt-5">
+            <div className="col-md-10 offset-md-1 col-lg-8 offset-lg-2 my-4">
               <FeedbackForm />
             </div>
           </div>
