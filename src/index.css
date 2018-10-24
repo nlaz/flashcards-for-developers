@@ -287,6 +287,13 @@ a[disabled] {
   }
 }
 
+@media (max-width: 992px) {
+  .deck-row .deck-item:nth-child(4),
+  .collection-row .collection-item:nth-child(4) {
+    display: none !important;
+  }
+}
+
 .rc-tooltip-content .tooltip-item {
   padding-bottom: 6px;
   padding-top: 6px;
