@@ -6,15 +6,13 @@ module.exports = {
     code: Joi.string().required(),
   },
   createGithubUser: {
-    email: Joi.string().required(),
-    name: Joi.string().required(),
-    avatar_url: Joi.string(),
-    github_id: Joi.number().required(),
-  },
-  subscribeUser: {
     email: Joi.string()
       .email()
       .required(),
+    name: Joi.string().required(),
+    avatar_url: Joi.string(),
+    github_id: Joi.number().required(),
+    email_notification: Joi.boolean(),
   },
   addPinnedDecks: {
     decks: Joi.array()

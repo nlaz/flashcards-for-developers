@@ -62,16 +62,28 @@ module.exports.getGithubUser = async (req, res, next) => {
 
 module.exports.createGithubUser = async (req, res, next) => {
   try {
-    const { email, name, avatar_url, github_id } = req.body;
+    const { email, name, avatar_url, github_id, email_notification } = req.body;
 
     await Joi.validate(req.body, userSchemas.createGithubUser);
 
-    const user = await User.create({ email, name, avatar_url, github_id });
+    const user = await User.create({ email, name, avatar_url, github_id, email_notification });
 
     const token = jwt.sign(
       { id: user.id, email: user.email, name: user.name },
       config.sessionSecret,
     );
+
+    // Subscribe user to membership list
+    if (email_notification) {
+      const route = `${MAILCHIMP_ROUTE}/3.0/lists/${MEMBERSHIP_LIST}/members/`;
+      const auth = { username: "mailchimp", password: config.mailchimpApiKey };
+      const query = { email_address: email, status: "subscribed" };
+      try {
+        await axios.post(route, query, { auth });
+      } catch (error) {
+        console.log("❌ Email list - ", error.message);
+      }
+    }
 
     res.set("Authorization", `Bearer ${token}`);
     res.send(user);
