@@ -191,11 +191,11 @@ class Decks extends Component {
                       See all
                     </Link>
                   </div>
-                  <div className="row">
+                  <div className="deck-row row">
                     {pinnedDecks.slice(0, 4).map(item => (
                       <DeckItem
-                        key={item.id}
                         deck={item}
+                        key={item.id}
                         isPinned={this.isPinned(item.id)}
                         deckProgress={this.getDeckProgress(item.id)}
                         onTogglePin={this.onTogglePin}
@@ -217,7 +217,7 @@ class Decks extends Component {
                 </Link>
               </div>
               <div className="px-0  mx-0 mx-lg-auto">
-                <div className="row pt-1">
+                <div className="collection-row row pt-1">
                   {collections.slice(0, 4).map(item => (
                     <CollectionItem key={item.id} collection={item} />
                   ))}
@@ -235,7 +235,7 @@ class Decks extends Component {
                   <h6 className="text-uppercase m-0">Featured Decks</h6>
                 </div>
                 {featuredRow.decks.length > 0 && (
-                  <div className="row">
+                  <div className="deck-row row">
                     {featuredRow.decks.slice(0, 4).map(deck => (
                       <DeckItem
                         deck={deck}
@@ -260,7 +260,7 @@ class Decks extends Component {
                   </Link>
                 </div>
                 {trendingRow.decks.length > 0 && (
-                  <div className="row">
+                  <div className="deck-row row">
                     {trendingRow.decks.slice(0, 4).map(deck => (
                       <DeckItem
                         deck={deck}
@@ -285,7 +285,7 @@ class Decks extends Component {
                   </Link>
                 </div>
                 {newestRow.decks.length > 0 && (
-                  <div className="row">
+                  <div className="deck-row row">
                     {newestRow.decks.slice(0, 4).map(deck => (
                       <DeckItem
                         deck={deck}

@@ -16,12 +16,12 @@ const ERRORS = { REQUIRED: "Required", INVALID: "Invalid" };
 
 class SignupFormModal extends Component {
   state = {
-    profile: { email: "", name: "" },
+    profile: { email: "", name: "", email_notification: true },
     errors: { email: undefined, name: undefined },
   };
 
   componentDidMount() {
-    this.setState({ profile: { ...this.props.profile } });
+    this.setState({ profile: { ...this.props.profile, email_notification: true } });
   }
 
   validateEmail = email => {
@@ -36,6 +36,9 @@ class SignupFormModal extends Component {
 
   onChange = e =>
     this.setState({ profile: { ...this.state.profile, [e.target.name]: e.target.value } });
+
+  onToggle = field =>
+    this.setState(({ profile }) => ({ profile: { ...profile, [field]: !profile[field] } }));
 
   onSubmit = e => {
     e.preventDefault();
@@ -134,7 +137,7 @@ class SignupFormModal extends Component {
                   value={profile.name || ""}
                 />
               </div>
-              <div className="form-group">
+              <div className="form-group mb-2">
                 <div className="d-flex justify-content-between align-items-center mb-1">
                   <label className="small font-weight-bold m-0  " style={{ opacity: 0.85 }}>
                     Enter your email address
@@ -153,6 +156,17 @@ class SignupFormModal extends Component {
                   onChange={this.onChange}
                   value={profile.email || ""}
                 />
+              </div>
+              <div className="d-flex align-items-center mb-2">
+                <input
+                  type="checkbox"
+                  name="email_notification"
+                  onChange={() => this.onToggle("email_notification")}
+                  checked={profile.email_notification}
+                />
+                <label className="ml-2 small m-0">
+                  Notify me about upcoming flashcards & news.
+                </label>
               </div>
               <div className="mt-5 pt-5">
                 <button className="btn btn-dark btn-sm font-weight-medium py-2 w-100">

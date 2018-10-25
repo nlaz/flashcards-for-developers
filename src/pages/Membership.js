@@ -64,7 +64,7 @@ class Membership extends React.Component {
                 </p>
               </div>
 
-              <div className="bg-light border border-muted px-4 py-4 rounded m-3 ">
+              <div className="bg-light border border-muted rounded p-4 m-3">
                 <div className="d-flex justify-content-center align-items-center">
                   <div className="text-dark font-weight-bold" style={{ fontSize: "3em" }}>
                     $6
@@ -77,12 +77,17 @@ class Membership extends React.Component {
                   </div>
                 </div>
                 {authenticated ? (
-                  <Link
-                    to="/pages/membership/new"
-                    className="bg-primary text-white btn text-center font-weight-medium py-2 px-5"
-                  >
-                    Upgrade to Pro
-                  </Link>
+                  <div>
+                    <Link
+                      to="/pages/membership/new"
+                      className="bg-primary text-white btn text-center font-weight-medium py-2 px-5 mx-4"
+                    >
+                      Upgrade to Pro
+                    </Link>
+                    <div className="text-center">
+                      <small className="text-muted">30 day free trial, cancel anytime.</small>
+                    </div>
+                  </div>
                 ) : (
                   <div className="text-center" style={{ lineHeight: "1em", maxWidth: "350px" }}>
                     <small className="text-muted">
@@ -209,12 +214,17 @@ class Membership extends React.Component {
                       </div>
                     </div>
                     {authenticated ? (
-                      <Link
-                        to="/pages/membership/new"
-                        className="bg-primary text-white btn text-center font-weight-medium py-2 px-3"
-                      >
-                        Upgrade to Pro
-                      </Link>
+                      <div className="text-center">
+                        <Link
+                          to="/pages/membership/new"
+                          className="bg-primary text-white btn text-center font-weight-medium py-2 px-3 mt-3"
+                        >
+                          Upgrade to Pro
+                        </Link>
+                        <div className="text-center">
+                          <small className="text-muted">30 day free trial, cancel anytime.</small>
+                        </div>
+                      </div>
                     ) : (
                       <div className="text-center" style={{ lineHeight: "1em", maxWidth: "350px" }}>
                         <small className="text-muted">
