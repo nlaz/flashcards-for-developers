@@ -165,7 +165,7 @@ class SignupFormModal extends Component {
                   checked={profile.email_notification}
                 />
                 <label className="ml-2 small m-0">
-                  Let me know about upcoming flashcards & news.
+                  Notify me about upcoming flashcards & news.
                 </label>
               </div>
               <div className="mt-5 pt-5">
