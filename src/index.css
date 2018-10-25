@@ -542,3 +542,6 @@ textarea {
 .btn-secondary:hover {
   color: #24292e;
 }
+.testimonial {
+  background: linear-gradient(0deg, #1c71ec, #4f96fc);
+}

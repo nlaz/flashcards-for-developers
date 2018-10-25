@@ -196,7 +196,7 @@ class Membership extends React.Component {
                   Level up your programming skills for the cost of a lunch per month
                 </h1>
               </div>
-              <div className="col-12">
+              <div className="col-12 mb-5">
                 <div className="bg-white rounded border box-shadow py-3 px-5 mt-3">
                   <div className="d-flex flex-column flex-sm-row justify-content-between align-items-center">
                     <div className="d-flex align-items-center">
@@ -247,9 +247,36 @@ class Membership extends React.Component {
               </div>
             </div>
           </div>
+        </div>
 
+        <div className="testimonial py-5 my-5">
+          <div className="container container--full">
+            <div className="position-relative my-5 mx-auto" style={{ maxWidth: "650px" }}>
+              <i
+                className="position-absolute fas fa-lg fa-quote-left text-white"
+                style={{ left: "-35px", top: 0 }}
+              />
+              <blockquote>
+                <p
+                  className="text-white mb-4 text-shadow"
+                  style={{ fontSize: "1.6em", lineHeight: 1.4, fontWeight: "400", opacity: 1 }}
+                >
+                  My job searching has been going pretty great and a good part of that is due to
+                  gaining confidence answering technical questions from Flashcards for Developers.
+                </p>
+                <p
+                  className="text-white m-0"
+                  style={{ opacity: 0.8, fontSize: "1.15em", fontWeight: "400" }}
+                >
+                  Robert B.
+                </p>
+              </blockquote>
+            </div>
+          </div>
+        </div>
+        <div className="container container--full">
           <div className="row my-5 py-5">
-            <div className="col-12 my-5">
+            <div className="col-12 py-5">
               <div className="text-center text-uppercase text-muted font-weight-medium">
                 Frequently Asked Questions
               </div>
