@@ -2,6 +2,7 @@ const Joi = require("joi");
 
 const User = require("../models/User");
 const Card = require("../models/Card");
+const Deck = require("../models/Deck");
 const Collection = require("../models/Collection");
 const cardSchemas = require("./validation/cards");
 
@@ -36,15 +37,22 @@ module.exports.createCard = async (req, res, next) => {
   try {
     const { front, back, deck } = req.body;
     const user = await User.findOne({ _id: req.user });
+    const { author } = await Deck.findOne({ _id: deck });
 
     await Joi.validate(req.body, cardSchemas.createCard);
     await Joi.validate(user.user_plan, cardSchemas.proUser);
 
-    const card = await Card.create({ deck, back, front, author: req.user });
+    if (String(author) !== String(req.user)) {
+      return res.status(400).json({
+        message: "Invalid action. Must be deck's author to make card.",
+      });
+    }
 
-    res.send(card);
+    const card = await Card.create({ deck, back, front, author });
+
+    return res.send(card);
   } catch (error) {
-    next(error);
+    return next(error);
   }
 };
 

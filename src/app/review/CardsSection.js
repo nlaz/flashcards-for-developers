@@ -58,11 +58,13 @@ class CardsSection extends Component {
           onClose={this.onCloseModal}
           onAddCard={this.onAddCard}
         />
-        <div className="text-right">
-          <button onClick={this.onOpenModal} className="btn btn-success btn-sm text-white">
-            + Add Card
-          </button>
-        </div>
+        {isOwner && (
+          <div className="text-right">
+            <button onClick={this.onOpenModal} className="btn btn-success btn-sm text-white">
+              + Add Card
+            </button>
+          </div>
+        )}
         {cards.length > 0 && (
           <div
             className="cards-section bg-white rounded my-2"
