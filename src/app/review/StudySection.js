@@ -1,0 +1,321 @@
+import React, { Component } from "react";
+import { withRouter } from "react-router-dom";
+import cx from "classnames";
+import marked from "marked";
+
+import config from "../../config";
+
+import StudyToggle from "./StudyToggle";
+import StudyProgress from "./StudyProgress";
+import ReviewResults from "./ReviewResults";
+import DeckFeedback from "./DeckFeedback";
+
+import * as analytics from "../../components/GoogleAnalytics";
+import * as chance from "../utils/chance";
+
+const SELF_GRADE_CORRECT = "I was right";
+const SELF_GRADE_INCORRECT = "I was wrong";
+
+const ReviewType = ({ type }) => (
+  <div
+    className="badge badge-pill badge-light text-secondary position-absolute mr-4"
+    style={{ top: "12px", right: "0" }}
+  >
+    {type}
+  </div>
+);
+
+const ReportLink = ({ content }) => (
+  <a
+    href={config.airtableReportUrl}
+    target="_blank"
+    rel="noopener noreferrer"
+    className="btn btn-reset position-absolute d-flex align-items-center"
+    style={{ right: 0, bottom: 0 }}
+  >
+    <small className="text-muted">{content}</small>
+  </a>
+);
+
+class StudySection extends Component {
+  state = {
+    deck: {},
+    index: 0,
+    correctness: [],
+    isReversed: false,
+  };
+
+  // Lifecycle methods
+  componentWillUnmount() {
+    clearTimeout(this.timeout);
+  }
+
+  // Event listeners
+  onSelectAnswer = answer => {
+    const isSelfGraded = this.isSelfGraded();
+
+    if (isSelfGraded) {
+      this.handleSelfGradedAnswer(answer);
+    } else {
+      this.handleMultipleChoiceAnswer(answer);
+    }
+  };
+
+  onToggleReveal = () => {
+    const { isRevealed, index, cards } = this.state;
+    this.setState({ isRevealed: !isRevealed, options: this.props.getOptions(index, cards) });
+  };
+
+  // Helper methods
+  handleMultipleChoiceAnswer = answer => {
+    const card = this.getCurrentCard();
+    const isCorrect = this.isCorrectAnswer(answer, card);
+    this.setState({ selected: answer });
+
+    this.props.onUpdateProgress(card, isCorrect);
+
+    if (isCorrect) {
+      this.setState({ correctness: [...this.state.correctness, isCorrect] });
+      this.context.mixpanel.track("Reviews Card.");
+      analytics.logReviewEvent(card.id);
+      this.timeout = setTimeout(() => this.handleCorrectAnswer(), 300);
+    } else {
+      this.handleIncorrectAnswer(card);
+    }
+  };
+
+  handleSelfGradedAnswer = answer => {
+    if (!this.state.isRevealed) {
+      return;
+    }
+
+    const isCorrect = answer === SELF_GRADE_CORRECT;
+    const card = this.getCurrentCard();
+    analytics.logReviewEvent(card.id);
+
+    this.props.onUpdateProgress(card, isCorrect);
+
+    this.setState({ correctness: [...this.state.correctness, isCorrect] });
+
+    if (!isCorrect) {
+      const numCorrect = this.state.numCorrect - 1;
+      const numIncorrect = this.state.numIncorrect + 1;
+      this.setState({ numCorrect, numIncorrect });
+    }
+
+    this.setState({ selected: answer });
+    this.timeout = setTimeout(() => this.handleCorrectAnswer(), 300);
+  };
+
+  handleCorrectAnswer = () => {
+    const { cards } = this.props;
+    const index = Math.min(this.state.index + 1, cards.length);
+
+    if (this.isStageFinished(index)) {
+      this.logReviewEvent(index);
+      this.setStudySession();
+    }
+
+    this.setState({
+      index,
+      selected: {},
+      isRevealed: false,
+      options: this.props.getOptions(index, cards),
+      isReversed: this.isReversible(this.state.deck) && chance.bool(),
+      numCorrect: this.state.numCorrect + 1,
+    });
+  };
+
+  // State helper methods
+  getCurrentCard = () => this.props.cards[this.state.index] || {};
+  getCardHTML = card => marked(this.state.isReversed ? card.back : card.front);
+  getOptionHTML = option => marked(this.state.isReversed ? option.front : option.back || option);
+  getPageStart = () => Math.max(Math.floor(this.state.page * this.state.pageSize), 0);
+  getPageEnd = () =>
+    Math.min(Math.floor((this.state.page + 1) * this.state.pageSize), this.props.cards.length);
+
+  isCollectionPage = () => this.props.match.path === "/collections/:collectionId/review";
+  isStageFinished = index =>
+    (index || this.state.index) >= Math.min(this.getPageEnd(), this.props.cards.length);
+  isDeckCompleted = index => (index || this.state.index) > this.props.cards.length - 1;
+  isSelected = option =>
+    option.id ? this.state.selected.id === option.id : this.state.selected === option;
+
+  // TODO: MOVE TO OBJECT
+  getDeckType = () => (this.isSelfGraded() ? "Self graded" : "Multiple choice");
+  isReversible = deck => (deck || this.props.deck).type === "Reversible select";
+  isSelfGraded = deck => (deck || this.props.deck).type === "Self graded";
+  isImageSelect = deck => (deck || this.props.deck).type === "Image select";
+  isMultiple = deck => (deck || this.props.deck).type === "Multiple select";
+
+  isCorrectAnswer = (option, card) => {
+    if (this.isSelfGraded()) {
+      return option === SELF_GRADE_CORRECT;
+    } else if (this.isMultiple()) {
+      return option.back === card.back;
+    } else {
+      return option.id === card.id;
+    }
+  };
+
+  render() {
+    const { deck, pageSize, index, isCardsLoading, correctness, isWrong } = this.state;
+    const { cards, options } = this.props;
+
+    const currentCard = this.getCurrentCard();
+    const pageEnd = this.getPageEnd();
+    const pageStart = this.getPageStart();
+    const isStageFinished = this.isStageFinished();
+    const isImageSelect = (currentCard.deck || {}).type
+      ? this.isImageSelect(currentCard.deck)
+      : this.isImageSelect(deck);
+
+    return (
+      <div className="container container--narrow py-4">
+        <div className="flashcard-container row px-3">
+          <div className="d-flex justify-content-between w-100 m-2">
+            <StudyToggle onChange={this.props.onSRSToggle} />
+            <StudyProgress
+              index={index}
+              items={cards}
+              pageSize={pageSize}
+              pageEnd={pageEnd}
+              pageStart={pageStart}
+              isFinished={isStageFinished}
+              correctness={correctness}
+            />
+          </div>
+          <div
+            className={cx(
+              "wrapper col-12 border border-dark rounded mb-4 py-5 d-flex align-items-stretch",
+              {
+                shake: isWrong,
+              },
+            )}
+          >
+            {!isCardsLoading &&
+              Object.keys(currentCard).length > 0 && (
+                <div className="row w-100 mx-0">
+                  {!isStageFinished ? (
+                    <div className="row w-100 mx-0">
+                      <ReviewType type={this.getDeckType()} />
+                      <div className="col-12 col-lg-6 d-flex align-items-center px-1 pb-2">
+                        {isImageSelect ? (
+                          <div className="flashcard-body d-flex flex-column border rounded px-3 py-2 w-100 h-100">
+                            {this.isCollectionPage() && (
+                              <small style={{ opacity: 0.85 }}>{currentCard.deck.name}</small>
+                            )}
+                            <img
+                              className="img-fluid my-2 px-3 mx-auto"
+                              alt=""
+                              src={currentCard.front}
+                            />
+                            {this.state.isRevealed && (
+                              <div
+                                className="markdown-body text-left d-flex align-items-center justify-content-center flex-column mt-3 pt-3"
+                                style={{ borderTop: "1px solid #f5f5f5" }}
+                                dangerouslySetInnerHTML={{
+                                  __html: marked(currentCard.back),
+                                }}
+                              />
+                            )}
+                          </div>
+                        ) : (
+                          <div className="flashcard-body border rounded px-3 py-2 w-100 h-100">
+                            {this.isCollectionPage() && (
+                              <small style={{ opacity: 0.85 }}>{currentCard.deck.name}</small>
+                            )}
+                            <div
+                              className="markdown-body text-left d-flex align-items-center justify-content-center flex-column my-2"
+                              dangerouslySetInnerHTML={{
+                                __html: this.getCardHTML(currentCard),
+                              }}
+                            />
+                            {this.state.isRevealed && (
+                              <div
+                                className="markdown-body text-left d-flex align-items-center justify-content-center flex-column mt-3 pt-3"
+                                style={{ borderTop: "1px solid #f5f5f5" }}
+                                dangerouslySetInnerHTML={{
+                                  __html: marked(currentCard.back),
+                                }}
+                              />
+                            )}
+                          </div>
+                        )}
+                      </div>
+                      <div className="col-12 col-lg-6 d-flex flex-column align-items-stretch px-1 pb-1">
+                        {options.map((option, key) => (
+                          <div
+                            key={option.id || option}
+                            onClick={() => this.onSelectAnswer(option)}
+                            className={cx(
+                              "flashcard-option border rounded d-flex align-items-start p-3 w-100",
+                              {
+                                "flashcard-option--disabled":
+                                  this.isSelfGraded() && !this.state.isRevealed,
+                                "border-success text-success":
+                                  this.isSelected(option) &&
+                                  this.isCorrectAnswer(option, currentCard),
+                                "border-danger text-danger":
+                                  this.isSelected(option) &&
+                                  !this.isCorrectAnswer(option, currentCard),
+                              },
+                            )}
+                          >
+                            <div className="border rounded mr-3 px-2" style={{ fontSize: ".9em" }}>
+                              {key + 1}
+                            </div>
+                            <div
+                              className="markdown-body text-left bg-white w-100"
+                              dangerouslySetInnerHTML={{
+                                __html: this.getOptionHTML(option),
+                              }}
+                            />
+                          </div>
+                        ))}
+                        {this.isSelfGraded() &&
+                          !this.state.isRevealed && (
+                            <button
+                              className="btn btn-reset border rounded"
+                              onClick={this.onToggleReveal}
+                            >
+                              Press space to show answer
+                            </button>
+                          )}
+                      </div>
+                      <ReportLink content="Report a problem" />
+                    </div>
+                  ) : (
+                    <ReviewResults
+                      index={this.state.index}
+                      cards={this.props.cards}
+                      numCorrect={this.state.numCorrect}
+                      numIncorrect={this.state.numIncorrect}
+                      cardProgress={this.props.cardProgress}
+                      onKeepGoing={this.onKeepGoing}
+                      onGoBack={this.onGoBack}
+                    />
+                  )}
+                </div>
+              )}
+            {isCardsLoading && (
+              <div className="text-center w-100">
+                <h6 className="text-center text-secondary">
+                  <i className="fas fa-spinner fa-spin mr-1" />
+                  Loading cards...
+                </h6>
+              </div>
+            )}
+          </div>
+          {!isCardsLoading && (
+            <div className="w-100">
+              <DeckFeedback deck={deck} isCompleted={this.isDeckCompleted()} />
+            </div>
+          )}
+        </div>
+      </div>
+    );
+  }
+}
+
+export default withRouter(StudySection);

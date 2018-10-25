@@ -19,6 +19,7 @@ import * as analytics from "../../components/GoogleAnalytics";
 
 import CardsSection from "./CardsSection";
 import SettingsSection from "./SettingsSection";
+import StudySection from "./StudySection";
 import DeckFeedback from "./DeckFeedback";
 import ReviewHeader from "./ReviewHeader";
 import StudyProgress from "./StudyProgress";
@@ -111,10 +112,6 @@ class Review extends Component {
     if (params.tabName && params.tabName.length > 0) {
       this.setState({ activeTab: params.tabName });
     }
-  }
-
-  componentWillUnmount() {
-    clearTimeout(this.timeout);
   }
 
   onTabSelect = value => {
@@ -519,6 +516,20 @@ class Review extends Component {
             </div>
           </div>
         </div>
+
+        {activeTab === TABS.STUDY && (
+          <div className="container container--narrow py-4">
+            <StudySection
+              deck={deck}
+              cards={this.state.cards}
+              options={options}
+              cardProgress={this.state.cardProgress}
+              getOptions={this.getOptions}
+              onUpdateProgress={this.setStudyProgress}
+              onSRSToggle={this.onSRSToggle}
+            />
+          </div>
+        )}
 
         {activeTab === TABS.STUDY && (
           <div className="container container--narrow py-4">
