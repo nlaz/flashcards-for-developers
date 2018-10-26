@@ -66,8 +66,8 @@ class StudySection extends Component {
 
   // Lifecycle methods
   componentDidMount() {
-    window.addEventListener("keyup", e => this.onKeyUp(e));
-    window.addEventListener("keydown", e => this.onKeyDown(e));
+    window.addEventListener("keyup", this.onKeyUp);
+    window.addEventListener("keydown", this.onKeyDown);
   }
 
   componentDidUpdate(prevProps, prevState) {
@@ -84,8 +84,8 @@ class StudySection extends Component {
   }
 
   componentWillUnmount() {
-    window.removeEventListener("keyup", e => this.onKeyUp(e));
-    window.removeEventListener("keydown", e => this.onKeyDown(e));
+    window.removeEventListener("keyup", this.onKeyUp);
+    window.removeEventListener("keydown", this.onKeyDown);
     clearTimeout(this.timeout);
   }
 
