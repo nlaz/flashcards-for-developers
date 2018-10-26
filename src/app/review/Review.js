@@ -41,6 +41,8 @@ const Tab = ({ active, className, children, onClick }) => (
 );
 
 class Review extends Component {
+  static defaultProps = { match: { params: {} } };
+
   state = {
     deck: {},
     cards: [],
