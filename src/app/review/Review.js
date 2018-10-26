@@ -71,7 +71,10 @@ class Review extends Component {
 
   // Event Listeners
   onUpdateDeck = deck => this.setState({ deck: deck });
+
   onDeleteDeck = () => this.props.history.push("/");
+
+  onAddCard = card => this.setState({ cards: [...this.state.cards, card] });
 
   onTabSelect = value => {
     const { deckId } = this.props.match.params;
@@ -293,7 +296,11 @@ class Review extends Component {
         {activeTab === TABS.CARDS &&
           !this.state.isCardsLoading && (
             <div className="container container--narrow py-4">
-              <CardsSection deck={this.state.deck} cards={this.state.cards} />
+              <CardsSection
+                deck={this.state.deck}
+                cards={this.state.cards}
+                onAddCard={this.onAddCard}
+              />
             </div>
           )}
         {activeTab === TABS.SETTINGS &&

@@ -34,7 +34,10 @@ class CardsSection extends Component {
 
   onCloseModal = () => this.setState({ showModal: false });
 
-  onAddCard = card => this.setState({ cards: [...this.state.cards, card] });
+  onAddCard = card => {
+    this.setState({ cards: [...this.state.cards, card] });
+    this.props.onAddCard(card);
+  };
 
   onDeleteCard = cardId => {
     api
