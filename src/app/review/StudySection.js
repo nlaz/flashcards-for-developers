@@ -249,7 +249,8 @@ class StudySection extends Component {
   isCollectionPage = () => this.props.match.path === "/collections/:collectionId/review";
   isStageFinished = index =>
     (index || this.state.index) >= Math.min(this.getPageEnd(), this.state.cards.length);
-  isDeckCompleted = index => (index || this.state.index) > this.state.cards.length - 1;
+  isDeckCompleted = index =>
+    this.state.cards.length > 0 && (index || this.state.index) > this.state.cards.length - 1;
   isSelected = option =>
     option.id ? this.state.selected.id === option.id : this.state.selected === option;
 
