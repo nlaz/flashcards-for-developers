@@ -7,11 +7,9 @@ import isAuthenticated from "../utils/isAuthenticated";
 import UpgradeModal from "../auth/UpgradeModal";
 import isProMember from "../utils/isProMember";
 
-import * as leitner from "../../spaced/leitner";
 import * as api from "../apiActions";
 import * as localStorage from "../utils/localStorage";
 import * as studyProgress from "../utils/studyProgress";
-import * as chance from "../utils/chance";
 import * as analytics from "../../components/GoogleAnalytics";
 
 import CardsSection from "./CardsSection";
@@ -19,10 +17,6 @@ import SettingsSection from "./SettingsSection";
 import StudySection from "./StudySection";
 import ReviewHeader from "./ReviewHeader";
 
-import "./Review.css";
-
-const SELF_GRADE_CORRECT = "I was right";
-const SELF_GRADE_INCORRECT = "I was wrong";
 const TABS = {
   STUDY: "study",
   CARDS: "cards",
@@ -50,21 +44,11 @@ class Review extends Component {
   state = {
     deck: {},
     cards: [],
-    correctness: [],
     activeTab: TABS.STUDY,
-    options: [],
-    index: 0,
-    isWrong: false,
     isDeckLoading: true,
     isCardsLoading: true,
     isError: false,
-    isReversed: false,
-    isRevealed: false,
-    numCorrect: 0,
-    numIncorrect: 0,
-    selected: {},
     cardProgress: [],
-    page: 0,
   };
 
   // Lifecycle methods
@@ -189,12 +173,8 @@ class Review extends Component {
   };
 
   handleCardsResponse = ({ data }) => {
-    const { index } = this.state;
-    const isSRS = localStorage.getSRSPref();
-    const filteredCards = isSRS ? this.filterExpiredCards(data) : data;
-    const cards = chance.shuffle(filteredCards);
-    const options = this.getOptions(index, cards);
-    this.setState({ cards, options, index: 0, isCardsLoading: false });
+    // const { index } = this.state;
+    this.setState({ cards: data, index: 0, isCardsLoading: false });
   };
 
   setStudyProgress = (card, isCorrect) => {
@@ -228,31 +208,7 @@ class Review extends Component {
     this.setState({ isError: true, isCardsLoading: false, isDeckLoading: false });
   };
 
-  filterExpiredCards = cards => {
-    const { cardProgress = [] } = this.state;
-
-    return cards.filter(card => {
-      const cardObj = cardProgress.find(el => el.card === card.id);
-      return !!cardObj ? leitner.isExpired(cardObj.leitnerBox, cardObj.reviewedAt) : true;
-    });
-  };
-
-  getOptions = (index, cards) => {
-    if (this.isSelfGraded()) {
-      return [SELF_GRADE_CORRECT, SELF_GRADE_INCORRECT];
-    } else if (this.isMultiple()) {
-      return [...new Set(cards.map(el => el.back))].map((el, i) => ({ id: i, back: el }));
-    } else {
-      const numOptions = Math.min(3, cards.length);
-      const shuffledCards = chance.shuffle(cards).slice(0, numOptions);
-      const uniqueCards = [...new Set([...shuffledCards, cards[index]])];
-      return chance.shuffle(uniqueCards);
-    }
-  };
-
   // State helper methods
-  isSelfGraded = deck => (deck || this.state.deck).type === "Self graded";
-  isMultiple = deck => (deck || this.state.deck).type === "Multiple select";
   isPinnedCollection = () => this.props.match.params.collectionId === "pinned";
   isCollectionPage = () => this.props.match.path === "/collections/:collectionId/review";
   isDeckOwner = () => {
@@ -262,7 +218,7 @@ class Review extends Component {
   };
 
   render() {
-    const { deck, options, activeTab, isDeckLoading, isError } = this.state;
+    const { deck, activeTab, isDeckLoading, isError } = this.state;
 
     if (isDeckLoading) {
       return (
@@ -324,9 +280,7 @@ class Review extends Component {
             <StudySection
               deck={deck}
               cards={this.state.cards}
-              options={options}
               cardProgress={this.state.cardProgress}
-              getOptions={this.getOptions}
               onUpdateSession={this.setStudySession}
               onUpdateProgress={this.setStudyProgress}
               onSRSToggle={this.onSRSToggle}
@@ -355,9 +309,5 @@ class Review extends Component {
     );
   }
 }
-
-Review.defaultProps = {
-  match: { params: {} },
-};
 
 export default Review;

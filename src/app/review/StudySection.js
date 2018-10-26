@@ -12,9 +12,13 @@ import DeckFeedback from "./DeckFeedback";
 
 import * as analytics from "../../components/GoogleAnalytics";
 import * as chance from "../utils/chance";
+import * as leitner from "../../spaced/leitner";
+import * as localStorage from "../utils/localStorage";
+
+import "./Review.css";
 
 const SELF_GRADE_CORRECT = "I was right";
-// const SELF_GRADE_INCORRECT = "I was wrong";
+const SELF_GRADE_INCORRECT = "I was wrong";
 
 const ReviewType = ({ type }) => (
   <div
@@ -37,9 +41,17 @@ const ReportLink = ({ content }) => (
   </a>
 );
 
+const filterExpiredCards = (cards, cardProgress) => {
+  return cards.filter(card => {
+    const cardObj = cardProgress.find(el => el.card === card.id);
+    return !!cardObj ? leitner.isExpired(cardObj.leitnerBox, cardObj.reviewedAt) : true;
+  });
+};
+
 class StudySection extends Component {
   state = {
     index: 0,
+    cards: [],
     correctness: [],
     isWrong: false,
     isReversed: false,
@@ -49,11 +61,25 @@ class StudySection extends Component {
     numCorrect: 0,
     numIncorrect: 0,
     selected: {},
+    options: [],
   };
 
   // Lifecycle methods
   componentWillUnmount() {
     clearTimeout(this.timeout);
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    if (prevProps.cards !== this.props.cards) {
+      const { index } = this.state;
+      const { cards, cardProgress } = this.props;
+      const isSRS = localStorage.getSRSPref();
+      const filteredCards = isSRS ? filterExpiredCards(cards, cardProgress) : cards;
+      const shuffledCards = chance.shuffle(filteredCards);
+      const options = this.getOptions(index, shuffledCards);
+
+      this.setState({ cards: shuffledCards, options });
+    }
   }
 
   // Key Listeners
@@ -109,7 +135,7 @@ class StudySection extends Component {
 
   onToggleReveal = () => {
     const { isRevealed, index, cards } = this.state;
-    this.setState({ isRevealed: !isRevealed, options: this.props.getOptions(index, cards) });
+    this.setState({ isRevealed: !isRevealed, options: this.getOptions(index, cards) });
   };
 
   onKeepGoing = () => {
@@ -160,8 +186,7 @@ class StudySection extends Component {
   };
 
   handleCorrectAnswer = () => {
-    const { cards } = this.props;
-    const index = Math.min(this.state.index + 1, cards.length);
+    const index = Math.min(this.state.index + 1, this.state.cards.length);
 
     if (this.isStageFinished(index)) {
       this.logReviewEvent(index);
@@ -172,7 +197,7 @@ class StudySection extends Component {
       index,
       selected: {},
       isRevealed: false,
-      options: this.props.getOptions(index, cards),
+      options: this.getOptions(index, this.state.cards),
       isReversed: this.isReversible(this.props.deck) && chance.bool(),
       numCorrect: this.state.numCorrect + 1,
     });
@@ -193,18 +218,31 @@ class StudySection extends Component {
     }
   };
 
+  getOptions = (index, cards) => {
+    if (this.isSelfGraded()) {
+      return [SELF_GRADE_CORRECT, SELF_GRADE_INCORRECT];
+    } else if (this.isMultiple()) {
+      return [...new Set(cards.map(el => el.back))].map((el, i) => ({ id: i, back: el }));
+    } else {
+      const numOptions = Math.min(3, cards.length);
+      const shuffledCards = chance.shuffle(cards).slice(0, numOptions);
+      const uniqueCards = [...new Set([...shuffledCards, cards[index]])];
+      return chance.shuffle(uniqueCards);
+    }
+  };
+
   // State helper methods
-  getCurrentCard = () => this.props.cards[this.state.index] || {};
+  getCurrentCard = () => this.state.cards[this.state.index] || {};
   getCardHTML = card => marked(this.state.isReversed ? card.back : card.front);
   getOptionHTML = option => marked(this.state.isReversed ? option.front : option.back || option);
   getPageStart = () => Math.max(Math.floor(this.state.page * this.state.pageSize), 0);
   getPageEnd = () =>
-    Math.min(Math.floor((this.state.page + 1) * this.state.pageSize), this.props.cards.length);
+    Math.min(Math.floor((this.state.page + 1) * this.state.pageSize), this.state.cards.length);
 
   isCollectionPage = () => this.props.match.path === "/collections/:collectionId/review";
   isStageFinished = index =>
-    (index || this.state.index) >= Math.min(this.getPageEnd(), this.props.cards.length);
-  isDeckCompleted = index => (index || this.state.index) > this.props.cards.length - 1;
+    (index || this.state.index) >= Math.min(this.getPageEnd(), this.state.cards.length);
+  isDeckCompleted = index => (index || this.state.index) > this.state.cards.length - 1;
   isSelected = option =>
     option.id ? this.state.selected.id === option.id : this.state.selected === option;
 
@@ -226,8 +264,8 @@ class StudySection extends Component {
   };
 
   render() {
-    const { pageSize, index, correctness, isWrong } = this.state;
-    const { deck, cards, options, isLoading } = this.props;
+    const { pageSize, index, correctness, options, isWrong } = this.state;
+    const { deck, cards, isLoading } = this.props;
 
     const currentCard = this.getCurrentCard();
     const pageEnd = this.getPageEnd();
@@ -354,7 +392,7 @@ class StudySection extends Component {
                 ) : (
                   <ReviewResults
                     index={this.state.index}
-                    cards={this.props.cards}
+                    cards={this.state.cards}
                     numCorrect={this.state.numCorrect}
                     numIncorrect={this.state.numIncorrect}
                     cardProgress={this.props.cardProgress}
