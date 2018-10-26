@@ -3,6 +3,7 @@ const axios = require("axios");
 const moment = require("moment");
 const jwt = require("jsonwebtoken");
 const queryString = require("query-string");
+const Stripe = require("stripe");
 
 const User = require("../models/User");
 const userSchemas = require("./validation/users");
@@ -12,6 +13,9 @@ const GITHUB_OAUTH_ROUTE = "https://github.com/login/oauth/access_token";
 const GITHUB_USER_ROUTE = "https://api.github.com/user";
 const MAILCHIMP_ROUTE = "https://us17.api.mailchimp.com";
 const MEMBERSHIP_LIST = "6aa2bb18b4";
+const SUBSCRIPTION_PLAN = "pro_monthly";
+
+const stripe = Stripe(config.stripePrivateKey);
 
 module.exports.getGithubUser = async (req, res, next) => {
   try {
@@ -58,16 +62,28 @@ module.exports.getGithubUser = async (req, res, next) => {
 
 module.exports.createGithubUser = async (req, res, next) => {
   try {
-    const { email, name, avatar_url, github_id } = req.body;
+    const { email, name, avatar_url, github_id, email_notification } = req.body;
 
     await Joi.validate(req.body, userSchemas.createGithubUser);
 
-    const user = await User.create({ email, name, avatar_url, github_id });
+    const user = await User.create({ email, name, avatar_url, github_id, email_notification });
 
     const token = jwt.sign(
       { id: user.id, email: user.email, name: user.name },
       config.sessionSecret,
     );
+
+    // Subscribe user to membership list
+    if (email_notification) {
+      const route = `${MAILCHIMP_ROUTE}/3.0/lists/${MEMBERSHIP_LIST}/members/`;
+      const auth = { username: "mailchimp", password: config.mailchimpApiKey };
+      const query = { email_address: email, status: "subscribed" };
+      try {
+        await axios.post(route, query, { auth });
+      } catch (error) {
+        console.log("❌ Email list - ", error.message);
+      }
+    }
 
     res.set("Authorization", `Bearer ${token}`);
     res.send(user);
@@ -89,6 +105,34 @@ module.exports.subscribeUser = async (req, res, next) => {
     await axios.post(route, query, { auth });
 
     res.send({ message: "Success!" });
+  } catch (error) {
+    next(error);
+  }
+};
+
+module.exports.postStripeCharge = async (req, res, next) => {
+  try {
+    const { source } = req.body;
+
+    const user = await User.findOne({ _id: req.user });
+    const customer = await stripe.customers.create({
+      email: user.email,
+      source: source,
+    });
+
+    await stripe.subscriptions.create({
+      customer: customer.id,
+      plan: SUBSCRIPTION_PLAN,
+    });
+
+    // Add customer Id to user model
+    const newUser = await User.findOneAndUpdate(
+      { _id: req.user },
+      { $set: { customerId: customer.id, user_plan: SUBSCRIPTION_PLAN } },
+      { new: true },
+    );
+
+    res.send({ message: "Success!", user: newUser });
   } catch (error) {
     next(error);
   }

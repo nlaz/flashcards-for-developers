@@ -37,15 +37,45 @@ export const fetchDecks = collectionId => {
   return axios.get(`/api/decks${params}`, config);
 };
 
+export const fetchDecksForUser = () => {
+  const config = { headers: { Authorization: cookie.get("token") } };
+  return axios.get("/users/decks", config);
+};
+
 export const fetchDecksById = deckIds => {
   const config = { headers: { Authorization: cookie.get("token") } };
   const params = deckIds.length > 0 ? `?${queryString.stringify({ ids: deckIds.join(",") })}` : "";
   return axios.get(`/api/decks${params}`, config);
 };
 
+export const createCard = ({ front, back, deck }) => {
+  const config = { headers: { Authorization: cookie.get("token") } };
+  return axios.post("/api/cards", { front, back, deck }, config);
+};
+
+export const deleteCard = cardId => {
+  const config = { headers: { Authorization: cookie.get("token") } };
+  return axios.delete(`/api/cards/${cardId}`, config);
+};
+
+export const deleteDeck = deckId => {
+  const config = { headers: { Authorization: cookie.get("token") } };
+  return axios.delete(`/api/decks/${deckId}`, config);
+};
+
+export const createDeck = ({ name, description }) => {
+  const config = { headers: { Authorization: cookie.get("token") } };
+  return axios.post("/api/decks", { name, description }, config);
+};
+
 export const fetchDeck = id => {
   const config = { headers: { Authorization: cookie.get("token") } };
   return axios.get(`/api/decks/${id}`, config);
+};
+
+export const updateDeck = ({ deckId, name, description }) => {
+  const config = { headers: { Authorization: cookie.get("token") } };
+  return axios.put(`/api/decks/${deckId}`, { name, description }, config);
 };
 
 export const fetchCards = ({ deck, collection, deckIds }) => {
@@ -111,4 +141,10 @@ export const addCardProgress = (deckId, cardId, leitnerBox, reviewedAt) => {
   const params = { leitnerBox, reviewedAt };
 
   return axios.put(`/study_progress/${deckId}/${cardId}`, params, config);
+};
+
+export const submitPayment = ({ description, amount, source, currency }) => {
+  const config = { headers: { Authorization: cookie.get("token") } };
+
+  return axios.post("/users/payments", { description, amount, source, currency }, config);
 };

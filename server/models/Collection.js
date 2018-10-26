@@ -8,6 +8,7 @@ const CollectionSchema = new mongoose.Schema(
     decks: { type: [{ type: mongoose.Schema.Types.ObjectId, ref: "Deck" }], select: false },
     emoji: String,
     color: String,
+    order: Number,
   },
   {
     timestamps: true,

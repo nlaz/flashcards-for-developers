@@ -4,6 +4,7 @@ const CardSchema = new mongoose.Schema(
   {
     airtableId: { type: String, index: true },
     deck: { type: mongoose.Schema.Types.ObjectId, ref: "Deck" },
+    author: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
     front: { type: String, required: true },
     back: String,
   },

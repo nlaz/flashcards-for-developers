@@ -5,6 +5,9 @@ const UserSchema = new mongoose.Schema({
   email: { type: String, required: true, unique: true },
   github_id: { type: String, required: true, unique: true },
   avatar_url: { type: String },
+  customerId: { type: String, select: false },
+  user_plan: { type: String, enum: ["free", "pro_monthly"], default: "free" },
+  email_notification: { type: Boolean },
 
   // Extensions of the user model
   saved_decks: {
