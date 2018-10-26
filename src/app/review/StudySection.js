@@ -65,8 +65,9 @@ class StudySection extends Component {
   };
 
   // Lifecycle methods
-  componentWillUnmount() {
-    clearTimeout(this.timeout);
+  componentDidMount() {
+    window.addEventListener("keyup", e => this.onKeyUp(e));
+    window.addEventListener("keydown", e => this.onKeyDown(e));
   }
 
   componentDidUpdate(prevProps, prevState) {
@@ -80,6 +81,12 @@ class StudySection extends Component {
 
       this.setState({ cards: shuffledCards, options });
     }
+  }
+
+  componentWillUnmount() {
+    window.removeEventListener("keyup", e => this.onKeyUp(e));
+    window.removeEventListener("keydown", e => this.onKeyDown(e));
+    clearTimeout(this.timeout);
   }
 
   // Key Listeners
