@@ -14,7 +14,7 @@ import * as analytics from "../../components/GoogleAnalytics";
 import * as chance from "../utils/chance";
 
 const SELF_GRADE_CORRECT = "I was right";
-const SELF_GRADE_INCORRECT = "I was wrong";
+// const SELF_GRADE_INCORRECT = "I was wrong";
 
 const ReviewType = ({ type }) => (
   <div
@@ -39,16 +39,62 @@ const ReportLink = ({ content }) => (
 
 class StudySection extends Component {
   state = {
-    deck: {},
     index: 0,
     correctness: [],
+    isWrong: false,
     isReversed: false,
+    isRevealed: false,
+    pageSize: 6,
+    page: 0,
+    numCorrect: 0,
+    numIncorrect: 0,
+    selected: {},
   };
 
   // Lifecycle methods
   componentWillUnmount() {
     clearTimeout(this.timeout);
   }
+
+  // Key Listeners
+  onKeyUp = e => {
+    e.preventDefault();
+    switch (e.key) {
+      case " ": // spacebar key
+        return this.onSpaceBarPress();
+      case (e.key.match(/^[0-9]$/) || {}).input: // number key
+        return this.onOptionPress(e.key);
+      default:
+        return;
+    }
+  };
+
+  onKeyDown = e => {
+    if (e.key === " ") {
+      e.preventDefault();
+      return false;
+    }
+  };
+
+  onOptionPress = key => {
+    const index = parseInt(key, 10) - 1;
+    if (!this.isStageFinished()) {
+      if (index >= 0 && index < this.state.options.length) {
+        const answer = this.state.options[index];
+        this.onSelectAnswer(answer);
+      }
+    }
+  };
+
+  onSpaceBarPress = () => {
+    if (this.isStageFinished()) {
+      this.onKeepGoing();
+      // stage is finished, Reset correctness array
+      this.setState({ correctness: [] });
+    } else if (this.isSelfGraded() && !this.state.isRevealed) {
+      this.onToggleReveal();
+    }
+  };
 
   // Event listeners
   onSelectAnswer = answer => {
@@ -66,6 +112,13 @@ class StudySection extends Component {
     this.setState({ isRevealed: !isRevealed, options: this.props.getOptions(index, cards) });
   };
 
+  onKeepGoing = () => {
+    analytics.logKeepGoingEvent(this.props.deck.id);
+    this.setState({ page: this.state.page + 1 });
+  };
+
+  onGoBack = () => this.props.history.goBack();
+
   // Helper methods
   handleMultipleChoiceAnswer = answer => {
     const card = this.getCurrentCard();
@@ -76,7 +129,6 @@ class StudySection extends Component {
 
     if (isCorrect) {
       this.setState({ correctness: [...this.state.correctness, isCorrect] });
-      this.context.mixpanel.track("Reviews Card.");
       analytics.logReviewEvent(card.id);
       this.timeout = setTimeout(() => this.handleCorrectAnswer(), 300);
     } else {
@@ -113,7 +165,7 @@ class StudySection extends Component {
 
     if (this.isStageFinished(index)) {
       this.logReviewEvent(index);
-      this.setStudySession();
+      this.props.onUpdateSession();
     }
 
     this.setState({
@@ -121,9 +173,24 @@ class StudySection extends Component {
       selected: {},
       isRevealed: false,
       options: this.props.getOptions(index, cards),
-      isReversed: this.isReversible(this.state.deck) && chance.bool(),
+      isReversed: this.isReversible(this.props.deck) && chance.bool(),
       numCorrect: this.state.numCorrect + 1,
     });
+  };
+
+  handleIncorrectAnswer = card => {
+    const numIncorrect = this.state.numIncorrect + 1;
+    this.setState({ isWrong: true, numIncorrect }, () => {
+      this.timeout = setTimeout(() => this.setState({ isWrong: false }), 500);
+    });
+  };
+
+  logReviewEvent = index => {
+    if (this.isDeckCompleted(index)) {
+      analytics.logCompletedEvent(this.props.deck.id);
+    } else {
+      analytics.logFinishedEvent(this.props.deck.id);
+    }
   };
 
   // State helper methods
@@ -159,8 +226,8 @@ class StudySection extends Component {
   };
 
   render() {
-    const { deck, pageSize, index, isCardsLoading, correctness, isWrong } = this.state;
-    const { cards, options } = this.props;
+    const { pageSize, index, correctness, isWrong } = this.state;
+    const { deck, cards, options, isLoading } = this.props;
 
     const currentCard = this.getCurrentCard();
     const pageEnd = this.getPageEnd();
@@ -193,112 +260,111 @@ class StudySection extends Component {
               },
             )}
           >
-            {!isCardsLoading &&
-              Object.keys(currentCard).length > 0 && (
-                <div className="row w-100 mx-0">
-                  {!isStageFinished ? (
-                    <div className="row w-100 mx-0">
-                      <ReviewType type={this.getDeckType()} />
-                      <div className="col-12 col-lg-6 d-flex align-items-center px-1 pb-2">
-                        {isImageSelect ? (
-                          <div className="flashcard-body d-flex flex-column border rounded px-3 py-2 w-100 h-100">
-                            {this.isCollectionPage() && (
-                              <small style={{ opacity: 0.85 }}>{currentCard.deck.name}</small>
-                            )}
-                            <img
-                              className="img-fluid my-2 px-3 mx-auto"
-                              alt=""
-                              src={currentCard.front}
-                            />
-                            {this.state.isRevealed && (
-                              <div
-                                className="markdown-body text-left d-flex align-items-center justify-content-center flex-column mt-3 pt-3"
-                                style={{ borderTop: "1px solid #f5f5f5" }}
-                                dangerouslySetInnerHTML={{
-                                  __html: marked(currentCard.back),
-                                }}
-                              />
-                            )}
-                          </div>
-                        ) : (
-                          <div className="flashcard-body border rounded px-3 py-2 w-100 h-100">
-                            {this.isCollectionPage() && (
-                              <small style={{ opacity: 0.85 }}>{currentCard.deck.name}</small>
-                            )}
-                            <div
-                              className="markdown-body text-left d-flex align-items-center justify-content-center flex-column my-2"
-                              dangerouslySetInnerHTML={{
-                                __html: this.getCardHTML(currentCard),
-                              }}
-                            />
-                            {this.state.isRevealed && (
-                              <div
-                                className="markdown-body text-left d-flex align-items-center justify-content-center flex-column mt-3 pt-3"
-                                style={{ borderTop: "1px solid #f5f5f5" }}
-                                dangerouslySetInnerHTML={{
-                                  __html: marked(currentCard.back),
-                                }}
-                              />
-                            )}
-                          </div>
-                        )}
-                      </div>
-                      <div className="col-12 col-lg-6 d-flex flex-column align-items-stretch px-1 pb-1">
-                        {options.map((option, key) => (
-                          <div
-                            key={option.id || option}
-                            onClick={() => this.onSelectAnswer(option)}
-                            className={cx(
-                              "flashcard-option border rounded d-flex align-items-start p-3 w-100",
-                              {
-                                "flashcard-option--disabled":
-                                  this.isSelfGraded() && !this.state.isRevealed,
-                                "border-success text-success":
-                                  this.isSelected(option) &&
-                                  this.isCorrectAnswer(option, currentCard),
-                                "border-danger text-danger":
-                                  this.isSelected(option) &&
-                                  !this.isCorrectAnswer(option, currentCard),
-                              },
-                            )}
-                          >
-                            <div className="border rounded mr-3 px-2" style={{ fontSize: ".9em" }}>
-                              {key + 1}
-                            </div>
-                            <div
-                              className="markdown-body text-left bg-white w-100"
-                              dangerouslySetInnerHTML={{
-                                __html: this.getOptionHTML(option),
-                              }}
-                            />
-                          </div>
-                        ))}
-                        {this.isSelfGraded() &&
-                          !this.state.isRevealed && (
-                            <button
-                              className="btn btn-reset border rounded"
-                              onClick={this.onToggleReveal}
-                            >
-                              Press space to show answer
-                            </button>
+            {!isLoading && (
+              <div className="row w-100 mx-0">
+                {!isStageFinished ? (
+                  <div className="row w-100 mx-0">
+                    <ReviewType type={this.getDeckType()} />
+                    <div className="col-12 col-lg-6 d-flex align-items-center px-1 pb-2">
+                      {isImageSelect ? (
+                        <div className="flashcard-body d-flex flex-column border rounded px-3 py-2 w-100 h-100">
+                          {this.isCollectionPage() && (
+                            <small style={{ opacity: 0.85 }}>{currentCard.deck.name}</small>
                           )}
-                      </div>
-                      <ReportLink content="Report a problem" />
+                          <img
+                            className="img-fluid my-2 px-3 mx-auto"
+                            alt=""
+                            src={currentCard.front}
+                          />
+                          {this.state.isRevealed && (
+                            <div
+                              className="markdown-body text-left d-flex align-items-center justify-content-center flex-column mt-3 pt-3"
+                              style={{ borderTop: "1px solid #f5f5f5" }}
+                              dangerouslySetInnerHTML={{
+                                __html: marked(currentCard.back),
+                              }}
+                            />
+                          )}
+                        </div>
+                      ) : (
+                        <div className="flashcard-body border rounded px-3 py-2 w-100 h-100">
+                          {this.isCollectionPage() && (
+                            <small style={{ opacity: 0.85 }}>{currentCard.deck.name}</small>
+                          )}
+                          <div
+                            className="markdown-body text-left d-flex align-items-center justify-content-center flex-column my-2"
+                            dangerouslySetInnerHTML={{
+                              __html: this.getCardHTML(currentCard),
+                            }}
+                          />
+                          {this.state.isRevealed && (
+                            <div
+                              className="markdown-body text-left d-flex align-items-center justify-content-center flex-column mt-3 pt-3"
+                              style={{ borderTop: "1px solid #f5f5f5" }}
+                              dangerouslySetInnerHTML={{
+                                __html: marked(currentCard.back),
+                              }}
+                            />
+                          )}
+                        </div>
+                      )}
                     </div>
-                  ) : (
-                    <ReviewResults
-                      index={this.state.index}
-                      cards={this.props.cards}
-                      numCorrect={this.state.numCorrect}
-                      numIncorrect={this.state.numIncorrect}
-                      cardProgress={this.props.cardProgress}
-                      onKeepGoing={this.onKeepGoing}
-                      onGoBack={this.onGoBack}
-                    />
-                  )}
-                </div>
-              )}
-            {isCardsLoading && (
+                    <div className="col-12 col-lg-6 d-flex flex-column align-items-stretch px-1 pb-1">
+                      {options.map((option, key) => (
+                        <div
+                          key={option.id || option}
+                          onClick={() => this.onSelectAnswer(option)}
+                          className={cx(
+                            "flashcard-option border rounded d-flex align-items-start p-3 w-100",
+                            {
+                              "flashcard-option--disabled":
+                                this.isSelfGraded() && !this.state.isRevealed,
+                              "border-success text-success":
+                                this.isSelected(option) &&
+                                this.isCorrectAnswer(option, currentCard),
+                              "border-danger text-danger":
+                                this.isSelected(option) &&
+                                !this.isCorrectAnswer(option, currentCard),
+                            },
+                          )}
+                        >
+                          <div className="border rounded mr-3 px-2" style={{ fontSize: ".9em" }}>
+                            {key + 1}
+                          </div>
+                          <div
+                            className="markdown-body text-left bg-white w-100"
+                            dangerouslySetInnerHTML={{
+                              __html: this.getOptionHTML(option),
+                            }}
+                          />
+                        </div>
+                      ))}
+                      {this.isSelfGraded() &&
+                        !this.state.isRevealed && (
+                          <button
+                            className="btn btn-reset border rounded"
+                            onClick={this.onToggleReveal}
+                          >
+                            Press space to show answer
+                          </button>
+                        )}
+                    </div>
+                    <ReportLink content="Report a problem" />
+                  </div>
+                ) : (
+                  <ReviewResults
+                    index={this.state.index}
+                    cards={this.props.cards}
+                    numCorrect={this.state.numCorrect}
+                    numIncorrect={this.state.numIncorrect}
+                    cardProgress={this.props.cardProgress}
+                    onKeepGoing={this.onKeepGoing}
+                    onGoBack={this.onGoBack}
+                  />
+                )}
+              </div>
+            )}
+            {isLoading && (
               <div className="text-center w-100">
                 <h6 className="text-center text-secondary">
                   <i className="fas fa-spinner fa-spin mr-1" />
@@ -307,7 +373,7 @@ class StudySection extends Component {
               </div>
             )}
           </div>
-          {!isCardsLoading && (
+          {!isLoading && (
             <div className="w-100">
               <DeckFeedback deck={deck} isCompleted={this.isDeckCompleted()} />
             </div>
