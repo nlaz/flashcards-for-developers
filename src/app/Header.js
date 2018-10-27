@@ -4,7 +4,6 @@ import cookie from "js-cookie";
 import Tooltip from "rc-tooltip";
 import SearchBar from "../components/SearchBar";
 import * as analytics from "../components/GoogleAnalytics";
-import * as api from "./apiActions";
 import isAuthenticated from "./utils/isAuthenticated";
 import isProMember from "./utils/isProMember";
 import Octicon from "../components/Octicon";
@@ -53,10 +52,6 @@ class Header extends Component {
     isLoading: true,
   };
 
-  componentWillMount() {
-    this.fetchContent();
-  }
-
   onOpenModal = () => this.setState({ showModal: true });
 
   onCloseModal = () => {
@@ -64,18 +59,10 @@ class Header extends Component {
     this.setState({ showModal: false });
   };
 
-  fetchContent = () => {
-    api.fetchContent().then(({ data }) => {
-      this.setState({ content: data, isLoading: false });
-    });
-  };
-
   render() {
     const authenticated = isAuthenticated();
     const user = authenticated ? JSON.parse(cookie.get("user")) : {};
     const isHomePage = this.props.location.pathname === "/";
-
-    const { isLoading } = this.state;
 
     return (
       <div className="header">
@@ -91,7 +78,7 @@ class Header extends Component {
                 <span className="d-none d-sm-inline">Flashcards for Developers</span>
               </Link>
             )}
-            {!isLoading && <SearchBar content={this.state.content} />}
+            <SearchBar />
             {authenticated &&
               !isProMember() && (
                 <div className="ml-2 d-none d-sm-block">

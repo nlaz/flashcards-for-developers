@@ -107,3 +107,16 @@ module.exports.getDecksForUser = async (req, res, next) => {
     next(error);
   }
 };
+
+module.exports.searchDecks = async (req, res, next) => {
+  try {
+    const { search } = req.query;
+
+    await Joi.validate(req.query, deckSchemas.searchDecks);
+    const decks = await Deck.find({ status: { $ne: "private" } });
+
+    res.send(decks);
+  } catch (error) {
+    next(error);
+  }
+};
