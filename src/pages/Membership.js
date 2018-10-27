@@ -250,26 +250,21 @@ class Membership extends React.Component {
         </div>
 
         <div className="testimonial py-5 my-5">
-          <div className="container container--full">
-            <div className="position-relative my-5 mx-auto" style={{ maxWidth: "650px" }}>
+          <div className="container container--full px-5 px-md-0">
+            <div
+              className="position-relative my-5 mx-auto text-shadow"
+              style={{ maxWidth: "700px" }}
+            >
               <i
                 className="position-absolute fas fa-lg fa-quote-left text-white"
                 style={{ left: "-35px", top: 0 }}
               />
               <blockquote>
-                <p
-                  className="text-white mb-4 text-shadow"
-                  style={{ fontSize: "1.6em", lineHeight: 1.4, fontWeight: "400", opacity: 1 }}
-                >
+                <p className="quote text-white mb-4">
                   My job searching has been going pretty great and a good part of that is due to
                   gaining confidence answering technical questions from Flashcards for Developers.
                 </p>
-                <p
-                  className="text-white m-0"
-                  style={{ opacity: 0.8, fontSize: "1.15em", fontWeight: "400" }}
-                >
-                  Robert B.
-                </p>
+                <p className="source text-white m-0 text-shadow">Robert B.</p>
               </blockquote>
             </div>
           </div>
