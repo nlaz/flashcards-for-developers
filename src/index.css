@@ -501,7 +501,7 @@ textarea {
   background: #2a2f35;
 }
 
-.homepage-header .text-shadow {
+.text-shadow {
   text-shadow: 0 0.5px 1px rgba(0, 0, 0, 0.15);
 }
 
@@ -565,4 +565,26 @@ textarea {
 }
 .search-input::placeholder {
   color: #a8a8a8;
+}
+
+.testimonial {
+  background: linear-gradient(0deg, #1c71ec, #4f96fc);
+}
+
+.testimonial .quote {
+  font-size: 1.25em;
+  font-weight: 400;
+  line-height: 1.4;
+  opacity: 1;
+}
+.testimonial .source {
+  opacity: 0.8;
+  font-size: 1.15em;
+  font-weight: 400;
+}
+
+@media (min-width: 576px) {
+  .testimonial .quote {
+    font-size: 1.6em;
+  }
 }
