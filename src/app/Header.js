@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import { Link, withRouter } from "react-router-dom";
 import cookie from "js-cookie";
 import Tooltip from "rc-tooltip";
-
+import SearchBar from "../components/SearchBar";
 import * as analytics from "../components/GoogleAnalytics";
 import isAuthenticated from "./utils/isAuthenticated";
 import isProMember from "./utils/isProMember";
@@ -46,7 +46,11 @@ const PlaceholderImage = () => (
 );
 
 class Header extends Component {
-  state = { showModal: false };
+  state = {
+    showModal: false,
+    content: [],
+    isLoading: true,
+  };
 
   onOpenModal = () => this.setState({ showModal: true });
 
@@ -68,36 +72,32 @@ class Header extends Component {
             {!isHomePage && (
               <Link
                 to="/"
-                className="d-flex align-items-center font-weight-medium text-dark p-2 btn btn-reset"
+                className="d-flex align-items-center font-weight-medium text-dark py-2 px-0 btn btn-reset"
               >
                 <Octicon name="chevron-left" className="d-flex mr-1" />
                 <span className="d-none d-sm-inline">Flashcards for Developers</span>
               </Link>
             )}
-
-            {authenticated &&
-              !isProMember() && (
-                <div className="ml-2 d-none d-sm-block">
-                  <Link
-                    to="/pages/membership"
-                    onClick={() =>
-                      analytics.logMembershipAction("User clicked 'Upgrade' button in header")
-                    }
-                    className="btn btn-sm btn-outline-gray"
-                  >
-                    Upgrade
-                  </Link>
-                </div>
-              )}
-            {!authenticated &&
-              isHomePage &&
-              !isProMember() && (
-                <Link className="d-flex align-items-center btn-member" to="/pages/membership">
-                  Become a member
-                </Link>
-              )}
+            {isHomePage && (
+              <div className="d-none d-md-block">
+                <SearchBar />
+              </div>
+            )}
           </div>
           <ul className="d-flex align-items-center p-0 m-0">
+            {!authenticated &&
+              !isProMember() && (
+                <Link
+                  className="d-none d-sm-flex align-items-center btn-member mr-2"
+                  to="/pages/membership"
+                  onClick={() =>
+                    analytics.logMembershipAction("User clicked 'Upgrade' button in header")
+                  }
+                >
+                  Become a Pro member
+                </Link>
+              )}
+
             {authenticated
               ? [
                   <li className="list-inline-item position-relative" key={0}>

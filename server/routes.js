@@ -7,10 +7,13 @@ const CardsController = require("./controllers/CardsController");
 const DecksController = require("./controllers/DecksController");
 const ProgressController = require("./controllers/ProgressController");
 const CollectionsController = require("./controllers/CollectionsController");
+const SearchController = require("./controllers/SearchController");
 
 const router = express.Router();
 
 router.get("/hello", (req, res) => res.send({ message: "Hello world!" }));
+
+router.get("/api/search", SearchController.searchContent);
 
 router.get("/api/decks", DecksController.getDecks);
 router.post("/api/decks", isAuthenticated, DecksController.createDeck);

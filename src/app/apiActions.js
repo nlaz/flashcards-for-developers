@@ -10,6 +10,11 @@ export const registerGithubUser = profile => {
   return axios.post("/auth/github/register", { ...profile });
 };
 
+export const searchContent = search => {
+  const config = { headers: { Authorization: cookie.get("token") } };
+  return axios.get(`/api/search?${queryString.stringify({ text: search })}`, config);
+};
+
 export const fetchCollections = () => {
   const config = { headers: { Authorization: cookie.get("token") } };
   return axios.get("/api/collections", config);

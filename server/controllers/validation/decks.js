@@ -24,4 +24,7 @@ module.exports = {
   proUser: Joi.string()
     .valid("pro_monthly")
     .required(),
+  searchDecks: {
+    search: Joi.string(),
+  },
 };
