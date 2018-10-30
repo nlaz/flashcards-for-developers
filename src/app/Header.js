@@ -78,13 +78,17 @@ class Header extends Component {
                 <span className="d-none d-sm-inline">Flashcards for Developers</span>
               </Link>
             )}
-            {isHomePage && <SearchBar />}
+            {isHomePage && (
+              <div className="d-none d-md-block">
+                <SearchBar />
+              </div>
+            )}
           </div>
           <ul className="d-flex align-items-center p-0 m-0">
             {!authenticated &&
               !isProMember() && (
                 <Link
-                  className="d-flex align-items-center btn-member mr-2"
+                  className="d-none d-sm-flex align-items-center btn-member mr-2"
                   to="/pages/membership"
                   onClick={() =>
                     analytics.logMembershipAction("User clicked 'Upgrade' button in header")
