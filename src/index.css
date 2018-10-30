@@ -93,6 +93,10 @@ a[disabled] {
   box-shadow: 0 1px 4px rgba(0, 0, 0, 0.15);
 }
 
+.flashcard-container mark {
+  background-color: #fff09e;
+}
+
 .flashcard-body pre {
   width: 100%;
 }
@@ -150,22 +154,51 @@ a[disabled] {
 }
 
 .deck-item .pin-btn {
-  display: flex;
+  display: none;
   cursor: pointer;
   border: 1px solid #eeeeee;
   position: absolute;
   bottom: 16px;
-  left: 16px;
+  left: 18px;
   color: #999999;
 }
 
+@media (max-width: 992px) {
+  .deck-item .pin-btn {
+    display: flex;
+  }
+}
+
+.deck-item:hover .pin-btn {
+  display: flex;
+}
+.deck-item .pin-btn.pin-btn-active {
+  display: flex;
+  border-color: transparent;
+}
+
 .pin-btn-active svg,
-.deck-item .pin-btn-active svg {
+.deck-item:hover .pin-btn-active svg {
   fill: white;
 }
 
+.deck-item .pin-btn-active svg {
+  fill: black;
+  background: none;
+}
+
+.deck-item:hover .pin-btn-active {
+  background: black;
+  color: white;
+  fill: white;
+}
 .deck-item .pin-btn:hover {
   background: #eeeeee;
+}
+.deck-item .pin-btn-active:hover {
+  background: rgba(0, 0, 0, 0.8);
+  fill: white;
+  color: white;
 }
 
 .text-underline {

@@ -60,7 +60,7 @@ class DeckItem extends Component {
             {this.props.deck.name}
             <button
               className={cx("pin-btn badge align-items-center p-0", {
-                "pin-btn-active bg-dark text-white": this.props.isPinned,
+                "pin-btn-active": this.props.isPinned,
               })}
               onClick={e => this.props.onTogglePin(e, this.props.deck)}
             >
