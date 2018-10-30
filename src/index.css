@@ -508,6 +508,9 @@ textarea {
 .box-shadow {
   box-shadow: 0 1px 2px 1px rgba(0, 0, 0, 0.05);
 }
+.bod-shadow-2x {
+  box-shadow: 0 1px 2px 1px rgba(0, 0, 0, 0.2);
+}
 
 .header .btn-member {
   color: rgba(0, 0, 0, 0.54);
@@ -541,4 +544,25 @@ textarea {
 }
 .btn-secondary:hover {
   color: #24292e;
+}
+
+.search {
+  outline: none;
+  cursor: pointer;
+}
+
+.search .search-input {
+  border: none;
+  font-size: 13px;
+  width: 250px;
+  outline: none;
+}
+.search .search-overlay {
+  top: 40px;
+  left: 0;
+  right: 0;
+  font-size: 14px;
+}
+.search-input::placeholder {
+  color: #a8a8a8;
 }

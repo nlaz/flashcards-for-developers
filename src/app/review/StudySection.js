@@ -91,11 +91,12 @@ class StudySection extends Component {
 
   // Key Listeners
   onKeyUp = e => {
-    e.preventDefault();
     switch (e.key) {
       case " ": // spacebar key
+        e.preventDefault();
         return this.onSpaceBarPress();
       case (e.key.match(/^[0-9]$/) || {}).input: // number key
+        e.preventDefault();
         return this.onOptionPress(e.key);
       default:
         return;

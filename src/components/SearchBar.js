@@ -1,74 +1,104 @@
 import React, { Component } from "react";
-import { Redirect } from "react-router-dom";
-import { Typeahead } from "react-bootstrap-typeahead";
-import PropTypes from "prop-types";
+import { Link, withRouter } from "react-router-dom";
+import { debounce } from "lodash";
 
 import * as api from "../app/apiActions";
+import Octicon from "./Octicon";
 
 class SearchBar extends Component {
   state = {
+    content: [],
     searchString: "",
-    redirect: false,
-    filteredNames: [],
-  };
-
-  static contextTypes = {
-    router: PropTypes.object,
+    isFocused: false,
+    isLoading: false,
   };
 
   componentDidMount() {
-    this.fetchContent();
+    this.searchContent("*");
   }
 
-  handleSearch = () => {
-    this.setState({ isRedirect: true });
+  componentWillUnmount() {
+    clearTimeout(this.timeout);
+  }
+
+  onChange = e => {
+    const { value } = e.target;
+    this.setState({ searchString: value, isLoading: true }, () => this.searchContent(value));
   };
 
-  fetchContent = () => {
-    api.fetchContent().then(({ data }) => {
-      const filteredNames = data.map(content => content.name);
-      this.setState({ content: data, isLoading: false, filteredNames });
-    });
-  };
-
-  componentDidUpdate() {
-    const { redirect } = this.state;
-    if (redirect) {
-      const isCollection = this.state.content.find(el => el.name === this.state.searchString);
-      if (isCollection) {
-        this.setState({ redirect: false });
-        this.context.router.history.push("/collections/" + isCollection.id);
+  onSubmit = e => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      const { content, searchString } = this.state;
+      if (content.length > 0) {
+        const result = content.find(el => searchString.indexOf(el.name) > -1) || content[0];
+        this.props.history.push(`/decks/${result.id}`);
       }
     }
-  }
+  };
+
+  searchContent = debounce(value => {
+    api.searchContent(value).then(({ data }) => {
+      this.setState({ content: data, isLoading: false });
+    });
+  }, 300);
+
+  onBlur = e => {
+    // Delay onBlur to provide time for redirect
+    this.timeout = setTimeout(() => this.setState({ isFocused: false }), 100);
+  };
 
   render() {
-    const { isRedirect, search } = this.state;
-
-    if (isRedirect) {
-      return <Redirect to={`/collections/${search.id}`} />;
-    }
-
+    const { content, searchString, isFocused, isLoading } = this.state;
     return (
-      <div className="d-flex justify-content-center" onKeyPress={this.onKeyStroke} tabIndex="0">
-        <Typeahead
-          className="search-term border-primary"
-          options={this.state.filteredNames}
-          onChange={e => {
-            this.setState({ searchString: e[0] });
-          }}
-          placeholder="Search..."
+      <form
+        className="search border rounded d-flex align-items-center position-relative mr-2 p-2"
+        ref={c => (this.searchbar = c)}
+        onKeyPress={this.onSubmit}
+        onFocus={() => this.input.focus()}
+        onClick={() => this.input.focus()}
+        tabIndex="0"
+      >
+        <Octicon name="search" className="d-flex align-items-center mr-2" fill="#a8a8a8" />
+        <input
+          type="search"
+          onChange={this.onChange}
+          value={searchString}
+          onFocus={() => this.setState({ isFocused: true })}
+          onBlur={this.onBlur}
+          ref={c => (this.input = c)}
+          className="search-input"
+          placeholder="Search for flashcards or topics..."
         />
-        <button
-          type="submit"
-          className="search-button text-white bg-primary border-info"
-          onClick={this.handleSearch}
-        >
-          <i className="fa fa-search" />
-        </button>
-      </div>
+        {isFocused && (
+          <div className="search-overlay position-absolute bg-white rounded border border-muted box-shadow-2x">
+            {isLoading && (
+              <div className="py-2 px-3 text-muted">
+                <i className="fas fa-spinner fa-spin mr-1" />
+                <span>Searching for flashcards...</span>
+              </div>
+            )}
+            {!isLoading &&
+              content.length > 0 && (
+                <div className="text-dark d-flex flex-column">
+                  {content.slice(0, 6).map(el => (
+                    <Link to={`/decks/${el.id}`} className="py-2 px-3 text-dark" key={el.id}>
+                      {el.name}
+                    </Link>
+                  ))}
+                </div>
+              )}
+            {!isLoading &&
+              content.length === 0 && (
+                <div className="py-2 px-3 text-muted">
+                  No flashcards found matching "{searchString}"
+                </div>
+              )}
+          </div>
+        )}
+      </form>
     );
   }
 }
 
-export default SearchBar;
+export default withRouter(SearchBar);
