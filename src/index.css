@@ -508,9 +508,6 @@ textarea {
 .box-shadow {
   box-shadow: 0 1px 2px 1px rgba(0, 0, 0, 0.05);
 }
-.bod-shadow-2x {
-  box-shadow: 0 1px 2px 1px rgba(0, 0, 0, 0.2);
-}
 
 .header .btn-member {
   color: rgba(0, 0, 0, 0.54);
@@ -562,6 +559,8 @@ textarea {
   left: 0;
   right: 0;
   font-size: 14px;
+  z-index: 100;
+  box-shadow: 0 2px 4px 1px rgba(0, 0, 0, 0.25);
 }
 .search-input::placeholder {
   color: #a8a8a8;
