@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Redirect } from "react-router-dom";
+import { Link, Redirect } from "react-router-dom";
 
 import * as api from "../apiActions";
 import Octicon from "../../components/Octicon";
@@ -35,7 +35,11 @@ class DecksNew extends Component {
           <div className="alert alert-info text-center rounded-0">
             <div className="container container--full px-4">
               <i className="fas fa-lock mr-2" />
-              Upgrade your account to create your own decks.
+              Upgrade your account to create your own decks.{" "}
+              <Link className="alert-link text-underline" to="/pages/membership">
+                Unlock private decks
+              </Link>
+              .
             </div>
           </div>
         )}

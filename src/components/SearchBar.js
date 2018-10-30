@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import { Link, withRouter } from "react-router-dom";
 import { debounce } from "lodash";
 
+import * as analytics from "./GoogleAnalytics";
 import * as api from "../app/apiActions";
 import Octicon from "./Octicon";
 
@@ -39,13 +40,14 @@ class SearchBar extends Component {
 
   searchContent = debounce(value => {
     api.searchContent(value).then(({ data }) => {
+      analytics.logSearchAction(value);
       this.setState({ content: data, isLoading: false });
     });
   }, 300);
 
   onBlur = e => {
     // Delay onBlur to provide time for redirect
-    this.timeout = setTimeout(() => this.setState({ isFocused: false }), 100);
+    this.timeout = setTimeout(() => this.setState({ isFocused: false }), 150);
   };
 
   render() {
@@ -71,7 +73,7 @@ class SearchBar extends Component {
           placeholder="Search for flashcards or topics..."
         />
         {isFocused && (
-          <div className="search-overlay position-absolute bg-white rounded border border-muted box-shadow-2x">
+          <div className="search-overlay position-absolute bg-white rounded border border-muted">
             {isLoading && (
               <div className="py-2 px-3 text-muted">
                 <i className="fas fa-spinner fa-spin mr-1" />
@@ -80,7 +82,7 @@ class SearchBar extends Component {
             )}
             {!isLoading &&
               content.length > 0 && (
-                <div className="text-dark d-flex flex-column">
+                <div className="text-dark d-flex flex-column py-2">
                   {content.slice(0, 6).map(el => (
                     <Link to={`/decks/${el.id}`} className="py-2 px-3 text-dark" key={el.id}>
                       {el.name}

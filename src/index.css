@@ -93,6 +93,10 @@ a[disabled] {
   box-shadow: 0 1px 4px rgba(0, 0, 0, 0.15);
 }
 
+.flashcard-container mark {
+  background-color: #fff09e;
+}
+
 .flashcard-body pre {
   width: 100%;
 }
@@ -144,20 +148,18 @@ a[disabled] {
 }
 
 .deck-item .pin-btn svg {
-  width: 10px;
-  height: 10px;
-  margin-right: 2px;
+  margin-right: 4px;
+  margin-bottom: 1px;
   fill: #999999;
-}
-
-.deck-item:hover .pin-btn {
-  display: flex;
 }
 
 .deck-item .pin-btn {
   display: none;
   cursor: pointer;
   border: 1px solid #eeeeee;
+  position: absolute;
+  bottom: 16px;
+  left: 18px;
   color: #999999;
 }
 
@@ -166,12 +168,37 @@ a[disabled] {
     display: flex;
   }
 }
-.deck-item .pin-btn-active svg {
+
+.deck-item:hover .pin-btn {
+  display: flex;
+}
+.deck-item .pin-btn.pin-btn-active {
+  display: flex;
+  border-color: transparent;
+}
+
+.pin-btn-active svg,
+.deck-item:hover .pin-btn-active svg {
   fill: white;
 }
 
+.deck-item .pin-btn-active svg {
+  fill: black;
+  background: none;
+}
+
+.deck-item:hover .pin-btn-active {
+  background: black;
+  color: white;
+  fill: white;
+}
 .deck-item .pin-btn:hover {
   background: #eeeeee;
+}
+.deck-item .pin-btn-active:hover {
+  background: rgba(0, 0, 0, 0.8);
+  fill: white;
+  color: white;
 }
 
 .text-underline {
@@ -244,13 +271,12 @@ a[disabled] {
   text-overflow: ellipsis;
 }
 
-.add-button {
-  color: #999999;
-  fill: #999999;
+.nav-icon {
+  fill: #898989;
   transition: all 0.1s ease-in-out;
 }
 
-.add-button:hover {
+.nav-icon:hover {
   color: #363a40;
   fill: #363a40;
 }
@@ -508,9 +534,6 @@ textarea {
 .box-shadow {
   box-shadow: 0 1px 2px 1px rgba(0, 0, 0, 0.05);
 }
-.bod-shadow-2x {
-  box-shadow: 0 1px 2px 1px rgba(0, 0, 0, 0.2);
-}
 
 .header .btn-member {
   color: rgba(0, 0, 0, 0.54);
@@ -562,6 +585,8 @@ textarea {
   left: 0;
   right: 0;
   font-size: 14px;
+  z-index: 100;
+  box-shadow: 0 2px 4px 1px rgba(0, 0, 0, 0.25);
 }
 .search-input::placeholder {
   color: #a8a8a8;

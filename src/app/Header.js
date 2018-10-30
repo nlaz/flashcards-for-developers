@@ -85,32 +85,41 @@ class Header extends Component {
             )}
           </div>
           <ul className="d-flex align-items-center p-0 m-0">
-            {!authenticated &&
-              !isProMember() && (
-                <Link
-                  className="d-none d-sm-flex align-items-center btn-member mr-2"
-                  to="/pages/membership"
-                  onClick={() =>
-                    analytics.logMembershipAction("User clicked 'Upgrade' button in header")
-                  }
-                >
-                  Become a Pro member
-                </Link>
-              )}
+            {!isProMember() && (
+              <Link
+                className="d-none d-sm-flex align-items-center btn-member mr-2"
+                to="/pages/membership"
+                onClick={() =>
+                  analytics.logMembershipAction("User clicked 'Upgrade' button in header")
+                }
+              >
+                Become a Pro member
+              </Link>
+            )}
 
             {authenticated
               ? [
-                  <li className="list-inline-item position-relative" key={0}>
+                  <li className="list-inline-item mx-0" key={0}>
                     <Link to="/decks/new">
                       <Octicon
-                        className="d-flex align-items-center p-2 add-button"
+                        className="nav-icon d-flex align-items-center p-2"
                         name="plus"
-                        width={18}
-                        height={18}
+                        width={20}
+                        height={20}
                       />
                     </Link>
                   </li>,
-                  <li className="header-login list-inline-item ml-1" key={1}>
+                  <li className="list-inline-item mx-0" key={-1}>
+                    <Link to="/collections/pinned">
+                      <Octicon
+                        className="nav-icon d-flex align-items-center p-2"
+                        name="pin"
+                        width={20}
+                        height={20}
+                      />
+                    </Link>
+                  </li>,
+                  <li className="header-login list-inline-item ml-3" key={1}>
                     <Tooltip
                       placement="bottomRight"
                       trigger={["click"]}

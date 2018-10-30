@@ -59,20 +59,20 @@ class DeckItem extends Component {
             <ProgressBar className="mb-2" progress={progress} proficiency={proficiency} />
             {this.props.deck.name}
             <button
-              className={cx(
-                "pin-btn badge position-absolute align-items-center p-1 text-uppercase",
-                {
-                  "pin-btn-active bg-dark text-white": this.props.isPinned,
-                },
-              )}
-              style={{ bottom: "16px", left: "18px" }}
+              className={cx("pin-btn badge align-items-center p-0", {
+                "pin-btn-active": this.props.isPinned,
+              })}
               onClick={e => this.props.onTogglePin(e, this.props.deck)}
             >
               <Octicon
-                name={this.props.isPinned ? "check" : "pin"}
-                className="d-flex align-items-center"
+                name="pin"
+                className="d-flex align-items-center ml-1"
+                width={13}
+                height={13}
               />
-              {label}
+              <span className="text-uppercase pr-1 py-1 m-0" style={{ paddingLeft: "1px" }}>
+                {label}
+              </span>
             </button>
             <div
               className="position-absolute d-flex align-items-center"
