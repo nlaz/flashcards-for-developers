@@ -97,7 +97,7 @@ class Decks extends Component {
 
   fetchTrendingCollection = () => {
     api
-      .searchCollections("Trending")
+      .searchCollections("Popular Decks")
       .then(response => this.setState({ trendingRow: response.data.pop() }));
   };
 
@@ -250,31 +250,6 @@ class Decks extends Component {
               </div>
             )}
 
-          {trendingRow &&
-            Object.keys(trendingRow).length > 0 && (
-              <div className="my-4">
-                <div className="d-flex justify-content-between align-items-end mb-2 mx-1">
-                  <h6 className="text-uppercase m-0">{trendingRow.name}</h6>
-                  <Link className="text-dark text-underline" to={`/collections/${trendingRow.id}`}>
-                    See all
-                  </Link>
-                </div>
-                {trendingRow.decks.length > 0 && (
-                  <div className="deck-row row">
-                    {trendingRow.decks.slice(0, 4).map(deck => (
-                      <DeckItem
-                        deck={deck}
-                        key={deck.id}
-                        isPinned={this.isPinned(deck.id)}
-                        deckProgress={this.getDeckProgress(deck.id)}
-                        onTogglePin={this.onTogglePin}
-                      />
-                    ))}
-                  </div>
-                )}
-              </div>
-            )}
-
           {newestRow &&
             Object.keys(newestRow).length > 0 && (
               <div className="my-4">
@@ -300,6 +275,30 @@ class Decks extends Component {
               </div>
             )}
 
+          {trendingRow &&
+            Object.keys(trendingRow).length > 0 && (
+              <div className="my-4">
+                <div className="d-flex justify-content-between align-items-end mb-2 mx-1">
+                  <h6 className="text-uppercase m-0">{trendingRow.name}</h6>
+                  <Link className="text-dark text-underline" to={`/collections/${trendingRow.id}`}>
+                    See all
+                  </Link>
+                </div>
+                {trendingRow.decks.length > 0 && (
+                  <div className="deck-row row">
+                    {trendingRow.decks.slice(0, 4).map(deck => (
+                      <DeckItem
+                        deck={deck}
+                        key={deck.id}
+                        isPinned={this.isPinned(deck.id)}
+                        deckProgress={this.getDeckProgress(deck.id)}
+                        onTogglePin={this.onTogglePin}
+                      />
+                    ))}
+                  </div>
+                )}
+              </div>
+            )}
           <div className="row">
             <div className="col-md-10 offset-md-1 col-lg-8 offset-lg-2 my-4">
               <FeedbackForm />
