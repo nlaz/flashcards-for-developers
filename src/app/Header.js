@@ -1,21 +1,24 @@
 import React, { Component } from "react";
 import { Link, withRouter } from "react-router-dom";
-import { FacebookShareButton, TwitterShareButton } from "react-share";
 import cookie from "js-cookie";
 import Tooltip from "rc-tooltip";
-
+import SearchBar from "../components/SearchBar";
 import * as analytics from "../components/GoogleAnalytics";
 import isAuthenticated from "./utils/isAuthenticated";
+import isProMember from "./utils/isProMember";
 import Octicon from "../components/Octicon";
 import LoginModal from "./auth/LoginModal";
-
-const title = "Ridiculously helpful collection of flashcards for developers ";
 
 const LogoutTooltip = ({ user }) => (
   <div className="tooltip-content">
     <div className="tooltip-item">
       <Link className="text-secondary" to={`/${user.id}`}>
         My Profile
+      </Link>
+    </div>
+    <div className="tooltip-item">
+      <Link className="text-secondary" to={`/${user.id}/decks`}>
+        My Decks
       </Link>
     </div>
     <div className="tooltip-item">
@@ -48,7 +51,11 @@ const PlaceholderImage = () => (
 );
 
 class Header extends Component {
-  state = { showModal: false };
+  state = {
+    showModal: false,
+    content: [],
+    isLoading: true,
+  };
 
   onOpenModal = () => this.setState({ showModal: true });
 
@@ -70,97 +77,108 @@ class Header extends Component {
             {!isHomePage && (
               <Link
                 to="/"
-                className="d-flex align-items-center font-weight-medium text-dark p-2 btn btn-reset"
+                className="d-flex align-items-center font-weight-medium text-dark py-2 px-0 btn btn-reset"
               >
                 <Octicon name="chevron-left" className="d-flex mr-1" />
                 <span className="d-none d-sm-inline">Flashcards for Developers</span>
               </Link>
             )}
-
-            {isAuthenticated() && (
-              <div className="ml-2 d-none d-sm-block">
-                <Link
-                  to="/pages/membership"
-                  onClick={() =>
-                    analytics.logMembershipAction("User clicked 'Upgrade' button in header")
-                  }
-                  className="btn btn-sm btn-outline-gray"
-                >
-                  Upgrade
-                </Link>
+            {isHomePage && (
+              <div className="d-none d-md-block">
+                <SearchBar />
               </div>
             )}
           </div>
-          <ul className="p-0 m-0">
-            <li className="list-inline-item">
-              <FacebookShareButton
-                className="share-button p-2"
-                url="http://www.flashcardsfordevelopers.com"
-                quote={title}
-                onShareWindowClose={() => analytics.logFacebookShare()}
-                style={{ cursor: "pointer" }}
+          <ul className="d-flex align-items-center p-0 m-0">
+            {!isProMember() && (
+              <Link
+                className="d-none d-sm-flex align-items-center btn-member mr-2"
+                to="/pages/membership"
+                onClick={() =>
+                  analytics.logMembershipAction("User clicked 'Upgrade' button in header")
+                }
               >
-                <i className="fab fa-facebook" />
-              </FacebookShareButton>
-            </li>
-            <li className="list-inline-item">
-              <TwitterShareButton
-                className="share-button p-2"
-                url="http://www.flashcardsfordevelopers.com"
-                title={title}
-                onShareWindowClose={() => analytics.logTwitterShare()}
-                style={{ cursor: "pointer" }}
-              >
-                <i className="fab fa-twitter" />
-              </TwitterShareButton>
-            </li>
-            {authenticated ? (
-              <li className="header-login list-inline-item ml-2">
-                <Tooltip
-                  placement="bottomRight"
-                  trigger={["click"]}
-                  overlay={<LogoutTooltip user={user} />}
-                  id="header-logout"
-                >
-                  <div>
-                    {user.avatar_url ? (
-                      <img
-                        className="header-image rounded rounded-circle"
-                        src={user.avatar_url}
-                        alt="User profile"
-                      />
-                    ) : (
-                      <PlaceholderImage />
-                    )}
-                  </div>
-                </Tooltip>
-              </li>
-            ) : (
-              [
-                <li className="list-inline-item ml-2" key={1}>
-                  <button
-                    className="btn btn-sm btn-outline-dark d-flex px-3 py-2"
-                    onClick={() => {
-                      analytics.logLoginAction("User clicked 'Login' button");
-                      this.onOpenModal();
-                    }}
-                  >
-                    <small className="font-weight-bold">LOG IN</small>
-                  </button>
-                </li>,
-                <li className="list-inline-item ml-1" key={2}>
-                  <button
-                    className="btn btn-sm btn-dark d-flex px-3 py-2"
-                    onClick={() => {
-                      analytics.logLoginAction("User clicked 'Signup' button");
-                      this.onOpenModal();
-                    }}
-                  >
-                    <small className="font-weight-bold">SIGN UP</small>
-                  </button>
-                </li>,
-              ]
+                Become a Pro member
+              </Link>
             )}
+
+            {authenticated
+              ? [
+                  <li className="list-inline-item mx-0" key={0}>
+                    <Link to="/decks/new">
+                      <Octicon
+                        className="nav-icon d-flex align-items-center p-2"
+                        name="plus"
+                        width={20}
+                        height={20}
+                      />
+                    </Link>
+                  </li>,
+                  <li className="list-inline-item mx-0" key={-1}>
+                    <Link to="/collections/pinned">
+                      <Octicon
+                        className="nav-icon d-flex align-items-center p-2"
+                        name="pin"
+                        width={20}
+                        height={20}
+                      />
+                    </Link>
+                  </li>,
+                  <li className="header-login list-inline-item ml-3" key={1}>
+                    <Tooltip
+                      placement="bottomRight"
+                      trigger={["click"]}
+                      overlay={<LogoutTooltip user={user} />}
+                      id="header-logout"
+                    >
+                      <div className="position-relative">
+                        {user.avatar_url ? (
+                          <img
+                            className="header-image rounded rounded-circle bg-light"
+                            src={user.avatar_url}
+                            alt="User profile"
+                          />
+                        ) : (
+                          <PlaceholderImage />
+                        )}
+                        {isProMember() && (
+                          <span
+                            role="img"
+                            aria-label="emoji"
+                            className="position-absolute"
+                            style={{ bottom: "-5px", right: "-5px" }}
+                          >
+                            🌟
+                          </span>
+                        )}
+                      </div>
+                    </Tooltip>
+                  </li>,
+                ]
+              : [
+                  <li className="list-inline-item ml-2" key={1}>
+                    <button
+                      className="btn btn-sm btn-outline-dark d-flex px-3 py-2"
+                      onClick={() => {
+                        analytics.logLoginAction("User clicked 'Login' button");
+                        this.onOpenModal();
+                      }}
+                    >
+                      <small className="font-weight-bold">LOG IN</small>
+                    </button>
+                  </li>,
+                  <li className="list-inline-item ml-1" key={2}>
+                    <button
+                      className="btn btn-sm btn-dark d-flex px-3 py-2"
+                      onClick={() => {
+                        analytics.logLoginAction("User clicked 'Signup' button");
+                        this.onOpenModal();
+                      }}
+                    >
+                      <small className="font-weight-bold">SIGN UP</small>
+                    </button>
+                  </li>,
+                ]}
           </ul>
         </div>
       </div>

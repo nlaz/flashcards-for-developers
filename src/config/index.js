@@ -9,6 +9,7 @@ const configs = {
   buyMeACoffeeDonateUrl: process.env.REACT_APP_DONATE_URL || "",
   githubOAuthClientId: process.env.REACT_APP_GITHUB_OAUTH_CLIENT_ID || "",
   githubOAuthRedirectURI: process.env.REACT_APP_GITHUB_OAUTH_REDIRECT_URI || "",
+  stripePublicKey: process.env.REACT_APP_STRIPE_PUBLIC_KEY || "",
 };
 
 export default configs;

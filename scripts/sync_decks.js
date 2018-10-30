@@ -23,6 +23,7 @@ const getDeckFromRecord = record => ({
   createdTime: record.get("Created time"),
   upvotes: record.get("Upvotes"),
   downvotes: record.get("Downvotes"),
+  pro: record.get("Pro") || false,
   new: record.get("New") || false,
 });
 

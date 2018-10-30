@@ -73,7 +73,7 @@ class Collections extends Component {
           collection: {
             name: "My Pinned Decks",
             id: "pinned",
-            description: "A collection of my all-time favorite decks that I want to learn.",
+            description: "A collection of my all-time favorite decks to learn.",
           },
           decks: this.sortDecks(data),
           isLoading: false,

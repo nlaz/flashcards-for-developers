@@ -1,6 +1,8 @@
 const Joi = require("joi");
 
 const Deck = require("../models/Deck");
+const Card = require("../models/Card");
+const User = require("../models/User");
 const Collection = require("../models/Collection");
 const deckSchemas = require("./validation/decks");
 
@@ -28,15 +30,79 @@ module.exports.getDecks = async (req, res, next) => {
   }
 };
 
+module.exports.createDeck = async (req, res, next) => {
+  try {
+    const { name, description } = req.body;
+    const user = await User.findOne({ _id: req.user });
+
+    await Joi.validate(req.body, deckSchemas.createDeck);
+    await Joi.validate(user.user_plan, deckSchemas.proUser);
+
+    const deck = await Deck.create({ name, description, author: req.user, status: "private" });
+
+    res.send(deck);
+  } catch (error) {
+    next(error);
+  }
+};
+
 module.exports.getDeck = async (req, res, next) => {
   try {
     await Joi.validate(req.params, deckSchemas.getDeckParams);
 
     const { deckId } = req.params;
 
-    const deck = await Deck.findOne({ _id: deckId });
+    let deck = await Deck.findOne({ _id: deckId, status: { $ne: "private" } });
+
+    if (!deck) {
+      deck = await Deck.findOne({ _id: deckId, author: req.user, status: "private" });
+    }
 
     res.send(deck);
+  } catch (error) {
+    next(error);
+  }
+};
+
+module.exports.updateDeck = async (req, res, next) => {
+  try {
+    const { name, description } = req.body;
+    const { deckId } = req.params;
+
+    await Joi.validate(req.body, deckSchemas.updateDeck);
+
+    const deck = await Deck.findOneAndUpdate(
+      { _id: deckId, author: req.user },
+      { $set: { name, description } },
+      { new: true },
+    );
+
+    res.send(deck);
+  } catch (error) {
+    next(error);
+  }
+};
+
+module.exports.deleteDeck = async (req, res, next) => {
+  try {
+    const { deckId } = req.params;
+    await Joi.validate(req.params, deckSchemas.deleteDeck);
+
+    await Deck.deleteOne({ _id: deckId, author: req.user });
+
+    await Card.deleteMany({ deck: deckId, author: req.user });
+
+    res.send({ message: "Success! Deck removed." });
+  } catch (error) {
+    next(error);
+  }
+};
+
+module.exports.getDecksForUser = async (req, res, next) => {
+  try {
+    const decks = await Deck.find({ author: req.user });
+
+    res.send(decks);
   } catch (error) {
     next(error);
   }

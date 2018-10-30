@@ -25,7 +25,7 @@ const ReviewResults = ({
   const daysUntilDeckProgressIsExpired =
     cardProgress.reduce((avg, cardObj) => {
       return leitner.getDaysUntilExpired(cardObj.leitnerBox, cardObj.reviewedA) + avg;
-    }, 0) / cardProgress.length;
+    }, 0) / cardProgress.length || 0;
 
   return (
     <div className="w-100">
@@ -58,7 +58,7 @@ const ReviewResults = ({
                 dataKey="value"
                 innerRadius={60}
                 outerRadius={80}
-                animationDuration={0}
+                animationDuration={500}
                 startAngle={180}
                 endAngle={0}
                 fill="#82ca9d"

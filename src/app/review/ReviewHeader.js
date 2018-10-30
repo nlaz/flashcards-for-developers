@@ -54,7 +54,14 @@ class ReviewHeader extends React.Component {
     return (
       <div className={className}>
         <LoginModal isOpen={this.state.showModal} onClose={this.onCloseModal} />
-        <h1 className="m-0">{deck.name}</h1>
+        <div className="d-flex align-items-center">
+          <h1 className="m-0">{deck.name}</h1>
+          {deck.status === "private" && (
+            <small className="text-capitalize text-muted ml-2 rounded border px-1">
+              {deck.status}
+            </small>
+          )}
+        </div>
         {deck.description && (
           <div
             className="deck-description"
@@ -64,7 +71,7 @@ class ReviewHeader extends React.Component {
           />
         )}
         {deck.source && (
-          <div className="mb-3 d-flex align-items-center">
+          <div className="mb-3 d-flex align-items-center mt-1">
             <Octicon name="link" className="d-flex mr-1" />
             <a
               className="truncate"
@@ -79,11 +86,12 @@ class ReviewHeader extends React.Component {
         {!this.isCollectionPage() && (
           <button
             onClick={this.onTogglePin}
-            className={cx("pin-btn btn btn-sm d-flex align-items-center px-3 py-2 mt-2", {
-              "bg-dark text-white": isPinned,
+            className={cx("btn btn-sm d-flex align-items-center mt-2 px-2", {
+              "btn-secondary": !isPinned,
+              "pin-btn-active bg-dark text-white": isPinned,
             })}
           >
-            <Octicon name={isPinned ? "check" : "pin"} className="d-flex mr-2" />
+            <Octicon name="pin" className="d-flex mr-2" />
             <small className="font-weight-bold mr-1">{isPinned ? "PINNED" : "PIN"}</small>
           </button>
         )}

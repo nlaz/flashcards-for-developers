@@ -4,16 +4,20 @@ import { BrowserRouter, Route, Switch } from "react-router-dom";
 import Pages from "../pages/Pages";
 import Home from "./home/Home";
 import Review from "./review/Review";
+import DecksNew from "./decks/DecksNew";
+import MyDecksHome from "./decks/MyDecksHome";
 import CollectionsHome from "./collections/CollectionsHome";
 import Collections from "./collections/Collections";
 import Logout from "./auth/Logout";
 import AuthRedirect from "./auth/AuthRedirect";
 import Profile from "./profile/Profile";
+import ReqAuth from "./auth/ReqAuth";
 import Footer from "./Footer";
 import Header from "./Header";
 
 import NotFound from "../components/NotFound";
 import GoogleAnalytics from "../components/GoogleAnalytics";
+import ScrollToTop from "../components/ScrollToTop";
 
 class App extends Component {
   render() {
@@ -24,17 +28,20 @@ class App extends Component {
           <div style={{ flexGrow: 1 }}>
             <div>
               <Route path="/" component={GoogleAnalytics} />
+              <Route path="/" component={ScrollToTop} />
               <Switch>
                 <Route exact path="/" component={Home} />
                 <Route path="/pages" component={Pages} />
                 <Route path="/logout" component={Logout} />
                 <Route path="/auth/github" component={AuthRedirect} />
-                <Route path="/pages" component={Pages} />
+                <Route exact path="/decks/new" component={ReqAuth(DecksNew)} />
                 <Route exact path="/decks/:deckId" component={Review} />
+                <Route exact path="/decks/:deckId/:tabName" component={Review} />
                 <Route exact path="/collections" component={CollectionsHome} />
                 <Route exact path="/collections/:collectionId" component={Collections} />
                 <Route exact path="/collections/:collectionId/review" component={Review} />
                 <Route exact path="/:userId" component={Profile} />
+                <Route exact path="/:userId/decks" component={ReqAuth(MyDecksHome)} />
                 <Route exact path="*" component={NotFound} />
               </Switch>
             </div>

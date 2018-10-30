@@ -1,7 +1,6 @@
 import React, { Component } from "react";
 import { Link } from "react-router-dom";
 
-import config from "../../config";
 import isAuthenticated from "../utils/isAuthenticated";
 import * as api from "../apiActions";
 import * as analytics from "../../components/GoogleAnalytics";
@@ -98,7 +97,7 @@ class Decks extends Component {
 
   fetchTrendingCollection = () => {
     api
-      .searchCollections("Trending")
+      .searchCollections("Popular Decks")
       .then(response => this.setState({ trendingRow: response.data.pop() }));
   };
 
@@ -108,12 +107,12 @@ class Decks extends Component {
       .then(({ data }) => this.setState({ newestRow: data.pop() }));
   };
 
+  sortCollections = (collections = []) => [...collections].sort((a, b) => a.order - b.order);
+
   fetchCollections = () => {
     api
       .fetchCollections()
-      .then(({ data }) => {
-        this.setState({ collections: data });
-      })
+      .then(({ data }) => this.setState({ collections: this.sortCollections(data) }))
       .catch(this.handleError);
   };
 
@@ -163,20 +162,17 @@ class Decks extends Component {
     return (
       <div>
         <LoginModal isOpen={this.state.showModal} onClose={this.onCloseModal} />
-        <div
-          className="review-header py-4"
-          style={{ background: "#f9f9f9", borderBottom: "1px solid #e8e8e8" }}
-        >
+        <div className="homepage-header review-header py-4">
           <div className="container container--full px-4 my-2">
             <div className="d-flex flex-column flex-lg-row justify-content-between align-items-lg-center">
-              <div className="home-header py-2">
+              <div className="text-shadow home-header py-2">
                 <h1 className="m-0">Flashcards for Developers</h1>
                 <p className="m-0">
                   A curated list of flashcards to boost your professional skills
                 </p>
               </div>
               <div
-                className="bg-light rounded p-2 border border-secondary d-flex align-items-center"
+                className="bg-white text-dark rounded p-2 border border-secondary d-flex align-items-center"
                 style={{ minWidth: "260px", minHeight: "90px" }}
               >
                 <HabitTracker />
@@ -189,17 +185,17 @@ class Decks extends Component {
             pinnedDecks.length > 0 && (
               <div className="container container--full px-4 mt-4">
                 <div className="pinned-row">
-                  <div className="d-flex justify-content-between align-items-end mb-2 mx-1">
+                  <div className="text-shadow d-flex justify-content-between align-items-end mb-2 mx-1">
                     <h6 className="text-uppercase m-0">MY PINNED DECKS</h6>
-                    <Link className="text-dark text-underline" to="/collections/pinned">
+                    <Link className="text-white text-underline" to="/collections/pinned">
                       See all
                     </Link>
                   </div>
-                  <div className="row">
+                  <div className="deck-row row">
                     {pinnedDecks.slice(0, 4).map(item => (
                       <DeckItem
-                        key={item.id}
                         deck={item}
+                        key={item.id}
                         isPinned={this.isPinned(item.id)}
                         deckProgress={this.getDeckProgress(item.id)}
                         onTogglePin={this.onTogglePin}
@@ -212,7 +208,7 @@ class Decks extends Component {
         </div>
 
         {collections && (
-          <div className="container container--full">
+          <div className="container container--full px-4">
             <div className="mt-5">
               <div className="d-flex justify-content-between align-items-end mb-2 mx-1">
                 <h6 className="text-uppercase m-0">Popular Collections</h6>
@@ -220,8 +216,8 @@ class Decks extends Component {
                   See all
                 </Link>
               </div>
-              <div className="px-0 px-lg-4 mx-0 mx-lg-auto">
-                <div className="row pt-1">
+              <div className="px-0  mx-0 mx-lg-auto">
+                <div className="collection-row row pt-1">
                   {collections.slice(0, 4).map(item => (
                     <CollectionItem key={item.id} collection={item} />
                   ))}
@@ -239,33 +235,8 @@ class Decks extends Component {
                   <h6 className="text-uppercase m-0">Featured Decks</h6>
                 </div>
                 {featuredRow.decks.length > 0 && (
-                  <div className="row">
+                  <div className="deck-row row">
                     {featuredRow.decks.slice(0, 4).map(deck => (
-                      <DeckItem
-                        deck={deck}
-                        key={deck.id}
-                        isPinned={this.isPinned(deck.id)}
-                        deckProgress={this.getDeckProgress(deck.id)}
-                        onTogglePin={this.onTogglePin}
-                      />
-                    ))}
-                  </div>
-                )}
-              </div>
-            )}
-
-          {trendingRow &&
-            Object.keys(trendingRow).length > 0 && (
-              <div className="my-4">
-                <div className="d-flex justify-content-between align-items-end mb-2 mx-1">
-                  <h6 className="text-uppercase m-0">{trendingRow.name}</h6>
-                  <Link className="text-dark text-underline" to={`/collections/${trendingRow.id}`}>
-                    See all
-                  </Link>
-                </div>
-                {trendingRow.decks.length > 0 && (
-                  <div className="row">
-                    {trendingRow.decks.slice(0, 4).map(deck => (
                       <DeckItem
                         deck={deck}
                         key={deck.id}
@@ -289,7 +260,7 @@ class Decks extends Component {
                   </Link>
                 </div>
                 {newestRow.decks.length > 0 && (
-                  <div className="row">
+                  <div className="deck-row row">
                     {newestRow.decks.slice(0, 4).map(deck => (
                       <DeckItem
                         deck={deck}
@@ -304,20 +275,32 @@ class Decks extends Component {
               </div>
             )}
 
-          <div className="row d-flex justify-content-center mt-2 mb-5">
-            <a
-              className="d-flex align-items-center btn btn-outline-dark px-3"
-              href={config.airtableSuggestionsUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              style={{ borderRadius: "999px" }}
-            >
-              <i className="fa fa-plus mr-2" />
-              <span>Suggest a deck</span>
-            </a>
-          </div>
+          {trendingRow &&
+            Object.keys(trendingRow).length > 0 && (
+              <div className="my-4">
+                <div className="d-flex justify-content-between align-items-end mb-2 mx-1">
+                  <h6 className="text-uppercase m-0">{trendingRow.name}</h6>
+                  <Link className="text-dark text-underline" to={`/collections/${trendingRow.id}`}>
+                    See all
+                  </Link>
+                </div>
+                {trendingRow.decks.length > 0 && (
+                  <div className="deck-row row">
+                    {trendingRow.decks.slice(0, 4).map(deck => (
+                      <DeckItem
+                        deck={deck}
+                        key={deck.id}
+                        isPinned={this.isPinned(deck.id)}
+                        deckProgress={this.getDeckProgress(deck.id)}
+                        onTogglePin={this.onTogglePin}
+                      />
+                    ))}
+                  </div>
+                )}
+              </div>
+            )}
           <div className="row">
-            <div className="col-md-10 offset-md-1 col-lg-8 offset-lg-2 mt-5">
+            <div className="col-md-10 offset-md-1 col-lg-8 offset-lg-2 my-4">
               <FeedbackForm />
             </div>
           </div>
