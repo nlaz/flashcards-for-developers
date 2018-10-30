@@ -2,13 +2,14 @@ import React from "react";
 import { Link } from "react-router-dom";
 
 import * as analytics from "../components/GoogleAnalytics";
+import isProMember from "./utils/isProMember";
 
 const Footer = () => (
   <div className="bg-dark">
     <div className="container container--full d-flex align-items-center justify-content-between p-4">
       <div className="text-secondary d-flex flex-column">
         <small className="font-weight-medium">Flashcards For Developers © 2018</small>
-        <small>2332 cards studied 80,045 times</small>
+        <small>2599 cards studied 87,639 times</small>
       </div>
 
       <ul className="list-inline mb-0 text-center text-md-right">
@@ -19,6 +20,15 @@ const Footer = () => (
             </Link>
           </small>
         </li>
+        {!isProMember() && (
+          <li className="list-inline-item">
+            <small>
+              <Link className="text-secondary" to="/pages/membership">
+                Upgrade
+              </Link>
+            </small>
+          </li>
+        )}
         <li className="list-inline-item">
           <small>
             <Link

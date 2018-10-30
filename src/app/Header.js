@@ -85,22 +85,21 @@ class Header extends Component {
             )}
           </div>
           <ul className="d-flex align-items-center p-0 m-0">
-            {!authenticated &&
-              !isProMember() && (
-                <Link
-                  className="d-none d-sm-flex align-items-center btn-member mr-2"
-                  to="/pages/membership"
-                  onClick={() =>
-                    analytics.logMembershipAction("User clicked 'Upgrade' button in header")
-                  }
-                >
-                  Become a Pro member
-                </Link>
-              )}
+            {!isProMember() && (
+              <Link
+                className="d-none d-sm-flex align-items-center btn-member mr-2"
+                to="/pages/membership"
+                onClick={() =>
+                  analytics.logMembershipAction("User clicked 'Upgrade' button in header")
+                }
+              >
+                Become a Pro member
+              </Link>
+            )}
 
             {authenticated
               ? [
-                  <li className="list-inline-item position-relative" key={0}>
+                  <li className="list-inline-item position-relative ml-1" key={0}>
                     <Link to="/decks/new">
                       <Octicon
                         className="d-flex align-items-center p-2 add-button"
