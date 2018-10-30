@@ -40,7 +40,7 @@ class App extends Component {
                 <Route exact path="/collections" component={CollectionsHome} />
                 <Route exact path="/collections/:collectionId" component={Collections} />
                 <Route exact path="/collections/:collectionId/review" component={Review} />
-                <Route exact path="/:userId" component={Profile} />
+                <Route exact path="/:userId" component={ReqAuth(Profile)} />
                 <Route exact path="/:userId/decks" component={ReqAuth(MyDecksHome)} />
                 <Route exact path="*" component={NotFound} />
               </Switch>

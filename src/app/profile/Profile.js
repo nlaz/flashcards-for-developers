@@ -9,8 +9,15 @@ import ReviewHeatmap from "./ReviewHeatmap";
 import * as api from "../apiActions";
 
 class Profile extends Component {
-  state = { pinnedDecks: [] };
+  state = { pinnedDecks: [], isError: false };
 
+  componentWillMount() {
+    const { userId } = this.props.match.params;
+    const user = isAuthenticated() ? JSON.parse(cookie.get("user")) : {};
+    if (userId !== user.id) {
+      this.setState({ isError: true });
+    }
+  }
   componentDidMount() {
     const { userId } = this.props.match.params;
     api.fetchUserPinnedDecks(userId).then(({ data }) => {
@@ -21,11 +28,22 @@ class Profile extends Component {
   isPinned = id => this.state.pinnedDecks.find(el => el.id === id);
 
   render() {
-    const { pinnedDecks } = this.state;
+    const { pinnedDecks, isError } = this.state;
     const authenticated = isAuthenticated();
     const user = authenticated ? JSON.parse(cookie.get("user")) : {};
     const decks = [];
     const studyProgress = [];
+
+    if (isError) {
+      return (
+        <div className="container container--narrow px-0">
+          <div className="text-center p-4">
+            <h1 className="text-dark">Unable to load request</h1>
+            <p>Please try again or go back home.</p>
+          </div>
+        </div>
+      );
+    }
 
     return (
       <div>
