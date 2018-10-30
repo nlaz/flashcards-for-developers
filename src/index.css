@@ -144,9 +144,8 @@ a[disabled] {
 }
 
 .deck-item .pin-btn svg {
-  width: 10px;
-  height: 10px;
-  margin-right: 2px;
+  margin-right: 4px;
+  margin-bottom: 1px;
   fill: #999999;
 }
 
@@ -154,9 +153,13 @@ a[disabled] {
   display: flex;
   cursor: pointer;
   border: 1px solid #eeeeee;
+  position: absolute;
+  bottom: 16px;
+  left: 16px;
   color: #999999;
 }
 
+.pin-btn-active svg,
 .deck-item .pin-btn-active svg {
   fill: white;
 }
@@ -235,13 +238,12 @@ a[disabled] {
   text-overflow: ellipsis;
 }
 
-.add-button {
-  color: #999999;
-  fill: #999999;
+.nav-icon {
+  fill: #898989;
   transition: all 0.1s ease-in-out;
 }
 
-.add-button:hover {
+.nav-icon:hover {
   color: #363a40;
   fill: #363a40;
 }

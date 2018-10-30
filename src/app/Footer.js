@@ -6,7 +6,7 @@ import isProMember from "./utils/isProMember";
 
 const Footer = () => (
   <div className="bg-dark">
-    <div className="container container--full d-flex align-items-center justify-content-between p-4">
+    <div className="container container--full d-flex flex-column flex-md-row align-items-center justify-content-between p-4">
       <div className="text-secondary d-flex flex-column">
         <small className="font-weight-medium">Flashcards For Developers © 2018</small>
         <small>2599 cards studied 87,639 times</small>

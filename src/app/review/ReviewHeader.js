@@ -88,10 +88,10 @@ class ReviewHeader extends React.Component {
             onClick={this.onTogglePin}
             className={cx("btn btn-sm d-flex align-items-center mt-2 px-2", {
               "btn-secondary": !isPinned,
-              "bg-dark text-white": isPinned,
+              "pin-btn-active bg-dark text-white": isPinned,
             })}
           >
-            <Octicon name={isPinned ? "check" : "pin"} className="d-flex mr-2" />
+            <Octicon name="pin" className="d-flex mr-2" />
             <small className="font-weight-bold mr-1">{isPinned ? "PINNED" : "PIN"}</small>
           </button>
         )}
