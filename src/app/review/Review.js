@@ -1,5 +1,4 @@
 import React, { Component } from "react";
-import cx from "classnames";
 import moment from "moment";
 import cookie from "js-cookie";
 
@@ -12,6 +11,7 @@ import * as localStorage from "../utils/localStorage";
 import * as studyProgress from "../utils/studyProgress";
 import * as analytics from "../../components/GoogleAnalytics";
 
+import Tab from "../../components/Tab";
 import CardsSection from "./CardsSection";
 import SettingsSection from "./SettingsSection";
 import StudySection from "./StudySection";
@@ -22,23 +22,6 @@ const TABS = {
   CARDS: "cards",
   SETTINGS: "settings",
 };
-
-const Tab = ({ active, className, children, onClick }) => (
-  <div
-    onClick={onClick}
-    className={cx("text-uppercase py-2 px-3", { "border-primary": active })}
-    style={{ borderBottom: active ? "2px solid blue" : "none", cursor: "pointer" }}
-  >
-    <span
-      className={cx("small font-weight-medium", {
-        "text-primary": active,
-        "text-muted": !active,
-      })}
-    >
-      {children}
-    </span>
-  </div>
-);
 
 class Review extends Component {
   static defaultProps = { match: { params: {} } };
@@ -54,6 +37,13 @@ class Review extends Component {
   };
 
   // Lifecycle methods
+  componentWillMount() {
+    const { params } = this.props.match;
+    if (params.tabName && params.tabName.length > 0) {
+      this.setState({ activeTab: params.tabName });
+    }
+  }
+
   componentDidMount() {
     const { params } = this.props.match;
     if (this.isCollectionPage()) {
@@ -63,9 +53,6 @@ class Review extends Component {
     } else {
       this.fetchDeck(params.deckId);
       this.fetchDeckProgress(params.deckId);
-    }
-    if (params.tabName && params.tabName.length > 0) {
-      this.setState({ activeTab: params.tabName });
     }
   }
 
@@ -259,7 +246,9 @@ class Review extends Component {
           style={{ background: "#f9f9f9", borderBottom: "1px solid #e8e8e8" }}
         >
           <div className="container container--narrow">
-            {Boolean(deck) && <ReviewHeader deck={deck} className="review-header mt-3 mb-2" />}
+            {Object.keys(deck).length > 0 && (
+              <ReviewHeader deck={deck} className="review-header mt-3 mb-2" />
+            )}
 
             <div className="d-flex mt-3">
               <Tab onClick={() => this.onTabSelect(TABS.STUDY)} active={activeTab === TABS.STUDY}>
