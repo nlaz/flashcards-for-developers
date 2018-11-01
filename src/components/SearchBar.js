@@ -2,7 +2,6 @@ import React, { Component } from "react";
 import { Link, withRouter } from "react-router-dom";
 import { debounce } from "lodash";
 
-import * as analytics from "./GoogleAnalytics";
 import * as api from "../app/apiActions";
 import Octicon from "./Octicon";
 
@@ -40,7 +39,6 @@ class SearchBar extends Component {
 
   searchContent = debounce(value => {
     api.searchContent(value).then(({ data }) => {
-      analytics.logSearchAction(value);
       this.setState({ content: data, isLoading: false });
     });
   }, 300);
