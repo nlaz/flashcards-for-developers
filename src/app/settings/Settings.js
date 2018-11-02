@@ -88,11 +88,15 @@ class Settings extends Component {
 
   handleError = error => {
     console.error(error);
-    this.setState({ isLoading: false, isSuccess: false });
+    this.setState({
+      errors: { ...this.state.errors, form: error },
+      isLoading: false,
+      isSuccess: false,
+    });
   };
 
   render() {
-    const { profile, isLoading, isSuccess } = this.state;
+    const { profile, errors, isLoading, isSuccess } = this.state;
 
     return (
       <div className="container container--narrow my-5 px-4">
@@ -106,24 +110,31 @@ class Settings extends Component {
           <h5 className="font-weight-light py-1">My Details</h5>
           <hr />
           <div className="row mt-5">
-            <div className="col-1">
-              <small className="text-muted">Name</small>
+            <div className="col-sm-2 col-lg-1">
+              <small className={errors.name ? "text-danger" : "text-muted"}>Name</small>
             </div>
-            <div className="col-11">
-              <input
-                name="name"
-                onChange={this.onChange}
-                className="small border-0 py-2 w-100"
-                value={profile.name}
-              />
-              <hr />
+            <div className="col-sm-10 col-lg-11">
+              <div className="d-flex align-items-center">
+                <input
+                  name="name"
+                  onChange={this.onChange}
+                  className="small border-0 py-2 w-100"
+                  value={profile.name}
+                />
+                {errors.name && (
+                  <small className="text-danger text-uppercase ml-2 shake--error">
+                    {errors.name}
+                  </small>
+                )}
+              </div>
+              <hr className={errors.name ? "border-danger" : ""} />
             </div>
           </div>
           <div className="row">
-            <div className="col-1">
+            <div className="col-sm-2 col-lg-1">
               <small className="text-muted">Avatar</small>
             </div>
-            <div className="col-11">
+            <div className="col-sm-10 col-lg-11">
               <img
                 className="rounded rounded-circle"
                 style={{ width: "60px", height: "60px" }}
@@ -134,25 +145,32 @@ class Settings extends Component {
             </div>
           </div>
           <div className="row">
-            <div className="col-1">
-              <small className="text-muted">Email</small>
+            <div className="col-sm-2 col-lg-1">
+              <small className={errors.email ? "text-danger" : "text-muted"}>Email</small>
             </div>
-            <div className="col-11">
-              <input
-                className="small border-0 py-2 w-100"
-                type="email"
-                name="email"
-                onChange={this.onChange}
-                value={profile.email}
-              />
-              <hr />
+            <div className="col-sm-10 col-lg-11">
+              <div className="d-flex align-items-center">
+                <input
+                  className="small border-0 py-2 w-100"
+                  type="email"
+                  name="email"
+                  onChange={this.onChange}
+                  value={profile.email}
+                />
+                {errors.email && (
+                  <small className="text-danger text-uppercase ml-2 shake--error">
+                    {errors.email}
+                  </small>
+                )}
+              </div>
+              <hr className={errors.email ? "border-danger" : ""} />
             </div>
           </div>
           <div className="row">
-            <div className="col-1">
+            <div className="col-sm-2 col-lg-1">
               <small className="text-muted">Username</small>
             </div>
-            <div className="col-11">
+            <div className="col-sm-10 col-lg-11">
               <input
                 className="small border-0 py-2 w-100"
                 name="username"
@@ -163,10 +181,10 @@ class Settings extends Component {
             </div>
           </div>
           <div className="row">
-            <div className="col-1">
+            <div className="col-sm-2 col-lg-1">
               <small className="text-muted">Newsletter</small>
             </div>
-            <div className="col-11">
+            <div className="col-sm-10 col-lg-11">
               <div className="d-flex align-items-center my-1">
                 <input
                   className="small border-0 py-2"
@@ -190,6 +208,11 @@ class Settings extends Component {
             >
               Update my profile
             </button>
+            {(errors.name || errors.email || errors.form) && (
+              <small className="text-uppercase text-danger ml-2">
+                🙀 Oh-oh! There has been an error...
+              </small>
+            )}
             {isLoading && <small className="text-uppercase text-muted ml-2">💾 Saving...</small>}
             {isSuccess && <small className="text-uppercase text-muted ml-2">👌 Updated!</small>}
           </div>
