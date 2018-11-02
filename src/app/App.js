@@ -10,6 +10,7 @@ import Collections from "./collections/Collections";
 import Logout from "./auth/Logout";
 import AuthRedirect from "./auth/AuthRedirect";
 import Profile from "./profile/Profile";
+import Settings from "./settings/Settings";
 import ReqAuth from "./auth/ReqAuth";
 import Footer from "./Footer";
 import Header from "./Header";
@@ -39,6 +40,7 @@ class App extends Component {
                 <Route exact path="/collections" component={CollectionsHome} />
                 <Route exact path="/collections/:collectionId" component={Collections} />
                 <Route exact path="/collections/:collectionId/review" component={Review} />
+                <Route exact path="/settings/profile" component={Settings} />
                 <Route exact path="/:userId" component={ReqAuth(Profile)} />
                 <Route exact path="/:userId/:tabName" component={ReqAuth(Profile)} />
                 <Route exact path="*" component={NotFound} />

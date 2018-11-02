@@ -99,6 +99,8 @@ class Profile extends Component {
     }
   };
 
+  onGoTo = () => this.props.history.push("/settings/profile");
+
   isPinned = id => this.state.pinnedDecks.find(el => el.id === id);
   getDeckProgress = id => this.state.studyProgress.find(el => el.deck === id);
 
@@ -123,7 +125,10 @@ class Profile extends Component {
                 <img className="profile-image rounded" src={user.avatar_url} alt="User profile" />
                 <div className="ml-3">
                   <h1>{user.name}</h1>
-                  <button className="btn btn-sm btn-white text-uppercase d-flex align-items-center px-3">
+                  <button
+                    onClick={this.onGoTo}
+                    className="btn btn-sm btn-white text-uppercase d-flex align-items-center px-3"
+                  >
                     <small className="font-weight-medium">Edit Bio</small>
                   </button>
                 </div>
