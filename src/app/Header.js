@@ -26,6 +26,12 @@ const LogoutTooltip = ({ user }) => (
         My Decks
       </Link>
     </div>
+    <hr className="m-0" />
+    <div className="tooltip-item">
+      <Link className="text-secondary" to="/settings/profile">
+        Settings
+      </Link>
+    </div>
     <div className="tooltip-item">
       <Link
         className="text-secondary"

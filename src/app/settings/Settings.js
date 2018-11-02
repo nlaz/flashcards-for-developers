@@ -2,15 +2,31 @@ import React, { Component } from "react";
 import cookie from "js-cookie";
 
 import isAuthenticated from "../utils/isAuthenticated";
+import DeleteAccountModal from "./DeleteAccountModal";
 
 class Settings extends Component {
+  state = {
+    showModal: false,
+    profile: { name: "", email: "", avatar_url: "", username: "", email_notification: "" },
+    errors: { email: undefined, name: undefined },
+  };
+
+  onOpenModal = () => this.setState({ showModal: true });
+
+  onCloseModal = () => this.setState({ showModal: false });
+
   render() {
     const user = isAuthenticated() ? JSON.parse(cookie.get("user")) : {};
 
     return (
-      <div className="container container--full my-5 px-4">
+      <div className="container container--narrow my-5 px-4">
+        <DeleteAccountModal
+          isOpen={this.state.showModal}
+          onCancel={this.onCloseModal}
+          onConfirm={this.onDelete}
+        />
         <h1 className="mb-4">Settings</h1>
-        <div className="border bg-white rounded px-3 py-4">
+        <form className="border rounded px-3 py-4 mb-3">
           <h5 className="font-weight-light py-1">My Details</h5>
           <hr />
           <div className="row mt-5">
@@ -63,8 +79,24 @@ class Settings extends Component {
               <hr />
             </div>
           </div>
+          <button
+            className="btn btn-outline-primary btn-sm font-weight-medium px-2 mt-2"
+            type="submit"
+          >
+            Update my profile
+          </button>
+        </form>
+        <div className="border rounded p-3 d-flex align-items-center justify-content-between">
+          <div className="d-flex flex-column justify-content-center">
+            <span className="font-weight-medium m-0">Delete my account</span>
+            <span className="text-muted small">
+              Need a break from flashcards? You can remove your account here.
+            </span>
+          </div>
+          <button onClick={this.onOpenModal} className="btn btn-sm btn-outline-danger px-2">
+            Delete account
+          </button>
         </div>
-        <button className="btn btn-primary btn-sm  mt-3">Update</button>
       </div>
     );
   }
