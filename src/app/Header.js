@@ -26,7 +26,7 @@ const LogoutTooltip = ({ user }) => (
         My Decks
       </Link>
     </div>
-    <hr className="m-0" />
+    <hr className="m-0 my-1" />
     <div className="tooltip-item">
       <Link className="text-secondary" to="/settings/profile">
         Settings
@@ -83,9 +83,14 @@ class Header extends Component {
             {!isHomePage && (
               <Link
                 to="/"
-                className="d-flex align-items-center font-weight-medium text-dark py-2 px-0 btn btn-reset"
+                className="d-flex align-items-center font-weight-medium text-dark py-2 pl-0 pr-2 btn btn-reset"
               >
-                <Octicon name="chevron-left" className="d-flex mr-1" />
+                <Octicon
+                  name="chevron-left"
+                  className="d-md-none d-flex mr-1"
+                  width={18}
+                  height={18}
+                />
                 <span className="d-none d-sm-inline">Flashcards for Developers</span>
               </Link>
             )}
