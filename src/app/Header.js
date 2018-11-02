@@ -17,13 +17,13 @@ const LogoutTooltip = ({ user }) => (
       </Link>
     </div>
     <div className="tooltip-item">
-      <Link className="text-secondary" to={`/${user.id}/decks`}>
-        My Decks
+      <Link className="text-secondary" to={`/${user.id}/pinned`}>
+        My Pinned Decks
       </Link>
     </div>
     <div className="tooltip-item">
-      <Link className="text-secondary" to="/collections/pinned">
-        My Pinned Decks
+      <Link className="text-secondary" to={`/${user.id}/decks`}>
+        My Decks
       </Link>
     </div>
     <div className="tooltip-item">
@@ -115,7 +115,7 @@ class Header extends Component {
                     </Link>
                   </li>,
                   <li className="list-inline-item mx-0" key={-1}>
-                    <Link to="/collections/pinned">
+                    <Link to={`/${user.id}/pinned`}>
                       <Octicon
                         className="nav-icon d-flex align-items-center p-2"
                         name="pin"

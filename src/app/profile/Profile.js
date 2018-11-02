@@ -3,6 +3,7 @@ import { Redirect } from "react-router-dom";
 import cookie from "js-cookie";
 
 import * as api from "../apiActions";
+import * as analytics from "../../components/GoogleAnalytics";
 
 import Tab from "../../components/Tab";
 import isAuthenticated from "../utils/isAuthenticated";
@@ -18,7 +19,13 @@ const TABS = {
 };
 
 class Profile extends Component {
-  state = { pinnedDecks: [], studyProgress: [], activeTab: TABS.OVERVIEW, isError: false };
+  state = {
+    decks: [],
+    pinnedDecks: [],
+    studyProgress: [],
+    activeTab: TABS.OVERVIEW,
+    isError: false,
+  };
 
   componentWillMount() {
     const { userId } = this.props.match.params;
@@ -32,15 +39,34 @@ class Profile extends Component {
     }
   }
 
+  componentWillUpdate(nextProps) {
+    const { params } = nextProps.match;
+    if (nextProps.match !== this.props.match) {
+      if (params.tabName && params.tabName.length > 0) {
+        this.setState({ activeTab: params.tabName });
+      }
+    }
+  }
+
   componentDidMount() {
     this.fetchPinnedDecks();
     this.fetchStudyProgress();
+    this.fetchDecksForUser();
   }
 
   onTabSelect = value => {
     const { userId } = this.props.match.params;
     this.props.history.push(`/${userId}/${value}`);
     this.setState({ activeTab: value });
+  };
+
+  onTogglePin = (event, deck) => {
+    event.preventDefault();
+    const isPinned = this.isPinned(deck.id);
+
+    analytics.logPinDeckAction(deck.name, isPinned);
+
+    this.togglePinnedDeck(deck, isPinned);
   };
 
   fetchPinnedDecks = () => {
@@ -57,11 +83,29 @@ class Profile extends Component {
       .catch(error => console.error(error));
   };
 
+  fetchDecksForUser = () => {
+    api
+      .fetchDecksForUser()
+      .then(response => this.setState({ decks: response.data }))
+      .catch(error => console.error(error));
+  };
+
+  togglePinnedDeck = (deck, isPinned) => {
+    if (isAuthenticated()) {
+      api
+        .togglePinnedDeck(deck.id, isPinned)
+        .then(({ data }) => this.setState({ pinnedDecks: data }))
+        .catch(this.handleError);
+    }
+  };
+
+  isPinned = id => this.state.pinnedDecks.find(el => el.id === id);
+  getDeckProgress = id => this.state.studyProgress.find(el => el.deck === id);
+
   render() {
-    const { pinnedDecks, activeTab, isRedirect, studyProgress } = this.state;
+    const { decks, pinnedDecks, activeTab, isRedirect, studyProgress } = this.state;
     const authenticated = isAuthenticated();
     const user = authenticated ? JSON.parse(cookie.get("user")) : {};
-    const decks = [];
 
     if (isRedirect) {
       return <Redirect to="/" />;
@@ -88,7 +132,7 @@ class Profile extends Component {
                 className="bg-white rounded px-3 py-2 mb-2 d-flex align-items-center"
                 style={{ minWidth: "260px", minHeight: "90px", border: "1px solid #d3d3d3" }}
               >
-                <SkillProgress decks={decks} studyProgress={studyProgress} />
+                <SkillProgress decks={[...decks, ...pinnedDecks]} studyProgress={studyProgress} />
               </div>
             </div>
 
@@ -100,25 +144,39 @@ class Profile extends Component {
                 Overview
               </Tab>
               <Tab onClick={() => this.onTabSelect(TABS.DECKS)} active={activeTab === TABS.DECKS}>
-                Decks
+                Decks ({decks.length})
               </Tab>
               <Tab onClick={() => this.onTabSelect(TABS.PINNED)} active={activeTab === TABS.PINNED}>
-                Pinned
+                Pinned ({pinnedDecks.length})
               </Tab>
             </div>
           </div>
         </div>
 
         {activeTab === TABS.OVERVIEW && (
-          <OverviewSection pinnedDecks={pinnedDecks} studyProgress={studyProgress} />
+          <OverviewSection
+            pinnedDecks={pinnedDecks}
+            studyProgress={studyProgress}
+            onTogglePin={this.onTogglePin}
+          />
         )}
 
         {activeTab === TABS.DECKS && (
-          <DecksSection userId={user.id} pinnedDecks={pinnedDecks} studyProgress={studyProgress} />
+          <DecksSection
+            userId={user.id}
+            decks={decks}
+            pinnedDecks={pinnedDecks}
+            studyProgress={studyProgress}
+            onTogglePin={this.onTogglePin}
+          />
         )}
 
         {activeTab === TABS.PINNED && (
-          <PinnedSection pinnedDecks={pinnedDecks} studyProgress={studyProgress} />
+          <PinnedSection
+            pinnedDecks={pinnedDecks}
+            studyProgress={studyProgress}
+            onTogglePin={this.onTogglePin}
+          />
         )}
       </div>
     );
