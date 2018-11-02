@@ -7,6 +7,7 @@ const queryString = require("query-string");
 const Stripe = require("stripe");
 
 const User = require("../models/User");
+const Deck = require("../models/Deck");
 const ReviewEvent = require("../models/ReviewEvent");
 const userSchemas = require("./validation/users");
 const config = require("../../config/index");
@@ -280,6 +281,8 @@ module.exports.updateUserProfile = async (req, res, next) => {
 module.exports.deleteUserProfile = async (req, res, next) => {
   try {
     await User.deleteOne({ _id: req.user });
+
+    await Deck.updateMany({ author: req.user }, { $set: { status: "private" } });
 
     res.send({ message: "Success! Account deleted." });
   } catch (error) {

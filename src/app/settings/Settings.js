@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import cookie from "js-cookie";
 
 import * as api from "../apiActions";
+import Emoji from "../../components/Emoji";
 import DeleteAccountModal from "./DeleteAccountModal";
 
 const ERRORS = { REQUIRED: "Required", INVALID: "Invalid" };
@@ -73,7 +74,13 @@ class Settings extends Component {
     api
       .updateUserProfile(profile)
       .then(({ data }) => {
-        this.setState({ profile: { ...profile, ...data }, isLoading: false, isSuccess: true });
+        cookie.set("user", data);
+        this.setState({
+          profile: { ...profile, ...data },
+          errors: { name: "", email: "" },
+          isLoading: false,
+          isSuccess: true,
+        });
       })
       .catch(this.handleError);
   };
@@ -210,11 +217,19 @@ class Settings extends Component {
             </button>
             {(errors.name || errors.email || errors.form) && (
               <small className="text-uppercase text-danger ml-2">
-                🙀 Oh-oh! There has been an error...
+                <Emoji value="🙀" /> Oh-oh! There has been an error...
               </small>
             )}
-            {isLoading && <small className="text-uppercase text-muted ml-2">💾 Saving...</small>}
-            {isSuccess && <small className="text-uppercase text-muted ml-2">👌 Updated!</small>}
+            {isLoading && (
+              <small className="text-uppercase text-muted ml-2">
+                <Emoji value="💾" /> Saving...
+              </small>
+            )}
+            {isSuccess && (
+              <small className="text-uppercase text-muted ml-2">
+                <Emoji value="👌" /> Updated!
+              </small>
+            )}
           </div>
         </form>
         <div className="border rounded p-3 d-flex align-items-center justify-content-between">
