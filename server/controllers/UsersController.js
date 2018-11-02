@@ -248,3 +248,41 @@ module.exports.getStudySessions = async (req, res, next) => {
     next(error);
   }
 };
+
+module.exports.getUserProfile = async (req, res, next) => {
+  try {
+    const user = await User.findOne({ _id: req.user });
+
+    res.send(user);
+  } catch (error) {
+    next(error);
+  }
+};
+
+module.exports.updateUserProfile = async (req, res, next) => {
+  try {
+    const { name, email, email_notification, username } = req.body;
+
+    await Joi.validate(req.body, userSchemas.updateUserProfile);
+
+    const user = await User.findOneAndUpdate(
+      { _id: req.user },
+      { $set: { name, email, email_notification, username } },
+      { new: true },
+    );
+
+    res.send(user);
+  } catch (error) {
+    next(error);
+  }
+};
+
+module.exports.deleteUserProfile = async (req, res, next) => {
+  try {
+    await User.deleteOne({ _id: req.user });
+
+    res.send({ message: "Success! Account deleted." });
+  } catch (error) {
+    next(error);
+  }
+};

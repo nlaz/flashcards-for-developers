@@ -39,6 +39,10 @@ router.post("/users/subscriptions", isAuthenticated, UsersController.subscribeUs
 router.post("/users/payments", isAuthenticated, UsersController.postStripeCharge);
 router.get("/users/decks", isAuthenticated, DecksController.getDecksForUser);
 
+router.get("/users/profile", isAuthenticated, UsersController.getUserProfile);
+router.put("/users/profile", isAuthenticated, UsersController.updateUserProfile);
+router.delete("/users/profile", isAuthenticated, UsersController.deleteUserProfile);
+
 router.get("/users/study_sessions", isAuthenticated, UsersController.getStudySessions);
 router.put("/users/study_sessions", isAuthenticated, UsersController.addStudySessions);
 router.get("/users/:userId/reviews", UsersController.getUserReviews);

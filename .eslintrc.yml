@@ -3,3 +3,5 @@ env:
 extends:
     - react-app
     - prettier
+rules:
+  - jsx-a11y/accessilbe-emoji: 0

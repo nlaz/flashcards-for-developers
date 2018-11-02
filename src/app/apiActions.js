@@ -97,6 +97,22 @@ export const fetchUserReviews = userId => {
   return axios.get(`/users/${userId}/reviews`);
 };
 
+export const fetchUserProfile = () => {
+  const config = { headers: { Authorization: cookie.get("token") } };
+
+  return axios.get("/users/profile", config);
+};
+
+export const updateUserProfile = ({ name, email, username, email_notification }) => {
+  const config = { headers: { Authorization: cookie.get("token") } };
+  return axios.put(`/users/profile`, { name, email, username, email_notification }, config);
+};
+
+export const deleteUserProfile = () => {
+  const config = { headers: { Authorization: cookie.get("token") } };
+  return axios.delete("/users/profile", config);
+};
+
 export const removePinnedDeck = deckId => {
   const config = { headers: { Authorization: cookie.get("token") } };
   return axios.delete("/users/pinned_decks", { ...config, data: { deck: deckId } });
