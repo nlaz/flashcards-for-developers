@@ -38,7 +38,7 @@ class DecksSection extends Component {
             <Octicon name="package" height="32" fill="#99a0a8" className="mx-2" />
             <Octicon name="graph" height="32" fill="#99a0a8" className="mx-2" />
 
-            <h1 className="m-0">No current decks</h1>
+            <h1 className="m-0">No decks yet</h1>
             <p>You don't have any flashcard decks yet. Add a few decks to get started.</p>
             <Link to="/decks/new" className="btn btn-success btn-sm text-white px-3">
               + Add Deck

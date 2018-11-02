@@ -124,10 +124,10 @@ class Profile extends Component {
               <div className="d-flex align-items-center">
                 <img className="profile-image rounded" src={user.avatar_url} alt="User profile" />
                 <div className="ml-3">
-                  <h1>{user.name}</h1>
+                  <h1 className="m-0">{user.name}</h1>
                   <button
                     onClick={this.onGoTo}
-                    className="btn btn-sm btn-white text-uppercase d-flex align-items-center px-3"
+                    className="btn btn-sm btn-white text-uppercase d-flex align-items-center px-3 mt-2"
                   >
                     <small className="font-weight-medium">Edit Bio</small>
                   </button>
