@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import { withRouter } from "react-router-dom";
+import Tooltip from "rc-tooltip";
 import moment from "moment";
 import cx from "classnames";
 
@@ -13,8 +14,24 @@ const oneYearAgo = moment().subtract(NUM_DAYS_IN_YEAR, "days");
 const columns = [...Array(NUM_WEEKS)];
 const rows = [...Array(NUM_DAYS)];
 
-const GridItem = ({ activity }) => {
-  return <div className={cx("grid-item", { [`grid-item-${activity}`]: activity !== undefined })} />;
+const Square = ({ activity }) => (
+  <div className={cx("grid-item", { [`grid-item-${activity}`]: activity !== undefined })} />
+);
+
+const GridItem = ({ count, activity, date }) => {
+  if (date.isAfter(moment()) || date.isSameOrBefore(oneYearAgo)) {
+    return <div className="grid-item" />;
+  }
+
+  const overlay = `${count} reviews on ${moment(date).format("MMM D, YYYY")}`;
+
+  return (
+    <Tooltip placement="top" overlay={overlay} mouseEnterDelay={0.1}>
+      <div>
+        <Square activity={activity} />
+      </div>
+    </Tooltip>
+  );
 };
 
 const YAxis = () => (
@@ -97,10 +114,7 @@ class ReviewHeatmap extends Component {
 
   getActivity = (row, col) => {
     const { reviews, stats = {} } = this.state;
-    const rowIndex = row + col * NUM_DAYS;
-    const gridOffset = oneYearAgo.day();
-    const daysSinceToday = NUM_DAYS_IN_YEAR - rowIndex + gridOffset;
-    const date = moment().subtract(daysSinceToday, "days");
+    const date = this.getDate(row, col);
 
     if (date.isAfter(moment()) || date.isSameOrBefore(oneYearAgo)) {
       return;
@@ -110,17 +124,32 @@ class ReviewHeatmap extends Component {
     return this.getBucket(count, stats);
   };
 
+  getCount = (row, col) => {
+    const { reviews } = this.state;
+    const date = this.getDate(row, col);
+
+    if (date.isAfter(moment()) || date.isSameOrBefore(oneYearAgo)) {
+      return;
+    }
+    return reviews[date.format("YYYY-MM-DD")] || 0;
+  };
+
+  getDate = (row, col) => {
+    const rowIndex = row + col * NUM_DAYS;
+    const gridOffset = oneYearAgo.day();
+    const daysSinceToday = NUM_DAYS_IN_YEAR - rowIndex + gridOffset;
+    return moment().subtract(daysSinceToday, "days");
+  };
+
   getBucket = (count, stats) => {
-    if (count === 0) {
-      return 0;
-    } else if (count <= stats.q1) {
-      return 1;
-    } else if (count <= stats.median) {
-      return 2;
-    } else if (count <= stats.q3) {
-      return 3;
-    } else if (count <= stats.high) {
+    if (count >= stats.q3) {
       return 4;
+    } else if (count >= stats.median) {
+      return 3;
+    } else if (count >= stats.q1) {
+      return 2;
+    } else if (count > 0 && count <= stats.q1) {
+      return 1;
     } else {
       return 0;
     }
@@ -156,7 +185,11 @@ class ReviewHeatmap extends Component {
                     <div className={`col-item col-item-${colKey}`} key={colKey}>
                       {rows.map((_, rowKey) => (
                         <div className={`row-item row-item-${rowKey}`} key={rowKey}>
-                          <GridItem activity={this.getActivity(rowKey, colKey)} />
+                          <GridItem
+                            activity={this.getActivity(rowKey, colKey)}
+                            date={this.getDate(rowKey, colKey)}
+                            count={this.getCount(rowKey, colKey)}
+                          />
                         </div>
                       ))}
                     </div>
@@ -166,11 +199,11 @@ class ReviewHeatmap extends Component {
             </div>
             <div className="graph-footer d-flex justify-content-end align-items-center mt-2">
               <small className="mr-1">Less</small>
-              <GridItem activity={0} />
-              <GridItem activity={1} />
-              <GridItem activity={2} />
-              <GridItem activity={3} />
-              <GridItem activity={4} />
+              <Square activity={0} />
+              <Square activity={1} />
+              <Square activity={2} />
+              <Square activity={3} />
+              <Square activity={4} />
               <small className="ml-1">More</small>
             </div>
           </div>
