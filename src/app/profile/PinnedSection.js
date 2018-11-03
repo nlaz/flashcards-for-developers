@@ -7,15 +7,6 @@ import Octicon from "../../components/Octicon";
 import DeckItem from "../home/DeckItem";
 
 class PinnedSection extends Component {
-  onTogglePin = (event, deck) => {
-    event.preventDefault();
-    const isPinned = this.isPinned(deck.id);
-
-    analytics.logPinDeckAction(deck.name, isPinned);
-
-    this.props.togglePinnedDeck(deck, isPinned);
-  };
-
   isPinned = id => this.props.pinnedDecks.find(el => el.id === id);
   getDeckProgress = id => this.props.studyProgress.find(el => el.deck === id);
 
@@ -43,7 +34,7 @@ class PinnedSection extends Component {
                 deck={item}
                 isPinned={this.isPinned(item.id)}
                 deckProgress={this.getDeckProgress(item.id)}
-                onTogglePin={this.onTogglePin}
+                onTogglePin={this.props.onTogglePin}
               />
             ))}
           </div>

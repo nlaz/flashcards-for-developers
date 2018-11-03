@@ -232,14 +232,14 @@ class Settings extends Component {
             )}
           </div>
         </form>
-        <div className="border rounded p-3 d-flex align-items-center justify-content-between">
+        <div className="border rounded p-3 d-flex flex-column flex-sm-row align-items-start align-items-sm-center justify-content-between">
           <div className="d-flex flex-column justify-content-center">
             <span className="font-weight-medium m-0">Delete my account</span>
             <span className="text-muted small">
               Need a break from flashcards? You can remove your account here.
             </span>
           </div>
-          <button onClick={this.onOpenModal} className="btn btn-sm btn-outline-danger px-2">
+          <button onClick={this.onOpenModal} className="btn btn-sm btn-outline-danger px-2 my-2">
             Delete account
           </button>
         </div>

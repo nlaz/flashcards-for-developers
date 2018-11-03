@@ -251,8 +251,15 @@ a[disabled] {
 }
 
 .profile-image {
-  width: 140px;
-  height: 140px;
+  width: 70px;
+  height: 70px;
+}
+
+@media (min-width: 992px) {
+  .profile-image {
+    width: 140px;
+    height: 140px;
+  }
 }
 
 #header-logout {
@@ -544,10 +551,10 @@ a[disabled] {
   background: #ebedf0;
 }
 .grid-item-1 {
-  background: rgba(28, 116, 243, 0.25);
+  background: rgba(28, 116, 243, 0.3);
 }
 .grid-item-2 {
-  background: rgba(28, 116, 243, 0.45);
+  background: rgba(28, 116, 243, 0.5);
 }
 .grid-item-3 {
   background: rgba(28, 116, 243, 0.75);

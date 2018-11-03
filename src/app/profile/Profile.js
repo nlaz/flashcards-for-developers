@@ -120,9 +120,13 @@ class Profile extends Component {
           style={{ background: "#f9f9f9", borderBottom: "1px solid #e8e8e8" }}
         >
           <div className="container container--full">
-            <div className="d-flex justify-content-between align-items-center">
+            <div className="d-flex flex-column-reverse flex-lg-row justify-content-between align-items-lg-center">
               <div className="d-flex align-items-center">
-                <img className="profile-image rounded" src={user.avatar_url} alt="User profile" />
+                <img
+                  className="profile-image rounded my-2"
+                  src={user.avatar_url}
+                  alt="User profile"
+                />
                 <div className="ml-3">
                   <h1 className="m-0">{user.name}</h1>
                   <button

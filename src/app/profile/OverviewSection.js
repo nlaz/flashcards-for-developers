@@ -33,7 +33,7 @@ class OverviewSection extends Component {
                     deck={item}
                     isPinned={this.isPinned(item.id)}
                     deckProgress={this.getDeckProgress(item.id)}
-                    onTogglePin={this.onTogglePin}
+                    onTogglePin={this.props.onTogglePin}
                   />
                 ))}
               </div>
