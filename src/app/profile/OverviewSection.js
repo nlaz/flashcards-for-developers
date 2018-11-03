@@ -26,7 +26,7 @@ class OverviewSection extends Component {
             </div>
             <hr className="mt-1 mb-3" />
             {pinnedDecks.length > 0 ? (
-              <div className="row">
+              <div className="deck-row row">
                 {pinnedDecks.slice(0, 4).map(item => (
                   <DeckItem
                     key={item.id}

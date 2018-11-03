@@ -1,38 +1,18 @@
 import React, { Component } from "react";
 import { withRouter } from "react-router-dom";
-import Tooltip from "rc-tooltip";
 import moment from "moment";
-import cx from "classnames";
 
 import * as api from "../apiActions";
+import GridItem from "./GridItem";
+import GridSquare from "./GridSquare";
 
 const NUM_WEEKS = 54;
 const NUM_DAYS = 7;
-const NUM_DAYS_IN_YEAR = 366;
-const oneYearAgo = moment().subtract(NUM_DAYS_IN_YEAR, "days");
+// const NUM_DAYS_IN_YEAR = 366;
+// const oneYearAgo = moment().subtract(NUM_DAYS_IN_YEAR, "days");
 
 const columns = [...Array(NUM_WEEKS)];
 const rows = [...Array(NUM_DAYS)];
-
-const Square = ({ activity }) => (
-  <div className={cx("grid-item", { [`grid-item-${activity}`]: activity !== undefined })} />
-);
-
-const GridItem = ({ count, activity, date }) => {
-  if (date.isAfter(moment()) || date.isSameOrBefore(oneYearAgo)) {
-    return <div className="grid-item" />;
-  }
-
-  const overlay = `${count} reviews on ${moment(date).format("MMM D, YYYY")}`;
-
-  return (
-    <Tooltip placement="top" overlay={overlay} mouseEnterDelay={0.1}>
-      <div>
-        <Square activity={activity} />
-      </div>
-    </Tooltip>
-  );
-};
 
 const YAxis = () => (
   <div className="d-flex flex-column text-muted mr-1">
@@ -61,43 +41,32 @@ const XAxis = () => (
   </div>
 );
 
-function getBoxValues(data) {
-  var boxValues = {};
-  boxValues.low = Math.min.apply(Math, data);
-  boxValues.q1 = getPercentile(data, 25);
-  boxValues.median = getPercentile(data, 50);
-  boxValues.q3 = getPercentile(data, 75);
-  boxValues.high = Math.max.apply(Math, data);
-  return boxValues;
-}
+const getBoxValues = data => ({
+  low: Math.min.apply(Math, data),
+  q1: getPercentile(data, 0.25),
+  median: getPercentile(data, 0.5),
+  q3: getPercentile(data, 0.75),
+  high: Math.max.apply(Math, data),
+});
 
-function getPercentile(data, percentile) {
-  data.sort();
-  var index = (percentile / 100) * data.length;
-  var result;
+const getPercentile = (data, percentile) => {
+  let result = [...data].sort((a, b) => a - b);
+  const index = percentile * result.length;
 
   if (Math.floor(index) === index) {
-    result = (data[index - 1] + data[index]) / 2;
+    result = (result[index - 1] + result[index]) / 2;
   } else {
-    result = data[Math.floor(index)];
+    result = result[Math.floor(index)];
   }
   return result;
-}
+};
 
 class ReviewHeatmap extends Component {
   state = { reviews: {}, stats: {} };
 
   componentDidMount() {
     const { userId } = this.props.match.params;
-    api
-      .fetchUserReviews(userId)
-      .then(({ data }) =>
-        this.setState({
-          reviews: this.formatResponse(data),
-          stats: this.getReviewStats(data),
-        }),
-      )
-      .catch(error => console.log(error));
+    this.fetchUserReviews(userId);
   }
 
   formatResponse = data => {
@@ -112,47 +81,12 @@ class ReviewHeatmap extends Component {
     return getBoxValues(counts);
   };
 
-  getActivity = (row, col) => {
-    const { reviews, stats = {} } = this.state;
-    const date = this.getDate(row, col);
-
-    if (date.isAfter(moment()) || date.isSameOrBefore(oneYearAgo)) {
-      return;
-    }
-
-    const count = reviews[date.format("YYYY-MM-DD")] || 0;
-    return this.getBucket(count, stats);
-  };
-
-  getCount = (row, col) => {
-    const { reviews } = this.state;
-    const date = this.getDate(row, col);
-
-    if (date.isAfter(moment()) || date.isSameOrBefore(oneYearAgo)) {
-      return;
-    }
-    return reviews[date.format("YYYY-MM-DD")] || 0;
-  };
-
-  getDate = (row, col) => {
-    const rowIndex = row + col * NUM_DAYS;
-    const gridOffset = oneYearAgo.day();
-    const daysSinceToday = NUM_DAYS_IN_YEAR - rowIndex + gridOffset;
-    return moment().subtract(daysSinceToday, "days");
-  };
-
-  getBucket = (count, stats) => {
-    if (count >= stats.q3) {
-      return 4;
-    } else if (count >= stats.median) {
-      return 3;
-    } else if (count >= stats.q1) {
-      return 2;
-    } else if (count > 0 && count <= stats.q1) {
-      return 1;
-    } else {
-      return 0;
-    }
+  fetchUserReviews = userId => {
+    api.fetchUserReviews(userId).then(({ data }) => {
+      const stats = this.getReviewStats(data);
+      const reviews = this.formatResponse(data);
+      this.setState({ reviews, stats });
+    });
   };
 
   render() {
@@ -186,9 +120,10 @@ class ReviewHeatmap extends Component {
                       {rows.map((_, rowKey) => (
                         <div className={`row-item row-item-${rowKey}`} key={rowKey}>
                           <GridItem
-                            activity={this.getActivity(rowKey, colKey)}
-                            date={this.getDate(rowKey, colKey)}
-                            count={this.getCount(rowKey, colKey)}
+                            row={rowKey}
+                            col={colKey}
+                            reviews={this.state.reviews}
+                            stats={this.state.stats}
                           />
                         </div>
                       ))}
@@ -199,11 +134,11 @@ class ReviewHeatmap extends Component {
             </div>
             <div className="graph-footer d-flex justify-content-end align-items-center mt-2">
               <small className="mr-1">Less</small>
-              <Square activity={0} />
-              <Square activity={1} />
-              <Square activity={2} />
-              <Square activity={3} />
-              <Square activity={4} />
+              <GridSquare activity={0} />
+              <GridSquare activity={1} />
+              <GridSquare activity={2} />
+              <GridSquare activity={3} />
+              <GridSquare activity={4} />
               <small className="ml-1">More</small>
             </div>
           </div>
