@@ -94,7 +94,13 @@ export const fetchUserPinnedDecks = userId => {
 };
 
 export const fetchUserReviews = userId => {
-  return axios.get(`/users/${userId}/reviews`);
+  const config = { headers: { Authorization: cookie.get("token") } };
+  return axios.get(`/users/${userId}/reviews`, config);
+};
+
+export const fetchUserActivity = userId => {
+  const config = { headers: { Authorization: cookie.get("token") } };
+  return axios.get(`/users/${userId}/activity`, config);
 };
 
 export const fetchUserProfile = () => {

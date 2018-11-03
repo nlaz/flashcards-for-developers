@@ -45,7 +45,8 @@ router.delete("/users/profile", isAuthenticated, UsersController.deleteUserProfi
 
 router.get("/users/study_sessions", isAuthenticated, UsersController.getStudySessions);
 router.put("/users/study_sessions", isAuthenticated, UsersController.addStudySessions);
-router.get("/users/:userId/reviews", UsersController.getUserReviews);
+router.get("/users/:userId/reviews", isAuthenticated, UsersController.getUserReviews);
+router.get("/users/:userId/activity", isAuthenticated, UsersController.getUserActivity);
 
 router.get("/study_progress", isAuthenticated, ProgressController.getStudyProgress);
 router.put("/study_progress", isAuthenticated, ProgressController.addStudyProgress);

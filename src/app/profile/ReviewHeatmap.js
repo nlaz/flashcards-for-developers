@@ -62,13 +62,15 @@ const getPercentile = (data, percentile) => {
 };
 
 class ReviewHeatmap extends Component {
-  state = { reviews: {}, stats: {} };
+  state = { reviews: {}, stats: {}, activity: {} };
 
   componentDidMount() {
     const { userId } = this.props.match.params;
     this.fetchUserReviews(userId);
+    this.fetchUserActivity(userId);
   }
 
+  // Helper functions
   formatResponse = data => {
     return data.reduce((obj, item) => {
       obj[item["_id"]] = item.count;
@@ -81,6 +83,7 @@ class ReviewHeatmap extends Component {
     return getBoxValues(counts);
   };
 
+  // API functions
   fetchUserReviews = userId => {
     api.fetchUserReviews(userId).then(({ data }) => {
       const stats = this.getReviewStats(data);
@@ -89,27 +92,32 @@ class ReviewHeatmap extends Component {
     });
   };
 
+  fetchUserActivity = userId => {
+    api.fetchUserActivity(userId).then(({ data }) => {
+      this.setState({ activity: data });
+    });
+  };
+
   render() {
+    const { activity } = this.state;
     return (
       <div className="border rounded" style={{ borderColor: "#e8e8e8", padding: "25px 35px" }}>
         <div className="d-flex flex-column-reverse flex-lg-row justify-content-between mt-2">
-          <div className="d-none d-lg-flex align-items-center justify-content-center mb-2">
+          <div className="d-flex align-items-center justify-content-center mb-2">
             <div className="d-flex flex-column text-muted">
               <small className="font-weight-medium">Current Streak</small>
               <small className="font-weight-medium">Longest Streak</small>
-              <small className="font-weight-medium">Completion</small>
               <small className="font-weight-medium">Cards Seen</small>
               <small className="font-weight-medium">Cards Mastered</small>
             </div>
             <div className="d-flex flex-column ml-3">
-              <small className="font-weight-bold">2 days</small>
-              <small className="font-weight-bold">28 days</small>
-              <small className="font-weight-bold">25%</small>
-              <small className="font-weight-bold">100 cards</small>
-              <small className="font-weight-bold">0 cards</small>
+              <small className="font-weight-bold">{activity.current_streak || 0} days</small>
+              <small className="font-weight-bold">{activity.longest_streak || 0} days</small>
+              <small className="font-weight-bold">{activity.cards_seen || 0} cards</small>
+              <small className="font-weight-bold">{activity.mastered_cards || 0} cards</small>
             </div>
           </div>
-          <div className="graph">
+          <div className="d-none d-lg-block graph">
             <div className="graph-body d-flex">
               <YAxis />
               <div className="d-flex flex-column">

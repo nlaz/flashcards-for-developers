@@ -3,6 +3,7 @@ import moment from "moment";
 
 import * as api from "../apiActions";
 import * as localStorage from "../utils/localStorage";
+import * as streaks from "../utils/streaks";
 import isAuthenticated from "../utils/isAuthenticated";
 
 const PAST_WEEK = [...new Array(7)];
@@ -58,20 +59,6 @@ class HabitTracker extends Component {
     this.setState({ isError: true });
   };
 
-  getCurrentStreak = dates => {
-    let count = 0;
-    const sortedDates = [...dates].sort((a, b) => (a < b ? 1 : a > b ? -1 : 0));
-    for (let [index, date] of sortedDates.entries()) {
-      const today = moment();
-      const prevDate = index > 0 ? sortedDates[index - 1] : today.format();
-      const hoursBetween = moment(prevDate).diff(moment(date), "hours");
-
-      if (hoursBetween < 0 || hoursBetween > 24) break;
-      count = count + 1;
-    }
-    return count;
-  };
-
   render() {
     const { sessions, isError } = this.state;
 
@@ -86,7 +73,7 @@ class HabitTracker extends Component {
       );
     }
 
-    const streak = this.getCurrentStreak(sessions);
+    const currentStreak = streaks.getCurrentStreak(sessions);
 
     return (
       <div className="d-sm-flex flex-row-reverse flex-lg-row justify-content-end justify-content-lg-center align-items-center text-center text-sm-left w-100">
@@ -98,7 +85,7 @@ class HabitTracker extends Component {
             Past Week
           </p>
           <p className="text-dark font-weight-medium m-0" style={{ fontSize: "14px" }}>
-            Your current streak is {streak}
+            Your current streak is {currentStreak}
             <i style={{ color: "#ffc104" }} className="fas fa-fire ml-1" />.
           </p>
         </div>
