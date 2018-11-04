@@ -2,10 +2,15 @@ const Joi = require("joi");
 const axios = require("axios");
 const moment = require("moment");
 const jwt = require("jsonwebtoken");
+const mongoose = require("mongoose");
 const queryString = require("query-string");
 const Stripe = require("stripe");
 
+const streaks = require("../utils/streaks");
 const User = require("../models/User");
+const Deck = require("../models/Deck");
+const CardProgress = require("../models/CardProgress");
+const ReviewEvent = require("../models/ReviewEvent");
 const userSchemas = require("./validation/users");
 const config = require("../../config/index");
 
@@ -150,6 +155,19 @@ module.exports.getPinnedDecks = async (req, res, next) => {
   }
 };
 
+module.exports.getUserPinnedDecks = async (req, res, next) => {
+  try {
+    const { userId } = req.params;
+    const user = await User.findOne({ _id: userId })
+      .select("+saved_decks")
+      .populate("saved_decks");
+
+    res.send(user.saved_decks);
+  } catch (error) {
+    next(error);
+  }
+};
+
 module.exports.addPinnedDecks = async (req, res, next) => {
   try {
     await Joi.validate(req.body, userSchemas.addPinnedDecks);
@@ -214,6 +232,84 @@ module.exports.getStudySessions = async (req, res, next) => {
     const user = await User.findOne({ _id: req.user }).select("+study_sessions");
 
     res.send(user.study_sessions);
+  } catch (error) {
+    next(error);
+  }
+};
+
+module.exports.getUserProfile = async (req, res, next) => {
+  try {
+    const user = await User.findOne({ _id: req.user });
+
+    res.send(user);
+  } catch (error) {
+    next(error);
+  }
+};
+
+module.exports.updateUserProfile = async (req, res, next) => {
+  try {
+    const { name, email, email_notification, username } = req.body;
+
+    await Joi.validate(req.body, userSchemas.updateUserProfile);
+
+    const user = await User.findOneAndUpdate(
+      { _id: req.user },
+      { $set: { name, email, email_notification, username } },
+      { new: true },
+    );
+
+    res.send(user);
+  } catch (error) {
+    next(error);
+  }
+};
+
+module.exports.deleteUserProfile = async (req, res, next) => {
+  try {
+    await User.deleteOne({ _id: req.user });
+
+    await Deck.updateMany({ author: req.user }, { $set: { status: "private" } });
+
+    res.send({ message: "Success! Account deleted." });
+  } catch (error) {
+    next(error);
+  }
+};
+
+module.exports.getUserReviews = async (req, res, next) => {
+  try {
+    const { userId } = req.params;
+    const reviews = await ReviewEvent.aggregate([
+      { $match: { user: mongoose.Types.ObjectId(userId) } },
+      { $project: { yearMonthDay: { $dateToString: { format: "%Y-%m-%d", date: "$createdAt" } } } },
+      { $group: { _id: "$yearMonthDay", count: { $sum: 1 } } },
+    ]);
+
+    res.send(reviews);
+  } catch (error) {
+    next(error);
+  }
+};
+
+module.exports.getUserActivity = async (req, res, next) => {
+  try {
+    const { userId } = req.params;
+
+    const reviews = await ReviewEvent.find({ user: userId });
+    const studyDates = [...new Set(reviews.map(el => moment(el.createdAt).format("YYYY-DD-MM")))];
+    const cardProgresses = await CardProgress.find({ user: userId });
+    const masteredCards = await CardProgress.find({ user: userId, leitnerBox: { $gt: 5 } });
+
+    const currentStreak = streaks.getCurrentStreak(studyDates);
+    const longestStreak = streaks.getLongestStreak(studyDates);
+
+    res.send({
+      cards_seen: cardProgresses.length,
+      mastered_cards: masteredCards.length,
+      current_streak: currentStreak,
+      longest_streak: longestStreak,
+    });
   } catch (error) {
     next(error);
   }

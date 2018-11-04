@@ -12,13 +12,24 @@ import LoginModal from "./auth/LoginModal";
 const LogoutTooltip = ({ user }) => (
   <div className="tooltip-content">
     <div className="tooltip-item">
+      <Link className="text-secondary" to={`/${user.id}`}>
+        My Profile
+      </Link>
+    </div>
+    <div className="tooltip-item">
+      <Link className="text-secondary" to={`/${user.id}/pinned`}>
+        My Pinned Decks
+      </Link>
+    </div>
+    <div className="tooltip-item">
       <Link className="text-secondary" to={`/${user.id}/decks`}>
         My Decks
       </Link>
     </div>
+    <hr className="m-0 my-1" />
     <div className="tooltip-item">
-      <Link className="text-secondary" to="/collections/pinned">
-        My Pinned Decks
+      <Link className="text-secondary" to="/settings/profile">
+        Settings
       </Link>
     </div>
     <div className="tooltip-item">
@@ -72,9 +83,14 @@ class Header extends Component {
             {!isHomePage && (
               <Link
                 to="/"
-                className="d-flex align-items-center font-weight-medium text-dark py-2 px-0 btn btn-reset"
+                className="d-flex align-items-center font-weight-medium text-dark py-2 pl-0 pr-2 btn btn-reset"
               >
-                <Octicon name="chevron-left" className="d-flex mr-1" />
+                <Octicon
+                  name="chevron-left"
+                  className="d-md-none d-flex mr-1"
+                  width={18}
+                  height={18}
+                />
                 <span className="d-none d-sm-inline">Flashcards for Developers</span>
               </Link>
             )}
@@ -110,7 +126,7 @@ class Header extends Component {
                     </Link>
                   </li>,
                   <li className="list-inline-item mx-0" key={-1}>
-                    <Link to="/collections/pinned">
+                    <Link to={`/${user.id}/pinned`}>
                       <Octicon
                         className="nav-icon d-flex align-items-center p-2"
                         name="pin"

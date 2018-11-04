@@ -31,6 +31,7 @@ router.delete("/api/cards/:cardId", isAuthenticated, CardsController.deleteCard)
 router.post("/auth/github/login", UsersController.getGithubUser);
 router.post("/auth/github/register", UsersController.createGithubUser);
 
+router.get("/users/:userId/pinned_decks", UsersController.getUserPinnedDecks);
 router.get("/users/pinned_decks", isAuthenticated, UsersController.getPinnedDecks);
 router.put("/users/pinned_decks", isAuthenticated, UsersController.addPinnedDecks);
 router.delete("/users/pinned_decks", isAuthenticated, UsersController.removePinnedDeck);
@@ -38,8 +39,14 @@ router.post("/users/subscriptions", isAuthenticated, UsersController.subscribeUs
 router.post("/users/payments", isAuthenticated, UsersController.postStripeCharge);
 router.get("/users/decks", isAuthenticated, DecksController.getDecksForUser);
 
+router.get("/users/profile", isAuthenticated, UsersController.getUserProfile);
+router.put("/users/profile", isAuthenticated, UsersController.updateUserProfile);
+router.delete("/users/profile", isAuthenticated, UsersController.deleteUserProfile);
+
 router.get("/users/study_sessions", isAuthenticated, UsersController.getStudySessions);
 router.put("/users/study_sessions", isAuthenticated, UsersController.addStudySessions);
+router.get("/users/:userId/reviews", isAuthenticated, UsersController.getUserReviews);
+router.get("/users/:userId/activity", isAuthenticated, UsersController.getUserActivity);
 
 router.get("/study_progress", isAuthenticated, ProgressController.getStudyProgress);
 router.put("/study_progress", isAuthenticated, ProgressController.addStudyProgress);

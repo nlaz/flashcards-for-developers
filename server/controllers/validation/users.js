@@ -32,4 +32,12 @@ module.exports = {
     reviewedAt: Joi.string().required(),
     isCorrect: Joi.boolean(),
   },
+  updateUserProfile: {
+    name: Joi.string().required(),
+    email: Joi.string()
+      .email()
+      .required(),
+    username: Joi.string().allow(""),
+    email_notification: Joi.boolean(),
+  },
 };

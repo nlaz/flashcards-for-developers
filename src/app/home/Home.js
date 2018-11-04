@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import { Link } from "react-router-dom";
+import cookie from "js-cookie";
 
 import isAuthenticated from "../utils/isAuthenticated";
 import * as api from "../apiActions";
@@ -132,6 +133,8 @@ class Decks extends Component {
       isError,
     } = this.state;
 
+    const user = isAuthenticated() ? JSON.parse(cookie.get("user")) : {};
+
     if (isLoading) {
       return (
         <div className="container p-4 my-5">
@@ -187,7 +190,7 @@ class Decks extends Component {
                 <div className="pinned-row">
                   <div className="text-shadow d-flex justify-content-between align-items-end mb-2 mx-1">
                     <h6 className="text-uppercase m-0">MY PINNED DECKS</h6>
-                    <Link className="text-white text-underline" to="/collections/pinned">
+                    <Link className="text-white text-underline" to={`/${user.id}/pinned`}>
                       See all
                     </Link>
                   </div>

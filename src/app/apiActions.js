@@ -89,6 +89,36 @@ export const fetchPinnedDecks = () => {
   return axios.get("/users/pinned_decks", config);
 };
 
+export const fetchUserPinnedDecks = userId => {
+  return axios.get(`/users/${userId}/pinned_decks`);
+};
+
+export const fetchUserReviews = userId => {
+  const config = { headers: { Authorization: cookie.get("token") } };
+  return axios.get(`/users/${userId}/reviews`, config);
+};
+
+export const fetchUserActivity = userId => {
+  const config = { headers: { Authorization: cookie.get("token") } };
+  return axios.get(`/users/${userId}/activity`, config);
+};
+
+export const fetchUserProfile = () => {
+  const config = { headers: { Authorization: cookie.get("token") } };
+
+  return axios.get("/users/profile", config);
+};
+
+export const updateUserProfile = ({ name, email, username, email_notification }) => {
+  const config = { headers: { Authorization: cookie.get("token") } };
+  return axios.put(`/users/profile`, { name, email, username, email_notification }, config);
+};
+
+export const deleteUserProfile = () => {
+  const config = { headers: { Authorization: cookie.get("token") } };
+  return axios.delete("/users/profile", config);
+};
+
 export const removePinnedDeck = deckId => {
   const config = { headers: { Authorization: cookie.get("token") } };
   return axios.delete("/users/pinned_decks", { ...config, data: { deck: deckId } });
