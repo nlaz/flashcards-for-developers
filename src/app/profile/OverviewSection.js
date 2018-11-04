@@ -11,11 +11,11 @@ class OverviewSection extends Component {
   getDeckProgress = id => this.props.studyProgress.find(el => el.deck === id);
 
   render() {
-    const { pinnedDecks } = this.props;
+    const { decks, pinnedDecks } = this.props;
     const user = isAuthenticated() ? JSON.parse(cookie.get("user")) : {};
 
     return (
-      <div className="">
+      <div className="my-4">
         <div className="container container--full my-4">
           <div className="pinned-row">
             <div className="d-flex justify-content-between align-items-end mb-1 mx-1 pt-1">
@@ -52,6 +52,35 @@ class OverviewSection extends Component {
             <h6 className="text-uppercase m-0">Activity</h6>
           </div>
           <ReviewHeatmap />
+        </div>
+
+        <div className="container container--full my-5 pb-5">
+          <div className="d-flex justify-content-between align-items-end mb-2 mx-1">
+            <h6 className="text-uppercase m-0">MY DECKS</h6>
+            <Link className="text-dark text-underline" to={`/${user.id}/decks`}>
+              See all
+            </Link>
+          </div>
+          <hr className="mt-1 mb-3" />
+          {decks.length > 0 ? (
+            <div className="deck-row row">
+              {decks.slice(0, 4).map(item => (
+                <DeckItem
+                  key={item.id}
+                  deck={item}
+                  isPinned={this.isPinned(item.id)}
+                  deckProgress={this.getDeckProgress(item.id)}
+                  onTogglePin={this.props.onTogglePin}
+                />
+              ))}
+            </div>
+          ) : (
+            <div className="blankslate py-4 my-2 mb-5">
+              <div className="font-weight-bold" style={{ fontSize: "14px" }}>
+                You don't have any decks yet.
+              </div>
+            </div>
+          )}
         </div>
       </div>
     );
