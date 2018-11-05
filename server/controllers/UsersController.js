@@ -49,6 +49,7 @@ module.exports.getGithubUser = async (req, res, next) => {
           email: data.email,
           avatar_url: data.avatar_url,
           github_id: data.id,
+          username: data.login,
         },
       });
     }
@@ -67,14 +68,21 @@ module.exports.getGithubUser = async (req, res, next) => {
 
 module.exports.createGithubUser = async (req, res, next) => {
   try {
-    const { email, name, avatar_url, github_id, email_notification } = req.body;
+    const { email, name, avatar_url, github_id, username, email_notification } = req.body;
 
     await Joi.validate(req.body, userSchemas.createGithubUser);
 
-    const user = await User.create({ email, name, avatar_url, github_id, email_notification });
+    const user = await User.create({
+      email,
+      name,
+      avatar_url,
+      github_id,
+      email_notification,
+      username,
+    });
 
     const token = jwt.sign(
-      { id: user.id, email: user.email, name: user.name },
+      { id: user.id, username: user.username, name: user.name },
       config.sessionSecret,
     );
 
