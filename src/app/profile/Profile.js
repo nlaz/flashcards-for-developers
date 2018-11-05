@@ -186,6 +186,7 @@ class Profile extends Component {
 
         {activeTab === TABS.OVERVIEW && (
           <OverviewSection
+            decks={decks}
             pinnedDecks={pinnedDecks}
             studyProgress={studyProgress}
             onTogglePin={this.onTogglePin}
