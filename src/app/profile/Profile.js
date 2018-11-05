@@ -185,6 +185,7 @@ class Profile extends Component {
             pinnedDecks={pinnedDecks}
             studyProgress={studyProgress}
             onTogglePin={this.onTogglePin}
+            isPageOwner={this.isPageOwner()}
           />
         )}
 
@@ -195,6 +196,7 @@ class Profile extends Component {
             pinnedDecks={pinnedDecks}
             studyProgress={studyProgress}
             onTogglePin={this.onTogglePin}
+            isPageOwner={this.isPageOwner()}
           />
         )}
 
@@ -203,6 +205,7 @@ class Profile extends Component {
             pinnedDecks={pinnedDecks}
             studyProgress={studyProgress}
             onTogglePin={this.onTogglePin}
+            isPageOwner={this.isPageOwner()}
           />
         )}
       </div>
