@@ -77,19 +77,23 @@ class Settings extends Component {
   };
 
   updateUserProfile = () => {
-    const { profile } = this.state;
-    api
-      .updateUserProfile(profile)
-      .then(({ data }) => {
-        cookie.set("user", data);
-        this.setState({
-          profile: { ...profile, ...data },
-          errors: { name: "", email: "", username: "" },
-          isLoading: false,
-          isSuccess: true,
-        });
-      })
-      .catch(this.handleError);
+    const { profile, errors } = this.state;
+    if (!errors.email && !errors.name && !errors.username) {
+      api
+        .updateUserProfile(profile)
+        .then(({ data }) => {
+          cookie.set("user", data);
+          this.setState({
+            profile: { ...profile, ...data },
+            errors: { name: "", email: "", username: "" },
+            isLoading: false,
+            isSuccess: true,
+          });
+        })
+        .catch(this.handleError);
+    } else {
+      this.setState({ isLoading: false, isSuccess: false });
+    }
   };
 
   deleteUserProfile = () => {
