@@ -79,22 +79,6 @@ class Collections extends Component {
           isLoading: false,
         });
       });
-    } else {
-      const pinnedDecks = localStorage.getPinnedDecks();
-      if (pinnedDecks.length > 0) {
-        api.fetchDecksById(pinnedDecks).then(({ data }) => {
-          this.setState({
-            pinnedDecks: data,
-            collection: {
-              name: "My Pinned Decks",
-              id: "pinned",
-              description: "A collection of my all-time favorite decks that I want to learn.",
-            },
-            decks: this.sortDecks(data),
-            isLoading: false,
-          });
-        });
-      }
     }
   };
 

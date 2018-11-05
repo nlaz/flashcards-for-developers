@@ -1,8 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
 
-import * as analytics from "../components/GoogleAnalytics";
-import * as api from "../app/apiActions";
 import isAuthenticated from "../app/utils/isAuthenticated";
 import LoginModal from "../app/auth/LoginModal";
 
@@ -14,35 +12,11 @@ const CheckMark = ({ hidden }) => (
 );
 
 class Membership extends React.Component {
-  state = { showModal: false, isSubmitted: false };
+  state = { showModal: false };
 
-  onOpenModal = () => {
-    analytics.logMembershipAction("Click 'Upgrade' button");
-    this.setState({ showModal: true });
-  };
+  onOpenModal = () => this.setState({ showModal: true });
 
-  onCloseModal = () => {
-    if (!this.state.isSubmitted) {
-      analytics.logMembershipAction("Closed 'Upgrade' modal");
-    }
-    this.setState({ showModal: false });
-  };
-
-  onSubmitModal = event => {
-    event.preventDefault();
-    const { value } = event.target.querySelector("input");
-
-    api
-      .subscribeUser(value)
-      .then(response => {
-        analytics.logMembershipAction("Submitted 'Upgrade' email");
-        this.setState({ isSubmitted: true });
-      })
-      .catch(error => {
-        analytics.logMembershipAction("Error on subscription");
-        this.setState({ showModal: false });
-      });
-  };
+  onCloseModal = () => this.setState({ showModal: false });
 
   render() {
     const authenticated = isAuthenticated();

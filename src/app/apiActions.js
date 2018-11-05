@@ -1,7 +1,60 @@
 import axios from "axios";
-import cookie from "js-cookie";
 import queryString from "query-string";
 
+import authAxios from "./utils/authAxios";
+
+/* Search related endpoints */
+export const searchContent = search => {
+  return authAxios.get(`/api/search?${queryString.stringify({ text: search })}`);
+};
+
+/* Deck related endpoints */
+export const fetchDeck = id => {
+  return authAxios.get(`/api/decks/${id}`);
+};
+
+export const deleteDeck = deckId => {
+  return authAxios.delete(`/api/decks/${deckId}`);
+};
+
+export const updateDeck = ({ deckId, name, description }) => {
+  return authAxios.put(`/api/decks/${deckId}`, { name, description });
+};
+
+export const createDeck = ({ name, description }) => {
+  return authAxios.post("/api/decks", { name, description });
+};
+
+export const fetchDecks = collectionId => {
+  const params = collectionId ? `?${queryString.stringify({ collection: collectionId })}` : "";
+  return authAxios.get(`/api/decks${params}`);
+};
+
+/* Collections related endpoints */
+export const fetchCollection = id => {
+  return authAxios.get(`/api/collections/${id}`);
+};
+
+export const fetchCollections = searchStr => {
+  const params = searchStr ? `?${queryString.stringify({ search: searchStr })}` : "";
+  return authAxios.get(`/api/collections${params}`);
+};
+
+// Cards releated endpoints
+export const createCard = ({ front, back, deck }) => {
+  return authAxios.post("/api/cards", { front, back, deck });
+};
+
+export const deleteCard = cardId => {
+  return authAxios.delete(`/api/cards/${cardId}`);
+};
+
+export const fetchCards = ({ deck, collection, deckIds }) => {
+  const params = queryString.stringify({ deck, collection, deckIds });
+  return authAxios.get(`/api/cards?${params}`);
+};
+
+// Authentication related endpoints
 export const loginGithubUser = code => {
   return axios.post("/auth/github/login", { code });
 };
@@ -10,123 +63,41 @@ export const registerGithubUser = profile => {
   return axios.post("/auth/github/register", { ...profile });
 };
 
-export const searchContent = search => {
-  const config = { headers: { Authorization: cookie.get("token") } };
-  return axios.get(`/api/search?${queryString.stringify({ text: search })}`, config);
-};
-
-export const fetchCollections = () => {
-  const config = { headers: { Authorization: cookie.get("token") } };
-  return axios.get("/api/collections", config);
-};
-
-export const searchCollections = searchStr => {
-  const config = { headers: { Authorization: cookie.get("token") } };
-  const params = searchStr ? `?${queryString.stringify({ search: searchStr })}` : "";
-  return axios.get(`/api/collections${params}`, config);
-};
-
-export const fetchCollection = id => {
-  const config = { headers: { Authorization: cookie.get("token") } };
-  return axios.get(`/api/collections/${id}`, config);
-};
-
-export const fetchDecks = collectionId => {
-  const config = { headers: { Authorization: cookie.get("token") } };
-  const params = collectionId ? `?${queryString.stringify({ collection: collectionId })}` : "";
-  return axios.get(`/api/decks${params}`, config);
+// Current user related endpoints
+export const submitPayment = ({ description, amount, source, currency }) => {
+  return authAxios.post("/users/payments", { description, amount, source, currency });
 };
 
 export const fetchDecksForUser = () => {
-  const config = { headers: { Authorization: cookie.get("token") } };
-  return axios.get("/users/decks", config);
-};
-
-export const fetchDecksById = deckIds => {
-  const config = { headers: { Authorization: cookie.get("token") } };
-  const params = deckIds.length > 0 ? `?${queryString.stringify({ ids: deckIds.join(",") })}` : "";
-  return axios.get(`/api/decks${params}`, config);
-};
-
-export const createCard = ({ front, back, deck }) => {
-  const config = { headers: { Authorization: cookie.get("token") } };
-  return axios.post("/api/cards", { front, back, deck }, config);
-};
-
-export const deleteCard = cardId => {
-  const config = { headers: { Authorization: cookie.get("token") } };
-  return axios.delete(`/api/cards/${cardId}`, config);
-};
-
-export const deleteDeck = deckId => {
-  const config = { headers: { Authorization: cookie.get("token") } };
-  return axios.delete(`/api/decks/${deckId}`, config);
-};
-
-export const createDeck = ({ name, description }) => {
-  const config = { headers: { Authorization: cookie.get("token") } };
-  return axios.post("/api/decks", { name, description }, config);
-};
-
-export const fetchDeck = id => {
-  const config = { headers: { Authorization: cookie.get("token") } };
-  return axios.get(`/api/decks/${id}`, config);
-};
-
-export const updateDeck = ({ deckId, name, description }) => {
-  const config = { headers: { Authorization: cookie.get("token") } };
-  return axios.put(`/api/decks/${deckId}`, { name, description }, config);
-};
-
-export const fetchCards = ({ deck, collection, deckIds }) => {
-  const config = { headers: { Authorization: cookie.get("token") } };
-  const params = queryString.stringify({ deck, collection, deckIds });
-  return axios.get(`/api/cards?${params}`, config);
+  return authAxios.get("/users/decks");
 };
 
 export const fetchPinnedDecks = () => {
-  const config = { headers: { Authorization: cookie.get("token") } };
-  return axios.get("/users/pinned_decks", config);
-};
-
-export const fetchUserPinnedDecks = userId => {
-  return axios.get(`/users/${userId}/pinned_decks`);
+  return authAxios.get("/users/pinned_decks");
 };
 
 export const fetchUserReviews = userId => {
-  const config = { headers: { Authorization: cookie.get("token") } };
-  return axios.get(`/users/${userId}/reviews`, config);
-};
-
-export const fetchUserActivity = userId => {
-  const config = { headers: { Authorization: cookie.get("token") } };
-  return axios.get(`/users/${userId}/activity`, config);
-};
-
-export const fetchUserProfile = () => {
-  const config = { headers: { Authorization: cookie.get("token") } };
-
-  return axios.get("/users/profile", config);
+  return authAxios.get(`/users/${userId}/reviews`);
 };
 
 export const updateUserProfile = ({ name, email, username, email_notification }) => {
-  const config = { headers: { Authorization: cookie.get("token") } };
-  return axios.put(`/users/profile`, { name, email, username, email_notification }, config);
+  return authAxios.put(`/users/profile`, { name, email, username, email_notification });
+};
+
+export const fetchUserProfile = () => {
+  return authAxios.get("/users/profile");
 };
 
 export const deleteUserProfile = () => {
-  const config = { headers: { Authorization: cookie.get("token") } };
-  return axios.delete("/users/profile", config);
+  return authAxios.delete("/users/profile");
 };
 
 export const removePinnedDeck = deckId => {
-  const config = { headers: { Authorization: cookie.get("token") } };
-  return axios.delete("/users/pinned_decks", { ...config, data: { deck: deckId } });
+  return authAxios.delete("/users/pinned_decks", { data: { deck: deckId } });
 };
 
 export const addPinnedDecks = deckIds => {
-  const config = { headers: { Authorization: cookie.get("token") } };
-  return axios.put("/users/pinned_decks", { decks: [...deckIds] }, config);
+  return authAxios.put("/users/pinned_decks", { decks: [...deckIds] });
 };
 
 export const togglePinnedDeck = (deckId, isPinned) => {
@@ -134,47 +105,37 @@ export const togglePinnedDeck = (deckId, isPinned) => {
 };
 
 export const fetchStudySessions = () => {
-  const config = { headers: { Authorization: cookie.get("token") } };
-  return axios.get("/users/study_sessions", config);
+  return authAxios.get("/users/study_sessions");
 };
 
 export const addStudySessions = dates => {
-  const config = { headers: { Authorization: cookie.get("token") } };
-  return axios.put("/users/study_sessions", { dates: [...dates] }, config);
-};
-
-export const subscribeUser = email => {
-  const config = { headers: { Authorization: cookie.get("token") } };
-  return axios.post("/users/subscriptions", { email }, config);
+  return authAxios.put("/users/study_sessions", { dates: [...dates] });
 };
 
 export const addStudySession = date => addStudySessions([date]);
 
+// User related endpoints
+export const fetchUserPinnedDecks = userId => {
+  return axios.get(`/users/${userId}/pinned_decks`);
+};
+
+export const fetchUserActivity = userId => {
+  return authAxios.get(`/users/${userId}/activity`);
+};
+
+// Study progress related endpoints
 export const fetchStudyProgress = () => {
-  const config = { headers: { Authorization: cookie.get("token") } };
-  return axios.get("/study_progress", config);
+  return authAxios.get("/study_progress");
 };
 
 export const fetchDeckStudyProgress = deckId => {
-  const config = { headers: { Authorization: cookie.get("token") } };
-  return axios.get(`/study_progress/${deckId}`, config);
+  return authAxios.get(`/study_progress/${deckId}`);
 };
 
 export const addStudyProgress = progressObjs => {
-  const config = { headers: { Authorization: cookie.get("token") } };
-
-  return axios.put(`/study_progress`, progressObjs, config);
+  return authAxios.put(`/study_progress`, progressObjs);
 };
 
 export const addCardProgress = (deckId, cardId, leitnerBox, reviewedAt) => {
-  const config = { headers: { Authorization: cookie.get("token") } };
-  const params = { leitnerBox, reviewedAt };
-
-  return axios.put(`/study_progress/${deckId}/${cardId}`, params, config);
-};
-
-export const submitPayment = ({ description, amount, source, currency }) => {
-  const config = { headers: { Authorization: cookie.get("token") } };
-
-  return axios.post("/users/payments", { description, amount, source, currency }, config);
+  return authAxios.put(`/study_progress/${deckId}/${cardId}`, { leitnerBox, reviewedAt });
 };

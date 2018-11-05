@@ -91,20 +91,20 @@ class Decks extends Component {
   };
 
   fetchFeaturedCollection = () => {
-    api.searchCollections("Featured").then(response => {
+    api.fetchCollections("Featured").then(response => {
       this.setState({ featuredRow: response.data.pop() });
     });
   };
 
   fetchTrendingCollection = () => {
     api
-      .searchCollections("Popular Decks")
+      .fetchCollections("Popular Decks")
       .then(response => this.setState({ trendingRow: response.data.pop() }));
   };
 
   fetchNewestCollection = () => {
     api
-      .searchCollections("Recently Added")
+      .fetchCollections("Recently Added")
       .then(({ data }) => this.setState({ newestRow: data.pop() }));
   };
 
