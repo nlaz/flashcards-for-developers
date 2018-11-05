@@ -37,7 +37,11 @@ module.exports = {
     email: Joi.string()
       .email()
       .required(),
-    username: Joi.string().allow(""),
+    username: Joi.string()
+      .alphanum()
+      .min(4)
+      .max(15)
+      .allow(""),
     email_notification: Joi.boolean(),
   },
 };

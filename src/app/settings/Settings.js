@@ -21,6 +21,13 @@ class Settings extends Component {
   }
 
   // Validation helpers
+  validateUsername = username => {
+    const illegalChars = /\W/; // allow letters, numbers, and underscores
+    const isValid = !illegalChars.test(username) && username.length >= 4 && username.length <= 15;
+    console.log("isValid", isValid);
+    return !isValid ? ERRORS.INVALID : undefined;
+  };
+
   validateEmail = email => {
     const isValid = email.match(/^([\w.%+-]+)@([\w-]+\.)+([\w]{2,})$/i);
     const validMessage = !isValid ? ERRORS.INVALID : undefined;
@@ -46,12 +53,13 @@ class Settings extends Component {
     e.preventDefault();
 
     const { profile, errors } = this.state;
-    const { email, name } = profile;
+    const { email, name, username } = profile;
 
     this.setState(
       {
         errors: {
           ...errors,
+          username: this.validateUsername(username || ""),
           email: this.validateEmail(email || ""),
           name: this.validateName(name || ""),
         },
@@ -77,7 +85,7 @@ class Settings extends Component {
         cookie.set("user", data);
         this.setState({
           profile: { ...profile, ...data },
-          errors: { name: "", email: "" },
+          errors: { name: "", email: "", username: "" },
           isLoading: false,
           isSuccess: true,
         });
@@ -175,16 +183,23 @@ class Settings extends Component {
           </div>
           <div className="row">
             <div className="col-sm-2 col-lg-1">
-              <small className="text-muted">Username</small>
+              <small className={errors.username ? "text-danger" : "text-muted"}>Username</small>
             </div>
             <div className="col-sm-10 col-lg-11">
-              <input
-                className="small border-0 py-2 w-100"
-                name="username"
-                onChange={this.onChange}
-                value={profile.username}
-              />
-              <hr />
+              <div className="d-flex align-items-center">
+                <input
+                  className="small border-0 py-2 w-100"
+                  name="username"
+                  onChange={this.onChange}
+                  value={profile.username}
+                />
+                {errors.username && (
+                  <small className="text-danger text-uppercase ml-2 shake--error">
+                    {errors.username}
+                  </small>
+                )}
+              </div>
+              <hr className={errors.username ? "border-danger" : ""} />
             </div>
           </div>
           <div className="row">
@@ -215,7 +230,7 @@ class Settings extends Component {
             >
               Update my profile
             </button>
-            {(errors.name || errors.email || errors.form) && (
+            {(errors.name || errors.email || errors.username || errors.form) && (
               <small className="text-uppercase text-danger ml-2">
                 <Emoji value="🙀" /> Oh-oh! There has been an error...
               </small>
