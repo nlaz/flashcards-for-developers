@@ -43,19 +43,20 @@ router.get("/users/pinned_decks", isAuthenticated, UsersController.getPinnedDeck
 router.put("/users/pinned_decks", isAuthenticated, UsersController.addPinnedDecks);
 router.delete("/users/pinned_decks", isAuthenticated, UsersController.removePinnedDeck);
 
-router.get("/users/profile", isAuthenticated, UsersController.getUserProfile);
 router.put("/users/profile", isAuthenticated, UsersController.updateUserProfile);
 router.delete("/users/profile", isAuthenticated, UsersController.deleteUserProfile);
 
 router.get("/users/study_sessions", isAuthenticated, UsersController.getStudySessions);
 router.put("/users/study_sessions", isAuthenticated, UsersController.addStudySessions);
 
-router.get("/users/decks", isAuthenticated, DecksController.getDecksForUser);
-router.get("/users/:userId/pinned_decks", UsersController.getUserPinnedDecks);
-
 // User related endpoints
 router.get("/users/:userId/reviews", isAuthenticated, UsersController.getUserReviews);
 router.get("/users/:userId/activity", isAuthenticated, UsersController.getUserActivity);
+
+router.get("/users/:username/decks", DecksController.getDecksForUser);
+router.get("/users/:username/profile", UsersController.getUserProfile);
+router.get("/users/:username/pinned_decks", UsersController.getUserPinnedDecks);
+router.get("/users/:username/study_progress", ProgressController.getStudyProgress);
 
 // Study progress related endpoints
 router.get("/study_progress", isAuthenticated, ProgressController.getStudyProgress);

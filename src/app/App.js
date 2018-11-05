@@ -12,6 +12,7 @@ import AuthRedirect from "./auth/AuthRedirect";
 import Profile from "./profile/Profile";
 import Settings from "./settings/Settings";
 import ReqAuth from "./auth/ReqAuth";
+import ReqUser from "./auth/ReqUser";
 import Footer from "./Footer";
 import Header from "./Header";
 
@@ -40,8 +41,8 @@ class App extends Component {
               <Route exact path="/collections/:collectionId" component={Collections} />
               <Route exact path="/collections/:collectionId/review" component={Review} />
               <Route exact path="/settings/profile" component={Settings} />
-              <Route exact path="/:userId" component={ReqAuth(Profile)} />
-              <Route exact path="/:userId/:tabName" component={ReqAuth(Profile)} />
+              <Route exact path="/:username" component={ReqUser(Profile)} />
+              <Route exact path="/:username/:tabName" component={ReqUser(Profile)} />
               <Route exact path="*" component={NotFound} />
             </Switch>
           </div>

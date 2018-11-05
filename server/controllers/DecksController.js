@@ -96,7 +96,10 @@ module.exports.deleteDeck = async (req, res, next) => {
 
 module.exports.getDecksForUser = async (req, res, next) => {
   try {
-    const decks = await Deck.find({ author: req.user });
+    const { username } = req.params;
+
+    const user = await User.findOne({ username });
+    const decks = await Deck.find({ author: user._id });
 
     res.send(decks);
   } catch (error) {

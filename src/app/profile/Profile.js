@@ -30,11 +30,11 @@ class Profile extends Component {
   };
 
   componentWillMount() {
-    const { userId } = this.props.match.params;
-    const user = isAuthenticated() ? JSON.parse(cookie.get("user")) : {};
-    if (userId !== user.id) {
-      this.setState({ isRedirect: true });
-    }
+    // const { userId } = this.props.match.params;
+    // const user = isAuthenticated() ? JSON.parse(cookie.get("user")) : {};
+    // if (userId !== user.id) {
+    //   this.setState({ isRedirect: true });
+    // }
     const { params } = this.props.match;
     if (params.tabName && params.tabName.length > 0) {
       this.setState({ activeTab: params.tabName });
@@ -51,15 +51,15 @@ class Profile extends Component {
   }
 
   componentDidMount() {
-    this.fetchPinnedDecks();
-    this.fetchStudyProgress();
-    this.fetchDecksForUser();
-    this.fetchUserProfile();
+    const { username } = this.props.match.params;
+    this.fetchPinnedDecks(username);
+    this.fetchStudyProgress(username);
+    this.fetchDecksForUser(username);
   }
 
   onTabSelect = value => {
-    const { userId } = this.props.match.params;
-    this.props.history.push(`/${userId}/${value}`);
+    const { username } = this.props.match.params;
+    this.props.history.push(`/${username}/${value}`);
     this.setState({ activeTab: value });
   };
 
@@ -72,29 +72,23 @@ class Profile extends Component {
     this.togglePinnedDeck(deck, isPinned);
   };
 
-  fetchUserProfile = () => {
-    api.fetchUserProfile().then(({ data }) => {
-      this.setState({ profile: { ...this.state.profile, ...data } });
-    });
-  };
-
-  fetchPinnedDecks = () => {
+  fetchPinnedDecks = username => {
     api
-      .fetchPinnedDecks()
+      .fetchPinnedDecks(username)
       .then(({ data }) => this.setState({ pinnedDecks: data }))
       .catch(error => console.error(error));
   };
 
-  fetchStudyProgress = () => {
+  fetchStudyProgress = username => {
     api
-      .fetchStudyProgress()
+      .fetchUserStudyProgress(username)
       .then(response => this.setState({ studyProgress: response.data }))
       .catch(error => console.error(error));
   };
 
-  fetchDecksForUser = () => {
+  fetchDecksForUser = username => {
     api
-      .fetchDecksForUser()
+      .fetchDecksForUser(username)
       .then(response => this.setState({ decks: response.data }))
       .catch(error => console.error(error));
   };
@@ -110,11 +104,15 @@ class Profile extends Component {
 
   onGoTo = () => this.props.history.push("/settings/profile");
 
+  isPageOwner = () =>
+    isAuthenticated() &&
+    JSON.parse(cookie.get("user")).username === this.props.match.params.username;
   isPinned = id => this.state.pinnedDecks.find(el => el.id === id);
   getDeckProgress = id => this.state.studyProgress.find(el => el.deck === id);
 
   render() {
-    const { profile, decks, pinnedDecks, activeTab, isRedirect, studyProgress } = this.state;
+    const { profile } = this.props;
+    const { decks, pinnedDecks, activeTab, isRedirect, studyProgress } = this.state;
 
     if (isRedirect) {
       return <Redirect to="/" />;
@@ -151,12 +149,14 @@ class Profile extends Component {
                 <div className="ml-3">
                   <h1 className="m-0">{profile.name}</h1>
                   {profile.username && <h6 className="text-muted m-0">@{profile.username}</h6>}
-                  <button
-                    onClick={this.onGoTo}
-                    className="btn btn-sm btn-white text-uppercase d-flex align-items-center px-3 mt-2"
-                  >
-                    <small className="font-weight-medium">Edit Bio</small>
-                  </button>
+                  {this.isPageOwner() && (
+                    <button
+                      onClick={this.onGoTo}
+                      className="btn btn-sm btn-white text-uppercase d-flex align-items-center px-3 mt-2"
+                    >
+                      <small className="font-weight-medium">Edit Bio</small>
+                    </button>
+                  )}
                 </div>
               </div>
               <div
