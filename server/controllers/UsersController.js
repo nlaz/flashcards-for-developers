@@ -257,9 +257,10 @@ module.exports.deleteUserProfile = async (req, res, next) => {
 
 module.exports.getUserReviews = async (req, res, next) => {
   try {
-    const { userId } = req.params;
+    const { username } = req.params;
+    const user = await User.findOne({ username });
     const reviews = await ReviewEvent.aggregate([
-      { $match: { user: ObjectId(userId) } },
+      { $match: { user: user._id } },
       { $project: { yearMonthDay: { $dateToString: { format: "%Y-%m-%d", date: "$createdAt" } } } },
       { $group: { _id: "$yearMonthDay", count: { $sum: 1 } } },
     ]);

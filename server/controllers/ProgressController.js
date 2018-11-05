@@ -1,5 +1,6 @@
 const Joi = require("joi");
 
+const User = require("../models/User");
 const DeckProgress = require("../models/DeckProgress");
 const CardProgress = require("../models/CardProgress");
 const ReviewEvent = require("../models/ReviewEvent");
@@ -8,9 +9,10 @@ const progressSchemas = require("./validation/progress");
 
 module.exports.getStudyProgress = async (req, res, next) => {
   try {
-    await Joi.validate(req.user, progressSchemas.user);
+    const { username } = req.params;
 
-    const deckProgress = await DeckProgress.find({ user: req.user }).populate("cards");
+    const user = await User.findOne({ username });
+    const deckProgress = await DeckProgress.find({ user: user._id }).populate("cards");
 
     res.send(deckProgress);
   } catch (error) {

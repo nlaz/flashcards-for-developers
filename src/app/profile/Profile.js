@@ -30,11 +30,6 @@ class Profile extends Component {
   };
 
   componentWillMount() {
-    // const { userId } = this.props.match.params;
-    // const user = isAuthenticated() ? JSON.parse(cookie.get("user")) : {};
-    // if (userId !== user.id) {
-    //   this.setState({ isRedirect: true });
-    // }
     const { params } = this.props.match;
     if (params.tabName && params.tabName.length > 0) {
       this.setState({ activeTab: params.tabName });
@@ -52,7 +47,7 @@ class Profile extends Component {
 
   componentDidMount() {
     const { username } = this.props.match.params;
-    this.fetchPinnedDecks(username);
+    this.fetchUserPinnedDecks(username);
     this.fetchStudyProgress(username);
     this.fetchDecksForUser(username);
   }
@@ -72,9 +67,9 @@ class Profile extends Component {
     this.togglePinnedDeck(deck, isPinned);
   };
 
-  fetchPinnedDecks = username => {
+  fetchUserPinnedDecks = username => {
     api
-      .fetchPinnedDecks(username)
+      .fetchUserPinnedDecks(username)
       .then(({ data }) => this.setState({ pinnedDecks: data }))
       .catch(error => console.error(error));
   };

@@ -65,9 +65,9 @@ class ReviewHeatmap extends Component {
   state = { reviews: {}, stats: {}, activity: {} };
 
   componentDidMount() {
-    const { userId } = this.props.match.params;
-    this.fetchUserReviews(userId);
-    this.fetchUserActivity(userId);
+    const { username } = this.props.match.params;
+    this.fetchUserReviews(username);
+    this.fetchUserActivity(username);
   }
 
   // Helper functions
@@ -84,16 +84,16 @@ class ReviewHeatmap extends Component {
   };
 
   // API functions
-  fetchUserReviews = userId => {
-    api.fetchUserReviews(userId).then(({ data }) => {
+  fetchUserReviews = username => {
+    api.fetchUserReviews(username).then(({ data }) => {
       const stats = this.getReviewStats(data);
       const reviews = this.formatResponse(data);
       this.setState({ reviews, stats });
     });
   };
 
-  fetchUserActivity = userId => {
-    api.fetchUserActivity(userId).then(({ data }) => {
+  fetchUserActivity = username => {
+    api.fetchUserActivity(username).then(({ data }) => {
       this.setState({ activity: data });
     });
   };

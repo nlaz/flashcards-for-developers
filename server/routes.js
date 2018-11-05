@@ -50,8 +50,8 @@ router.get("/users/study_sessions", isAuthenticated, UsersController.getStudySes
 router.put("/users/study_sessions", isAuthenticated, UsersController.addStudySessions);
 
 // User related endpoints
-router.get("/users/:userId/reviews", isAuthenticated, UsersController.getUserReviews);
-router.get("/users/:userId/activity", isAuthenticated, UsersController.getUserActivity);
+router.get("/users/:username/reviews", UsersController.getUserReviews);
+router.get("/users/:username/activity", UsersController.getUserActivity);
 
 router.get("/users/:username/decks", DecksController.getDecksForUser);
 router.get("/users/:username/profile", UsersController.getUserProfile);

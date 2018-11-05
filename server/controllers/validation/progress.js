@@ -2,7 +2,6 @@ const Joi = require("joi");
 Joi.objectId = require("joi-objectid")(Joi);
 
 module.exports = {
-  user: Joi.objectId().required(),
   getDeckProgress: {
     user: Joi.objectId().required(),
     params: {
