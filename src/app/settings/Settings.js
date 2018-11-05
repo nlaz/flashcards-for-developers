@@ -24,7 +24,6 @@ class Settings extends Component {
   validateUsername = username => {
     const illegalChars = /\W/; // allow letters, numbers, and underscores
     const isValid = !illegalChars.test(username) && username.length >= 4 && username.length <= 15;
-    console.log("isValid", isValid);
     return !isValid ? ERRORS.INVALID : undefined;
   };
 

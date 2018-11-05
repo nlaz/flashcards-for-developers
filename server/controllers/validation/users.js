@@ -12,6 +12,10 @@ module.exports = {
     name: Joi.string().required(),
     avatar_url: Joi.string(),
     github_id: Joi.number().required(),
+    username: Joi.string()
+      .alphanum()
+      .min(4)
+      .max(15),
     email_notification: Joi.boolean(),
   },
   addPinnedDecks: {

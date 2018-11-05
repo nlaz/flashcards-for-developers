@@ -16,13 +16,19 @@ const ERRORS = { REQUIRED: "Required", INVALID: "Invalid" };
 
 class SignupFormModal extends Component {
   state = {
-    profile: { email: "", name: "", email_notification: true },
-    errors: { email: undefined, name: undefined },
+    profile: { email: "", name: "", username: "", email_notification: true },
+    errors: { email: undefined, name: undefined, username: undefined },
   };
 
   componentDidMount() {
     this.setState({ profile: { ...this.props.profile, email_notification: true } });
   }
+
+  validateUsername = username => {
+    const illegalChars = /\W/; // allow letters, numbers, and underscores
+    const isValid = !illegalChars.test(username) && username.length >= 4 && username.length <= 15;
+    return !isValid ? ERRORS.INVALID : undefined;
+  };
 
   validateEmail = email => {
     const isValid = email.match(/^([\w.%+-]+)@([\w-]+\.)+([\w]{2,})$/i);
@@ -43,12 +49,13 @@ class SignupFormModal extends Component {
   onSubmit = e => {
     e.preventDefault();
     const { profile, errors } = this.state;
-    const { email, name } = profile;
+    const { email, name, username } = profile;
 
     this.setState(
       {
         errors: {
           ...errors,
+          username: this.validateUsername(username || ""),
           email: this.validateEmail(email || ""),
           name: this.validateName(name || ""),
         },
@@ -59,7 +66,7 @@ class SignupFormModal extends Component {
 
   signupUser = () => {
     const { errors } = this.state;
-    if (!errors.email && !errors.name) {
+    if (!errors.email && !errors.name && !errors.username) {
       api
         .registerGithubUser(this.state.profile)
         .then(response => {
@@ -135,6 +142,26 @@ class SignupFormModal extends Component {
                   placeholder="What should we call you?"
                   onChange={this.onChange}
                   value={profile.name || ""}
+                />
+              </div>
+              <div className="form-group">
+                <div className="d-flex justify-content-between align-items-center mb-1">
+                  <label className="small font-weight-bold m-0" style={{ opacity: 0.85 }}>
+                    Choose a unique username
+                  </label>
+                  {errors.username && (
+                    <small className="text-danger text-uppercase ml-2 shake--error">
+                      {errors.username}
+                    </small>
+                  )}
+                </div>
+                <input
+                  type="text"
+                  name="username"
+                  className="form-control form-control-sm"
+                  placeholder="Which username do you like?"
+                  onChange={this.onChange}
+                  value={profile.username || ""}
                 />
               </div>
               <div className="form-group mb-2">
