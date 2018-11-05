@@ -10,16 +10,12 @@ module.exports.getDecks = async (req, res, next) => {
   try {
     let decks;
     const collectionId = req.query.collection;
-    const deckIds = req.query.ids.split(",");
 
     await Joi.validate(req.query, deckSchemas.getDecksQuery);
-    await Joi.validate(deckIds, deckSchemas.getDecksIds);
 
     if (collectionId) {
       const collection = await Collection.findOne({ _id: collectionId }).populate("decks");
       decks = collection.decks;
-    } else if (deckIds) {
-      decks = await Deck.find({ _id: { $in: deckIds } });
     } else {
       decks = await Deck.find();
     }

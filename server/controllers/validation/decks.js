@@ -13,7 +13,6 @@ module.exports = {
   getDeckParams: {
     deckId: Joi.objectId().required(),
   },
-  getDecksIds: Joi.array().items(Joi.objectId()),
   updateDeck: {
     name: Joi.string().required(),
     description: Joi.string().allow(""),
