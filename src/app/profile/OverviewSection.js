@@ -56,7 +56,7 @@ class OverviewSection extends Component {
 
         <div className="container container--full my-5 pb-5">
           <div className="d-flex justify-content-between align-items-end mb-2 mx-1">
-            <h6 className="text-uppercase m-0">MY DECKS</h6>
+            <h6 className="text-uppercase m-0">DECKS</h6>
             <Link className="text-dark text-underline" to={`/${user.id}/decks`}>
               See all
             </Link>

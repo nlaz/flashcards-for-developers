@@ -14,7 +14,7 @@ class DecksSection extends Component {
     return (
       <div className="container container--full my-4">
         <div className="d-flex justify-content-between align-items-end">
-          <h6 className="text-uppercase mb-1 mx-1">MY DECKS</h6>
+          <h6 className="text-uppercase mb-1 mx-1">DECKS</h6>
           <Link to="/decks/new" className="btn btn-success btn-sm text-white">
             + Add Deck
           </Link>

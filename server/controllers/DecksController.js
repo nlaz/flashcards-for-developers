@@ -5,6 +5,7 @@ const Card = require("../models/Card");
 const User = require("../models/User");
 const Collection = require("../models/Collection");
 const deckSchemas = require("./validation/decks");
+const ObjectId = require("mongoose").Types.ObjectId;
 
 module.exports.getDecks = async (req, res, next) => {
   try {
@@ -97,9 +98,15 @@ module.exports.deleteDeck = async (req, res, next) => {
 module.exports.getDecksForUser = async (req, res, next) => {
   try {
     const { username } = req.params;
+    let decks;
 
     const user = await User.findOne({ username });
-    const decks = await Deck.find({ author: user._id });
+    console.log(req.user, user._id, ObjectId(req.user) === ObjectId(user._id));
+    if (req.user !== user._id.toString()) {
+      decks = await Deck.find({ author: user._id, status: { $ne: "private" } });
+    } else {
+      decks = await Deck.find({ author: user._id });
+    }
 
     res.send(decks);
   } catch (error) {

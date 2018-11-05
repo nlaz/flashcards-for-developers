@@ -53,10 +53,10 @@ router.put("/users/study_sessions", isAuthenticated, UsersController.addStudySes
 router.get("/users/:username/reviews", UsersController.getUserReviews);
 router.get("/users/:username/activity", UsersController.getUserActivity);
 
-router.get("/users/:username/decks", DecksController.getDecksForUser);
+router.get("/users/:username/decks", getUser, DecksController.getDecksForUser);
 router.get("/users/:username/profile", UsersController.getUserProfile);
 router.get("/users/:username/pinned_decks", UsersController.getUserPinnedDecks);
-router.get("/users/:username/study_progress", ProgressController.getStudyProgress);
+router.get("/users/:username/study_progress", ProgressController.getUserStudyProgress);
 
 // Study progress related endpoints
 router.get("/study_progress", isAuthenticated, ProgressController.getStudyProgress);
