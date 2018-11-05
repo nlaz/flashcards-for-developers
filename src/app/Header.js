@@ -126,7 +126,7 @@ class Header extends Component {
                     </Link>
                   </li>,
                   <li className="list-inline-item mx-0" key={-1}>
-                    <Link to={`/${user.id}/pinned`}>
+                    <Link to={`/${user.username}/pinned`}>
                       <Octicon
                         className="nav-icon d-flex align-items-center p-2"
                         name="pin"

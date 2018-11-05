@@ -20,7 +20,7 @@ class OverviewSection extends Component {
           <div className="pinned-row">
             <div className="d-flex justify-content-between align-items-end mb-1 mx-1 pt-1">
               <h6 className="text-uppercase m-0">PINNED DECKS</h6>
-              <Link className="text-dark text-underline" to={`/${user.id}/pinned`}>
+              <Link className="text-dark text-underline" to={`/${user.username}/pinned`}>
                 See all
               </Link>
             </div>
@@ -57,7 +57,7 @@ class OverviewSection extends Component {
         <div className="container container--full my-5 pb-5">
           <div className="d-flex justify-content-between align-items-end mb-2 mx-1">
             <h6 className="text-uppercase m-0">DECKS</h6>
-            <Link className="text-dark text-underline" to={`/${user.id}/decks`}>
+            <Link className="text-dark text-underline" to={`/${user.username}/decks`}>
               See all
             </Link>
           </div>
