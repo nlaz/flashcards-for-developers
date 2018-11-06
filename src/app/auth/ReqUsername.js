@@ -136,20 +136,20 @@ class ReqUsername extends Component {
           <button className="loginModal-close btn btn-reset p-2" onClick={this.onClose}>
             <Octicon name="x" />
           </button>
-          <div className="p-4 rounded-top bg-blueLight">
+          <div className="p-3 p-sm-4 rounded-top bg-blueLight">
             <div className="mx-auto" style={{ maxWidth: "380px" }}>
-              <h5 className="text-center mb-3">
+              <h5 className="text-center mb-sm-3">
                 Create Your Profile Page
                 <Emoji value="🎉" className="ml-2" />
               </h5>
-              <div className="d-flex align-items-center mb-2">
+              <div className="d-flex flex-column flex-sm-row align-items-center mb-2">
                 <img
                   src={user.avatar_url}
                   className="profile-image rounded rounded"
                   alt={user.name}
-                  style={{ width: "80px", height: "80px" }}
+                  style={{ maxWidth: "80px", maxHeight: "80px" }}
                 />
-                <div className="ml-3">
+                <div className="ml-3 my-2">
                   <div className="font-weight-medium" style={{ fontSize: ".9em" }}>
                     <CheckMark />
                     View and edit your profile
@@ -166,7 +166,11 @@ class ReqUsername extends Component {
               </div>
             </div>
           </div>
-          <form onSubmit={this.onSubmit} className="py-4 px-4 mb-3" style={{ maxWidth: "430px" }}>
+          <form
+            onSubmit={this.onSubmit}
+            className="py-2 py-sm-4 px-4 mb-sm-3"
+            style={{ maxWidth: "430px" }}
+          >
             {errors.form && <div className="small alert alert-danger">{errors.form}</div>}
             <div className="form-group">
               <div className="d-flex justify-content-between align-items-center mb-1">
@@ -197,15 +201,18 @@ class ReqUsername extends Component {
               </div>
             </div>
           </form>
-          <div className="px-4 my-4 d-flex flex-column flex-sm-row align-items-center justify-content-between">
+          <div className="px-4 my-sm-4 d-flex flex-column flex-sm-row align-items-center justify-content-between">
             <button
               onClick={this.onSubmit}
-              className="btn btn-primary btn-sm px-3"
+              className="btn btn-primary btn-sm px-3 mt-2"
               disabled={username.length === 0}
             >
               Create profile
             </button>
-            <button onClick={this.onOpenDeleteModal} className="btn btn-sm text-muted">
+            <button
+              onClick={this.onOpenDeleteModal}
+              className="btn btn-reset btn-sm text-muted mt-2"
+            >
               I don't want a public profile
             </button>
           </div>
