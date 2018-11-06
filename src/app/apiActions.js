@@ -76,11 +76,15 @@ export const fetchUserReviews = userId => {
   return authAxios.get(`/users/${userId}/reviews`);
 };
 
-export const updateUserProfile = ({ name, email, username, email_notification }) => {
+export const fetchProfile = () => {
+  return authAxios.get("/users/profile");
+};
+
+export const updateProfile = ({ name, email, username, email_notification }) => {
   return authAxios.put(`/users/profile`, { name, email, username, email_notification });
 };
 
-export const deleteUserProfile = () => {
+export const deleteProfile = () => {
   return authAxios.delete("/users/profile");
 };
 

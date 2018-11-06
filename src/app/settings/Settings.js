@@ -18,8 +18,7 @@ class Settings extends Component {
 
   // Lifecylce methods
   componentDidMount() {
-    const user = isAuthenticated() ? JSON.parse(cookie.get("user")) : {};
-    this.fetchUserProfile(user.id);
+    this.fetchProfile();
   }
 
   // Validation helpers
@@ -72,8 +71,8 @@ class Settings extends Component {
   };
 
   // API methods
-  fetchUserProfile = userId => {
-    api.fetchUserProfile(userId).then(({ data }) => {
+  fetchProfile = () => {
+    api.fetchProfile().then(({ data }) => {
       this.setState({ profile: { ...this.state.profile, ...data } });
     });
   };
@@ -82,7 +81,7 @@ class Settings extends Component {
     const { profile, errors } = this.state;
     if (!errors.email && !errors.name && !errors.username) {
       api
-        .updateUserProfile(profile)
+        .updateProfile(profile)
         .then(({ data }) => {
           cookie.set("user", data);
           this.setState({
@@ -99,7 +98,7 @@ class Settings extends Component {
   };
 
   deleteUserProfile = () => {
-    api.deleteUserProfile().then(() => {
+    api.deleteProfile().then(() => {
       cookie.remove("token");
       cookie.remove("user");
       this.props.history.push("/");
