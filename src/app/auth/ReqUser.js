@@ -9,7 +9,9 @@ const ReqUser = ComposedComponent => {
 
     componentDidMount() {
       const { username } = this.props.match.params;
-      this.fetchUserProfile(username);
+      if (username) {
+        this.fetchUserProfile(username);
+      }
     }
 
     fetchUserProfile = username => {

@@ -2,7 +2,6 @@ const Joi = require("joi");
 const axios = require("axios");
 const moment = require("moment");
 const jwt = require("jsonwebtoken");
-const ObjectId = require("mongoose").Types.ObjectId;
 const queryString = require("query-string");
 const Stripe = require("stripe");
 
@@ -214,10 +213,9 @@ module.exports.getStudySessions = async (req, res, next) => {
   }
 };
 
-module.exports.getUserProfile = async (req, res, next) => {
+module.exports.getProfile = async (req, res, next) => {
   try {
-    const { username } = req.params;
-    const user = await User.findOne({ username });
+    const user = await User.findOne({ _id: req.user });
 
     res.send(user);
   } catch (error) {
@@ -225,7 +223,7 @@ module.exports.getUserProfile = async (req, res, next) => {
   }
 };
 
-module.exports.updateUserProfile = async (req, res, next) => {
+module.exports.updateProfile = async (req, res, next) => {
   try {
     const { name, email, email_notification, username } = req.body;
 
@@ -243,13 +241,24 @@ module.exports.updateUserProfile = async (req, res, next) => {
   }
 };
 
-module.exports.deleteUserProfile = async (req, res, next) => {
+module.exports.deleteProfile = async (req, res, next) => {
   try {
     await User.deleteOne({ _id: req.user });
 
     await Deck.updateMany({ author: req.user }, { $set: { status: "private" } });
 
     res.send({ message: "Success! Account deleted." });
+  } catch (error) {
+    next(error);
+  }
+};
+
+module.exports.getUserProfile = async (req, res, next) => {
+  try {
+    const { username } = req.params;
+    const user = await User.findOne({ username });
+
+    res.send(user);
   } catch (error) {
     next(error);
   }
