@@ -29,12 +29,23 @@ class ReqUsername extends Component {
 
   componentDidMount() {
     const user = isAuthenticated() ? JSON.parse(cookie.get("user")) : {};
-    this.setState({
-      username: user.name
-        .split(" ")
-        .join("_")
-        .toLowerCase(),
-    });
+    if (user.name) {
+      this.setState({
+        username: user.name
+          .split(" ")
+          .join("_")
+          .toLowerCase(),
+      });
+    }
+  }
+
+  componentDidUpdate(prevProps) {
+    const user = isAuthenticated() ? JSON.parse(cookie.get("user")) : {};
+    if (prevProps.location !== this.props.location) {
+      if (this.props.location.pathname !== `/${user.username}`) {
+        this.setState({ isSuccess: false });
+      }
+    }
   }
 
   onChange = e => this.setState({ username: e.target.value });
@@ -92,21 +103,21 @@ class ReqUsername extends Component {
     }
   };
 
-  componentDidUpdate(prevProps) {
-    const user = isAuthenticated() ? JSON.parse(cookie.get("user")) : {};
-    if (prevProps.location !== this.props.location) {
-      if (this.props.location.pathname !== `/${user.username}`) {
-        this.setState({ isSuccess: false });
-      }
-    }
-  }
-
   deleteUserProfile = () => {
     api.deleteProfile().then(() => {
       cookie.remove("token");
       cookie.remove("user");
       this.props.history.push("/");
     });
+  };
+
+  handleError = error => {
+    const { status } = error.response;
+    const formMessage =
+      status === 400
+        ? "Username already exists. Try a different username."
+        : "Something went wrong with the request. Please contact us.";
+    this.setState({ errors: { ...this.state.errors, form: formMessage } });
   };
 
   render() {

@@ -17,7 +17,7 @@ const ERRORS = { REQUIRED: "Required", INVALID: "Invalid" };
 class SignupFormModal extends Component {
   state = {
     profile: { email: "", name: "", username: "", email_notification: true },
-    errors: { email: undefined, name: undefined, username: undefined },
+    errors: { email: undefined, name: undefined, username: undefined, form: undefined },
   };
 
   componentDidMount() {
@@ -104,7 +104,14 @@ class SignupFormModal extends Component {
     }
   };
 
-  handleError = error => this.props.onClose();
+  handleError = error => {
+    const { status } = error.response;
+    const formMessage =
+      status === 400
+        ? "User already exists. Try a different username or email."
+        : "Something went wrong with the request. Please contact us.";
+    this.setState({ errors: { ...this.state.errors, form: formMessage } });
+  };
 
   render() {
     const { onClose } = this.props;
@@ -124,6 +131,7 @@ class SignupFormModal extends Component {
               Happy to have you here!
             </h5>
             <form style={{ maxWidth: "325px" }} onSubmit={this.onSubmit}>
+              {errors.form && <div className="small alert alert-danger">{errors.form}</div>}
               <div className="form-group">
                 <div className="d-flex justify-content-between align-items-center mb-1">
                   <label className="small font-weight-bold m-0" style={{ opacity: 0.85 }}>
