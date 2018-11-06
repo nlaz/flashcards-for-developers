@@ -27,6 +27,16 @@ class ReqUsername extends Component {
     errors: { username: "", form: "" },
   };
 
+  componentDidMount() {
+    const user = isAuthenticated() ? JSON.parse(cookie.get("user")) : {};
+    this.setState({
+      username: user.name
+        .split(" ")
+        .join("_")
+        .toLowerCase(),
+    });
+  }
+
   onChange = e => this.setState({ username: e.target.value });
 
   onClose = () => this.setState({ showModal: false });
