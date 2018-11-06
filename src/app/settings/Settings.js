@@ -107,7 +107,6 @@ class Settings extends Component {
   };
 
   handleError = error => {
-    console.error(error);
     this.setState({
       errors: { ...this.state.errors, form: error },
       isLoading: false,

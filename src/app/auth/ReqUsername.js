@@ -62,7 +62,6 @@ class ReqUsername extends Component {
     const { username, errors } = this.state;
     const user = isAuthenticated() ? JSON.parse(cookie.get("user")) : {};
     const { name, email, email_notification } = user;
-    console.log("email_notification", email_notification);
 
     if (!errors.email && !errors.name && !errors.username) {
       api
@@ -92,7 +91,13 @@ class ReqUsername extends Component {
     }
   }
 
-  deleteProfile = () => {};
+  deleteUserProfile = () => {
+    api.deleteProfile().then(() => {
+      cookie.remove("token");
+      cookie.remove("user");
+      this.props.history.push("/");
+    });
+  };
 
   render() {
     const { showModal, username, isSuccess } = this.state;
