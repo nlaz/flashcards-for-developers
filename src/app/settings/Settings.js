@@ -73,7 +73,6 @@ class Settings extends Component {
   // API methods
   fetchProfile = () => {
     api.fetchProfile().then(({ data }) => {
-      console.log(data);
       this.setState({ profile: { ...this.state.profile, ...data } });
     });
   };

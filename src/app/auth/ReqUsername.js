@@ -27,6 +27,27 @@ class ReqUsername extends Component {
     errors: { username: "", form: "" },
   };
 
+  componentDidMount() {
+    const user = isAuthenticated() ? JSON.parse(cookie.get("user")) : {};
+    if (user.name) {
+      this.setState({
+        username: user.name
+          .split(" ")
+          .join("")
+          .toLowerCase(),
+      });
+    }
+  }
+
+  componentDidUpdate(prevProps) {
+    const user = isAuthenticated() ? JSON.parse(cookie.get("user")) : {};
+    if (prevProps.location !== this.props.location) {
+      if (this.props.location.pathname !== `/${user.username}`) {
+        this.setState({ isSuccess: false });
+      }
+    }
+  }
+
   onChange = e => this.setState({ username: e.target.value });
 
   onClose = () => this.setState({ showModal: false });
@@ -35,7 +56,8 @@ class ReqUsername extends Component {
 
   onCloseDeleteModal = () => this.setState({ showDeleteModal: false });
 
-  onSubmit = () => {
+  onSubmit = e => {
+    e.preventDefault();
     const { username, errors } = this.state;
 
     this.setState(
@@ -82,15 +104,6 @@ class ReqUsername extends Component {
     }
   };
 
-  componentDidUpdate(prevProps) {
-    const user = isAuthenticated() ? JSON.parse(cookie.get("user")) : {};
-    if (prevProps.location !== this.props.location) {
-      if (this.props.location.pathname !== `/${user.username}`) {
-        this.setState({ isSuccess: false });
-      }
-    }
-  }
-
   deleteUserProfile = () => {
     api.deleteProfile().then(() => {
       cookie.remove("token");
@@ -99,8 +112,17 @@ class ReqUsername extends Component {
     });
   };
 
+  handleError = error => {
+    const { status } = error.response;
+    const formMessage =
+      status === 400
+        ? "Username already exists. Try a different username."
+        : "Something went wrong with the request. Please contact us.";
+    this.setState({ errors: { ...this.state.errors, form: formMessage } });
+  };
+
   render() {
-    const { showModal, username, isSuccess } = this.state;
+    const { showModal, username, isSuccess, errors } = this.state;
     const user = isAuthenticated() ? JSON.parse(cookie.get("user")) : null;
 
     if (user !== null && !user.username) {
@@ -114,20 +136,20 @@ class ReqUsername extends Component {
           <button className="loginModal-close btn btn-reset p-2" onClick={this.onClose}>
             <Octicon name="x" />
           </button>
-          <div className="p-4 rounded-top bg-blueLight">
+          <div className="p-3 p-sm-4 rounded-top bg-blueLight">
             <div className="mx-auto" style={{ maxWidth: "380px" }}>
-              <h5 className="text-center mb-3">
+              <h5 className="text-center mb-sm-3">
                 Create Your Profile Page
                 <Emoji value="🎉" className="ml-2" />
               </h5>
-              <div className="d-flex align-items-center mb-2">
+              <div className="d-flex flex-column flex-sm-row align-items-center mb-2">
                 <img
                   src={user.avatar_url}
                   className="profile-image rounded rounded"
                   alt={user.name}
-                  style={{ width: "80px", height: "80px" }}
+                  style={{ maxWidth: "80px", maxHeight: "80px" }}
                 />
-                <div className="ml-3">
+                <div className="ml-3 my-2">
                   <div className="font-weight-medium" style={{ fontSize: ".9em" }}>
                     <CheckMark />
                     View and edit your profile
@@ -144,12 +166,22 @@ class ReqUsername extends Component {
               </div>
             </div>
           </div>
-          <div className="py-4 px-4 mb-3" style={{ maxWidth: "430px" }}>
+          <form
+            onSubmit={this.onSubmit}
+            className="py-2 py-sm-4 px-4 mb-sm-3"
+            style={{ maxWidth: "430px" }}
+          >
+            {errors.form && <div className="small alert alert-danger">{errors.form}</div>}
             <div className="form-group">
               <div className="d-flex justify-content-between align-items-center mb-1">
                 <label className="small font-weight-bold m-0" style={{ opacity: 0.85 }}>
                   Choose a unique username
                 </label>
+                {errors.username && (
+                  <small className="text-danger text-uppercase ml-2 shake--error">
+                    {errors.username}
+                  </small>
+                )}
               </div>
               <input
                 type="text"
@@ -168,16 +200,19 @@ class ReqUsername extends Component {
                 profile, you can delete your account now. No sweat.
               </div>
             </div>
-          </div>
-          <div className="px-4 my-4 d-flex flex-column flex-sm-row align-items-center justify-content-between">
+          </form>
+          <div className="px-4 my-sm-4 d-flex flex-column flex-sm-row align-items-center justify-content-between">
             <button
               onClick={this.onSubmit}
-              className="btn btn-primary btn-sm px-3"
+              className="btn btn-primary btn-sm px-3 mt-2"
               disabled={username.length === 0}
             >
               Create profile
             </button>
-            <button onClick={this.onOpenDeleteModal} className="btn btn-sm text-muted">
+            <button
+              onClick={this.onOpenDeleteModal}
+              className="btn btn-reset btn-sm text-muted mt-2"
+            >
               I don't want a public profile
             </button>
           </div>
