@@ -1,5 +1,6 @@
 const Joi = require("joi");
 
+const User = require("../models/User");
 const DeckProgress = require("../models/DeckProgress");
 const CardProgress = require("../models/CardProgress");
 const ReviewEvent = require("../models/ReviewEvent");
@@ -11,6 +12,19 @@ module.exports.getStudyProgress = async (req, res, next) => {
     await Joi.validate(req.user, progressSchemas.user);
 
     const deckProgress = await DeckProgress.find({ user: req.user }).populate("cards");
+
+    res.send(deckProgress);
+  } catch (error) {
+    next(error);
+  }
+};
+
+module.exports.getUserStudyProgress = async (req, res, next) => {
+  try {
+    const { username } = req.params;
+
+    const user = await User.findOne({ username });
+    const deckProgress = await DeckProgress.find({ user: user._id }).populate("cards");
 
     res.send(deckProgress);
   } catch (error) {

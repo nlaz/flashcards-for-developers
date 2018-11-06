@@ -2,7 +2,7 @@ const Joi = require("joi");
 const axios = require("axios");
 const moment = require("moment");
 const jwt = require("jsonwebtoken");
-const mongoose = require("mongoose");
+const ObjectId = require("mongoose").Types.ObjectId;
 const queryString = require("query-string");
 const Stripe = require("stripe");
 
@@ -145,19 +145,6 @@ module.exports.getPinnedDecks = async (req, res, next) => {
   }
 };
 
-module.exports.getUserPinnedDecks = async (req, res, next) => {
-  try {
-    const { userId } = req.params;
-    const user = await User.findOne({ _id: userId })
-      .select("+saved_decks")
-      .populate("saved_decks");
-
-    res.send(user.saved_decks);
-  } catch (error) {
-    next(error);
-  }
-};
-
 module.exports.addPinnedDecks = async (req, res, next) => {
   try {
     await Joi.validate(req.body, userSchemas.addPinnedDecks);
@@ -229,7 +216,8 @@ module.exports.getStudySessions = async (req, res, next) => {
 
 module.exports.getUserProfile = async (req, res, next) => {
   try {
-    const user = await User.findOne({ _id: req.user });
+    const { username } = req.params;
+    const user = await User.findOne({ username });
 
     res.send(user);
   } catch (error) {
@@ -269,9 +257,10 @@ module.exports.deleteUserProfile = async (req, res, next) => {
 
 module.exports.getUserReviews = async (req, res, next) => {
   try {
-    const { userId } = req.params;
+    const { username } = req.params;
+    const user = await User.findOne({ username });
     const reviews = await ReviewEvent.aggregate([
-      { $match: { user: mongoose.Types.ObjectId(userId) } },
+      { $match: { user: user._id } },
       { $project: { yearMonthDay: { $dateToString: { format: "%Y-%m-%d", date: "$createdAt" } } } },
       { $group: { _id: "$yearMonthDay", count: { $sum: 1 } } },
     ]);
@@ -282,14 +271,29 @@ module.exports.getUserReviews = async (req, res, next) => {
   }
 };
 
+module.exports.getUserPinnedDecks = async (req, res, next) => {
+  try {
+    const { username } = req.params;
+
+    const user = await User.findOne({ username })
+      .select("+saved_decks")
+      .populate("saved_decks");
+
+    res.send(user.saved_decks);
+  } catch (error) {
+    next(error);
+  }
+};
+
 module.exports.getUserActivity = async (req, res, next) => {
   try {
-    const { userId } = req.params;
+    const { username } = req.params;
 
-    const reviews = await ReviewEvent.find({ user: userId });
+    const user = await User.findOne({ username });
+    const reviews = await ReviewEvent.find({ user: user._id });
     const studyDates = [...new Set(reviews.map(el => moment(el.createdAt).format("YYYY-DD-MM")))];
-    const cardProgresses = await CardProgress.find({ user: userId });
-    const masteredCards = await CardProgress.find({ user: userId, leitnerBox: { $gt: 5 } });
+    const cardProgresses = await CardProgress.find({ user: user._id });
+    const masteredCards = await CardProgress.find({ user: user._id, leitnerBox: { $gt: 5 } });
 
     const currentStreak = streaks.getCurrentStreak(studyDates);
     const longestStreak = streaks.getLongestStreak(studyDates);

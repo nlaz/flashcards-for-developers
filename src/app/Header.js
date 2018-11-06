@@ -12,17 +12,17 @@ import LoginModal from "./auth/LoginModal";
 const LogoutTooltip = ({ user }) => (
   <div className="tooltip-content">
     <div className="tooltip-item">
-      <Link className="text-secondary" to={`/${user.id}`}>
+      <Link className="text-secondary" to={`/${user.username}`}>
         My Profile
       </Link>
     </div>
     <div className="tooltip-item">
-      <Link className="text-secondary" to={`/${user.id}/pinned`}>
+      <Link className="text-secondary" to={`/${user.username}/pinned`}>
         My Pinned Decks
       </Link>
     </div>
     <div className="tooltip-item">
-      <Link className="text-secondary" to={`/${user.id}/decks`}>
+      <Link className="text-secondary" to={`/${user.username}/decks`}>
         My Decks
       </Link>
     </div>
@@ -126,7 +126,7 @@ class Header extends Component {
                     </Link>
                   </li>,
                   <li className="list-inline-item mx-0" key={-1}>
-                    <Link to={`/${user.id}/pinned`}>
+                    <Link to={`/${user.username}/pinned`}>
                       <Octicon
                         className="nav-icon d-flex align-items-center p-2"
                         name="pin"

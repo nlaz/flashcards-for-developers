@@ -68,10 +68,6 @@ export const submitPayment = ({ description, amount, source, currency }) => {
   return authAxios.post("/users/payments", { description, amount, source, currency });
 };
 
-export const fetchDecksForUser = () => {
-  return authAxios.get("/users/decks");
-};
-
 export const fetchPinnedDecks = () => {
   return authAxios.get("/users/pinned_decks");
 };
@@ -84,8 +80,8 @@ export const updateUserProfile = ({ name, email, username, email_notification })
   return authAxios.put(`/users/profile`, { name, email, username, email_notification });
 };
 
-export const fetchUserProfile = () => {
-  return authAxios.get("/users/profile");
+export const fetchUserProfile = userId => {
+  return authAxios.get(`/users/${userId}/profile`);
 };
 
 export const deleteUserProfile = () => {
@@ -115,12 +111,19 @@ export const addStudySessions = dates => {
 export const addStudySession = date => addStudySessions([date]);
 
 // User related endpoints
-export const fetchUserPinnedDecks = userId => {
-  return axios.get(`/users/${userId}/pinned_decks`);
+export const fetchDecksForUser = username => {
+  return authAxios.get(`/users/${username}/decks`);
+};
+export const fetchUserPinnedDecks = username => {
+  return axios.get(`/users/${username}/pinned_decks`);
 };
 
-export const fetchUserActivity = userId => {
-  return authAxios.get(`/users/${userId}/activity`);
+export const fetchUserActivity = username => {
+  return authAxios.get(`/users/${username}/activity`);
+};
+
+export const fetchUserStudyProgress = username => {
+  return authAxios.get(`/users/${username}/study_progress`);
 };
 
 // Study progress related endpoints

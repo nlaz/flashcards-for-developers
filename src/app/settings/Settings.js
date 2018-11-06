@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import cookie from "js-cookie";
 
+import isAuthenticated from "../utils/isAuthenticated";
 import * as api from "../apiActions";
 import Emoji from "../../components/Emoji";
 import DeleteAccountModal from "./DeleteAccountModal";
@@ -17,7 +18,8 @@ class Settings extends Component {
 
   // Lifecylce methods
   componentDidMount() {
-    this.fetchUserProfile();
+    const user = isAuthenticated() ? JSON.parse(cookie.get("user")) : {};
+    this.fetchUserProfile(user.id);
   }
 
   // Validation helpers
@@ -70,8 +72,8 @@ class Settings extends Component {
   };
 
   // API methods
-  fetchUserProfile = () => {
-    api.fetchUserProfile().then(({ data }) => {
+  fetchUserProfile = userId => {
+    api.fetchUserProfile(userId).then(({ data }) => {
       this.setState({ profile: { ...this.state.profile, ...data } });
     });
   };
