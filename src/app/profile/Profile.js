@@ -149,7 +149,7 @@ class Profile extends Component {
                       onClick={this.onGoTo}
                       className="btn btn-sm btn-white text-uppercase d-flex align-items-center px-3 mt-2"
                     >
-                      <small className="font-weight-medium">Edit Bio</small>
+                      <small className="font-weight-medium">Edit Profile</small>
                     </button>
                   )}
                 </div>

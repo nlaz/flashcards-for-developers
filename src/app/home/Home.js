@@ -190,7 +190,11 @@ class Decks extends Component {
                 <div className="pinned-row">
                   <div className="text-shadow d-flex justify-content-between align-items-end mb-2 mx-1">
                     <h6 className="text-uppercase m-0">MY PINNED DECKS</h6>
-                    <Link className="text-white text-underline" to={`/${user.username}/pinned`}>
+                    <Link
+                      className="text-white text-underline"
+                      to={`/${user.username}/pinned`}
+                      disabled={!user.username}
+                    >
                       See all
                     </Link>
                   </div>

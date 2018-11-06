@@ -1,7 +1,6 @@
 import React, { Component } from "react";
 import cookie from "js-cookie";
 
-import isAuthenticated from "../utils/isAuthenticated";
 import * as api from "../apiActions";
 import Emoji from "../../components/Emoji";
 import DeleteAccountModal from "./DeleteAccountModal";
@@ -12,7 +11,7 @@ class Settings extends Component {
   state = {
     showModal: false,
     isSuccess: false,
-    profile: { name: "", email: "", avatar_url: "", username: "", email_notification: "" },
+    profile: { name: "", email: "", avatar_url: "", username: "", email_notification: false },
     errors: { email: undefined, name: undefined },
   };
 
@@ -25,7 +24,8 @@ class Settings extends Component {
   validateUsername = username => {
     const illegalChars = /\W/; // allow letters, numbers, and underscores
     const isValid = !illegalChars.test(username) && username.length >= 4 && username.length <= 15;
-    return !isValid ? ERRORS.INVALID : undefined;
+    const validMessage = !isValid ? ERRORS.INVALID : undefined;
+    return username.length === 0 ? ERRORS.REQUIRED : validMessage;
   };
 
   validateEmail = email => {
@@ -73,6 +73,7 @@ class Settings extends Component {
   // API methods
   fetchProfile = () => {
     api.fetchProfile().then(({ data }) => {
+      console.log(data);
       this.setState({ profile: { ...this.state.profile, ...data } });
     });
   };
