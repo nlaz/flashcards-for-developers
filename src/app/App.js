@@ -13,6 +13,7 @@ import Profile from "./profile/Profile";
 import Settings from "./settings/Settings";
 import ReqAuth from "./auth/ReqAuth";
 import ReqUser from "./auth/ReqUser";
+import ReqUsername from "./auth/ReqUsername";
 import Footer from "./Footer";
 import Header from "./Header";
 
@@ -29,6 +30,7 @@ class App extends Component {
           <div className="d-flex flex-column" style={{ flexGrow: 1 }}>
             <Route path="/" component={GoogleAnalytics} />
             <Route path="/" component={ScrollToTop} />
+            <Route path="/" component={ReqUsername} />
             <Switch>
               <Route exact path="/" component={Home} />
               <Route path="/pages" component={Pages} />

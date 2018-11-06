@@ -43,8 +43,9 @@ router.get("/users/pinned_decks", isAuthenticated, UsersController.getPinnedDeck
 router.put("/users/pinned_decks", isAuthenticated, UsersController.addPinnedDecks);
 router.delete("/users/pinned_decks", isAuthenticated, UsersController.removePinnedDeck);
 
-router.put("/users/profile", isAuthenticated, UsersController.updateUserProfile);
-router.delete("/users/profile", isAuthenticated, UsersController.deleteUserProfile);
+router.get("/users/profile", isAuthenticated, UsersController.getProfile);
+router.put("/users/profile", isAuthenticated, UsersController.updateProfile);
+router.delete("/users/profile", isAuthenticated, UsersController.deleteProfile);
 
 router.get("/users/study_sessions", isAuthenticated, UsersController.getStudySessions);
 router.put("/users/study_sessions", isAuthenticated, UsersController.addStudySessions);

@@ -34,6 +34,7 @@ h1 {
 
 a[disabled] {
   pointer-events: none;
+  opacity: 0.6;
 }
 
 .deck-description p {
@@ -478,7 +479,7 @@ a[disabled] {
 }
 
 .bg-blueLight {
-  background: #e7f2ff;
+  background: #ebf5ff;
 }
 .bg-blueDark {
   background: #157ffb;

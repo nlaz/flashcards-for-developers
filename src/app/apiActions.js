@@ -76,15 +76,15 @@ export const fetchUserReviews = userId => {
   return authAxios.get(`/users/${userId}/reviews`);
 };
 
-export const updateUserProfile = ({ name, email, username, email_notification }) => {
+export const fetchProfile = () => {
+  return authAxios.get("/users/profile");
+};
+
+export const updateProfile = ({ name, email, username, email_notification }) => {
   return authAxios.put(`/users/profile`, { name, email, username, email_notification });
 };
 
-export const fetchUserProfile = userId => {
-  return authAxios.get(`/users/${userId}/profile`);
-};
-
-export const deleteUserProfile = () => {
+export const deleteProfile = () => {
   return authAxios.delete("/users/profile");
 };
 
@@ -124,6 +124,10 @@ export const fetchUserActivity = username => {
 
 export const fetchUserStudyProgress = username => {
   return authAxios.get(`/users/${username}/study_progress`);
+};
+
+export const fetchUserProfile = userId => {
+  return authAxios.get(`/users/${userId}/profile`);
 };
 
 // Study progress related endpoints
