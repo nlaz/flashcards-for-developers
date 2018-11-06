@@ -35,6 +35,7 @@ app.use((err, req, res, next) => {
   if (err.code === 11000) {
     return res.status(400).send({ error: err.stack, message: "User already exists" });
   }
+  console.log("user", err);
   return res.status(500).send({ error: err.stack });
 });
 

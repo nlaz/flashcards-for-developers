@@ -33,7 +33,7 @@ class ReqUsername extends Component {
       this.setState({
         username: user.name
           .split(" ")
-          .join("_")
+          .join("")
           .toLowerCase(),
       });
     }
@@ -56,7 +56,8 @@ class ReqUsername extends Component {
 
   onCloseDeleteModal = () => this.setState({ showDeleteModal: false });
 
-  onSubmit = () => {
+  onSubmit = e => {
+    e.preventDefault();
     const { username, errors } = this.state;
 
     this.setState(
@@ -121,7 +122,7 @@ class ReqUsername extends Component {
   };
 
   render() {
-    const { showModal, username, isSuccess } = this.state;
+    const { showModal, username, isSuccess, errors } = this.state;
     const user = isAuthenticated() ? JSON.parse(cookie.get("user")) : null;
 
     if (user !== null && !user.username) {
@@ -165,12 +166,18 @@ class ReqUsername extends Component {
               </div>
             </div>
           </div>
-          <div className="py-4 px-4 mb-3" style={{ maxWidth: "430px" }}>
+          <form onSubmit={this.onSubmit} className="py-4 px-4 mb-3" style={{ maxWidth: "430px" }}>
+            {errors.form && <div className="small alert alert-danger">{errors.form}</div>}
             <div className="form-group">
               <div className="d-flex justify-content-between align-items-center mb-1">
                 <label className="small font-weight-bold m-0" style={{ opacity: 0.85 }}>
                   Choose a unique username
                 </label>
+                {errors.username && (
+                  <small className="text-danger text-uppercase ml-2 shake--error">
+                    {errors.username}
+                  </small>
+                )}
               </div>
               <input
                 type="text"
@@ -189,7 +196,7 @@ class ReqUsername extends Component {
                 profile, you can delete your account now. No sweat.
               </div>
             </div>
-          </div>
+          </form>
           <div className="px-4 my-4 d-flex flex-column flex-sm-row align-items-center justify-content-between">
             <button
               onClick={this.onSubmit}
