@@ -16,8 +16,10 @@ router.get("/hello", (req, res) => res.send({ message: "Hello world!" }));
 // Search related endpoints
 router.get("/api/search", SearchController.searchContent);
 
-// Deck related endpoints
+// TODO: Refactor endpoint to /api/collections/:id/decks
 router.get("/api/decks", DecksController.getDecks);
+
+// Deck related endpoints
 router.post("/api/decks", isAuthenticated, DecksController.createDeck);
 router.get("/api/decks/:deckId", getUser, DecksController.getDeck);
 router.put("/api/decks/:deckId", isAuthenticated, DecksController.updateDeck);
@@ -37,6 +39,7 @@ router.post("/auth/github/login", UsersController.getGithubUser);
 router.post("/auth/github/register", UsersController.createGithubUser);
 
 // Current user related endpoints
+// Refactor endpoints from '/users' to '/self'
 router.post("/users/payments", isAuthenticated, UsersController.postStripeCharge);
 
 router.get("/users/pinned_decks", isAuthenticated, UsersController.getPinnedDecks);
@@ -60,6 +63,7 @@ router.get("/users/:username/pinned_decks", UsersController.getUserPinnedDecks);
 router.get("/users/:username/study_progress", ProgressController.getUserStudyProgress);
 
 // Study progress related endpoints
+// TODO: Refactor endpoint to /users/:username/progress
 router.get("/study_progress", isAuthenticated, ProgressController.getStudyProgress);
 router.put("/study_progress", isAuthenticated, ProgressController.addStudyProgress);
 router.get("/study_progress/:deckId", isAuthenticated, ProgressController.getDeckProgress);

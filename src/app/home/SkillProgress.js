@@ -45,7 +45,7 @@ const SkillProgress = ({ decks, studyProgress }) => {
           Skill Progress
         </p>
         <p className="text-secondary m-0" style={{ fontSize: "14px" }}>
-          You practiced {pluralize("skill", numPractices, true)}
+          Practiced {pluralize("skill", numPractices, true)}
         </p>
       </div>
       <PieChart height={70} width={70}>

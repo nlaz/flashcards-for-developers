@@ -5,6 +5,15 @@ module.exports = {
   getGithubUser: {
     code: Joi.string().required(),
   },
+  userProfile: {
+    id: Joi.objectId().required(),
+    name: Joi.string().required(),
+    avatar_url: Joi.string(),
+    username: Joi.string()
+      .alphanum()
+      .min(4)
+      .max(15),
+  },
   createGithubUser: {
     email: Joi.string()
       .email()
