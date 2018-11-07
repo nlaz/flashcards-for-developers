@@ -2,6 +2,8 @@ import React, { Component } from "react";
 import cookie from "js-cookie";
 
 import * as api from "../apiActions";
+import * as analytics from "../../components/GoogleAnalytics";
+
 import Emoji from "../../components/Emoji";
 import DeleteAccountModal from "./DeleteAccountModal";
 import LoginModal from "../auth/LoginModal";
@@ -106,6 +108,7 @@ class Settings extends Component {
 
   deleteUserProfile = () => {
     api.deleteProfile().then(() => {
+      analytics.logUserAction("User deleted their account");
       cookie.remove("token");
       cookie.remove("user");
       this.props.history.push("/");
