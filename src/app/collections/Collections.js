@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import { Link } from "react-router-dom";
+import PropTypes from "prop-types";
 
 import config from "../../config";
 import isAuthenticated from "../utils/isAuthenticated";
@@ -23,6 +24,7 @@ class Collections extends Component {
   };
 
   componentWillMount() {
+    this.context.mixpanel.track("Specific Collections Page.");
     const { params } = this.props.match;
 
     if (this.isPinnedDecksPage()) {
@@ -222,5 +224,7 @@ class Collections extends Component {
 Collections.defaultProps = {
   match: { params: {} },
 };
-
+Collections.contextTypes = {
+  mixpanel: PropTypes.object.isRequired,
+};
 export default Collections;

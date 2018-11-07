@@ -1,5 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
+
 import * as api from "../apiActions";
 import CollectionItem from "./CollectionItem";
 
@@ -7,7 +8,7 @@ class CollectionsHome extends React.Component {
   state = { collections: [] };
 
   componentDidMount() {
-    this.context.mixpanel.track("Collections Page.");
+    this.context.mixpanel.track("Collections Home Page.");
     this.fetchCollections();
   }
 

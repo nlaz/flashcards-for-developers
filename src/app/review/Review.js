@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import moment from "moment";
 import cookie from "js-cookie";
+import PropTypes from "prop-types";
 
 import isAuthenticated from "../utils/isAuthenticated";
 import UpgradeModal from "../auth/UpgradeModal";
@@ -38,6 +39,8 @@ class Review extends Component {
 
   // Lifecycle methods
   componentWillMount() {
+    this.context.mixpanel.track("Reviewing.");
+
     const { params } = this.props.match;
     if (params.tabName && params.tabName.length > 0) {
       this.setState({ activeTab: params.tabName });
@@ -308,4 +311,7 @@ class Review extends Component {
   }
 }
 
+Review.contextTypes = {
+  mixpanel: PropTypes.object.isRequired,
+};
 export default Review;

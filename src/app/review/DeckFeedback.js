@@ -1,11 +1,16 @@
 import React, { Component } from "react";
 import cx from "classnames";
+import PropTypes from "prop-types";
 
 import * as analytics from "../../components/GoogleAnalytics";
 import config from "../../config/index";
 
 class DeckFeedback extends Component {
   state = { isVoteSent: false };
+
+  componentDidMount() {
+    this.context.mixpanel.track("Finished Deck.");
+  }
 
   onVote = value => {
     const { deck } = this.props;
@@ -61,4 +66,7 @@ class DeckFeedback extends Component {
   }
 }
 
+DeckFeedback.contextTypes = {
+  mixpanel: PropTypes.object.isRequired,
+};
 export default DeckFeedback;
