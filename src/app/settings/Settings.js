@@ -2,14 +2,18 @@ import React, { Component } from "react";
 import cookie from "js-cookie";
 
 import * as api from "../apiActions";
+import * as analytics from "../../components/GoogleAnalytics";
+
 import Emoji from "../../components/Emoji";
 import DeleteAccountModal from "./DeleteAccountModal";
+import LoginModal from "../auth/LoginModal";
 
 const ERRORS = { REQUIRED: "Required", INVALID: "Invalid" };
 
 class Settings extends Component {
   state = {
     showModal: false,
+    showLoginModal: false,
     isSuccess: false,
     profile: { name: "", email: "", avatar_url: "", username: "", email_notification: false },
     errors: { email: undefined, name: undefined },
@@ -43,6 +47,8 @@ class Settings extends Component {
 
   onCloseModal = () => this.setState({ showModal: false });
 
+  onCloseLoginModal = () => this.props.history.push("/");
+
   onChange = e =>
     this.setState({ profile: { ...this.state.profile, [e.target.name]: e.target.value } });
 
@@ -72,9 +78,12 @@ class Settings extends Component {
 
   // API methods
   fetchProfile = () => {
-    api.fetchProfile().then(({ data }) => {
-      this.setState({ profile: { ...this.state.profile, ...data } });
-    });
+    api
+      .fetchProfile()
+      .then(({ data }) => {
+        this.setState({ profile: { ...this.state.profile, ...data } });
+      })
+      .catch(this.handleError);
   };
 
   updateUserProfile = () => {
@@ -99,6 +108,7 @@ class Settings extends Component {
 
   deleteUserProfile = () => {
     api.deleteProfile().then(() => {
+      analytics.logUserAction("User deleted their account");
       cookie.remove("token");
       cookie.remove("user");
       this.props.history.push("/");
@@ -106,8 +116,10 @@ class Settings extends Component {
   };
 
   handleError = error => {
+    const { status } = error.response;
     this.setState({
       errors: { ...this.state.errors, form: error },
+      showLoginModal: status === 401,
       isLoading: false,
       isSuccess: false,
     });
@@ -123,6 +135,7 @@ class Settings extends Component {
           onCancel={this.onCloseModal}
           onConfirm={this.deleteUserProfile}
         />
+        <LoginModal isOpen={this.state.showLoginModal} onClose={this.onCloseLoginModal} />
         <h1 className="mb-4">Settings</h1>
         <form onSubmit={this.onSubmit} className="border rounded px-3 py-4 mb-3">
           <h5 className="font-weight-light py-1">My Details</h5>
