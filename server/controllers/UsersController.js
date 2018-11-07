@@ -257,8 +257,16 @@ module.exports.getUserProfile = async (req, res, next) => {
   try {
     const { username } = req.params;
     const user = await User.findOne({ username });
+    const profile = {
+      avatar_url: user.avatar_url,
+      name: user.name,
+      id: String(user._id),
+      username: user.username,
+    };
 
-    res.send(user);
+    await Joi.validate(profile, userSchemas.userProfile);
+
+    res.send(profile);
   } catch (error) {
     next(error);
   }

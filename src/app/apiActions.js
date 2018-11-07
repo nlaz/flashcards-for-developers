@@ -25,6 +25,7 @@ export const createDeck = ({ name, description }) => {
   return authAxios.post("/api/decks", { name, description });
 };
 
+// TODO: Refactor endpoint to /api/collections/:id/decks
 export const fetchDecks = collectionId => {
   const params = collectionId ? `?${queryString.stringify({ collection: collectionId })}` : "";
   return authAxios.get(`/api/decks${params}`);
