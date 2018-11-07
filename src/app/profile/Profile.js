@@ -4,6 +4,7 @@ import cookie from "js-cookie";
 
 import * as api from "../apiActions";
 import * as analytics from "../../components/GoogleAnalytics";
+import PropTypes from "prop-types";
 
 import isProMember from "../utils/isProMember";
 import Tab from "../../components/Tab";
@@ -30,6 +31,7 @@ class Profile extends Component {
   };
 
   componentWillMount() {
+    this.context.mixpanel.track("Profile Page.");
     const { params } = this.props.match;
     if (params.tabName && params.tabName.length > 0) {
       this.setState({ activeTab: params.tabName });
@@ -213,4 +215,7 @@ class Profile extends Component {
   }
 }
 
+Profile.contextTypes = {
+  mixpanel: PropTypes.object.isRequired,
+};
 export default Profile;

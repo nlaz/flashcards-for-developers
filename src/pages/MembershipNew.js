@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import { withRouter } from "react-router-dom";
 import { Elements } from "react-stripe-elements";
 import cookie from "js-cookie";
+import PropTypes from "prop-types";
 
 import CheckoutForm from "./CheckoutForm";
 import Octicon from "../components/Octicon";
@@ -16,6 +17,10 @@ class MembershipNew extends Component {
     this.setState({ status: STATUS.SUCCESS });
     cookie.set("user", user);
   };
+
+  componentDidMount() {
+    this.context.mixpanel.track("Became A Member.");
+  }
 
   handleError = () => this.setState({ status: STATUS.ERROR });
 
@@ -89,4 +94,7 @@ class MembershipNew extends Component {
   }
 }
 
+MembershipNew.contextTypes = {
+  mixpanel: PropTypes.object.isRequired,
+};
 export default withRouter(MembershipNew);

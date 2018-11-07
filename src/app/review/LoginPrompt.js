@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import PropTypes from "prop-types";
 
 import LoginModal from "../auth/LoginModal";
 import * as analytics from "../../components/GoogleAnalytics";
@@ -10,6 +11,7 @@ class LoginPrompt extends Component {
 
   onCloseModal = () => {
     analytics.logLoginAction("User exited login modal from 'Review Results'");
+    this.context.mixpanel.track("Closed Login Modal.");
     this.setState({ showModal: false });
   };
 
@@ -26,6 +28,7 @@ class LoginPrompt extends Component {
             className="btn btn-sm btn-darkblue d-flex"
             onClick={() => {
               analytics.logLoginAction("User clicked 'Login' button from 'Review Results'");
+              this.context.mixpanel.track("User clicked 'Login' button from 'Review Results'.");
               this.onOpenModal();
             }}
           >
@@ -37,4 +40,7 @@ class LoginPrompt extends Component {
   }
 }
 
+LoginPrompt.contextTypes = {
+  mixpanel: PropTypes.object.isRequired,
+};
 export default LoginPrompt;

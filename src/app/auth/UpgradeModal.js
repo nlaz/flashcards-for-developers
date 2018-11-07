@@ -1,5 +1,7 @@
 import React, { Component } from "react";
 import Modal from "react-modal";
+import PropTypes from "prop-types";
+
 import { Redirect } from "react-router-dom";
 import Octicon from "../../components/Octicon";
 import * as analytics from "../../components/GoogleAnalytics";
@@ -54,6 +56,7 @@ class UpgradeModal extends Component {
               className="loginModal-button btn btn-sm btn-outline-dark"
               onClick={() => {
                 analytics.logProAction("Clicked on Modal Upgrade button");
+                this.context.mixpanel.track("Clicked on Modal Upgrade button.");
                 this.setRedirect();
               }}
             >
@@ -69,4 +72,7 @@ class UpgradeModal extends Component {
   }
 }
 
+UpgradeModal.contextTypes = {
+  mixpanel: PropTypes.object.isRequired,
+};
 export default UpgradeModal;

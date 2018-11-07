@@ -1,5 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
+import PropTypes from "prop-types";
 
 import isAuthenticated from "../app/utils/isAuthenticated";
 import LoginModal from "../app/auth/LoginModal";
@@ -17,6 +18,10 @@ class Membership extends React.Component {
   onOpenModal = () => this.setState({ showModal: true });
 
   onCloseModal = () => this.setState({ showModal: false });
+
+  componentDidMount() {
+    this.context.mixpanel.track("Membership Page.");
+  }
 
   render() {
     const authenticated = isAuthenticated();
@@ -297,4 +302,7 @@ class Membership extends React.Component {
   }
 }
 
+Membership.contextTypes = {
+  mixpanel: PropTypes.object.isRequired,
+};
 export default Membership;
