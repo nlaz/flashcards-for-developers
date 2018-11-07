@@ -101,7 +101,6 @@ module.exports.getDecksForUser = async (req, res, next) => {
     let decks;
 
     const user = await User.findOne({ username });
-    console.log(req.user, user._id, ObjectId(req.user) === ObjectId(user._id));
     if (req.user !== user._id.toString()) {
       decks = await Deck.find({ author: user._id, status: { $ne: "private" } });
     } else {
