@@ -674,3 +674,11 @@ textarea {
     font-size: 1.6em;
   }
 }
+
+.form-group input,
+.form-group textarea {
+  font-size: 0.9em;
+}
+.form-group textarea {
+  height: 80px;
+}
