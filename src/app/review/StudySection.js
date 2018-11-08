@@ -173,7 +173,7 @@ class StudySection extends Component {
     this.props.onUpdateProgress(card, isCorrect);
 
     if (isCorrect) {
-      this.setState({ correctness: [...this.state.correctness, isCorrect] });
+      this.setState({ correctness: [...this.state.correctness, isCorrect && !this.state.isWrong] });
       analytics.logReviewEvent(card.id);
       this.timeout = setTimeout(() => this.handleCorrectAnswer(), 300);
     } else {
@@ -297,7 +297,7 @@ class StudySection extends Component {
   };
 
   render() {
-    const { pageSize, index, correctness, options, incorrectCards, isWrong } = this.state;
+    const { index, correctness, options, incorrectCards, isWrong } = this.state;
     const { deck, cards, isLoading } = this.props;
 
     const currentCard = this.getCurrentCard();
@@ -315,10 +315,8 @@ class StudySection extends Component {
           <StudyProgress
             index={index}
             items={cards}
-            pageSize={pageSize}
             pageEnd={pageEnd}
             pageStart={pageStart}
-            isFinished={isStageFinished}
             correctness={correctness}
             incorrectCards={incorrectCards}
           />

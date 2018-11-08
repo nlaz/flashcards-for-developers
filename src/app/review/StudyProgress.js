@@ -1,34 +1,30 @@
 import React from "react";
 import cx from "classnames";
 
-const StudyProgress = ({
-  index,
-  incorrectCards,
-  items,
-  pageSize,
-  pageStart,
-  pageEnd,
-  isFinished,
-  correctness,
-}) => {
+const DotItem = ({ isCorrect, isIncorrect, active }) => {
+  return (
+    <div
+      className={cx("border progress-index border-secondary rounded-circle border-width-2 ml-1", {
+        "bg-success border-success": isCorrect,
+        "bg-secondary border-secondary": isIncorrect,
+        "progress-current": active,
+      })}
+    />
+  );
+};
+
+const StudyProgress = props => {
+  const { index, incorrectCards, items, pageStart, pageEnd, correctness } = props;
   const pageCards = items.slice(pageStart, pageEnd);
   const currentCards = [...pageCards, ...incorrectCards];
-  console.log("correctness", correctness, index, isFinished);
   return (
     <div className="d-flex align-items-center">
       {currentCards.map((el, key) => (
-        <div
+        <DotItem
           key={key}
-          className={cx(
-            "border progress-index border-secondary rounded-circle border-width-2 ml-1",
-            {
-              "bg-success border-success":
-                (isFinished && correctness[key]) || (key < index % pageSize && correctness[key]),
-              "bg-secondary border-secondary":
-                (isFinished && !correctness[key]) || (key < index % pageSize && !correctness[key]),
-              "progress-current": key === index || key === index - pageStart,
-            },
-          )}
+          isCorrect={correctness[key]}
+          isIncorrect={!correctness[key] && key < index}
+          active={key === index}
         />
       ))}
     </div>
