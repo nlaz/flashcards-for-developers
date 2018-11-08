@@ -4,10 +4,13 @@ import * as api from "../../app/apiActions";
 import Octicon from "../../components/Octicon";
 import DeleteModal from "./DeleteModal";
 
+const STATUS_TYPES = { PRIVATE: "private", PUBLIC: "public" };
+
 class SettingsSection extends Component {
   state = {
     name: this.props.deck.name,
     description: this.props.deck.description,
+    status: this.props.deck.status,
     showModal: false,
   };
 
@@ -36,7 +39,7 @@ class SettingsSection extends Component {
   };
 
   render() {
-    const { name, description } = this.state;
+    const { name, description, status } = this.state;
 
     return (
       <div className="py-2">
@@ -74,19 +77,30 @@ class SettingsSection extends Component {
               value={description}
             />
           </div>
-          <div className="d-flex align-items-center mb-3 mt-4">
-            <div>
+          {status === STATUS_TYPES.PRIVATE && (
+            <div className="d-flex align-items-center mb-3 mt-4">
               <Octicon name="lock" width={24} height={30} fill="#b9ad87" className="d-flex" />
+              <div className="d-flex flex-column justify-content-center ml-2">
+                <span className="font-weight-medium" style={{ lineHeight: "1em" }}>
+                  Private deck
+                </span>
+                <small className="text-muted">
+                  You are the only one who can see and study to this deck.
+                </small>
+              </div>
             </div>
-            <div className="d-flex flex-column justify-content-center ml-2">
-              <span className="font-weight-medium" style={{ lineHeight: "1em" }}>
-                Private deck
-              </span>
-              <small className="text-muted">
-                You are the only one who can see and study to this deck.
-              </small>
+          )}
+          {status === STATUS_TYPES.PUBLIC && (
+            <div className="d-flex align-items-center mb-3 mt-4">
+              <Octicon name="repo" width={24} height={30} fill="#959da5" className="d-flex" />
+              <div className="d-flex flex-column justify-content-center ml-2">
+                <span className="font-weight-medium" style={{ lineHeight: "1em" }}>
+                  Public deck
+                </span>
+                <small className="text-muted">Anyone can see and study to this deck.</small>
+              </div>
             </div>
-          </div>
+          )}
           <button
             className="btn btn-outline-primary btn-sm font-weight-medium px-2 mt-2"
             type="submit"

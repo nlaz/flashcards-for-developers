@@ -5,7 +5,6 @@ const Card = require("../models/Card");
 const User = require("../models/User");
 const Collection = require("../models/Collection");
 const deckSchemas = require("./validation/decks");
-const ObjectId = require("mongoose").Types.ObjectId;
 
 module.exports.getDecks = async (req, res, next) => {
   try {
@@ -29,13 +28,16 @@ module.exports.getDecks = async (req, res, next) => {
 
 module.exports.createDeck = async (req, res, next) => {
   try {
-    const { name, description } = req.body;
+    const { name, description, status } = req.body;
     const user = await User.findOne({ _id: req.user });
 
     await Joi.validate(req.body, deckSchemas.createDeck);
-    await Joi.validate(user.user_plan, deckSchemas.proUser);
+    if (status === "private") {
+      // Validate user is pro member
+      await Joi.validate(user.user_plan, deckSchemas.proUser);
+    }
 
-    const deck = await Deck.create({ name, description, author: req.user, status: "private" });
+    const deck = await Deck.create({ name, description, status, author: req.user });
 
     res.send(deck);
   } catch (error) {

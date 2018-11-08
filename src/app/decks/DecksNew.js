@@ -14,11 +14,11 @@ class DecksNew extends Component {
 
   onSubmit = e => {
     e.preventDefault();
-    const { name, description } = this.state;
+    const { name, description, status } = this.state;
 
-    if (isProMember()) {
+    if (status === STATUS_TYPES.PUBLIC || isProMember()) {
       api
-        .createDeck({ name, description })
+        .createDeck({ name, description, status })
         .then(response => this.setState({ isRedirect: true, deck: response.data }))
         .catch(error => console.log(error));
     }

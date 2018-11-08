@@ -10,6 +10,8 @@ import * as api from "../apiActions";
 
 import LoginModal from "../auth/LoginModal";
 
+const STATUS_TYPES = { PRIVATE: "private", PUBLIC: "public" };
+
 class ReviewHeader extends React.Component {
   state = { showModal: false, pinnedDecks: [] };
 
@@ -56,9 +58,13 @@ class ReviewHeader extends React.Component {
         <LoginModal isOpen={this.state.showModal} onClose={this.onCloseModal} />
         <div className="d-flex align-items-center">
           <h1 className="m-0">{deck.name}</h1>
-          {deck.status === "private" && (
-            <small className="text-capitalize text-muted ml-2 rounded border px-1">
-              {deck.status}
+          {deck.status === STATUS_TYPES.PRIVATE && (
+            <small
+              className="text-capitalize text-muted ml-2 rounded border px-1 d-flex align-items-center"
+              style={{ padding: "2px" }}
+            >
+              <Octicon name="lock" width={14} height={14} fill="#b9ad87" className="d-flex" />
+              <span className="ml-1">{deck.status}</span>
             </small>
           )}
         </div>

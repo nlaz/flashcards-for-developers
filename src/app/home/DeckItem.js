@@ -11,6 +11,8 @@ import UpgradeModal from "../auth/UpgradeModal";
 
 import * as analytics from "../../components/GoogleAnalytics";
 
+const STATUS_TYPES = { PRIVATE: "private", PUBLIC: "public" };
+
 class DeckItem extends Component {
   state = { showUpgradeModal: false };
 
@@ -71,8 +73,9 @@ class DeckItem extends Component {
               className="position-absolute d-flex align-items-center"
               style={{ bottom: "16px", right: "18px" }}
             >
-              {this.props.deck.status === "private" && (
-                <div className="text-muted small ml-1 p-0">
+              {this.props.deck.status === STATUS_TYPES.PRIVATE && (
+                <div className="text-muted small ml-1 p-0 d-flex align-items-center">
+                  <Octicon name="lock" width={14} height={14} fill="#b9ad87" className="d-flex" />
                   <div className="text-uppercase p-1">Private</div>
                 </div>
               )}

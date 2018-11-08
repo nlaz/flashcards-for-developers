@@ -21,8 +21,8 @@ export const updateDeck = ({ deckId, name, description }) => {
   return authAxios.put(`/api/decks/${deckId}`, { name, description });
 };
 
-export const createDeck = ({ name, description }) => {
-  return authAxios.post("/api/decks", { name, description });
+export const createDeck = ({ name, description, status }) => {
+  return authAxios.post("/api/decks", { name, description, status });
 };
 
 // TODO: Refactor endpoint to /api/collections/:id/decks
