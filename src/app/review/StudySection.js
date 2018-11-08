@@ -58,7 +58,6 @@ class StudySection extends Component {
     isWrong: false,
     isReversed: false,
     isRevealed: false,
-    pageSize: 6,
     pageIndex: 0,
     pageCards: [],
     numCorrect: 0,
@@ -132,8 +131,6 @@ class StudySection extends Component {
   onSpaceBarPress = () => {
     if (this.isStageFinished()) {
       this.onKeepGoing();
-      // stage is finished, Reset correctness array
-      this.setState({ correctness: [] });
     } else if (this.isSelfGraded() && !this.state.isRevealed) {
       this.onToggleReveal();
     }
@@ -158,8 +155,21 @@ class StudySection extends Component {
 
   onKeepGoing = () => {
     analytics.logKeepGoingEvent(this.props.deck.id);
+    const pageIndex = this.state.pageIndex + 1;
+    const { cards } = this.state;
+    const pageStart = pageIndex * PAGE_SIZE;
+    const pageEnd = Math.min(pageStart + PAGE_SIZE, cards.length);
+    const pageCards = cards.slice(pageStart, pageEnd);
+    const options = this.getOptions(pageCards[0], cards);
 
-    this.setState({ pageIndex: this.state.pageIndex + 1, incorrectCards: [], index: 0 });
+    this.setState({
+      options,
+      pageIndex,
+      pageCards,
+      index: 0,
+      incorrectCards: [],
+      correctness: [],
+    });
   };
 
   onGoBack = () => this.props.history.goBack();
@@ -264,10 +274,10 @@ class StudySection extends Component {
     return currentCards[index || this.state.index] || {};
   };
   getCardHTML = card => marked(this.state.isReversed ? card.back : card.front);
-  getOptionHTML = option => marked(this.state.isReversed ? option.front : option.back || option);
-  getPageStart = () => Math.max(Math.floor(this.state.pageIndex * this.state.pageSize), 0);
-  getPageEnd = () =>
-    Math.min(Math.floor((this.state.pageIndex + 1) * this.state.pageSize), this.state.cards.length);
+  getOptionHTML = option => {
+    const content = this.state.isReversed ? option.front : option.back || option;
+    return marked(content);
+  };
 
   isCollectionPage = () => this.props.match.path === "/collections/:collectionId/review";
   isStageFinished = index => {
@@ -297,12 +307,10 @@ class StudySection extends Component {
   };
 
   render() {
-    const { index, correctness, options, incorrectCards, isWrong } = this.state;
-    const { deck, cards, isLoading } = this.props;
+    const { index, correctness, options, pageCards, incorrectCards, isWrong } = this.state;
+    const { deck, isLoading } = this.props;
 
     const currentCard = this.getCurrentCard();
-    const pageEnd = this.getPageEnd();
-    const pageStart = this.getPageStart();
     const isStageFinished = this.isStageFinished();
     const isImageSelect = (currentCard.deck || {}).type
       ? this.isImageSelect(currentCard.deck)
@@ -314,9 +322,7 @@ class StudySection extends Component {
           <StudyToggle onChange={this.props.onSRSToggle} />
           <StudyProgress
             index={index}
-            items={cards}
-            pageEnd={pageEnd}
-            pageStart={pageStart}
+            pageCards={pageCards}
             correctness={correctness}
             incorrectCards={incorrectCards}
           />

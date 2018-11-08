@@ -14,8 +14,7 @@ const DotItem = ({ isCorrect, isIncorrect, active }) => {
 };
 
 const StudyProgress = props => {
-  const { index, incorrectCards, items, pageStart, pageEnd, correctness } = props;
-  const pageCards = items.slice(pageStart, pageEnd);
+  const { index, incorrectCards, pageCards, correctness } = props;
   const currentCards = [...pageCards, ...incorrectCards];
   return (
     <div className="d-flex align-items-center">
