@@ -73,6 +73,12 @@ class StudySection extends Component {
     window.addEventListener("keydown", this.onKeyDown);
   }
 
+  componentWillUnmount() {
+    window.removeEventListener("keyup", this.onKeyUp);
+    window.removeEventListener("keydown", this.onKeyDown);
+    clearTimeout(this.timeout);
+  }
+
   componentDidUpdate(prevProps, prevState) {
     if (prevProps.cards !== this.props.cards) {
       const { index, pageIndex } = this.state;
@@ -89,12 +95,6 @@ class StudySection extends Component {
         cards: shuffledCards,
       });
     }
-  }
-
-  componentWillUnmount() {
-    window.removeEventListener("keyup", this.onKeyUp);
-    window.removeEventListener("keydown", this.onKeyDown);
-    clearTimeout(this.timeout);
   }
 
   // Key Listeners
@@ -205,9 +205,8 @@ class StudySection extends Component {
     this.setState({ correctness: [...this.state.correctness, isCorrect] });
 
     if (!isCorrect) {
-      const numCorrect = this.state.numCorrect - 1;
-      const numIncorrect = this.state.numIncorrect + 1;
-      this.setState({ numCorrect, numIncorrect });
+      this.setState({ numCorrect: this.state.numCorrect - 1 });
+      this.handleIncorrectAnswer(card);
     }
 
     this.setState({ selected: answer });
@@ -425,7 +424,10 @@ class StudySection extends Component {
                 </div>
               ) : (
                 <ReviewResults
-                  index={this.state.index}
+                  index={Math.min(
+                    this.state.pageIndex * PAGE_SIZE + this.state.index,
+                    this.state.cards.length,
+                  )}
                   cards={this.state.cards}
                   numCorrect={this.state.numCorrect}
                   numIncorrect={this.state.numIncorrect}
