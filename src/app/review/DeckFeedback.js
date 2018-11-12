@@ -54,6 +54,7 @@ class DeckFeedback extends Component {
                   className="font-weight-normal text-muted text-underline line ml-1"
                   rel="noopener noreferrer"
                   href={config.airtableFeedbackUrl}
+                  target="_blank"
                 >
                   Leave a comment...
                 </a>

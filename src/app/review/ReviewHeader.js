@@ -78,6 +78,7 @@ class ReviewHeader extends React.Component {
               rel="noopener noreferrer"
               style={{ fontSize: ".9em" }}
               href={deck.source}
+              target="_blank"
             >
               {deck.source}
             </a>
