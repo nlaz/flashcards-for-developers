@@ -36,6 +36,10 @@ const RedirectHeader = () => (
 );
 
 class App extends Component {
+  componentDidMount() {
+    window.location = "https://www.flashcardsfordevelopers.com/";
+  }
+
   render() {
     return (
       <HashRouter>
