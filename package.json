@@ -59,9 +59,18 @@
   "devDependencies": {
     "enzyme": "^3.6.0",
     "enzyme-adapter-react-16": "^1.5.0",
+    "eslint": "5.6.0",
+    "eslint-config-airbnb": "^17.1.0",
+    "eslint-config-prettier": "^3.3.0",
+    "eslint-plugin-import": "^2.14.0",
+    "eslint-plugin-jsx-a11y": "^6.1.2",
+    "eslint-plugin-prettier": "^3.0.0",
+    "eslint-plugin-react": "^7.11.1",
+    "nightmare": "^3.0.1",
     "nodemon": "^1.18.3",
-    "prettier": "^1.14.2",
-    "supertest": "^3.3.0"
+    "prettier": "^1.15.2",
+    "supertest": "^3.3.0",
+    "url": "^0.11.0"
   },
   "browserslist": [
     ">0.2%",
