@@ -13,11 +13,12 @@ git clone git@github.com:nlaz/flashcards-for-developers.git
 cd flashcards-for-developers
 ```
 
-Install dependencies and run application.
+Install dependencies and run the web application and server application seperately.
 
 ```sh
 yarn install
-yarn start
+yarn web
+yarn server  # in a separate window
 ```
 
 Open [http://localhost:3000/](http://localhost:3000/) to view the app in the browser.
