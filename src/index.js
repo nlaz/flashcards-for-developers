@@ -16,6 +16,11 @@ import "./index.css";
 
 mixpanel.init(config.mixpanelAnalyticsKey);
 
+if (config.mixpanelAnalyticsKey === "DUMMY_MIXPANEL_TOKEN") {
+	// Disable Mixpanel event tracking if dummy token is provided
+	mixpanel.disable();
+}
+
 ReactDOM.render(
   <StripeProvider apiKey={config.stripePublicKey}>
     <MixpanelProvider mixpanel={mixpanel}>
