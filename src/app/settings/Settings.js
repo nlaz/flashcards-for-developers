@@ -6,13 +6,16 @@ import * as analytics from "../../components/GoogleAnalytics";
 
 import Emoji from "../../components/Emoji";
 import DeleteAccountModal from "./DeleteAccountModal";
+import CancelMembershipModal from "./CancelMembershipModal";
 import LoginModal from "../auth/LoginModal";
+import isProMember from "../../app/utils/isProMember";
 
 const ERRORS = { REQUIRED: "Required", INVALID: "Invalid" };
 
 class Settings extends Component {
   state = {
-    showModal: false,
+    showMembershipModal: false,
+    showAccountModal: false,
     showLoginModal: false,
     isSuccess: false,
     profile: { name: "", email: "", avatar_url: "", username: "", email_notification: false },
@@ -43,9 +46,13 @@ class Settings extends Component {
   };
 
   // Event listeners
-  onOpenModal = () => this.setState({ showModal: true });
+  onOpenAccountModal = () => this.setState({ showAccountModal: true });
 
-  onCloseModal = () => this.setState({ showModal: false });
+  onCloseAccountModal = () => this.setState({ showAccountModal: false });
+
+  onOpenMembershipModal = () => this.setState({ showMembershipModal: true });
+
+  onCloseMembershipModal = () => this.setState({ showMembershipModal: false });
 
   onCloseLoginModal = () => this.props.history.push("/");
 
@@ -131,8 +138,13 @@ class Settings extends Component {
     return (
       <div className="container container--narrow my-5 px-4">
         <DeleteAccountModal
-          isOpen={this.state.showModal}
-          onCancel={this.onCloseModal}
+          isOpen={this.state.showAccountModal}
+          onCancel={this.onCloseDeleteModal}
+          onConfirm={this.deleteUserProfile}
+        />
+        <CancelMembershipModal
+          isOpen={this.state.showMembershipModal}
+          onCancel={this.onCloseDeleteModal}
           onConfirm={this.deleteUserProfile}
         />
         <LoginModal isOpen={this.state.showLoginModal} onClose={this.onCloseLoginModal} />
@@ -273,6 +285,17 @@ class Settings extends Component {
           <button onClick={this.onOpenModal} className="btn btn-sm btn-outline-danger px-2 my-2">
             Delete account
           </button>
+
+          <div className="d-flex flex-column justify-content-center">
+            <span className="font-weight-medium m-0">Cancel my Membership</span>
+            <span className="text-muted small">
+              Pro membership not for you? Feel free to delete your Membership
+            </span>
+          </div>
+          <button onClick={this.onOpenModal} className="btn btn-sm btn-outline-danger px-2 my-2">
+            Cancel Membership
+          </button>
+
         </div>
       </div>
     );
