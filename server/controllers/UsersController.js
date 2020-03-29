@@ -150,7 +150,7 @@ module.exports.cancelStripeSubscription = async (req, res, next) => {
     // Remove customer ID from user model and reset user plan
     const newUser = await User.findOneAndUpdate(
       { _id: req.user },
-      { $set: { customerId: "", user_plan: "free" } },
+      { $set: { user_plan: "free" } },
       { new: true },
     );
 
