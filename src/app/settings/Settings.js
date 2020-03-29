@@ -125,7 +125,6 @@ class Settings extends Component {
   cancelMembership = () => {
      api.cancelMembership().then(() => {
       analytics.logUserAction("User canceled their memebership");
-      console.log("remove user pro_membership cookie token");
       this.updateUserProfile();
       this.props.history.push("/");
     });
