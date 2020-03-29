@@ -16,7 +16,7 @@ const DeleteModal = ({ isOpen, onConfirm, onCancel }) => (
     <hr className="m-0" />
     <div className="p-3 small">
       <p>
-        <strong>Deleting a deck will delete all of its cards. This action is irreversible.</strong>{" "}
+        <strong>Deleting a deck will delete all of its cards. </strong>{" "}
         Are you certain you want to delete them?
       </p>
     </div>

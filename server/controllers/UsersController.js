@@ -132,6 +132,36 @@ module.exports.postStripeCharge = async (req, res, next) => {
   }
 };
 
+module.exports.cancelStripeSubscription = async (req, res, next) => {
+  try {
+
+    const user = await User.findOne({ _id: req.user }).select('customerId');
+    
+    if(!user){
+      throw new Error();
+    }
+
+    const stripeCustomer = await stripe.customers.retrieve(user.customerId);
+    
+    const [subscription] = stripeCustomer.subscriptions.data;
+
+    await stripe.subscriptions.del(subscription.id);
+
+    // Remove customer ID from user model and reset user plan
+    const newUser = await User.findOneAndUpdate(
+      { _id: req.user },
+      { $set: { customerId: "", user_plan: "free" } },
+      { new: true },
+    );
+
+    res.send({ message: "Success!", user: newUser });
+    }
+
+    catch (error) {
+      next(error);
+    }
+};
+
 module.exports.getPinnedDecks = async (req, res, next) => {
   try {
     const user = await User.findOne({ _id: req.user })

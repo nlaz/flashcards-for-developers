@@ -41,6 +41,7 @@ router.post("/auth/github/register", UsersController.createGithubUser);
 // Current user related endpoints
 // Refactor endpoints from '/users' to '/self'
 router.post("/users/payments", isAuthenticated, UsersController.postStripeCharge);
+router.post("/users/cancel_membership", isAuthenticated, UsersController.cancelStripeSubscription);
 
 router.get("/users/pinned_decks", isAuthenticated, UsersController.getPinnedDecks);
 router.put("/users/pinned_decks", isAuthenticated, UsersController.addPinnedDecks);
