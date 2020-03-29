@@ -122,6 +122,15 @@ class Settings extends Component {
     });
   };
 
+  cancelMembership = () => {
+    // api.cancelMembership().then(() => {
+      analytics.logUserAction("User canceled their memebership");
+      console.log("remove user pro_membership cookie token");
+      //cookie.remove("user");
+      this.props.history.push("/");
+    // });
+  };
+
   handleError = error => {
     const { status } = error.response;
     this.setState({
@@ -139,13 +148,13 @@ class Settings extends Component {
       <div className="container container--narrow my-5 px-4">
         <DeleteAccountModal
           isOpen={this.state.showAccountModal}
-          onCancel={this.onCloseDeleteModal}
+          onCancel={this.onCloseAccountModal}
           onConfirm={this.deleteUserProfile}
         />
         <CancelMembershipModal
           isOpen={this.state.showMembershipModal}
-          onCancel={this.onCloseDeleteModal}
-          onConfirm={this.deleteUserProfile}
+          onCancel={this.onCloseMembershipModal}
+          onConfirm={this.cancelMembership}
         />
         <LoginModal isOpen={this.state.showLoginModal} onClose={this.onCloseLoginModal} />
         <h1 className="mb-4">Settings</h1>
@@ -282,17 +291,18 @@ class Settings extends Component {
               Need a break from flashcards? You can remove your account here.
             </span>
           </div>
-          <button onClick={this.onOpenModal} className="btn btn-sm btn-outline-danger px-2 my-2">
+          <button onClick={this.onOpenAccountModal} className="btn btn-sm btn-outline-danger px-2 my-2">
             Delete account
           </button>
-
+        </div>
+        <div className="border rounded p-3 d-flex flex-column flex-sm-row align-items-start align-items-sm-center justify-content-between mt-3">
           <div className="d-flex flex-column justify-content-center">
             <span className="font-weight-medium m-0">Cancel my Membership</span>
             <span className="text-muted small">
               Pro membership not for you? Feel free to delete your Membership
             </span>
           </div>
-          <button onClick={this.onOpenModal} className="btn btn-sm btn-outline-danger px-2 my-2">
+          <button onClick={this.onOpenMembershipModal} className="btn btn-sm btn-outline-danger px-2 my-2">
             Cancel Membership
           </button>
 
