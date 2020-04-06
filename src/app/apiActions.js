@@ -69,6 +69,10 @@ export const submitPayment = ({ description, amount, source, currency }) => {
   return authAxios.post("/users/payments", { description, amount, source, currency });
 };
 
+export const cancelMembership = () => {
+  return authAxios.post("/users/cancel_membership");
+};
+
 export const fetchPinnedDecks = () => {
   return authAxios.get("/users/pinned_decks");
 };

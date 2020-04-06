@@ -64,7 +64,7 @@ class Membership extends React.Component {
                       Upgrade to Pro
                     </Link>
                     <div className="text-center">
-                      <small className="text-muted">30 day free trial, cancel anytime.</small>
+                      <small className="text-muted">Cancel anytime.</small>
                     </div>
                   </div>
                 ) : (
@@ -201,7 +201,7 @@ class Membership extends React.Component {
                           Upgrade to Pro
                         </Link>
                         <div className="text-center">
-                          <small className="text-muted">30 day free trial, cancel anytime.</small>
+                          <small className="text-muted">Cancel anytime.</small>
                         </div>
                       </div>
                     ) : (
