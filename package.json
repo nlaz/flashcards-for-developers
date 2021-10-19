@@ -7,22 +7,22 @@
     "node": "8.11.1"
   },
   "dependencies": {
-    "axios": "^0.18.0",
+    "axios": "^0.21.3",
     "babel-polyfill": "^6.26.0",
     "body-parser": "^1.18.3",
     "classnames": "^2.2.6",
     "compression": "^1.7.3",
     "cookie-parser": "^1.4.3",
     "express": "^4.16.3",
-    "forcedomain": "^1.0.0",
+    "forcedomain": "^2.1.0",
     "joi": "^13.6.0",
     "joi-objectid": "^2.0.0",
     "js-cookie": "^2.2.0",
     "jsonwebtoken": "^8.3.0",
-    "marked": "^0.6.1",
+    "marked": "^1.1.1",
     "mixpanel-browser": "^2.22.4",
     "moment": "^2.22.2",
-    "mongoose": "^5.2.10",
+    "mongoose": "^5.13.9",
     "morgan": "^1.9.0",
     "octicons": "^8.1.0",
     "pluralize": "^7.0.0",
@@ -38,12 +38,13 @@
     "react-mixpanel": "^0.0.11",
     "react-modal": "^3.5.1",
     "react-router-dom": "^4.3.1",
-    "react-scripts": "3.0.0",
+    "react-scripts": "4.0.0",
     "react-share": "^2.2.0",
     "react-stripe-elements": "^2.0.1",
     "react-test-renderer": "^16.5.1",
     "recharts": "^1.3.1",
-    "stripe": "^6.12.1"
+    "stripe": "^6.12.1",
+    "@snyk/protect": "latest"
   },
   "scripts": {
     "start": "yarn deploy",
@@ -53,7 +54,9 @@
     "deploy": "NODE_ENV=production yarn build && NODE_ENV=production node server/index",
     "test": "react-scripts test --env=jsdom",
     "test:server": "node scripts/run_server_tests.js",
-    "heroku-postbuild": "yarn build"
+    "heroku-postbuild": "yarn build",
+    "prepare": "yarn run snyk-protect",
+    "snyk-protect": "snyk-protect"
   },
   "devDependencies": {
     "enzyme": "^3.6.0",
@@ -68,5 +71,6 @@
     "not dead",
     "not ie <= 11",
     "not op_mini all"
-  ]
+  ],
+  "snyk": true
 }
